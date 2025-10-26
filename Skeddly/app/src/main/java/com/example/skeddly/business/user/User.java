@@ -16,7 +16,7 @@ public class User extends DatabaseObject {
 
     @SuppressLint("HardwareIds")
     public User() {
-        this.ownedEvents = new ArrayList<Event>();
+        this.ownedEvents = new ArrayList<>();
         this.extraInformation = new ExtraInformation();
         this.notificationSettings = new NotificationSettings();
         this.privilegeLevel = UserLevel.ENTRANT;

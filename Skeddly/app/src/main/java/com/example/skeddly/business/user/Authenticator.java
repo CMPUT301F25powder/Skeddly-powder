@@ -34,9 +34,11 @@ public class Authenticator {
         String emailUUID = String.valueOf(UUID.nameUUIDFromBytes(androidId.getBytes()));
         String emailGen = emailUUID + "@skeddly.com";
 
+        // Try to sign up user - associated with device ID
         mAuth.createUserWithEmailAndPassword(emailGen, androidId).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
+                // If sign up fails, usually because there is already a user made, then sign in
                 if (!task.isSuccessful()) {
                     mAuth.signInWithEmailAndPassword(emailGen, androidId).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
@@ -57,13 +59,19 @@ public class Authenticator {
         });
     }
 
+    /**
+     * Creates a user object based on what is in the DB and waits for it to load
+     * @param callback
+     */
     private void createAndTieUser(UserLoaded callback) {
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         this.databaseHandler.getUsersPath().child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(!dataSnapshot.exists()) {
+                // Create a blank user if there is no user in DB
+                // Use DB user if there is a user in DB
+                if (!dataSnapshot.exists()) {
                     user = new User();
 
                     DatabaseReference currentUserPath = databaseHandler.getUsersPath().child(currentUser.getUid());
@@ -84,6 +92,10 @@ public class Authenticator {
         });
     }
 
+    /**
+     * Gets the initialized user
+     * @return User
+     */
     public User getUser() {
         return this.user;
     }

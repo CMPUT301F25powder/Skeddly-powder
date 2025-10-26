@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
+                // Update navbar if user object changes (allows for realtime updates)
                 setupNavBar();
             }
         });
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
                 .findFragmentById(R.id.nav_host_fragment_activity_main);
         NavController navController = Objects.requireNonNull(navHostFragment).getNavController();
 
-        // Inflate the correct navGraph for our privilage level and set the icons properly
+        // Inflate the correct navGraph for our privilege level and set the icons properly
         NavGraph navGraph;
         switch (user.getPrivilegeLevel()) {
             case ENTRANT:
