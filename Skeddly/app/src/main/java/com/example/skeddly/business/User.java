@@ -3,8 +3,6 @@ package com.example.skeddly.business;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.provider.Settings;
-import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -19,6 +17,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -29,7 +28,10 @@ public class User {
     private DatabaseReference mDatabase;
     private FirebaseUser fUser;
     private Context context;
+
     public boolean isAdmin;
+    public ArrayList<Event> ownedEvents;
+    public ArrayList<Event> joinedEvents;
 
     @SuppressLint("HardwareIds")
     public User(Context context) {
@@ -37,6 +39,8 @@ public class User {
         this.mDatabase = FirebaseDatabase.getInstance().getReference();
 
         this.androidId = Settings.Secure.getString(context.getContentResolver(),Settings.Secure.ANDROID_ID);
+
+        this.ownedEvents = new ArrayList<Event>();
 
         String emailUUID = String.valueOf(UUID.nameUUIDFromBytes(androidId.getBytes()));
         String emailGen = emailUUID + "@skeddly.com";
@@ -73,6 +77,29 @@ public class User {
 
                 if (value != null) {
                     isAdmin = value.isAdmin;
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                System.out.println(error);
+            }
+        });
+
+        mDatabase.child("events").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Iterable<DataSnapshot> subSnapshot = snapshot.getChildren();
+
+                for (DataSnapshot item : subSnapshot) {
+                    Event value = item.getValue(Event.class);
+                    value.setId(item.getKey());
+
+                    ownedEvents.removeIf(v -> Objects.equals(v.getId(), value.getId()));
+
+                    ownedEvents.add(value);
+
+                    System.out.println(ownedEvents);
                 }
             }
 
