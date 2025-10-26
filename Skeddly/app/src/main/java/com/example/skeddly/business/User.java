@@ -23,53 +23,16 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class User extends DatabaseObject {
-    private String androidId;
-    private FirebaseAuth mAuth;
-    private FirebaseUser fUser;
-    private Context context;
-
     private boolean admin;
 
     private ArrayList<Event> ownedEvents;
     public ArrayList<Event> joinedEvents;
 
     @SuppressLint("HardwareIds")
-    public User(Context context) {
-        this.mAuth = FirebaseAuth.getInstance();
-        this.androidId = Settings.Secure.getString(context.getContentResolver(),Settings.Secure.ANDROID_ID);
+    public User() {
         this.ownedEvents = new ArrayList<Event>();
 
-        this.authenticate();
-
 //        this.isAdmin = false; // Enforced in realtime db rules.
-    }
-
-    public User() {}
-
-    private void authenticate() {
-        String emailUUID = String.valueOf(UUID.nameUUIDFromBytes(androidId.getBytes()));
-        String emailGen = emailUUID + "@skeddly.com";
-
-        mAuth.createUserWithEmailAndPassword(emailGen, androidId);
-
-        mAuth.signInWithEmailAndPassword(emailGen, androidId).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (!task.isSuccessful()) {
-                    try {
-                        throw Objects.requireNonNull(task.getException());
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
-        });
-
-        this.fUser = mAuth.getCurrentUser();
-
-        if (this.fUser != null) {
-            this.setId(this.fUser.getUid());
-        }
     }
 
     public ArrayList<Event> getOwnedEvents() {

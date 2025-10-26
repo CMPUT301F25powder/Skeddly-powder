@@ -19,35 +19,10 @@ public class DatabaseHandler {
 
     public DatabaseHandler(Context context) {
         this.context = context;
-        this.user = new User(context);
         this.database = FirebaseDatabase.getInstance().getReference();
-
-        database.child("users").child(user.getId()).setValue(user);
-
-        listeners();
     }
 
-    private void listeners() {
-        // Listen for any changes to user events
-        iterableListen(database.child("events"), Event.class, new IterableListenUpdate<Event>() {
-            @Override
-            public void onUpdate(ArrayList<Event> newValues) {
-                user.setOwnedEvents(newValues);
-            }
-        });
-
-        // Listen for any changes to the user itself
-        singleListen(database.child("users").child(user.getId()), User.class, new SingleListenUpdate<User>() {
-            @Override
-            public void onUpdate(User newValue) {
-                user = newValue;
-
-                System.out.println(newValue.isAdmin());
-            }
-        });
-    }
-
-    private <T extends DatabaseObject> void singleListen(DatabaseReference ref, Class<T> classType, SingleListenUpdate callback) {
+    public <T extends DatabaseObject> void singleListen(DatabaseReference ref, Class<T> classType, SingleListenUpdate callback) {
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -64,7 +39,7 @@ public class DatabaseHandler {
             }
         });
     }
-    private <T extends DatabaseObject> void iterableListen(DatabaseReference ref, Class<T> classType, IterableListenUpdate callback) {
+    public <T extends DatabaseObject> void iterableListen(DatabaseReference ref, Class<T> classType, IterableListenUpdate callback) {
         ref.addValueEventListener(new ValueEventListener() {
             ArrayList<T> result = new ArrayList<>();
 
@@ -87,5 +62,13 @@ public class DatabaseHandler {
                 System.out.println(error);
             }
         });
+    }
+
+    public DatabaseReference getUsersPath() {
+        return database.child("users");
+    }
+
+    public DatabaseReference getEventsPath() {
+        return database.child("events");
     }
 }
