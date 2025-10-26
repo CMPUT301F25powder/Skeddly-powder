@@ -12,12 +12,10 @@ import androidx.navigation.NavGraph;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
-import com.example.skeddly.business.UserLevel;
 import com.example.skeddly.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Objects;
-
 
 import com.example.skeddly.business.user.Authenticator;
 import com.example.skeddly.business.database.DatabaseHandler;
@@ -32,7 +30,6 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     private User user;
     private ActivityMainBinding binding;
-    UserLevel privilageLevel = UserLevel.ADMIN;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,11 +69,16 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onUpdate(User newValue) {
                         user = newValue;
+                        setupNavBar();
                     }
                 });
+
+                setupNavBar();
             }
         });
+    }
 
+    private void setupNavBar() {
         // Setup the nav bar
         BottomNavigationView navView = binding.navView;
 
@@ -90,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Inflate the correct navGraph for our privilage level and set the icons properly
         NavGraph navGraph;
-        switch (privilageLevel) {
+        switch (user.getPrivilegeLevel()) {
             case ENTRANT:
                 navView.inflateMenu(R.menu.bottom_nav_entrant);
                 navGraph = navController.getNavInflater().inflate(R.navigation.entrant_navigation);
@@ -104,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
                 navGraph = navController.getNavInflater().inflate(R.navigation.admin_navigation);
                 break;
             default:
-                throw new IllegalStateException("Unexpected value: " + privilageLevel);
+                throw new IllegalStateException("Unexpected value: " + user.getPrivilegeLevel());
         }
         navController.setGraph(navGraph);
         NavigationUI.setupWithNavController(binding.navView, navController);
