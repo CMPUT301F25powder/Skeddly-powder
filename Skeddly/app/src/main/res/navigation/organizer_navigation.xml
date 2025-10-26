@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/organizer_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.example.skeddly.ui.HomeFragment"
+        android:label="@string/nav_home"
+        />
+
+    <fragment
+        android:id="@+id/navigation_inbox"
+        android:name="com.example.skeddly.ui.InboxFragment"
+        android:label="@string/nav_inbox"
+        />
+
+    <fragment
+        android:id="@+id/navigation_create"
+        android:name="com.example.skeddly.ui.CreateFragment"
+        android:label="@string/nav_create"
+        />
+
+    <fragment
+        android:id="@+id/navigation_my_events"
+        android:name="com.example.skeddly.ui.MyEventsFragment"
+        android:label="@string/nav_my_events"
+        />
+
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="com.example.skeddly.ui.ProfileFragment"
+        android:label="@string/nav_profile"
+        />
+
+</navigation>
