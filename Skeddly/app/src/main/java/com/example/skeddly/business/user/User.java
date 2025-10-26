@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 public class User extends DatabaseObject {
     private boolean admin;
+    private NotificationSettings notificationSettings;
 
     private ArrayList<Event> ownedEvents;
     public ArrayList<Event> joinedEvents;
@@ -16,6 +17,7 @@ public class User extends DatabaseObject {
     @SuppressLint("HardwareIds")
     public User() {
         this.ownedEvents = new ArrayList<Event>();
+        this.notificationSettings = new NotificationSettings();
 
 //        this.isAdmin = false; // Enforced in realtime db rules.
     }
@@ -34,5 +36,13 @@ public class User extends DatabaseObject {
 
     public void setAdmin(boolean admin) {
         this.admin = admin;
+    }
+
+    public NotificationSettings getNotificationSettings() {
+        return notificationSettings;
+    }
+
+    public void setNotificationSettings(NotificationSettings notificationSettings) {
+        this.notificationSettings = notificationSettings;
     }
 }

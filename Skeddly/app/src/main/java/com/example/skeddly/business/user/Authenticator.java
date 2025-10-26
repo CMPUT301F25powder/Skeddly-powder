@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
@@ -22,7 +23,6 @@ public class Authenticator {
     private String androidId;
     private User user;
     private FirebaseAuth mAuth;
-    private FirebaseUser fUser;
     private Context context;
     private DatabaseHandler databaseHandler;
     public Authenticator(Context context, DatabaseHandler databaseHandler, UserLoaded callback) {
@@ -45,28 +45,33 @@ public class Authenticator {
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
+                } else {
+                    createAndTieUser(callback);
                 }
             }
         });
-
-        this.fUser = mAuth.getCurrentUser();
-
-        this.createAndTieUser(callback);
     }
 
     private void createAndTieUser(UserLoaded callback) {
-        this.databaseHandler.getUsersPath().child(fUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        this.databaseHandler.getUsersPath().child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 System.out.println("EXISTS");
                 System.out.println(dataSnapshot.exists());
                 if(!dataSnapshot.exists()) {
                     user = new User();
+
+                    DatabaseReference currentUserPath = databaseHandler.getUsersPath().child(currentUser.getUid());
+
+                    currentUserPath.setValue(user);
+//                    currentUserPath.child("notificationSettings").setValue(user.getNotificationSettings());
                 } else {
                     user = dataSnapshot.getValue(User.class);
                 }
 
-                user.setId(fUser.getUid());
+                user.setId(currentUser.getUid());
 
                 callback.onUserLoaded(user);
             }
