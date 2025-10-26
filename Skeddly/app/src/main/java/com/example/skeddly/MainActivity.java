@@ -24,5 +24,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         User user = new User(this);
+
+        if (user.isAdmin) {
+            // do something
+        }
     }
 }
