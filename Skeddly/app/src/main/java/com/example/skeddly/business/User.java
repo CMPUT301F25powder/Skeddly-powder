@@ -18,30 +18,35 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-public class User {
+public class User extends DatabaseObject {
     private String androidId;
-    private String id;
     private FirebaseAuth mAuth;
-    private DatabaseReference mDatabase;
     private FirebaseUser fUser;
     private Context context;
 
-    public boolean isAdmin;
-    public ArrayList<Event> ownedEvents;
+    private boolean admin;
+
+    private ArrayList<Event> ownedEvents;
     public ArrayList<Event> joinedEvents;
 
     @SuppressLint("HardwareIds")
     public User(Context context) {
         this.mAuth = FirebaseAuth.getInstance();
-        this.mDatabase = FirebaseDatabase.getInstance().getReference();
-
         this.androidId = Settings.Secure.getString(context.getContentResolver(),Settings.Secure.ANDROID_ID);
-
         this.ownedEvents = new ArrayList<Event>();
 
+        this.authenticate();
+
+//        this.isAdmin = false; // Enforced in realtime db rules.
+    }
+
+    public User() {}
+
+    private void authenticate() {
         String emailUUID = String.valueOf(UUID.nameUUIDFromBytes(androidId.getBytes()));
         String emailGen = emailUUID + "@skeddly.com";
 
@@ -63,52 +68,23 @@ public class User {
         this.fUser = mAuth.getCurrentUser();
 
         if (this.fUser != null) {
-            this.id = this.fUser.getUid();
+            this.setId(this.fUser.getUid());
         }
-
-        this.isAdmin = false; // Enforced in realtime db rules.
-
-        mDatabase.child("users").child(this.id).setValue(this);
-
-        mDatabase.child("users").child(this.id).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                User value = snapshot.getValue(User.class);
-
-                if (value != null) {
-                    isAdmin = value.isAdmin;
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                System.out.println(error);
-            }
-        });
-
-        mDatabase.child("events").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Iterable<DataSnapshot> subSnapshot = snapshot.getChildren();
-
-                for (DataSnapshot item : subSnapshot) {
-                    Event value = item.getValue(Event.class);
-                    value.setId(item.getKey());
-
-                    ownedEvents.removeIf(v -> Objects.equals(v.getId(), value.getId()));
-
-                    ownedEvents.add(value);
-
-                    System.out.println(ownedEvents);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                System.out.println(error);
-            }
-        });
     }
 
-    public User() {}
+    public ArrayList<Event> getOwnedEvents() {
+        return ownedEvents;
+    }
+
+    public void setOwnedEvents(ArrayList<Event> ownedEvents) {
+        this.ownedEvents = ownedEvents;
+    }
+
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
+    }
 }

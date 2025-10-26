@@ -1,14 +1,16 @@
 package com.example.skeddly.business;
 
+import com.google.firebase.database.Exclude;
+
 import java.util.UUID;
 
 public class DatabaseObject {
-    private String id; // Needs to be public so it can be serialized into the db.
+    private String id;
 
     public DatabaseObject() {
         this.id = String.valueOf(UUID.randomUUID());
     }
-
+    @Exclude
     public String getId() {
         return id;
     }

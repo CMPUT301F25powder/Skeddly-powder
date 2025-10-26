@@ -8,6 +8,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.skeddly.business.DatabaseHandler;
 import com.example.skeddly.business.User;
 
 public class MainActivity extends AppCompatActivity {
@@ -23,10 +24,6 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        User user = new User(this);
-
-        if (user.isAdmin) {
-            // do something
-        }
+        DatabaseHandler database = new DatabaseHandler(this);
     }
 }
