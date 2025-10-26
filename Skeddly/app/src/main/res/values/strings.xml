@@ -12,5 +12,5 @@
     <string name="button_join">Join</string>
     <string name="search_hint">Search Events</string>
     <string name="notification_content">Notification information, here is information about the notification yuppers</string>
-    <string name="notification">Notification</string>
+    <string name="notification_title">Notification</string>
 </resources>
