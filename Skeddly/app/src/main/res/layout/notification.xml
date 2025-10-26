@@ -56,7 +56,7 @@
         android:id="@+id/notification_subtitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/notification_information_here_is_information_about_the_notification_yuppers"
+        android:text="@string/notification_content"
         android:textColor="@color/primary_navy"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
