@@ -13,6 +13,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+/**
+ * Handles edits and realtime updates to the realtime DB in Firebase
+ */
 public class DatabaseHandler {
     private User user;
     private Context context;
@@ -23,6 +26,15 @@ public class DatabaseHandler {
         this.database = FirebaseDatabase.getInstance().getReference();
     }
 
+    /**
+     * Listens to if a single value is updated in a specific part of the DB
+     * @param ref The {@link DatabaseReference} for the path to watch
+     * @param classType The {@link DatabaseObject} to serialize to (generic)
+     * @param callback The SingleListenUpdate to use as a callback for when data is changed
+     * @param <T> The {@link DatabaseObject} to serialize to (generic)
+     * @see DatabaseReference
+     * @see DatabaseObject
+     */
     public <T extends DatabaseObject> void singleListen(DatabaseReference ref, Class<T> classType, SingleListenUpdate callback) {
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -40,6 +52,16 @@ public class DatabaseHandler {
             }
         });
     }
+
+    /**
+     * Listens to if a group of values are updated in a specific part of the DB
+     * @param ref The {@link DatabaseReference} for the path to watch
+     * @param classType The {@link DatabaseObject} to serialize to (generic)
+     * @param callback The SingleListenUpdate to use as a callback for when data is changed
+     * @param <T> The {@link DatabaseObject} to serialize to (generic)
+     * @see DatabaseReference
+     * @see DatabaseObject
+     */
     public <T extends DatabaseObject> void iterableListen(DatabaseReference ref, Class<T> classType, IterableListenUpdate callback) {
         ref.addValueEventListener(new ValueEventListener() {
             ArrayList<T> result = new ArrayList<>();
@@ -50,9 +72,12 @@ public class DatabaseHandler {
 
                 for (DataSnapshot item : subSnapshot) {
                     T value = item.getValue(classType);
-                    value.setId(item.getKey());
 
-                    result.add(value);
+                    if (value != null) {
+                        value.setId(item.getKey());
+
+                        result.add(value);
+                    }
                 }
 
                 callback.onUpdate(result);
@@ -65,10 +90,20 @@ public class DatabaseHandler {
         });
     }
 
+    /**
+     * Returns a {@link DatabaseReference} pointing to users
+     * @return A {@link DatabaseReference} pointing to users
+     * @see DatabaseReference
+     */
     public DatabaseReference getUsersPath() {
         return database.child("users");
     }
 
+    /**
+     * Returns a {@link DatabaseReference} pointing to events
+     * @return A {@link DatabaseReference} pointing to events
+     * @see DatabaseReference
+     */
     public DatabaseReference getEventsPath() {
         return database.child("events");
     }

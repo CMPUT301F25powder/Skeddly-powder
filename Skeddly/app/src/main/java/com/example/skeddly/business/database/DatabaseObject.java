@@ -4,6 +4,11 @@ import com.google.firebase.database.Exclude;
 
 import java.util.UUID;
 
+/**
+ * An object that can be serialized into the DB
+ * Any values in its fields will be turned into DB keys by the {@link DatabaseHandler}
+ * @see DatabaseHandler
+ */
 public class DatabaseObject {
     private String id;
 
