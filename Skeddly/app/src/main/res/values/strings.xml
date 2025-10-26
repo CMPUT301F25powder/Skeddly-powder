@@ -11,4 +11,6 @@
     <string name="button_view_info">View info</string>
     <string name="button_join">Join</string>
     <string name="search_hint">Search Events</string>
+    <string name="notification_information_here_is_information_about_the_notification_yuppers">Notification information, here is information about the notification yuppers</string>
+    <string name="notification">Notification</string>
 </resources>
