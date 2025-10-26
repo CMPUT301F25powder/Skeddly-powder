@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Skeddly</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_inbox">Inbox</string>
+    <string name="nav_create">Create</string>
+    <string name="nav_tools">Tools</string>
+    <string name="nav_profile">Profile</string>
 </resources>
