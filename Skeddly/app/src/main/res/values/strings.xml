@@ -6,4 +6,8 @@
     <string name="nav_tools">Tools</string>
     <string name="nav_profile">Profile</string>
     <string name="nav_my_events">My Events</string>
+    <string name="event_name">Event 1</string>
+    <string name="button_edit">Edit</string>
+    <string name="button_view_info">View info</string>
+    <string name="button_join">Join</string>
 </resources>
