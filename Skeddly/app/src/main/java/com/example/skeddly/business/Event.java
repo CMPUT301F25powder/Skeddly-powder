@@ -1,6 +1,6 @@
 package com.example.skeddly.business;
 
-import com.google.firebase.Timestamp;
+import com.example.skeddly.business.database.DatabaseObject;
 
 public class Event extends DatabaseObject {
     public String name;

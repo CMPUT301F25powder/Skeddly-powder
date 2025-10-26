@@ -8,13 +8,13 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.skeddly.business.Authenticator;
-import com.example.skeddly.business.DatabaseHandler;
+import com.example.skeddly.business.user.Authenticator;
+import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.Event;
-import com.example.skeddly.business.IterableListenUpdate;
-import com.example.skeddly.business.SingleListenUpdate;
-import com.example.skeddly.business.User;
-import com.example.skeddly.business.UserLoaded;
+import com.example.skeddly.business.database.IterableListenUpdate;
+import com.example.skeddly.business.database.SingleListenUpdate;
+import com.example.skeddly.business.user.User;
+import com.example.skeddly.business.user.UserLoaded;
 
 import java.util.ArrayList;
 

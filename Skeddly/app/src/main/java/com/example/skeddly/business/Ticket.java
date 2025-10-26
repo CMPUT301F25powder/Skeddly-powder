@@ -5,6 +5,8 @@ import android.location.Location;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.skeddly.business.user.User;
+
 import java.time.LocalDateTime;
 
 /**

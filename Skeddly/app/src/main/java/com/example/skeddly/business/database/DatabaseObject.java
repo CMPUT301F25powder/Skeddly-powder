@@ -1,4 +1,4 @@
-package com.example.skeddly.business;
+package com.example.skeddly.business.database;
 
 import com.google.firebase.database.Exclude;
 

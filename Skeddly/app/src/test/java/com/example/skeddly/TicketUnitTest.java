@@ -9,7 +9,7 @@ import static org.junit.Assert.assertSame;
 import android.location.Location;
 
 import com.example.skeddly.business.Ticket;
-import com.example.skeddly.business.User;
+import com.example.skeddly.business.user.User;
 
 public class TicketUnitTest {
     @Test

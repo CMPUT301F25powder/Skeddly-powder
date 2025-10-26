@@ -1,9 +1,10 @@
-package com.example.skeddly.business;
+package com.example.skeddly.business.database;
 
 import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import com.example.skeddly.business.user.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;

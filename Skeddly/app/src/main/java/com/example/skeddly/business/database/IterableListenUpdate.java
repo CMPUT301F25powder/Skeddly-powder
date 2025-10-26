@@ -1,4 +1,4 @@
-package com.example.skeddly.business;
+package com.example.skeddly.business.database;
 
 import java.util.ArrayList;
 
