@@ -10,7 +10,6 @@
         android:id="@+id/single_event_item"
         android:layout_width="346dp"
         android:layout_height="206dp"
-        android:layout_marginTop="50dp"
         android:background="@color/secondary_dark_orange"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -48,22 +47,6 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                android:id="@+id/button_edit"
-                android:layout_width="78dp"
-                android:layout_height="33dp"
-                android:layout_marginEnd="15dp"
-                android:layout_marginBottom="12dp"
-                android:background="@drawable/round_button_style"
-                android:backgroundTint="@color/primary_orange"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:text="@string/button_edit"
-                android:textColor="@color/neutral_lighter_off_white"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toTopOf="@+id/button_join"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-            <Button
                 android:id="@+id/button_view_info"
                 android:layout_width="114dp"
                 android:layout_height="33dp"
@@ -91,6 +74,22 @@
                 android:text="@string/button_join"
                 android:textColor="@color/neutral_lighter_off_white"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <Button
+                android:id="@+id/button_edit"
+                android:layout_width="78dp"
+                android:layout_height="33dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/round_button_style"
+                android:backgroundTint="@color/primary_orange"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:text="@string/button_edit"
+                android:textColor="@color/neutral_lighter_off_white"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toTopOf="@+id/button_join"
                 app:layout_constraintEnd_toEndOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
