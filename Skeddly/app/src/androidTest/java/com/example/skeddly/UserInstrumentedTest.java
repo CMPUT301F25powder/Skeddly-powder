@@ -13,7 +13,7 @@ import com.example.skeddly.business.user.User;
 import com.example.skeddly.business.user.UserLoaded;
 
 @RunWith(AndroidJUnit4.class)
-public class UserUnitTest {
+public class UserInstrumentedTest {
     @Test
     public void testLoginUser() {
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
