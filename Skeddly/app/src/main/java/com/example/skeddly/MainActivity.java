@@ -51,13 +51,8 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onUpdate(User newValue) {
                         user = newValue;
-
-                        System.out.println(user.isAdmin());
                     }
                 });
-
-                System.out.println("USER");
-                System.out.println(user.isAdmin());
             }
         });
     }

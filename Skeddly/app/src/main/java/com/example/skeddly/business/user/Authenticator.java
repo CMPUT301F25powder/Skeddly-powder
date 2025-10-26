@@ -58,15 +58,12 @@ public class Authenticator {
         this.databaseHandler.getUsersPath().child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                System.out.println("EXISTS");
-                System.out.println(dataSnapshot.exists());
                 if(!dataSnapshot.exists()) {
                     user = new User();
 
                     DatabaseReference currentUserPath = databaseHandler.getUsersPath().child(currentUser.getUid());
 
                     currentUserPath.setValue(user);
-//                    currentUserPath.child("notificationSettings").setValue(user.getNotificationSettings());
                 } else {
                     user = dataSnapshot.getValue(User.class);
                 }

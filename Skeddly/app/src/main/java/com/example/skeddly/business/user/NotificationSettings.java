@@ -1,9 +1,9 @@
 package com.example.skeddly.business.user;
 
 public class NotificationSettings {
-    private Boolean lotteryStatus;
-    private Boolean eventUpdate;
-    private Boolean administrative;
+private boolean lotteryStatus;
+private boolean eventUpdate;
+private boolean administrative;
 
     public NotificationSettings() {
         this.lotteryStatus = false;
@@ -11,27 +11,27 @@ public class NotificationSettings {
         this.administrative = false;
     }
 
-    public Boolean getLotteryStatus() {
+    public boolean getLotteryStatus() {
         return lotteryStatus;
     }
 
-    public void setLotteryStatus(Boolean lotteryStatus) {
+    public void setLotteryStatus(boolean lotteryStatus) {
         this.lotteryStatus = lotteryStatus;
     }
 
-    public Boolean getEventUpdate() {
+    public boolean getEventUpdate() {
         return eventUpdate;
     }
 
-    public void setEventUpdate(Boolean eventUpdate) {
+    public void setEventUpdate(boolean eventUpdate) {
         this.eventUpdate = eventUpdate;
     }
 
-    public Boolean getAdministrative() {
+    public boolean getAdministrative() {
         return administrative;
     }
 
-    public void setAdministrative(Boolean administrative) {
+    public void setAdministrative(boolean administrative) {
         this.administrative = administrative;
     }
 }
