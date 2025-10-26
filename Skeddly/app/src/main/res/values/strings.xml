@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">Skeddly</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_inbox">Inbox</string>
+    <string name="nav_create">Create</string>
+    <string name="nav_tools">Tools</string>
+    <string name="nav_profile">Profile</string>
+    <string name="nav_my_events">My Events</string>
+    <string name="event_name">Event 1</string>
+    <string name="button_edit">Edit</string>
+    <string name="button_view_info">View info</string>
+    <string name="button_join">Join</string>
+    <string name="search_hint">Search Events</string>
 </resources>
