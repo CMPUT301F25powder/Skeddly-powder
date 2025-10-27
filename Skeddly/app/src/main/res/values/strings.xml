@@ -14,6 +14,7 @@
     <string name="notification_content">Notification information, here is information about the notification yuppers</string>
     <string name="notification_title">Notification</string>
     <string name="profile">Profile</string>
+    <string name="event_history">Event History</string>
     <string name="name">Jane Doe</string>
     <string name="email">doejane@loremipsum.com</string>
     <string name="phone_number">123-456-7890</string>
