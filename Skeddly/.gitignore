@@ -8,6 +8,7 @@
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
 .DS_Store
+Skeddly/app/src/main/java/com/example/skeddly/business/CodeReference.java
 /build
 /captures
 .externalNativeBuild
