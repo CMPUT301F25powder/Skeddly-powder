@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
                 database.singleListen(database.getUsersPath().child(user.getId()), User.class, new SingleListenUpdate<User>() {
                     @Override
                     public void onUpdate(User newValue) {
-                        user = newValue;
+                        setUser(newValue);
                         setupNavBar();
                     }
                 });
@@ -111,5 +111,12 @@ public class MainActivity extends AppCompatActivity {
         }
         navController.setGraph(navGraph);
         NavigationUI.setupWithNavController(binding.navView, navController);
+    }
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
