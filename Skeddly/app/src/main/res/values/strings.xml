@@ -25,4 +25,6 @@
     <string name="change_password">Change password:</string>
     <string name="enter_new_password">Enter new password</string>
     <string name="confirm_new_password">Confirm new password</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="notification_settings">Notification Settings</string>
 </resources>
