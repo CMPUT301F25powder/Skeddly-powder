@@ -19,6 +19,9 @@ import java.util.UUID;
 
 @RunWith(AndroidJUnit4.class)
 public class UserInstrumentedTest {
+    /**
+     * Test if a user successfully logs in
+     */
     @Test
     public void testLoginUser() {
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
@@ -32,6 +35,9 @@ public class UserInstrumentedTest {
         });
     }
 
+    /**
+     * Tests if a user can access the events that it owns
+     */
     // FOR NOW: create an event beforehand in the DB.
     // This will need to be fixed later once more logic is added for adding/removing events.
     // I used a user that is the owner of a test event for this test.
@@ -48,6 +54,10 @@ public class UserInstrumentedTest {
         });
     }
 
+    /**
+     * Tests if the user can edit/create a different account in the database that isn't related to them.
+     * Used for testing the rules in the Firebase DB.
+     */
     @Test
     public void testUserEditSecurity() {
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class User extends DatabaseObject {
     private NotificationSettings notificationSettings;
-    private ExtraInformation extraInformation;
+    private PersonalInformation personalInformation;
     private ArrayList<Event> ownedEvents;
     private ArrayList<Event> joinedEvents;
     private UserLevel privilegeLevel;
@@ -17,7 +17,7 @@ public class User extends DatabaseObject {
     @SuppressLint("HardwareIds")
     public User() {
         this.ownedEvents = new ArrayList<>();
-        this.extraInformation = new ExtraInformation();
+        this.personalInformation = new PersonalInformation();
         this.notificationSettings = new NotificationSettings();
         this.privilegeLevel = UserLevel.ENTRANT;
     }
@@ -46,11 +46,11 @@ public class User extends DatabaseObject {
         this.privilegeLevel = privilegeLevel;
     }
 
-    public ExtraInformation getExtraInformation() {
-        return extraInformation;
+    public PersonalInformation getExtraInformation() {
+        return personalInformation;
     }
 
-    public void setExtraInformation(ExtraInformation extraInformation) {
-        this.extraInformation = extraInformation;
+    public void setExtraInformation(PersonalInformation personalInformation) {
+        this.personalInformation = personalInformation;
     }
 }

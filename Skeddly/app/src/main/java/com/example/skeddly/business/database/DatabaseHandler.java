@@ -1,6 +1,7 @@
 package com.example.skeddly.business.database;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -12,6 +13,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 /**
  * Handles edits and realtime updates to the realtime DB in Firebase
@@ -48,7 +50,7 @@ public class DatabaseHandler {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                System.out.println(error);
+                Log.e("DATABASE:SINGLE_LISTEN", error.toString());
             }
         });
     }
@@ -85,7 +87,7 @@ public class DatabaseHandler {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                System.out.println(error);
+                Log.e("DATABASE:ITERABLE_LISTEN", error.toString());
             }
         });
     }

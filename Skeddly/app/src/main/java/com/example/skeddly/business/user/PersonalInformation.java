@@ -1,11 +1,11 @@
 package com.example.skeddly.business.user;
 
-public class ExtraInformation {
+public class PersonalInformation {
     private String name;
     private String email;
     private String phoneNumber;
 
-    public ExtraInformation() {
+    public PersonalInformation() {
         this.name = "";
         this.email = "";
         this.phoneNumber = "";
