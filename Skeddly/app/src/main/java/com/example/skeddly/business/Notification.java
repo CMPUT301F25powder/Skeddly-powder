@@ -1,6 +1,7 @@
 package com.example.skeddly.business;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Represents a single notification item within the application.
@@ -27,10 +28,10 @@ public class Notification {
     }
 
     // Fields for the notification object
-    private String id;
+    private final String id;
     private String title;
     private String message;
-    private Date timestamp;
+    private LocalDateTime timestamp;
     private notification_type type;
     private String eventId; // Used to link to a specific event
     private boolean isRead;
@@ -41,8 +42,11 @@ public class Notification {
      * Initializes the timestamp to the current time and sets its read status to false.
      */
     public Notification() {
-        this.timestamp = new Date();
+        this.timestamp = LocalDateTime.now();
         this.isRead = false;
+        this.status = invitation_status.PENDING;
+        this.id = UUID.randomUUID().toString();
+
     }
 
     /**
@@ -51,14 +55,6 @@ public class Notification {
      */
     public String getId() {
         return id;
-    }
-
-    /**
-     * Sets the unique identifier for the notification.
-     * @param id The string ID to set.
-     */
-    public void setId(String id) {
-        this.id = id;
     }
 
     /**
@@ -97,7 +93,7 @@ public class Notification {
      * Gets the timestamp indicating when the notification was created.
      * @return A Date object representing the creation time.
      */
-    public Date getTimestamp() {
+    public LocalDateTime getTimestamp() {
         return timestamp;
     }
 
@@ -105,7 +101,7 @@ public class Notification {
      * Sets the timestamp for the notification.
      * @param timestamp The Date to set.
      */
-    public void setTimestamp(Date timestamp) {
+    public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
     }
 
