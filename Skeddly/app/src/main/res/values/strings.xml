@@ -35,4 +35,8 @@
     <string name="_0_25">0/25</string>
     <string name="max_waiting_list_size">Max waiting list size:</string>
     <string name="n_a">N/A</string>
+    <string name="participants">Participants</string>
+    <string name="join">Join</string>
+    <string name="edit">Edit</string>
+    <string name="draw">Draw</string>
 </resources>
