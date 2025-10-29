@@ -33,10 +33,13 @@ public class WaitingList {
     /**
      * Add a ticket to the waiting list
      * @param t Ticket to add
+     * @throws IllegalArgumentException If the list is already full
      */
     public void addTicket(Ticket t) {
         if (ticketList.size() < maxWait) {
             ticketList.add(t);
+        } else {
+            throw new IllegalArgumentException();
         }
     }
 

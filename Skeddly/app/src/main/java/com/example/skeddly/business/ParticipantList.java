@@ -29,10 +29,13 @@ public class ParticipantList {
     /**
      * Add a user to the participant list
      * @param u User to add to the list
+     * @throws IllegalArgumentException If the list is already full
      */
     public void addUser(User u) {
         if (userList.size() < maxAttend) {
             userList.add(u);
+        } else {
+            throw new IllegalArgumentException();
         }
     }
 
