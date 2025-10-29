@@ -13,4 +13,9 @@
     <string name="search_hint">Search Events</string>
     <string name="notification_content">Notification information, here is information about the notification yuppers</string>
     <string name="notification_title">Notification</string>
+    <string name="all">All</string>
+    <string name="ongoing">Ongoing</string>
+    <string name="closed">Closed</string>
+    <string name="ended">Ended</string>
+    <string name="event_history">Event History</string>
 </resources>
