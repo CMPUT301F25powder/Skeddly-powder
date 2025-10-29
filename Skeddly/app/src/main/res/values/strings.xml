@@ -18,4 +18,25 @@
     <string name="closed">Closed</string>
     <string name="ended">Ended</string>
     <string name="event_history">Event History</string>
+    <string name="event_title_location">Event Title | Location</string>
+    <string name="monday_wednesday_9_30_10_00">Monday, Wednesday 9:30-10:00</string>
+    <string name="information">Information:</string>
+    <string name="event_title">Event title:</string>
+    <string name="community_meetup">Community Meetup</string>
+    <string name="description">Description:</string>
+    <string name="a_casual_get_together_for_all_members">A casual get-together for all members.</string>
+    <string name="geo_location_requirement">Geo-location requirement:</string>
+    <string name="within_5km_of_venue">Within 5km of venue</string>
+    <string name="category">Category:</string>
+    <string name="social">Social</string>
+    <string name="wait_list_limit">Wait-list limit:</string>
+    <string name="_37_100">37/100</string>
+    <string name="attendee_limit">Attendee Limit:</string>
+    <string name="_0_25">0/25</string>
+    <string name="max_waiting_list_size">Max waiting list size:</string>
+    <string name="n_a">N/A</string>
+    <string name="participants">Participants</string>
+    <string name="join">Join</string>
+    <string name="edit">Edit</string>
+    <string name="draw">Draw</string>
 </resources>
