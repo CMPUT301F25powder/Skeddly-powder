@@ -1,15 +1,22 @@
 package com.example.skeddly.business;
 
+import android.location.Location;
+
 import com.example.skeddly.business.database.DatabaseObject;
+import com.example.skeddly.business.user.User;
+
+import java.time.LocalDateTime;
 
 public class Event extends DatabaseObject {
     private String name;
     private String description;
     private String category;
-    private int attendeeLimit;
-    private Long startTime;
-    private Long endTime;
-    private String owner;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+    private Location location;
+    private User organizer;
+    private final WaitingList applicants;
+    private final ParticipantList attendees;
 
     public Event() {
         // Auto filled by Firebase DB
@@ -17,10 +24,12 @@ public class Event extends DatabaseObject {
         this.name = "";
         this.description = "";
         this.category = "";
-        this.attendeeLimit = 20;
-        this.startTime = (long) 0;
-        this.endTime = (long) 0;
-        this.owner = "";
+        //this.startTime = (LocalDateTime) 0;
+        //this.endTime = (LocalDateTime) 0;
+        //this.owner = "";
+        applicants = new WaitingList();
+        attendees = new ParticipantList(20);
+
     }
 
     public String getName() {
@@ -48,34 +57,42 @@ public class Event extends DatabaseObject {
     }
 
     public int getAttendeeLimit() {
-        return attendeeLimit;
+        return attendees.getMaxAttend();
     }
 
     public void setAttendeeLimit(int attendeeLimit) {
-        this.attendeeLimit = attendeeLimit;
+        this.attendees.setMaxAttend(attendeeLimit);
     }
 
-    public Long getStartTime() {
+    public LocalDateTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Long startTime) {
+    public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
     }
 
-    public Long getEndTime() {
+    public LocalDateTime getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Long endTime) {
+    public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
     }
 
-    public String getOwner() {
-        return owner;
+    public User getOrganizer() {
+        return organizer;
     }
 
-    public void setOwner(String owner) {
-        this.owner = owner;
+    public void setOrganizer(User organizer) {
+        this.organizer = organizer;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 }
