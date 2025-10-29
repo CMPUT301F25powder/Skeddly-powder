@@ -1,6 +1,280 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/primary_light_blue">
+
+    <!-- Back Button -->
+    <ImageButton
+        android:id="@+id/button_back"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/image_round_style"
+        android:src="@drawable/ic_arrow_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/neutral_lighter_off_white"
+        tools:ignore="ContentDescription" />
+
+    <!-- Main Content Card -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/main_content_card"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        app:cardBackgroundColor="@color/neutral_off_white"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button_back">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="24dp">
+
+            <!-- Event Image Banner -->
+            <ImageView
+                android:id="@+id/event_image"
+                android:layout_width="0dp"
+                android:layout_height="180dp"
+                android:background="@drawable/card_background"
+                android:scaleType="centerCrop"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+            <!-- Event Title and Location Overlay -->
+            <TextView
+                android:id="@+id/text_event_title_overlay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/event_title_background"
+                android:drawablePadding="8dp"
+                android:elevation="5dp"
+                android:paddingStart="12dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="12dp"
+                android:paddingBottom="8dp"
+                android:text="@string/event_title_location"
+                android:textColor="@color/neutral_lighter_off_white"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@id/event_image"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <!-- QR Code Style Button -->
+            <ImageButton
+                android:id="@+id/button_qr_code"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/qr_code_circle_background"
+                android:elevation="5dp"
+                android:padding="12dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_qr_code_scanner"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/neutral_lighter_off_white"
+                tools:ignore="ContentDescription" />
+
+            <!-- Event Time -->
+            <TextView
+                android:id="@+id/text_event_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/monday_wednesday_9_30_10_00"
+                android:textColor="@color/primary_navy"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/event_image" />
+
+            <!-- Information Section -->
+            <TextView
+                android:id="@+id/label_information"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/information"
+                android:textColor="@color/primary_navy"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@id/text_event_time"
+                app:layout_constraintTop_toBottomOf="@id/text_event_time" />
+
+            <TextView
+                android:id="@+id/label_event_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/event_title"
+                android:textColor="@color/primary_navy"
+                app:layout_constraintStart_toStartOf="@id/label_information"
+                app:layout_constraintTop_toBottomOf="@id/label_information" />
+
+            <TextView
+                android:id="@+id/value_event_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/community_meetup"
+                android:textColor="@color/neutral_brown_light"
+                app:layout_constraintBaseline_toBaselineOf="@+id/label_event_title"
+                app:layout_constraintStart_toEndOf="@+id/label_event_title"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <TextView
+                android:id="@+id/label_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/description"
+                android:textColor="@color/primary_navy"
+                app:layout_constraintStart_toStartOf="@id/label_event_title"
+                app:layout_constraintTop_toBottomOf="@id/label_event_title" />
+
+            <TextView
+                android:id="@+id/value_description"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/a_casual_get_together_for_all_members"
+                android:textColor="@color/neutral_brown_light"
+                app:layout_constraintBaseline_toBaselineOf="@+id/label_description"
+                app:layout_constraintStart_toEndOf="@+id/label_description"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <TextView
+                android:id="@+id/label_geolocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/geo_location_requirement"
+                android:textColor="@color/primary_navy"
+                app:layout_constraintStart_toStartOf="@id/label_description"
+                app:layout_constraintTop_toBottomOf="@id/value_description" />
+
+            <TextView
+                android:id="@+id/value_geolocation"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/within_5km_of_venue"
+                android:textColor="@color/neutral_brown_light"
+                app:layout_constraintBaseline_toBaselineOf="@+id/label_geolocation"
+                app:layout_constraintStart_toEndOf="@+id/label_geolocation"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <TextView
+                android:id="@+id/label_category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/category"
+                android:textColor="@color/primary_navy"
+                app:layout_constraintStart_toStartOf="@id/label_geolocation"
+                app:layout_constraintTop_toBottomOf="@id/value_geolocation" />
+
+            <TextView
+                android:id="@+id/value_category"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/social"
+                android:textColor="@color/neutral_brown_light"
+                app:layout_constraintBaseline_toBaselineOf="@+id/label_category"
+                app:layout_constraintStart_toEndOf="@+id/label_category" />
+
+            <!-- Right-aligned details -->
+            <TextView
+                android:id="@+id/label_waitlist_limit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:text="@string/wait_list_limit"
+                android:textColor="@color/primary_navy"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/label_category" />
+
+            <TextView
+                android:id="@+id/value_waitlist_limit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/_37_100"
+                android:textColor="@color/neutral_brown_light"
+                app:layout_constraintEnd_toEndOf="@id/label_waitlist_limit"
+                app:layout_constraintTop_toBottomOf="@id/label_waitlist_limit" />
+
+            <TextView
+                android:id="@+id/label_attendee_limit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/attendee_limit"
+                android:textColor="@color/primary_navy"
+                app:layout_constraintEnd_toEndOf="@id/value_waitlist_limit"
+                app:layout_constraintTop_toBottomOf="@id/value_waitlist_limit" />
+
+            <TextView
+                android:id="@+id/value_attendee_limit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/_0_25"
+                android:textColor="@color/neutral_brown_light"
+                app:layout_constraintEnd_toEndOf="@id/label_attendee_limit"
+                app:layout_constraintTop_toBottomOf="@id/label_attendee_limit" />
+
+            <TextView
+                android:id="@+id/label_max_waiting_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/max_waiting_list_size"
+                android:textColor="@color/primary_navy"
+                app:layout_constraintEnd_toEndOf="@id/value_attendee_limit"
+                app:layout_constraintTop_toBottomOf="@id/value_attendee_limit" />
+
+            <TextView
+                android:id="@+id/value_max_waiting_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/n_a"
+                android:textColor="@color/neutral_brown_light"
+                app:layout_constraintEnd_toEndOf="@id/label_max_waiting_list"
+                app:layout_constraintTop_toBottomOf="@id/label_max_waiting_list" />
+
+            <!-- Join Button -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/button_join"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/button_round_style"
+                android:text="@string/button_join"
+                android:textAllCaps="false"
+                android:textColor="@color/neutral_lighter_off_white"
+                app:layout_constraintEnd_toEndOf="@id/value_max_waiting_list"
+                app:layout_constraintTop_toBottomOf="@id/value_max_waiting_list" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
