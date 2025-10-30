@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment;
 import com.example.skeddly.databinding.CreateFragmentBinding;
 
 
-public class CreateFragment extends Fragment {
+public class CreateAndEditFragment extends Fragment {
     private CreateFragmentBinding binding;
 
     @Nullable
