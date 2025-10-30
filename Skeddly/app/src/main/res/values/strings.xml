@@ -18,4 +18,7 @@
     <string name="closed">Closed</string>
     <string name="ended">Ended</string>
     <string name="event_history">Event History</string>
+    <string name="messages">Messages</string>
+    <string name="registration">Registration\n</string>
+    <string name="system">System\n</string>
 </resources>
