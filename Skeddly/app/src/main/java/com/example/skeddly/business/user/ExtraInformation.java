@@ -1,6 +1,8 @@
 package com.example.skeddly.business.user;
 
-public class ExtraInformation {
+import java.io.Serializable;
+
+public class ExtraInformation implements Serializable {
     private String name;
     private String email;
     private String phoneNumber;

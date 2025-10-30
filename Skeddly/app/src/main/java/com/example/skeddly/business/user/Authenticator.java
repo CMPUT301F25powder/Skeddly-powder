@@ -16,7 +16,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.Objects;
 import java.util.UUID;
 
 public class Authenticator {
@@ -25,35 +24,37 @@ public class Authenticator {
     private FirebaseAuth mAuth;
     private Context context;
     private DatabaseHandler databaseHandler;
-    public Authenticator(Context context, DatabaseHandler databaseHandler, UserLoaded callback) {
+    private boolean showSignUp;
+    UserLoaded callback;
+
+    public Authenticator(Context context, DatabaseHandler databaseHandler) {
         this.context = context;
         this.databaseHandler = databaseHandler;
         this.mAuth = FirebaseAuth.getInstance();
         this.androidId = Settings.Secure.getString(context.getContentResolver(),Settings.Secure.ANDROID_ID);
+        this.showSignUp = true;
 
         String emailUUID = String.valueOf(UUID.nameUUIDFromBytes(androidId.getBytes()));
         String emailGen = emailUUID + "@skeddly.com";
 
-        // Try to sign up user - associated with device ID
-        mAuth.createUserWithEmailAndPassword(emailGen, androidId).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        mAuth.signInWithEmailAndPassword(emailGen, androidId).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                // If sign up fails, usually because there is already a user made, then sign in
                 if (!task.isSuccessful()) {
-                    mAuth.signInWithEmailAndPassword(emailGen, androidId).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    showSignUp = true;
+                    // Try to sign up user - associated with device ID
+                    mAuth.createUserWithEmailAndPassword(emailGen, androidId).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (!task.isSuccessful()) {
-                                try {
-                                    throw Objects.requireNonNull(task.getException());
-                                } catch (Exception e) {
-                                    throw new RuntimeException(e);
-                                }
-                            } else {
-                                createAndTieUser(callback);
+                            // If sign up fails, usually because there is already a user made, then sign in
+                            if (task.isSuccessful()) {
+                                createAndTieUser();
                             }
                         }
                     });
+                } else {
+                    showSignUp = false;
+                    createAndTieUser();
                 }
             }
         });
@@ -61,9 +62,8 @@ public class Authenticator {
 
     /**
      * Creates a user object based on what is in the DB and waits for it to load
-     * @param callback
      */
-    private void createAndTieUser(UserLoaded callback) {
+    private void createAndTieUser() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         this.databaseHandler.getUsersPath().child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -83,7 +83,7 @@ public class Authenticator {
 
                 user.setId(currentUser.getUid());
 
-                callback.onUserLoaded(user);
+                callback.onUserLoaded(user, isShowSignUp());
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -92,11 +92,28 @@ public class Authenticator {
         });
     }
 
+    public void addListenerForUserLoaded(UserLoaded callback) {
+        this.callback = callback;
+    }
+
+    public void deleteUser() {
+        databaseHandler.getUsersPath().child(user.getId()).removeValue();
+        mAuth.getCurrentUser().delete();
+    }
+
     /**
      * Gets the initialized user
      * @return User
      */
     public User getUser() {
         return this.user;
+    }
+
+    public boolean isShowSignUp() {
+        return showSignUp;
+    }
+
+    public void commitUserChanges() {
+        databaseHandler.getUsersPath().child(user.getId()).setValue(user);
     }
 }

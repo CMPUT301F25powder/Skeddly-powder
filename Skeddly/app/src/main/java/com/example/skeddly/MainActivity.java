@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.NavGraph;
 import androidx.navigation.fragment.NavHostFragment;
@@ -27,7 +28,7 @@ import com.example.skeddly.business.user.UserLoaded;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends CustomActivity {
     private User user;
     private ActivityMainBinding binding;
 
@@ -51,32 +52,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         DatabaseHandler database = new DatabaseHandler(this);
-        Authenticator authenticator = new Authenticator(this, database, new UserLoaded() {
-            @Override
-            public void onUserLoaded(User loadedUser) {
-                user = loadedUser;
 
-                // Listen for any changes to events
-                database.iterableListen(database.getEventsPath(), Event.class, new IterableListenUpdate<Event>() {
-                    @Override
-                    public void onUpdate(ArrayList<Event> newValues) {
-                        user.setOwnedEvents(newValues);
-                    }
-                });
+        user = (User) Objects.requireNonNull(getIntent().getExtras()).getSerializable("USER");
 
-                // Listen for any changes to the user itself
-                database.singleListen(database.getUsersPath().child(user.getId()), User.class, new SingleListenUpdate<User>() {
-                    @Override
-                    public void onUpdate(User newValue) {
-                        setUser(newValue);
-                        setupNavBar();
-                    }
-                });
+        System.out.println(user.getExtraInformation().getName());
 
-                // Update navbar if user object changes (allows for realtime updates)
-                setupNavBar();
-            }
-        });
+        setupNavBar();
     }
 
     private void setupNavBar() {

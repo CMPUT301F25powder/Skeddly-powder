@@ -29,9 +29,9 @@ public class ProfileFragment extends Fragment {
         MainActivity activity = (MainActivity)getActivity();
         User user = activity.getUser();
 
-        TextView profileName = root.findViewById(R.id.profile_name);
-        TextView profileEmail = root.findViewById(R.id.profile_email);
-        TextView profilePhone = root.findViewById(R.id.profile_phone);
+        TextView profileName = binding.include.profileName;
+        TextView profileEmail = binding.include.profileEmail;
+        TextView profilePhone = binding.include.profilePhone;
 
         ExtraInformation userInformation = user.getExtraInformation();
 
