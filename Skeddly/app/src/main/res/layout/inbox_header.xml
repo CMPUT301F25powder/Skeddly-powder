@@ -2,22 +2,36 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="130dp"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/secondary_dark_purple">
+
+    <ImageButton
+        android:id="@+id/button_back"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/image_round_style"
+        android:src="@drawable/ic_arrow_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/neutral_lighter_off_white"
+        tools:ignore="ContentDescription"
+        tools:layout_editor_absoluteY="22dp" />
 
     <TextView
         android:id="@+id/inbox_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
         android:text="@string/nav_inbox"
         android:textColor="@color/neutral_lighter_off_white"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/button_layout"/>
+        app:layout_constraintTop_toTopOf="@+id/button_back"
+        app:layout_constraintBottom_toBottomOf="@+id/button_back"/>
 
     <LinearLayout
         android:id="@+id/button_layout"
@@ -37,43 +51,43 @@
             android:text="@string/all"
             android:textAllCaps="false"
             android:textColor="@color/neutral_lighter_off_white"
-            android:textSize="14sp" />
+            android:textSize="10sp" />
 
         <Button
-            android:id="@+id/button_ongoing"
+            android:id="@+id/button_messages"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="38dp"
             android:layout_marginStart="12dp"
             android:background="@drawable/button_unselect"
-            android:text="@string/ongoing"
+            android:text="@string/messages"
             android:textAllCaps="false"
             android:textColor="@color/primary_light_blue"
-            android:textSize="14sp" />
+            android:textSize="10sp" />
 
         <Button
-            android:id="@+id/button_closed"
+            android:id="@+id/button_registration"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="38dp"
             android:layout_marginStart="12dp"
             android:background="@drawable/button_unselect"
-            android:text="@string/closed"
+            android:text="@string/registration"
             android:textAllCaps="false"
             android:textColor="@color/primary_light_blue"
-            android:textSize="14sp" />
+            android:textSize="10sp" />
 
         <Button
-            android:id="@+id/button_ended"
+            android:id="@+id/button_system"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="38dp"
             android:layout_marginStart="12dp"
             android:background="@drawable/button_unselect"
-            android:text="@string/ended"
+            android:text="@string/system"
             android:textAllCaps="false"
             android:textColor="@color/primary_light_blue"
-            android:textSize="14sp" />
+            android:textSize="10sp" />
 
     </LinearLayout>
 
