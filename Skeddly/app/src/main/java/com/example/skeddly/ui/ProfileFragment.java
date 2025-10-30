@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.skeddly.MainActivity;
 import com.example.skeddly.R;
+import com.example.skeddly.business.user.ExtraInformation;
 import com.example.skeddly.business.user.User;
 import com.example.skeddly.databinding.ProfileFragmentBinding;
 
@@ -29,8 +30,14 @@ public class ProfileFragment extends Fragment {
         User user = activity.getUser();
 
         TextView profileName = root.findViewById(R.id.profile_name);
+        TextView profileEmail = root.findViewById(R.id.profile_email);
+        TextView profilePhone = root.findViewById(R.id.profile_phone);
 
-        profileName.setText(user.getExtraInformation().getName());
+        ExtraInformation userInformation = user.getExtraInformation();
+
+        profileName.setText(userInformation.getName());
+        profileEmail.setText(userInformation.getEmail());
+        profilePhone.setText(userInformation.getPhoneNumber());
 
         return root;
     }
