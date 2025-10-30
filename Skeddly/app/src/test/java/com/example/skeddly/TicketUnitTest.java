@@ -16,7 +16,7 @@ public class TicketUnitTest {
     public void testCreateTicketNoLocation() {
         // TODO: When User is finished, use the proper constructor
         User user = new User();
-        Ticket ticket = new Ticket(user);
+        Ticket ticket = new Ticket(user.getId());
 
         assertSame(ticket.getUser(), user);
         assertNull(ticket.getLocation());
@@ -28,7 +28,7 @@ public class TicketUnitTest {
         // TODO: When User is finished, use the proper constructor
         User user = new User();
         Location location = new Location("");
-        Ticket ticket = new Ticket(user, location);
+        Ticket ticket = new Ticket(user.getId(), location);
 
         assertSame(ticket.getUser(), user);
         assertSame(ticket.getLocation(), location);

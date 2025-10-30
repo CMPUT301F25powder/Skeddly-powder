@@ -1,5 +1,6 @@
 package com.example.skeddly.business;
 
+import com.example.skeddly.business.database.DatabaseObject;
 import com.example.skeddly.business.user.User;
 
 import java.util.ArrayList;
@@ -8,8 +9,8 @@ import java.util.Random;
 /**
  * Class for list of people who want to attend an event
  */
-public class WaitingList {
-    private final ArrayList<Ticket> ticketList = new ArrayList<Ticket>();
+public class WaitingList extends DatabaseObject {
+    private ArrayList<Ticket> ticketList = new ArrayList<Ticket>();
     private int maxWait;
     private Random randomGen;
 
@@ -84,5 +85,13 @@ public class WaitingList {
      */
     public void setLimit(int maxWait) {
         this.maxWait = maxWait;
+    }
+
+    public ArrayList<Ticket> getTicketList() {
+        return ticketList;
+    }
+
+    public void setTicketList(ArrayList<Ticket> ticketList) {
+        this.ticketList = ticketList;
     }
 }

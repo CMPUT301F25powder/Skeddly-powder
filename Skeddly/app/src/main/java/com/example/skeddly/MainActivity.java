@@ -26,6 +26,7 @@ import com.example.skeddly.business.user.User;
 import com.example.skeddly.business.user.UserLoaded;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
     private User user;
@@ -55,6 +56,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onUserLoaded(User loadedUser) {
                 user = loadedUser;
+
+                Event event = new Event();
+                event.setId(String.valueOf(UUID.randomUUID()));
+                event.setOrganizer(user.getId());
+
+                database.getEventsPath().child(event.getId()).setValue(event);
 
                 // Listen for any changes to events
                 database.iterableListen(database.getEventsPath(), Event.class, new IterableListenUpdate<Event>() {

@@ -14,9 +14,9 @@ public class Event extends DatabaseObject {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private Location location;
-    private User organizer;
-    private final WaitingList applicants;
-    private final ParticipantList attendees;
+    private String organizer;
+    private WaitingList applicants;
+    private ParticipantList attendees;
 
     public Event() {
         // Auto filled by Firebase DB
@@ -80,11 +80,11 @@ public class Event extends DatabaseObject {
         this.endTime = endTime;
     }
 
-    public User getOrganizer() {
+    public String getOrganizer() {
         return organizer;
     }
 
-    public void setOrganizer(User organizer) {
+    public void setOrganizer(String organizer) {
         this.organizer = organizer;
     }
 
@@ -94,5 +94,21 @@ public class Event extends DatabaseObject {
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    public WaitingList getApplicants() {
+        return applicants;
+    }
+
+    public void setApplications(WaitingList applicants) {
+        this.applicants = applicants;
+    }
+
+    public ParticipantList getAttendees() {
+        return attendees;
+    }
+
+    public void setAttendees(ParticipantList attendees) {
+        this.attendees = attendees;
     }
 }
