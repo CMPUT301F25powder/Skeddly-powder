@@ -39,4 +39,9 @@
     <string name="join">Join</string>
     <string name="edit">Edit</string>
     <string name="draw">Draw</string>
+    <string name="confirm">Confirm</string>
+    <string name="enter_event_description">Enter Event Description</string>
+    <string name="enter_event_title">Enter Event Title</string>
+    <string name="enter_geolocation_restriction">Enter geolocation restriction</string>
+    <string name="catagory">Catagory</string>
 </resources>
