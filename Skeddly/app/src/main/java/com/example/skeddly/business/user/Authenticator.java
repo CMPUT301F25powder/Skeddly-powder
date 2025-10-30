@@ -27,6 +27,15 @@ public class Authenticator {
     private boolean showSignUp;
     UserLoaded callback;
 
+    public Authenticator(Context context, DatabaseHandler databaseHandler, User user) {
+        this.context = context;
+        this.databaseHandler = databaseHandler;
+        this.mAuth = FirebaseAuth.getInstance();
+        this.androidId = Settings.Secure.getString(context.getContentResolver(),Settings.Secure.ANDROID_ID);
+        this.showSignUp = false;
+
+        createAndTieUser();
+    }
     public Authenticator(Context context, DatabaseHandler databaseHandler) {
         this.context = context;
         this.databaseHandler = databaseHandler;
@@ -83,7 +92,9 @@ public class Authenticator {
 
                 user.setId(currentUser.getUid());
 
-                callback.onUserLoaded(user, isShowSignUp());
+                if (callback != null) {
+                    callback.onUserLoaded(user, isShowSignUp());
+                }
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {

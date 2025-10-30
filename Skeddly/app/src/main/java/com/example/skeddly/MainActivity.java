@@ -30,6 +30,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends CustomActivity {
     private User user;
+    private Authenticator authenticator;
     private ActivityMainBinding binding;
 
     @Override
@@ -51,11 +52,10 @@ public class MainActivity extends CustomActivity {
             return insets;
         });
 
-        DatabaseHandler database = new DatabaseHandler(this);
-
         user = (User) Objects.requireNonNull(getIntent().getExtras()).getSerializable("USER");
 
-        System.out.println(user.getExtraInformation().getName());
+        DatabaseHandler database = new DatabaseHandler(this);
+        authenticator = new Authenticator(this, database, user);
 
         setupNavBar();
     }
@@ -99,5 +99,9 @@ public class MainActivity extends CustomActivity {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Authenticator getAuthenticator() {
+        return authenticator;
     }
 }

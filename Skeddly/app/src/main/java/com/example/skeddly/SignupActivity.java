@@ -49,7 +49,7 @@ public class SignupActivity extends CustomActivity {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.sign_up_page), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             // Dont need bottom padding since nav bar takes care of it
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
+            v.setPadding(33, systemBars.top, 33, systemBars.bottom);
             return insets;
         });
 
