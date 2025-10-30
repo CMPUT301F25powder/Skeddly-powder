@@ -261,7 +261,48 @@
                 app:layout_constraintEnd_toEndOf="@id/label_max_waiting_list"
                 app:layout_constraintTop_toBottomOf="@id/label_max_waiting_list" />
 
-            <!-- Join Button -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/button_draw"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="6dp"
+                android:background="@color/primary_purple"
+                android:text="@string/draw"
+                android:textAllCaps="false"
+                android:textColor="@color/neutral_lighter_off_white"
+                app:layout_constraintEnd_toStartOf="@+id/button_edit"
+                app:layout_constraintHorizontal_chainStyle="spread"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/value_max_waiting_list" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/button_edit"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="16dp"
+                android:background="@color/primary_purple"
+                android:text="@string/edit"
+                android:textAllCaps="false"
+                android:textColor="@color/neutral_lighter_off_white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/button_draw"
+                app:layout_constraintTop_toTopOf="@id/button_draw" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/button_participants"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="12dp"
+                android:background="@color/primary_purple"
+                android:text="@string/participants"
+                android:textAllCaps="false"
+                android:textColor="@color/neutral_lighter_off_white"
+                app:layout_constraintEnd_toEndOf="@id/button_draw"
+                app:layout_constraintStart_toStartOf="@id/button_draw"
+                app:layout_constraintTop_toBottomOf="@id/button_draw" />
+
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/button_join"
                 android:layout_width="0dp"
@@ -270,8 +311,9 @@
                 android:text="@string/join"
                 android:textAllCaps="false"
                 android:textColor="@color/neutral_lighter_off_white"
-                app:layout_constraintEnd_toEndOf="@id/value_max_waiting_list"
-                app:layout_constraintTop_toBottomOf="@id/value_max_waiting_list" />
+                app:layout_constraintEnd_toEndOf="@id/button_edit"
+                app:layout_constraintStart_toStartOf="@id/button_edit"
+                app:layout_constraintTop_toTopOf="@id/button_participants" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
