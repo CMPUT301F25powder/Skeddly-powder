@@ -48,7 +48,7 @@ public class MainActivity extends CustomActivity {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             // Dont need bottom padding since nav bar takes care of it
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
+//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
             return insets;
         });
 
