@@ -47,6 +47,8 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 authenticator.deleteUser();
+                MainActivity mainActivity = (MainActivity) requireActivity();
+                mainActivity.switchToSignup();
             }
         });
 

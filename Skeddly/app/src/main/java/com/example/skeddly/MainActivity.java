@@ -129,4 +129,11 @@ public class MainActivity extends CustomActivity {
     public Authenticator getAuthenticator() {
         return authenticator;
     }
+
+    public void switchToSignup() {
+        Intent signupActivity = new Intent(getBaseContext(), SignupActivity.class);
+        signupActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(signupActivity);
+        finish();
+    }
 }
