@@ -11,8 +11,8 @@ public class Event extends DatabaseObject {
     private String name;
     private String description;
     private String category;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private long startTime;
+    private long endTime;
     private Location location;
     private String organizer;
     private WaitingList applicants;
@@ -64,19 +64,19 @@ public class Event extends DatabaseObject {
         this.attendees.setMaxAttend(attendeeLimit);
     }
 
-    public LocalDateTime getStartTime() {
+    public long getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalDateTime startTime) {
+    public void setStartTime(long startTime) {
         this.startTime = startTime;
     }
 
-    public LocalDateTime getEndTime() {
+    public long getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(LocalDateTime endTime) {
+    public void setEndTime(long endTime) {
         this.endTime = endTime;
     }
 
