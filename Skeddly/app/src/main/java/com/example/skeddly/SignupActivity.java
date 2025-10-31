@@ -2,15 +2,15 @@ package com.example.skeddly;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatEditText;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -27,11 +27,14 @@ import com.example.skeddly.business.user.User;
 import com.example.skeddly.business.user.UserLoaded;
 import com.example.skeddly.databinding.ProfileFragmentBinding;
 
-import java.util.ArrayList;
+import java.util.Objects;
 
 public class SignupActivity extends CustomActivity {
     private ProfileFragmentBinding binding;
     private User user;
+    private EditText fullNameEditText;
+    private EditText emailEditText;
+    private Button submitButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,11 +56,12 @@ public class SignupActivity extends CustomActivity {
             return insets;
         });
 
-        EditText fullNameEditText = findViewById(R.id.full_name_sign_up_text);
-        EditText emailEditText = findViewById(R.id.email_sign_up_text);
+        fullNameEditText = findViewById(R.id.full_name_sign_up_text);
+        emailEditText = findViewById(R.id.email_sign_up_text);
         EditText phoneNumberEditText = findViewById(R.id.phone_number_sign_up_text);
 
-        Button submitButton = findViewById(R.id.create_account_button);
+        submitButton = findViewById(R.id.create_account_button);
+        toggleSubmitButton();
 
         DatabaseHandler database = new DatabaseHandler(this);
         Authenticator authenticator = new Authenticator(this, database);
@@ -90,6 +94,32 @@ public class SignupActivity extends CustomActivity {
             }
         });
 
+        fullNameEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {}
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                toggleSubmitButton();
+            }
+        });
+
+        emailEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {}
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                toggleSubmitButton();
+            }
+        });
+
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,13 +129,26 @@ public class SignupActivity extends CustomActivity {
                 newUserInformation.setEmail(String.valueOf(emailEditText.getText()));
                 newUserInformation.setPhoneNumber(String.valueOf(phoneNumberEditText.getText()));
 
-                user.setExtraInformation(newUserInformation);
+                user.setPersonalInformation(newUserInformation);
 
                 authenticator.commitUserChanges();
 
                 switchToMain();
             }
         });
+    }
+
+    private void toggleSubmitButton() {
+        boolean fullNameFilled = fullNameEditText.getText().length() > 0;
+        boolean emailFilled = emailEditText.getText().length() > 0;
+
+        submitButton.setEnabled(fullNameFilled && emailFilled);
+
+        if (fullNameFilled && emailFilled) {
+            submitButton.setAlpha(1f);
+        } else {
+            submitButton.setAlpha(.5f);
+        }
     }
 
     private void switchToMain() {

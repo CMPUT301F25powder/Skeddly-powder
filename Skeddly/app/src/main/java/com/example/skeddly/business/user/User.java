@@ -2,11 +2,9 @@ package com.example.skeddly.business.user;
 
 import android.annotation.SuppressLint;
 
-import com.example.skeddly.business.Event;
 import com.example.skeddly.business.database.DatabaseObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class User extends DatabaseObject {
     private NotificationSettings notificationSettings;
@@ -47,11 +45,11 @@ public class User extends DatabaseObject {
         this.privilegeLevel = privilegeLevel;
     }
 
-    public PersonalInformation getExtraInformation() {
+    public PersonalInformation getPersonalInformation() {
         return personalInformation;
     }
 
-    public void setExtraInformation(PersonalInformation personalInformation) {
+    public void setPersonalInformation(PersonalInformation personalInformation) {
         this.personalInformation = personalInformation;
     }
 }

@@ -92,6 +92,10 @@ public class Authenticator {
 
                 user.setId(currentUser.getUid());
 
+                if (!user.getPersonalInformation().isFullyFilled()) {
+                    showSignUp = true;
+                }
+
                 if (callback != null) {
                     callback.onUserLoaded(user, isShowSignUp());
                 }

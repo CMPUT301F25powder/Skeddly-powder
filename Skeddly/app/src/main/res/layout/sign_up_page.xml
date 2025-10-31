@@ -65,7 +65,7 @@
         android:layout_marginTop="15dp"
         android:background="@drawable/form_field_background"
         android:hint="Phone Number"
-        android:inputType="text"
+        android:inputType="phone"
         android:paddingHorizontal="16dp"
         android:paddingVertical="17dp"
         android:textColor="@color/neutral_brown_light"

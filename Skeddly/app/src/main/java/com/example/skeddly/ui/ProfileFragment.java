@@ -14,7 +14,7 @@ import androidx.fragment.app.Fragment;
 import com.example.skeddly.MainActivity;
 import com.example.skeddly.R;
 import com.example.skeddly.business.user.Authenticator;
-import com.example.skeddly.business.user.ExtraInformation;
+import com.example.skeddly.business.user.PersonalInformation;
 import com.example.skeddly.business.user.User;
 import com.example.skeddly.databinding.ProfileFragmentBinding;
 
@@ -38,7 +38,7 @@ public class ProfileFragment extends Fragment {
 
         ConstraintLayout deleteAccountButton = root.findViewById(R.id.delete_account_button);
 
-        ExtraInformation userInformation = user.getExtraInformation();
+        PersonalInformation userInformation = user.getPersonalInformation();
 
         profileName.setText(userInformation.getName());
         profileEmail.setText(userInformation.getEmail());
