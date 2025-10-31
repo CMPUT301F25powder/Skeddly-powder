@@ -36,7 +36,7 @@ public class DatabaseHandler {
         Method [] methods =  object.getClass().getDeclaredMethods();
 
         for (Method method : methods) {
-            if (method.getReturnType() == ArrayList.class) {
+            if (method.getReturnType() == DatabaseObjects.class) {
                 String formattedMethodName = this.serializeGetterName(method.getName());
                 try {
                     DatabaseObjects values = (DatabaseObjects) method.invoke(object);
