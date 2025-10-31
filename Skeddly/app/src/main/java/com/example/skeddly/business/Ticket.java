@@ -5,44 +5,62 @@ import android.location.Location;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.skeddly.business.database.DatabaseObject;
+import com.example.skeddly.business.location.CustomLocation;
 import com.example.skeddly.business.user.User;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 /**
  * Tracks a user's entry into an event via a Ticket. This gathers who
  * entered the event. when they did, and where they did all in one object.
  */
-public class Ticket {
+public class Ticket extends DatabaseObject {
     @NonNull
-    private final User user;
+    private String userId;
     @NonNull
-    private final LocalDateTime ticketTime;
+    private long ticketTime;
     @Nullable
-    private final Location location;
+    private CustomLocation location;
 
-    public Ticket(@NonNull User user, @Nullable Location location) {
-        this.user = user;
+    public Ticket(@NonNull String userId, @Nullable CustomLocation location) {
+        this.userId = userId;
         this.location = location;
-        this.ticketTime = LocalDateTime.now();
+
+        ZoneId zoneId = ZoneId.systemDefault();
+        this.ticketTime = LocalDateTime.now().atZone(zoneId).toEpochSecond();
     }
 
-    public Ticket(@NonNull User entrant) {
-        this(entrant, null);
-    }
-
-    @NonNull
-    public User getUser() {
-        return user;
+    public Ticket(@NonNull String entrantId) {
+        this(entrantId, null);
     }
 
     @NonNull
-    public LocalDateTime getTicketTime() {
+    public String getUser() {
+        return userId;
+    }
+
+    public void setUser(String userId) {
+        this.userId = userId;
+    }
+
+    @NonNull
+    public long getTicketTime() {
         return ticketTime;
     }
 
+    public void setTicketTime(@NonNull long ticketTime) {
+        this.ticketTime = ticketTime;
+    }
+
     @Nullable
-    public Location getLocation() {
+    public CustomLocation getLocation() {
         return location;
+    }
+
+    public void setLocation(@Nullable CustomLocation location) {
+        this.location = location;
     }
 }

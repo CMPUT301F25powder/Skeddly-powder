@@ -6,27 +6,28 @@ import com.example.skeddly.business.Event;
 import com.example.skeddly.business.database.DatabaseObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class User extends DatabaseObject {
     private NotificationSettings notificationSettings;
-    private ExtraInformation extraInformation;
-    private ArrayList<Event> ownedEvents;
-    private ArrayList<Event> joinedEvents;
+    private PersonalInformation personalInformation;
+    private ArrayList<String> ownedEvents;
+    private ArrayList<String> joinedEvents;
     private UserLevel privilegeLevel;
 
     @SuppressLint("HardwareIds")
     public User() {
         this.ownedEvents = new ArrayList<>();
-        this.extraInformation = new ExtraInformation();
+        this.personalInformation = new PersonalInformation();
         this.notificationSettings = new NotificationSettings();
         this.privilegeLevel = UserLevel.ENTRANT;
     }
 
-    public ArrayList<Event> getOwnedEvents() {
+    public ArrayList<String> getOwnedEvents() {
         return ownedEvents;
     }
 
-    public void setOwnedEvents(ArrayList<Event> ownedEvents) {
+    public void setOwnedEvents(ArrayList<String> ownedEvents) {
         this.ownedEvents = ownedEvents;
     }
 
@@ -46,11 +47,11 @@ public class User extends DatabaseObject {
         this.privilegeLevel = privilegeLevel;
     }
 
-    public ExtraInformation getExtraInformation() {
-        return extraInformation;
+    public PersonalInformation getExtraInformation() {
+        return personalInformation;
     }
 
-    public void setExtraInformation(ExtraInformation extraInformation) {
-        this.extraInformation = extraInformation;
+    public void setExtraInformation(PersonalInformation personalInformation) {
+        this.personalInformation = personalInformation;
     }
 }

@@ -3,16 +3,15 @@ package com.example.skeddly;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.NavGraph;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
+import com.example.skeddly.business.database.DatabaseObjects;
 import com.example.skeddly.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -25,8 +24,6 @@ import com.example.skeddly.business.database.IterableListenUpdate;
 import com.example.skeddly.business.database.SingleListenUpdate;
 import com.example.skeddly.business.user.User;
 import com.example.skeddly.business.user.UserLoaded;
-
-import java.util.ArrayList;
 
 public class MainActivity extends CustomActivity {
     private User user;
@@ -56,6 +53,32 @@ public class MainActivity extends CustomActivity {
 
         DatabaseHandler database = new DatabaseHandler(this);
         authenticator = new Authenticator(this, database, user);
+        authenticator.addListenerForUserLoaded(new UserLoaded() {
+            @Override
+            public void onUserLoaded(User loadedUser, boolean shouldShowSignupPage) {
+                user = loadedUser;
+
+                // Listen for any changes to events
+                database.iterableListen(database.getEventsPath(), Event.class, new IterableListenUpdate() {
+                    @Override
+                    public void onUpdate(DatabaseObjects newValues) {
+                        user.setOwnedEvents(newValues.getIds());
+                    }
+                });
+
+                // Listen for any changes to the user itself
+                database.singleListen(database.getUsersPath().child(user.getId()), User.class, new SingleListenUpdate<User>() {
+                    @Override
+                    public void onUpdate(User newValue) {
+                        user = newValue;
+                        setupNavBar();
+                    }
+                });
+
+                // Update navbar if user object changes (allows for realtime updates)
+                setupNavBar();
+            }
+        });
 
         setupNavBar();
     }

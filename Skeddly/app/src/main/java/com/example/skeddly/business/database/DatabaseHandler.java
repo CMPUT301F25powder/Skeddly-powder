@@ -1,6 +1,7 @@
 package com.example.skeddly.business.database;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -11,7 +12,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 /**
  * Handles edits and realtime updates to the realtime DB in Firebase
@@ -20,6 +25,37 @@ public class DatabaseHandler {
     private User user;
     private Context context;
     private DatabaseReference database;
+
+    private String serializeGetterName(String name) {
+        String replaced = name.replaceFirst("get", "");
+        String firstLetter = replaced.substring(0, 1).toLowerCase();
+
+        return firstLetter.concat(replaced.substring(1));
+    }
+    public void customSerializer(DatabaseReference ref, Object object) {
+        Method [] methods =  object.getClass().getDeclaredMethods();
+
+        for (Method method : methods) {
+            if (method.getReturnType() == DatabaseObjects.class) {
+                String formattedMethodName = this.serializeGetterName(method.getName());
+                try {
+                    DatabaseObjects values = (DatabaseObjects) method.invoke(object);
+
+                    for (int i = 0; i < values.size(); i++) {
+                        DatabaseObject value = values.get(i);
+                        String valueId = value.getId();
+
+                        ref.child(formattedMethodName).child(String.valueOf(i)).setValue(valueId);
+                    }
+
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                } catch (InvocationTargetException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
 
     public DatabaseHandler(Context context) {
         this.context = context;
@@ -48,7 +84,7 @@ public class DatabaseHandler {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                System.out.println(error);
+                Log.e("DATABASE:SINGLE_LISTEN", error.toString());
             }
         });
     }
@@ -64,7 +100,7 @@ public class DatabaseHandler {
      */
     public <T extends DatabaseObject> void iterableListen(DatabaseReference ref, Class<T> classType, IterableListenUpdate callback) {
         ref.addValueEventListener(new ValueEventListener() {
-            ArrayList<T> result = new ArrayList<>();
+            DatabaseObjects result = new DatabaseObjects();
 
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -85,7 +121,7 @@ public class DatabaseHandler {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                System.out.println(error);
+                Log.e("DATABASE:ITERABLE_LISTEN", error.toString());
             }
         });
     }
@@ -106,5 +142,14 @@ public class DatabaseHandler {
      */
     public DatabaseReference getEventsPath() {
         return database.child("events");
+    }
+
+    /**
+     * Returns a {@link DatabaseReference} pointing to tickets
+     * @return A {@link DatabaseReference} pointing to tickets
+     * @see DatabaseReference
+     */
+    public DatabaseReference getTicketsPath() {
+        return database.child("tickets");
     }
 }

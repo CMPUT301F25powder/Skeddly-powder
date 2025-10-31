@@ -2,12 +2,12 @@ package com.example.skeddly.business.user;
 
 import java.io.Serializable;
 
-public class ExtraInformation implements Serializable {
+public class PersonalInformation implements Serializable {
     private String name;
     private String email;
     private String phoneNumber;
 
-    public ExtraInformation() {
+    public PersonalInformation() {
         this.name = "";
         this.email = "";
         this.phoneNumber = "";
