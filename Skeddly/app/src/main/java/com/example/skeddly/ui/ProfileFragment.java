@@ -12,7 +12,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.example.skeddly.MainActivity;
-import com.example.skeddly.R;
 import com.example.skeddly.business.user.Authenticator;
 import com.example.skeddly.business.user.PersonalInformation;
 import com.example.skeddly.business.user.User;
@@ -28,7 +27,7 @@ public class ProfileFragment extends Fragment {
         binding = ProfileFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        MainActivity activity = (MainActivity)getActivity();
+        MainActivity activity = (MainActivity) requireActivity();
         Authenticator authenticator = activity.getAuthenticator();
         User user = activity.getUser();
 
@@ -36,7 +35,7 @@ public class ProfileFragment extends Fragment {
         TextView profileEmail = binding.include.profileEmail;
         TextView profilePhone = binding.include.profilePhone;
 
-        ConstraintLayout deleteAccountButton = root.findViewById(R.id.delete_account_button);
+        ConstraintLayout deleteAccountButton = binding.deleteAccountButton;
 
         PersonalInformation userInformation = user.getPersonalInformation();
 

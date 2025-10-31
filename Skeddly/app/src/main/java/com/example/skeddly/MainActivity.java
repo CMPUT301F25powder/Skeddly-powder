@@ -1,5 +1,6 @@
 package com.example.skeddly;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -42,10 +43,10 @@ public class MainActivity extends CustomActivity {
         setContentView(binding.getRoot());
 
         // Don't go off the screen
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             // Dont need bottom padding since nav bar takes care of it
-//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
             return insets;
         });
 
@@ -116,6 +117,7 @@ public class MainActivity extends CustomActivity {
         navController.setGraph(navGraph);
         NavigationUI.setupWithNavController(binding.navView, navController);
     }
+
     public User getUser() {
         return user;
     }

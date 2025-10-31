@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,12 +24,11 @@ import com.example.skeddly.business.user.Authenticator;
 import com.example.skeddly.business.user.PersonalInformation;
 import com.example.skeddly.business.user.User;
 import com.example.skeddly.business.user.UserLoaded;
-import com.example.skeddly.databinding.ProfileFragmentBinding;
+import com.example.skeddly.databinding.SignUpPageBinding;
 
-import java.util.Objects;
 
 public class SignupActivity extends CustomActivity {
-    private ProfileFragmentBinding binding;
+    private SignUpPageBinding binding;
     private User user;
     private EditText fullNameEditText;
     private EditText emailEditText;
@@ -43,24 +41,25 @@ public class SignupActivity extends CustomActivity {
         EdgeToEdge.enable(this);
 
         // Inflate the layout
-        setContentView(R.layout.sign_up_page);
+        binding = SignUpPageBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        ConstraintLayout mainLayout = findViewById(R.id.sign_up_page);
+        ConstraintLayout mainLayout = binding.signUpPage;
         mainLayout.setVisibility(View.GONE);
 
         // Don't go off the screen
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.sign_up_page), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(mainLayout, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             // Dont need bottom padding since nav bar takes care of it
             v.setPadding(33, systemBars.top, 33, systemBars.bottom);
             return insets;
         });
 
-        fullNameEditText = findViewById(R.id.full_name_sign_up_text);
-        emailEditText = findViewById(R.id.email_sign_up_text);
-        EditText phoneNumberEditText = findViewById(R.id.phone_number_sign_up_text);
+        fullNameEditText = binding.fullNameSignUpText;
+        emailEditText = binding.emailSignUpText;
+        EditText phoneNumberEditText = binding.phoneNumberSignUpText;
 
-        submitButton = findViewById(R.id.create_account_button);
+        submitButton = binding.createAccountButton;
         toggleSubmitButton();
 
         DatabaseHandler database = new DatabaseHandler(this);
@@ -94,7 +93,7 @@ public class SignupActivity extends CustomActivity {
             }
         });
 
-        fullNameEditText.addTextChangedListener(new TextWatcher() {
+        TextWatcher textWatcher = new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {}
 
@@ -105,20 +104,10 @@ public class SignupActivity extends CustomActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 toggleSubmitButton();
             }
-        });
+        };
 
-        emailEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void afterTextChanged(Editable s) {}
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                toggleSubmitButton();
-            }
-        });
+        fullNameEditText.addTextChangedListener(textWatcher);
+        emailEditText.addTextChangedListener(textWatcher);
 
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
