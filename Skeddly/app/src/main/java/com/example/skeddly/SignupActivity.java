@@ -71,9 +71,9 @@ public class SignupActivity extends CustomActivity {
 
                 if (!shouldShowSignup) {
                     switchToMain();
+                } else {
+                    mainLayout.setVisibility(View.VISIBLE);
                 }
-
-                mainLayout.setVisibility(View.VISIBLE);
 
                 // Listen for any changes to events
                 database.iterableListen(database.getEventsPath(), Event.class, new IterableListenUpdate() {
@@ -145,5 +145,6 @@ public class SignupActivity extends CustomActivity {
         mainActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         mainActivity.putExtra("USER", user);
         startActivity(mainActivity);
+        finish();
     }
 }
