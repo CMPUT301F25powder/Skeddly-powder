@@ -1,8 +1,12 @@
 package com.example.skeddly;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -45,10 +49,20 @@ public class MainActivity extends AppCompatActivity {
         // Don't go off the screen
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            // Dont need bottom padding since nav bar takes care of it
+            // Don't need bottom padding since nav bar takes care of it
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
             return insets;
         });
+
+        // See if we were opened by a QR code or special link
+        Uri data = getLaunchLink();
+
+        if (data != null) {
+            // App was opened through a special link
+            Log.v("URI", data.toString());
+
+            // TODO: Parse it and navigate to the corresponding event
+        }
 
         DatabaseHandler database = new DatabaseHandler(this);
         Authenticator authenticator = new Authenticator(this, database, new UserLoaded() {
@@ -111,5 +125,12 @@ public class MainActivity extends AppCompatActivity {
         }
         navController.setGraph(navGraph);
         NavigationUI.setupWithNavController(binding.navView, navController);
+    }
+
+    @Nullable
+    private Uri getLaunchLink() {
+        Intent intent = getIntent();
+
+        return intent.getData();
     }
 }
