@@ -1,0 +1,82 @@
+name: test
+# https://github.com/marketplace/actions/android-emulator-runner
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  testUnit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Java, Gradle, and Google Services
+        uses: ./.github/actions/setup
+        with:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+
+      - name: Run Unit Tests
+        working-directory: ./Skeddly
+        run: ./gradlew test
+
+
+  testInstrumentation:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        api-level: [36]
+    steps:
+      - name: checkout
+        uses: actions/checkout@v5
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Cache Gradle
+        uses: gradle/actions/setup-gradle@v5
+
+      - name: AVD cache
+        uses: actions/cache@v4
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-${{ matrix.api-level }}
+
+      - name: create AVD and generate snapshot for caching
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api-level }}
+          force-avd-creation: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: false
+          target: google_apis_playstore
+          arch: x86_64
+          profile: medium_phone
+          script: echo "Generated AVD snapshot for caching."
+
+      - name: Create Google Services JSON File
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: echo $GOOGLE_SERVICES_JSON | base64 -di > ./Skeddly/app/google-services.json
+
+      - name: run tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api-level }}
+          force-avd-creation: false
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          target: google_apis_playstore
+          arch: x86_64
+          profile: medium_phone
+          script: cd Skeddly && ./gradlew connectedAndroidTest
