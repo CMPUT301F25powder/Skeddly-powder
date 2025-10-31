@@ -57,7 +57,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="38dp"
                 android:background="@drawable/button_select"
-                android:text="@string/all"
+                android:text="@string/button_all"
                 android:textAllCaps="false"
                 android:textColor="@color/neutral_lighter_off_white"
                 android:textSize="14sp" />
@@ -69,7 +69,7 @@
                 android:layout_height="38dp"
                 android:layout_marginStart="12dp"
                 android:background="@drawable/button_unselect"
-                android:text="@string/ongoing"
+                android:text="@string/button_ongoing"
                 android:textAllCaps="false"
                 android:textColor="@color/primary_light_blue"
                 android:textSize="14sp" />
@@ -81,7 +81,7 @@
                 android:layout_height="38dp"
                 android:layout_marginStart="12dp"
                 android:background="@drawable/button_unselect"
-                android:text="@string/closed"
+                android:text="@string/button_closed"
                 android:textAllCaps="false"
                 android:textColor="@color/primary_light_blue"
                 android:textSize="14sp" />
@@ -93,7 +93,7 @@
                 android:layout_height="38dp"
                 android:layout_marginStart="12dp"
                 android:background="@drawable/button_unselect"
-                android:text="@string/ended"
+                android:text="@string/button_ended"
                 android:textAllCaps="false"
                 android:textColor="@color/primary_light_blue"
                 android:textSize="14sp" />

@@ -9,16 +9,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.skeddly.databinding.EventViewinfoFragmentBinding;
+import com.example.skeddly.databinding.FragmentEventInfoEntrantBinding;
 
 
 public class EventViewInfoFragment extends Fragment {
-    private EventViewinfoFragmentBinding binding;
+    private FragmentEventInfoEntrantBinding binding;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = EventViewinfoFragmentBinding.inflate(inflater, container, false);
+        binding = FragmentEventInfoEntrantBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         return root;

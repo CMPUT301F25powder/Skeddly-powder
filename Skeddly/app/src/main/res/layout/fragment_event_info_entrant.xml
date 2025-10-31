@@ -98,7 +98,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:text="@string/monday_wednesday_9_30_10_00"
+                android:text="@string/event_date_time"
                 android:textColor="@color/primary_navy"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -110,7 +110,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/information"
+                android:text="@string/event_info_header"
                 android:textColor="@color/primary_navy"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -122,18 +122,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="@string/event_title"
+                android:text="@string/event_title_header"
                 android:textColor="@color/primary_navy"
                 app:layout_constraintStart_toStartOf="@id/label_information"
                 app:layout_constraintTop_toBottomOf="@id/label_information" />
 
-            <EditText
+            <TextView
                 android:id="@+id/value_event_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:hint="@string/enter_event_title"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="16dp"
+                android:text="@string/community_meetup"
                 android:textColor="@color/neutral_brown_light"
                 app:layout_constraintBaseline_toBaselineOf="@+id/label_event_title"
                 app:layout_constraintStart_toEndOf="@+id/label_event_title"
@@ -149,13 +149,13 @@
                 app:layout_constraintStart_toStartOf="@id/label_event_title"
                 app:layout_constraintTop_toBottomOf="@id/label_event_title" />
 
-            <EditText
+            <TextView
                 android:id="@+id/value_description"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="16dp"
-                android:hint="@string/enter_event_description"
+                android:text="@string/event_description"
                 android:textColor="@color/neutral_brown_light"
                 app:layout_constraintBaseline_toBaselineOf="@+id/label_description"
                 app:layout_constraintStart_toEndOf="@+id/label_description"
@@ -166,18 +166,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="@string/description"
+                android:text="@string/event_location_req_header"
                 android:textColor="@color/primary_navy"
                 app:layout_constraintStart_toStartOf="@id/label_description"
                 app:layout_constraintTop_toBottomOf="@id/value_description" />
 
-            <EditText
+            <TextView
                 android:id="@+id/value_geolocation"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="16dp"
-                android:hint="@string/enter_geolocation_restriction"
+                android:text="@string/event_location_req"
                 android:textColor="@color/neutral_brown_light"
                 app:layout_constraintBaseline_toBaselineOf="@+id/label_geolocation"
                 app:layout_constraintStart_toEndOf="@+id/label_geolocation"
@@ -188,17 +188,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="@string/category"
+                android:text="@string/event_category_header"
                 android:textColor="@color/primary_navy"
                 app:layout_constraintStart_toStartOf="@id/label_geolocation"
                 app:layout_constraintTop_toBottomOf="@id/value_geolocation" />
 
-            <EditText
+            <TextView
                 android:id="@+id/value_category"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:hint="@string/category"
+                android:text="@string/event_category"
                 android:textColor="@color/neutral_brown_light"
                 app:layout_constraintBaseline_toBaselineOf="@+id/label_category"
                 app:layout_constraintStart_toEndOf="@+id/label_category" />
@@ -209,7 +209,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
-                android:text="@string/wait_list_limit"
+                android:text="@string/event_waitlist_limit_header"
                 android:textColor="@color/primary_navy"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/label_category" />
@@ -218,7 +218,7 @@
                 android:id="@+id/value_waitlist_limit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/_37_100"
+                android:text="@string/event_waitlist_limit"
                 android:textColor="@color/neutral_brown_light"
                 app:layout_constraintEnd_toEndOf="@id/label_waitlist_limit"
                 app:layout_constraintTop_toBottomOf="@id/label_waitlist_limit" />
@@ -228,7 +228,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="@string/attendee_limit"
+                android:text="@string/event_attendee_limit_header"
                 android:textColor="@color/primary_navy"
                 app:layout_constraintEnd_toEndOf="@id/value_waitlist_limit"
                 app:layout_constraintTop_toBottomOf="@id/value_waitlist_limit" />
@@ -237,7 +237,7 @@
                 android:id="@+id/value_attendee_limit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/_0_25"
+                android:text="@string/event_attendee_limit"
                 android:textColor="@color/neutral_brown_light"
                 app:layout_constraintEnd_toEndOf="@id/label_attendee_limit"
                 app:layout_constraintTop_toBottomOf="@id/label_attendee_limit" />
@@ -247,7 +247,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="@string/max_waiting_list_size"
+                android:text="@string/event_max_waitlist_size_header"
                 android:textColor="@color/primary_navy"
                 app:layout_constraintEnd_toEndOf="@id/value_attendee_limit"
                 app:layout_constraintTop_toBottomOf="@id/value_attendee_limit" />
@@ -256,18 +256,18 @@
                 android:id="@+id/value_max_waiting_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/n_a"
+                android:text="@string/event_max_waitlist_size"
                 android:textColor="@color/neutral_brown_light"
                 app:layout_constraintEnd_toEndOf="@id/label_max_waiting_list"
                 app:layout_constraintTop_toBottomOf="@id/label_max_waiting_list" />
 
-            <!-- Confirm Button -->
+            <!-- Join Button -->
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/confirm_button"
+                android:id="@+id/button_join"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:background="@color/primary_purple"
-                android:text="@string/confirm"
+                android:text="@string/button_join"
                 android:textAllCaps="false"
                 android:textColor="@color/neutral_lighter_off_white"
                 app:layout_constraintEnd_toEndOf="@id/value_max_waiting_list"

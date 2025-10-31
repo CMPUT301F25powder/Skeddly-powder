@@ -9,16 +9,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.skeddly.databinding.CreateFragmentBinding;
+import com.example.skeddly.databinding.FragmentCreateEditBinding;
 
 
 public class CreateFragment extends Fragment {
-    private CreateFragmentBinding binding;
+    private FragmentCreateEditBinding binding;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = CreateFragmentBinding.inflate(inflater, container, false);
+        binding = FragmentCreateEditBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         return root;
