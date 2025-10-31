@@ -18,13 +18,13 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.skeddly.business.Event;
 import com.example.skeddly.business.database.DatabaseHandler;
+import com.example.skeddly.business.database.DatabaseObjects;
 import com.example.skeddly.business.database.IterableListenUpdate;
 import com.example.skeddly.business.database.SingleListenUpdate;
 import com.example.skeddly.business.user.Authenticator;
-import com.example.skeddly.business.user.ExtraInformation;
+import com.example.skeddly.business.user.PersonalInformation;
 import com.example.skeddly.business.user.User;
 import com.example.skeddly.business.user.UserLoaded;
-import com.example.skeddly.databinding.ActivityMainBinding;
 import com.example.skeddly.databinding.ProfileFragmentBinding;
 
 import java.util.ArrayList;
@@ -73,10 +73,10 @@ public class SignupActivity extends CustomActivity {
                 mainLayout.setVisibility(View.VISIBLE);
 
                 // Listen for any changes to events
-                database.iterableListen(database.getEventsPath(), Event.class, new IterableListenUpdate<Event>() {
+                database.iterableListen(database.getEventsPath(), Event.class, new IterableListenUpdate() {
                     @Override
-                    public void onUpdate(ArrayList<Event> newValues) {
-                        user.setOwnedEvents(newValues);
+                    public void onUpdate(DatabaseObjects newValues) {
+                        user.setOwnedEvents(newValues.getIds());
                     }
                 });
 
@@ -93,7 +93,7 @@ public class SignupActivity extends CustomActivity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ExtraInformation newUserInformation = new ExtraInformation();
+                PersonalInformation newUserInformation = new PersonalInformation();
 
                 newUserInformation.setName(String.valueOf(fullNameEditText.getText()));
                 newUserInformation.setEmail(String.valueOf(emailEditText.getText()));
