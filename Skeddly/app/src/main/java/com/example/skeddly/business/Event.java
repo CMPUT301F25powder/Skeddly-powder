@@ -3,6 +3,7 @@ package com.example.skeddly.business;
 import android.location.Location;
 
 import com.example.skeddly.business.database.DatabaseObject;
+import com.example.skeddly.business.location.CustomLocation;
 import com.example.skeddly.business.user.User;
 
 import java.time.LocalDateTime;
@@ -13,7 +14,7 @@ public class Event extends DatabaseObject {
     private String category;
     private long startTime;
     private long endTime;
-    private Location location;
+    private CustomLocation location;
     private String organizer;
     private WaitingList applicants;
     private ParticipantList attendees;
@@ -88,11 +89,11 @@ public class Event extends DatabaseObject {
         this.organizer = organizer;
     }
 
-    public Location getLocation() {
+    public CustomLocation getLocation() {
         return location;
     }
 
-    public void setLocation(Location location) {
+    public void setLocation(CustomLocation location) {
         this.location = location;
     }
 

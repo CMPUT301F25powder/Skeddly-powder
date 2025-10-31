@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.skeddly.business.database.DatabaseObject;
+import com.example.skeddly.business.location.CustomLocation;
 import com.example.skeddly.business.user.User;
 
 import java.time.LocalDate;
@@ -22,9 +23,9 @@ public class Ticket extends DatabaseObject {
     @NonNull
     private long ticketTime;
     @Nullable
-    private Location location;
+    private CustomLocation location;
 
-    public Ticket(@NonNull String userId, @Nullable Location location) {
+    public Ticket(@NonNull String userId, @Nullable CustomLocation location) {
         this.userId = userId;
         this.location = location;
 
@@ -55,11 +56,11 @@ public class Ticket extends DatabaseObject {
     }
 
     @Nullable
-    public Location getLocation() {
+    public CustomLocation getLocation() {
         return location;
     }
 
-    public void setLocation(@Nullable Location location) {
+    public void setLocation(@Nullable CustomLocation location) {
         this.location = location;
     }
 }

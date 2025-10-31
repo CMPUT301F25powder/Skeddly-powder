@@ -9,6 +9,7 @@ import static org.junit.Assert.assertSame;
 import android.location.Location;
 
 import com.example.skeddly.business.Ticket;
+import com.example.skeddly.business.location.CustomLocation;
 import com.example.skeddly.business.user.User;
 
 public class TicketUnitTest {
@@ -27,7 +28,7 @@ public class TicketUnitTest {
     public void testCreateTicketLocation() {
         // TODO: When User is finished, use the proper constructor
         User user = new User();
-        Location location = new Location("");
+        CustomLocation location = new CustomLocation(0, 0);
         Ticket ticket = new Ticket(user.getId(), location);
 
         assertSame(ticket.getUser(), user);
