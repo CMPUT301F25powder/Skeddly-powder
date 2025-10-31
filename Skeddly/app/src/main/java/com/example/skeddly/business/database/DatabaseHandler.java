@@ -143,4 +143,13 @@ public class DatabaseHandler {
     public DatabaseReference getEventsPath() {
         return database.child("events");
     }
+
+    /**
+     * Returns a {@link DatabaseReference} pointing to tickets
+     * @return A {@link DatabaseReference} pointing to tickets
+     * @see DatabaseReference
+     */
+    public DatabaseReference getTicketsPath() {
+        return database.child("tickets");
+    }
 }
