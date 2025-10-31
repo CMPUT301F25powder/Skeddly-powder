@@ -9,16 +9,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.skeddly.databinding.ToolsFragmentBinding;
+import com.example.skeddly.databinding.FragmentToolsBinding;
 
 
 public class ToolsFragment extends Fragment {
-    private ToolsFragmentBinding binding;
+    private FragmentToolsBinding binding;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = ToolsFragmentBinding.inflate(inflater, container, false);
+        binding = FragmentToolsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         return root;
