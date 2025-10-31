@@ -10,7 +10,7 @@ import java.util.Random;
  * Class for list of people who want to attend an event
  */
 public class WaitingList extends DatabaseObject {
-    private ArrayList<DatabaseObjects> ticketList = new ArrayList<DatabaseObjects>();
+    private ArrayList<String> ticketIds = new ArrayList<>();
     private int maxWait;
     private Random randomGen;
 
@@ -33,12 +33,12 @@ public class WaitingList extends DatabaseObject {
 
     /**
      * Add a ticket to the waiting list
-     * @param t Ticket to add
+     * @param ticketId Ticket to add
      * @throws IllegalArgumentException If the list is already full
      */
-    public void addTicket(DatabaseObjects t) {
-        if (ticketList.size() < maxWait) {
-            ticketList.add(t);
+    public void addTicket(String ticketId) {
+        if (ticketIds.size() < maxWait) {
+            ticketIds.add(ticketId);
         } else {
             throw new IllegalArgumentException();
         }
@@ -56,16 +56,16 @@ public class WaitingList extends DatabaseObject {
      * Remove a ticket from the waiting list
      * @param t Ticket to remove
      */
-    public void remove(DatabaseObjects t) {
-        ticketList.remove(t);
+    public void remove(String ticketId) {
+        ticketIds.remove(ticketId);
     }
 
     /**
      * Randomly select and remove a ticket from the waiting list
      * @return The selected ticket
      */
-    public DatabaseObjects draw() {
-        DatabaseObjects t = ticketList.get(randomGen.nextInt(ticketList.size()));
+    public String draw() {
+        String t = ticketIds.get(randomGen.nextInt(ticketIds.size()));
         this.remove(t);
 
         return t;
@@ -87,11 +87,11 @@ public class WaitingList extends DatabaseObject {
         this.maxWait = maxWait;
     }
 
-    public ArrayList<DatabaseObjects> getTicketList() {
-        return ticketList;
+    public ArrayList<String> getTicketList() {
+        return ticketIds;
     }
 
-    public void setTicketList(ArrayList<DatabaseObjects> ticketList) {
-        this.ticketList = ticketList;
+    public void setTicketList(ArrayList<String> ticketList) {
+        this.ticketIds = ticketIds;
     }
 }

@@ -3,13 +3,14 @@ package com.example.skeddly.business;
 import com.example.skeddly.business.database.DatabaseObject;
 import com.example.skeddly.business.database.DatabaseObjects;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
  * Class for list of participants in an event.
  */
 public class ParticipantList extends DatabaseObject {
-    private ArrayList<DatabaseObjects> userIdList = new ArrayList<DatabaseObjects>();
+    private ArrayList<String> userIdList = new ArrayList<>();
     private int maxAttend;
 
     /**
@@ -32,7 +33,7 @@ public class ParticipantList extends DatabaseObject {
      * @param userId User to add to the list
      * @throws IllegalArgumentException If the list is already full
      */
-    public void addUser(DatabaseObjects userId) {
+    public void addUser(String userId) {
         if (userIdList.size() < maxAttend) {
             userIdList.add(userId);
         } else {
@@ -68,11 +69,11 @@ public class ParticipantList extends DatabaseObject {
      * Return the {@link ArrayList} of users
      * @return The user list
      */
-    public ArrayList<DatabaseObjects> getUserList() {
+    public ArrayList<String> getUserList() {
         return userIdList;
     }
 
-    public void setUserList(ArrayList<DatabaseObjects> userIdList) {
+    public void setUserList(ArrayList<String> userIdList) {
         this.userIdList = userIdList;
     }
 

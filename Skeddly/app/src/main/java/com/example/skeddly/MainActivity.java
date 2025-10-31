@@ -58,12 +58,6 @@ public class MainActivity extends AppCompatActivity {
             public void onUserLoaded(User loadedUser) {
                 user = loadedUser;
 
-                Event event = new Event();
-                event.setId(String.valueOf(UUID.randomUUID()));
-                event.setOrganizer(user.getId());
-
-                database.getEventsPath().child(event.getId()).setValue(event);
-
                 // Listen for any changes to events
                 database.iterableListen(database.getEventsPath(), Event.class, new IterableListenUpdate<Event>() {
                     @Override
