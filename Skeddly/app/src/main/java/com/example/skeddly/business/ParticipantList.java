@@ -1,7 +1,7 @@
 package com.example.skeddly.business;
 
 import com.example.skeddly.business.database.DatabaseObject;
-import com.example.skeddly.business.user.User;
+import com.example.skeddly.business.database.DatabaseObjects;
 
 import java.util.ArrayList;
 
@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * Class for list of participants in an event.
  */
 public class ParticipantList extends DatabaseObject {
-    private ArrayList<String> userIdList = new ArrayList<String>();
+    private ArrayList<DatabaseObjects> userIdList = new ArrayList<DatabaseObjects>();
     private int maxAttend;
 
     /**
@@ -29,10 +29,10 @@ public class ParticipantList extends DatabaseObject {
 
     /**
      * Add a user to the participant list
-     * @param u User to add to the list
+     * @param userId User to add to the list
      * @throws IllegalArgumentException If the list is already full
      */
-    public void addUser(String userId) {
+    public void addUser(DatabaseObjects userId) {
         if (userIdList.size() < maxAttend) {
             userIdList.add(userId);
         } else {
@@ -42,7 +42,7 @@ public class ParticipantList extends DatabaseObject {
 
     /**
      * Remove a user from the list
-     * @param u User to remove from the list
+     * @param userId User to remove from the list
      */
     public void remove(String userId) {
         userIdList.remove(userId);
@@ -68,11 +68,11 @@ public class ParticipantList extends DatabaseObject {
      * Return the {@link ArrayList} of users
      * @return The user list
      */
-    public ArrayList<String> getUserList() {
+    public ArrayList<DatabaseObjects> getUserList() {
         return userIdList;
     }
 
-    public void setUserList(ArrayList<String> userIdList) {
+    public void setUserList(ArrayList<DatabaseObjects> userIdList) {
         this.userIdList = userIdList;
     }
 

@@ -12,6 +12,7 @@ import androidx.navigation.NavGraph;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
+import com.example.skeddly.business.database.DatabaseObjects;
 import com.example.skeddly.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -66,8 +67,8 @@ public class MainActivity extends AppCompatActivity {
                 // Listen for any changes to events
                 database.iterableListen(database.getEventsPath(), Event.class, new IterableListenUpdate<Event>() {
                     @Override
-                    public void onUpdate(ArrayList<Event> newValues) {
-                        user.setOwnedEvents(newValues);
+                    public void onUpdate(DatabaseObjects newValues) {
+                        user.setOwnedEvents(newValues.getIds());
                     }
                 });
 

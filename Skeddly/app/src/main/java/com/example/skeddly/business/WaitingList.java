@@ -1,7 +1,7 @@
 package com.example.skeddly.business;
 
 import com.example.skeddly.business.database.DatabaseObject;
-import com.example.skeddly.business.user.User;
+import com.example.skeddly.business.database.DatabaseObjects;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -10,7 +10,7 @@ import java.util.Random;
  * Class for list of people who want to attend an event
  */
 public class WaitingList extends DatabaseObject {
-    private ArrayList<Ticket> ticketList = new ArrayList<Ticket>();
+    private ArrayList<DatabaseObjects> ticketList = new ArrayList<DatabaseObjects>();
     private int maxWait;
     private Random randomGen;
 
@@ -36,7 +36,7 @@ public class WaitingList extends DatabaseObject {
      * @param t Ticket to add
      * @throws IllegalArgumentException If the list is already full
      */
-    public void addTicket(Ticket t) {
+    public void addTicket(DatabaseObjects t) {
         if (ticketList.size() < maxWait) {
             ticketList.add(t);
         } else {
@@ -48,15 +48,15 @@ public class WaitingList extends DatabaseObject {
      * Remove a user from the waiting list
      * @param u User to remove
      */
-    public void remove(User u) {
-        ticketList.removeIf(t -> t.getUser().equals(u));
-    }
+//    public void remove(User u) {
+//        ticketList.removeIf(t -> t.getUser().equals(u));
+//    }
 
     /**
      * Remove a ticket from the waiting list
      * @param t Ticket to remove
      */
-    public void remove(Ticket t) {
+    public void remove(DatabaseObjects t) {
         ticketList.remove(t);
     }
 
@@ -64,8 +64,8 @@ public class WaitingList extends DatabaseObject {
      * Randomly select and remove a ticket from the waiting list
      * @return The selected ticket
      */
-    public Ticket draw() {
-        Ticket t = ticketList.get(randomGen.nextInt(ticketList.size()));
+    public DatabaseObjects draw() {
+        DatabaseObjects t = ticketList.get(randomGen.nextInt(ticketList.size()));
         this.remove(t);
 
         return t;
@@ -87,11 +87,11 @@ public class WaitingList extends DatabaseObject {
         this.maxWait = maxWait;
     }
 
-    public ArrayList<Ticket> getTicketList() {
+    public ArrayList<DatabaseObjects> getTicketList() {
         return ticketList;
     }
 
-    public void setTicketList(ArrayList<Ticket> ticketList) {
+    public void setTicketList(ArrayList<DatabaseObjects> ticketList) {
         this.ticketList = ticketList;
     }
 }
