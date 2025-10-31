@@ -1,6 +1,7 @@
 package com.example.skeddly.business;
 
-import com.example.skeddly.business.user.User;
+import com.example.skeddly.business.database.DatabaseObject;
+import com.example.skeddly.business.database.DatabaseObjects;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -8,8 +9,8 @@ import java.util.Random;
 /**
  * Class for list of people who want to attend an event
  */
-public class WaitingList {
-    private final ArrayList<Ticket> ticketList = new ArrayList<Ticket>();
+public class WaitingList extends DatabaseObject {
+    private ArrayList<String> ticketIds = new ArrayList<>();
     private int maxWait;
     private Random randomGen;
 
@@ -32,12 +33,12 @@ public class WaitingList {
 
     /**
      * Add a ticket to the waiting list
-     * @param t Ticket to add
+     * @param ticketId Ticket to add
      * @throws IllegalArgumentException If the list is already full
      */
-    public void addTicket(Ticket t) {
-        if (ticketList.size() < maxWait) {
-            ticketList.add(t);
+    public void addTicket(String ticketId) {
+        if (ticketIds.size() < maxWait) {
+            ticketIds.add(ticketId);
         } else {
             throw new IllegalArgumentException();
         }
@@ -47,24 +48,24 @@ public class WaitingList {
      * Remove a user from the waiting list
      * @param u User to remove
      */
-    public void remove(User u) {
-        ticketList.removeIf(t -> t.getUser().equals(u));
-    }
+//    public void remove(User u) {
+//        ticketList.removeIf(t -> t.getUser().equals(u));
+//    }
 
     /**
      * Remove a ticket from the waiting list
      * @param t Ticket to remove
      */
-    public void remove(Ticket t) {
-        ticketList.remove(t);
+    public void remove(String ticketId) {
+        ticketIds.remove(ticketId);
     }
 
     /**
      * Randomly select and remove a ticket from the waiting list
      * @return The selected ticket
      */
-    public Ticket draw() {
-        Ticket t = ticketList.get(randomGen.nextInt(ticketList.size()));
+    public String draw() {
+        String t = ticketIds.get(randomGen.nextInt(ticketIds.size()));
         this.remove(t);
 
         return t;
@@ -84,5 +85,13 @@ public class WaitingList {
      */
     public void setLimit(int maxWait) {
         this.maxWait = maxWait;
+    }
+
+    public ArrayList<String> getTicketList() {
+        return ticketIds;
+    }
+
+    public void setTicketList(ArrayList<String> ticketList) {
+        this.ticketIds = ticketIds;
     }
 }

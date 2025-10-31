@@ -1,7 +1,5 @@
 package com.example.skeddly.business.database;
 
-import java.util.ArrayList;
-
-public interface IterableListenUpdate<T> {
-    void onUpdate(ArrayList<T> newValues);
+public interface IterableListenUpdate {
+    void onUpdate(DatabaseObjects newValues);
 }
