@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
                 user = loadedUser;
 
                 // Listen for any changes to events
-                database.iterableListen(database.getEventsPath(), Event.class, new IterableListenUpdate<Event>() {
+                database.iterableListen(database.getEventsPath(), Event.class, new IterableListenUpdate() {
                     @Override
                     public void onUpdate(DatabaseObjects newValues) {
                         user.setOwnedEvents(newValues.getIds());
