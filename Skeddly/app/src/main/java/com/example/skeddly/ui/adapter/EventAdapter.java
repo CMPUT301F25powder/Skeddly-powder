@@ -13,6 +13,10 @@ import androidx.annotation.Nullable;
 
 import com.example.skeddly.R;
 import com.example.skeddly.business.Event;
+import com.example.skeddly.business.Ticket;
+import com.example.skeddly.business.WaitingList;
+import com.example.skeddly.business.database.DatabaseHandler;
+import com.example.skeddly.business.location.CustomLocation;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -42,13 +46,17 @@ public class EventAdapter extends ArrayAdapter<Event> {
         // Populate data
         if (event != null) {
             textEventName.setText(event.getName());
+            String current_user_id = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+            DatabaseHandler dbHandler = new DatabaseHandler(getContext());
 
             // Handle privilege assignment for editing
-            if (Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid().equals(event.getOrganizer())) {
+            if (current_user_id.equals(event.getOrganizer())) {
                 buttonEdit.setVisibility(View.VISIBLE);
             } else {
                 buttonEdit.setVisibility(View.GONE);
             }
+
+            // Check if user is in event waiting list
 
             // Handle button clicks
             buttonViewInfo.setOnClickListener(v -> {
@@ -59,7 +67,7 @@ public class EventAdapter extends ArrayAdapter<Event> {
 
             buttonJoin.setOnClickListener(v -> {
                 // Handle join button click
-                // TODO: Implement join/leave logic using DatabaseHandler
+                joinEvent(event, current_user_id, null, dbHandler);
                 Toast.makeText(getContext(), "Joining " + event.getName(), Toast.LENGTH_SHORT).show();
 
             });
@@ -73,5 +81,24 @@ public class EventAdapter extends ArrayAdapter<Event> {
 
         return convertView;
 
+    }
+
+
+    private void joinEvent(Event event, String userId, CustomLocation location, DatabaseHandler dbHandler) {
+        // Ensure applicants object and list exist to prevent NullPointerException
+        if (event.getApplicants() == null) {
+            event.setApplications(new WaitingList());
+        }
+        if (event.getApplicants().getTicketList() == null) {
+            event.getApplicants().setTicketList(new ArrayList<>());
+        }
+
+        Ticket ticket = new Ticket(userId, location);
+        // Add the ticket to the event's applicants
+        event.getApplicants().addTicket(ticket.getId());
+        dbHandler.getEventsPath().child(event.getId()).child("applicants").setValue(event.getApplicants());
+
+        // Save ticket to DB
+        dbHandler.getTicketsPath().child(ticket.getId()).setValue(ticket);
     }
 }
