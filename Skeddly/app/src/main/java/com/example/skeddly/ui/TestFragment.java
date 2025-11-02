@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentResultListener;
 
 import com.example.skeddly.databinding.FragmentTestBinding;
 import com.example.skeddly.ui.popup.StandardPopupDialogFragment;
+import com.example.skeddly.ui.popup.TimePickerDialogFragment;
 
 
 public class TestFragment extends Fragment {
@@ -42,6 +43,26 @@ public class TestFragment extends Fragment {
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
                 Boolean b = result.getBoolean("buttonChoice");
                 returnText.setText(String.format("Popup returned %s", b));
+            }
+        });
+
+        // === Time picker button stuff ===
+        Button timePickerButton = binding.timePickerButton;
+        timePickerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TimePickerDialogFragment tpf = new TimePickerDialogFragment();
+                tpf.show(getChildFragmentManager(), "timePicker");
+            }
+        });
+
+        getChildFragmentManager().setFragmentResultListener("timePicker", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                int hourOfDay = result.getInt("hourOfDay");
+                int minute = result.getInt("minute");
+
+                returnText.setText(String.format("%2d:%2d", hourOfDay, minute));
             }
         });
 
