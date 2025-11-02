@@ -32,6 +32,7 @@ public class StandardPopupDialogFragment extends DialogFragment {
      * Instantiate the popup with the provided title and content fields.
      * @param title The title that the popup should have
      * @param content The text content that the popup should show
+     * @param requestKey The requestKey that should be used when returning the result
      * @return A new StandardPopupDialogFragment with the arguments passed to it to display.
      */
     public static StandardPopupDialogFragment newInstance(String title, String content,
@@ -108,6 +109,8 @@ public class StandardPopupDialogFragment extends DialogFragment {
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
+
+        // When dismissed, return the result
         Bundle bundle = new Bundle();
         bundle.putBoolean("buttonChoice", result);
         getParentFragmentManager().setFragmentResult(requestKey, bundle);
