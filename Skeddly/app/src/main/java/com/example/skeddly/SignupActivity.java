@@ -62,7 +62,7 @@ public class SignupActivity extends CustomActivity {
         submitButton = binding.createAccountButton;
         toggleSubmitButton();
 
-        DatabaseHandler database = new DatabaseHandler(this);
+        DatabaseHandler database = new DatabaseHandler();
         Authenticator authenticator = new Authenticator(this, database);
         authenticator.addListenerForUserLoaded(new UserLoaded() {
             @Override

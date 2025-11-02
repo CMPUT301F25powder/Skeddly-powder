@@ -1,5 +1,8 @@
 package com.example.skeddly.business.location;
-public class CustomLocation {
+
+import com.example.skeddly.business.database.DatabaseObject;
+
+public class CustomLocation extends DatabaseObject {
     private long longitude;
     private long latitude;
 

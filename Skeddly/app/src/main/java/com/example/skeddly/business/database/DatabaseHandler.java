@@ -23,7 +23,6 @@ import java.util.logging.Logger;
  */
 public class DatabaseHandler {
     private User user;
-    private Context context;
     private DatabaseReference database;
 
     private String serializeGetterName(String name) {
@@ -57,8 +56,7 @@ public class DatabaseHandler {
         }
     }
 
-    public DatabaseHandler(Context context) {
-        this.context = context;
+    public DatabaseHandler() {
         this.database = FirebaseDatabase.getInstance().getReference();
     }
 
@@ -151,5 +149,15 @@ public class DatabaseHandler {
      */
     public DatabaseReference getTicketsPath() {
         return database.child("tickets");
+    }
+
+
+    /**
+     * Returns a {@link DatabaseReference} pointing to the specified path
+     * @return A {@link DatabaseReference} pointing to the specified path
+     * @see DatabaseReference
+     */
+    public DatabaseReference getPath(String path) {
+        return database.child(path);
     }
 }

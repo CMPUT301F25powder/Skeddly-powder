@@ -52,7 +52,7 @@ public class MainActivity extends CustomActivity {
 
         user = (User) Objects.requireNonNull(getIntent().getExtras()).getSerializable("USER");
 
-        DatabaseHandler database = new DatabaseHandler(this);
+        DatabaseHandler database = new DatabaseHandler();
         authenticator = new Authenticator(this, database, user);
         authenticator.addListenerForUserLoaded(new UserLoaded() {
             @Override
