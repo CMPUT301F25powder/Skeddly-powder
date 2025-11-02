@@ -1,6 +1,9 @@
 package com.example.skeddly.business.user;
 
-public class PersonalInformation {
+import java.io.Serializable;
+import java.util.Objects;
+
+public class PersonalInformation implements Serializable {
     private String name;
     private String email;
     private String phoneNumber;
@@ -33,5 +36,9 @@ public class PersonalInformation {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public boolean isFullyFilled() {
+        return !Objects.equals(this.name, "") && !Objects.equals(this.email, "");
     }
 }
