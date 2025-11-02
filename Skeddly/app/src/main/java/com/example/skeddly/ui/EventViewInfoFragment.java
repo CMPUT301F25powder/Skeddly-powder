@@ -89,8 +89,6 @@ public class EventViewInfoFragment extends Fragment {
      * Populates the UI elements with data from the fetched Event object.
      */
     private void populateUI(Event event) {
-        // Use the 'binding' object to safely access views
-
         // Set Title and Location
         if (event.getLocation() != null) {
             binding.textEventTitleOverlay.setText(String.format("%s - %s", event.getName(), event.getLocation()));
@@ -127,9 +125,8 @@ public class EventViewInfoFragment extends Fragment {
         int currentWaitlist = 0;
         int maxWaitlist = 0;
         if (event.getApplicants() != null) {
-            
-            if (event.getApplicants().getTicketList() != null) {
-                currentWaitlist = event.getApplicants().getTicketList().size();
+            if (event.getApplicants().getTicketIds() != null) {
+                currentWaitlist = event.getApplicants().getTicketIds().size();
             }
             maxWaitlist = event.getApplicants().getLimit();
         }

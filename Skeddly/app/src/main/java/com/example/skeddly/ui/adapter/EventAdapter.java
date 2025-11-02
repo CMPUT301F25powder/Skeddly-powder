@@ -21,12 +21,8 @@ import com.example.skeddly.business.Event;
 import com.example.skeddly.business.Ticket;
 import com.example.skeddly.business.WaitingList;
 import com.example.skeddly.business.database.DatabaseHandler;
-import com.example.skeddly.business.database.SingleListenUpdate;
 import com.example.skeddly.business.location.CustomLocation;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -103,8 +99,8 @@ public class EventAdapter extends ArrayAdapter<Event> {
         if (event.getApplicants() == null) {
             event.setApplications(new WaitingList());
         }
-        if (event.getApplicants().getTicketList() == null) {
-            event.getApplicants().setTicketList(new ArrayList<>());
+        if (event.getApplicants().getTicketIds() == null) {
+            event.getApplicants().setTicketIds(new ArrayList<>());
         }
 
         Ticket ticket = new Ticket(userId, location);
