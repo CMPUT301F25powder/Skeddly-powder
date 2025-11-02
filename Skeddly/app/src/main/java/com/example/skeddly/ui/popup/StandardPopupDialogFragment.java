@@ -1,6 +1,7 @@
 package com.example.skeddly.ui.popup;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -24,6 +25,8 @@ import com.example.skeddly.databinding.PopupGenericBinding;
  * indicating a positive or negative response from the user.
  */
 public class StandardPopupDialogFragment extends DialogFragment {
+    private String requestKey = "requestKey";
+    private boolean result;
 
     /**
      * Instantiate the popup with the provided title and content fields.
@@ -31,10 +34,12 @@ public class StandardPopupDialogFragment extends DialogFragment {
      * @param content The text content that the popup should show
      * @return A new StandardPopupDialogFragment with the arguments passed to it to display.
      */
-    public static StandardPopupDialogFragment newInstance(String title, String content) {
+    public static StandardPopupDialogFragment newInstance(String title, String content,
+                                                          String requestKey) {
         Bundle args = new Bundle();
         args.putString("title", title);
         args.putString("content", content);
+        args.putString("requestKey", requestKey);
 
         StandardPopupDialogFragment popup = new StandardPopupDialogFragment();
         popup.setArguments(args);
@@ -57,13 +62,14 @@ public class StandardPopupDialogFragment extends DialogFragment {
         if (args != null) {
             textTitle.setText(args.getString("title"));
             textContent.setText(args.getString("content"));
+            requestKey = args.getString("requestKey");
         }
 
         Button buttonCancel = binding.buttonCancel;
         Button buttonConfirm = binding.buttonConfirm;
 
         // Default return is false
-        setPopupResult(false);
+        result = false;
 
         buttonCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,7 +81,7 @@ public class StandardPopupDialogFragment extends DialogFragment {
         buttonConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setPopupResult(true);
+                result = true;
                 dismiss();
             }
         });
@@ -99,14 +105,11 @@ public class StandardPopupDialogFragment extends DialogFragment {
         return dialog;
     }
 
-
-    /**
-     * Sets the result of the fragment to the supplied boolean.
-     * @param result The result that the fragment should return.
-     */
-    private void setPopupResult(boolean result) {
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
         Bundle bundle = new Bundle();
         bundle.putBoolean("buttonChoice", result);
-        getParentFragmentManager().setFragmentResult("requestKey", bundle);
+        getParentFragmentManager().setFragmentResult(requestKey, bundle);
     }
 }

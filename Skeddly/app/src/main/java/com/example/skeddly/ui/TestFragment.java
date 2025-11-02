@@ -1,11 +1,11 @@
 package com.example.skeddly.ui;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,20 +25,23 @@ public class TestFragment extends Fragment {
         binding = FragmentTestBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        TextView returnText = binding.returnText;
+
+        // === Generic popup stuff ===
         Button testButton = binding.testButton;
         testButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                StandardPopupDialogFragment cdf = StandardPopupDialogFragment.newInstance("Title", "Contents");
+                StandardPopupDialogFragment cdf = StandardPopupDialogFragment.newInstance("Title", "Contents", "testDialog");
                 cdf.show(getChildFragmentManager(), null);
             }
         });
 
-        getChildFragmentManager().setFragmentResultListener("requestKey", this, new FragmentResultListener() {
+        getChildFragmentManager().setFragmentResultListener("testDialog", this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
                 Boolean b = result.getBoolean("buttonChoice");
-                Log.v("Popup", String.format("Popup returned %s", b));
+                returnText.setText(String.format("Popup returned %s", b));
             }
         });
 
