@@ -1,6 +1,8 @@
 package com.example.skeddly.business.user;
 
-public class NotificationSettings {
+import java.io.Serializable;
+
+public class NotificationSettings implements Serializable {
 private boolean lotteryStatus;
 private boolean eventUpdate;
 private boolean administrative;

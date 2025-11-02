@@ -1,9 +1,9 @@
 package com.example.skeddly;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -26,11 +26,9 @@ import com.example.skeddly.business.database.SingleListenUpdate;
 import com.example.skeddly.business.user.User;
 import com.example.skeddly.business.user.UserLoaded;
 
-import java.util.ArrayList;
-import java.util.UUID;
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends CustomActivity {
     private User user;
+    private Authenticator authenticator;
     private ActivityMainBinding binding;
 
     @Override
@@ -45,17 +43,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         // Don't go off the screen
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             // Dont need bottom padding since nav bar takes care of it
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
             return insets;
         });
 
+        user = (User) Objects.requireNonNull(getIntent().getExtras()).getSerializable("USER");
+
         DatabaseHandler database = new DatabaseHandler(this);
-        Authenticator authenticator = new Authenticator(this, database, new UserLoaded() {
+        authenticator = new Authenticator(this, database, user);
+        authenticator.addListenerForUserLoaded(new UserLoaded() {
             @Override
-            public void onUserLoaded(User loadedUser) {
+            public void onUserLoaded(User loadedUser, boolean shouldShowSignupPage) {
                 user = loadedUser;
 
                 // Listen for any changes to events
@@ -79,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
                 setupNavBar();
             }
         });
+
+        setupNavBar();
     }
 
     private void setupNavBar() {
@@ -113,5 +116,24 @@ public class MainActivity extends AppCompatActivity {
         }
         navController.setGraph(navGraph);
         NavigationUI.setupWithNavController(binding.navView, navController);
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Authenticator getAuthenticator() {
+        return authenticator;
+    }
+
+    public void switchToSignup() {
+        Intent signupActivity = new Intent(getBaseContext(), SignupActivity.class);
+        signupActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(signupActivity);
+        finish();
     }
 }

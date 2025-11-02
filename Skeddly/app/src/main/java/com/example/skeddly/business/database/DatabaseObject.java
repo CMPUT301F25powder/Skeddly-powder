@@ -2,6 +2,7 @@ package com.example.skeddly.business.database;
 
 import com.google.firebase.database.Exclude;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
@@ -9,7 +10,7 @@ import java.util.UUID;
  * Any values in its fields will be turned into DB keys by the {@link DatabaseHandler}
  * @see DatabaseHandler
  */
-public class DatabaseObject {
+public class DatabaseObject implements Serializable {
     private String id;
 
     public DatabaseObject() {

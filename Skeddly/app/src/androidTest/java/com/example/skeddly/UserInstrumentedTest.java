@@ -27,9 +27,10 @@ public class UserInstrumentedTest {
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
         DatabaseHandler database = new DatabaseHandler(appContext);
-        Authenticator authenticator = new Authenticator(appContext, database, new UserLoaded() {
+        Authenticator authenticator = new Authenticator(appContext, database);
+        authenticator.addListenerForUserLoaded(new UserLoaded() {
             @Override
-            public void onUserLoaded(User loadedUser) {
+            public void onUserLoaded(User loadedUser, boolean shouldShowSignup) {
                 assertNotNull(loadedUser);
             }
         });
@@ -46,9 +47,10 @@ public class UserInstrumentedTest {
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
         DatabaseHandler database = new DatabaseHandler(appContext);
-        Authenticator authenticator = new Authenticator(appContext, database, new UserLoaded() {
+        Authenticator authenticator = new Authenticator(appContext, database);
+        authenticator.addListenerForUserLoaded(new UserLoaded() {
             @Override
-            public void onUserLoaded(User loadedUser) {
+            public void onUserLoaded(User loadedUser, boolean shouldShowSignup) {
                 assertEquals(1, loadedUser.getOwnedEvents().size());
             }
         });
@@ -63,12 +65,27 @@ public class UserInstrumentedTest {
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
         DatabaseHandler database = new DatabaseHandler(appContext);
-        Authenticator authenticator = new Authenticator(appContext, database, new UserLoaded() {
+        Authenticator authenticator = new Authenticator(appContext, database);
+        authenticator.addListenerForUserLoaded(new UserLoaded() {
             @Override
-            public void onUserLoaded(User loadedUser) {
+            public void onUserLoaded(User loadedUser, boolean shouldShowSignup) {
                 User fakeUser = new User();
 
                 assertFalse(database.getUsersPath().child(String.valueOf(UUID.randomUUID())).setValue(fakeUser).isSuccessful());
+            }
+        });
+    }
+
+    @Test
+    public void testDeleteUser() {
+        Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
+
+        DatabaseHandler database = new DatabaseHandler(appContext);
+        Authenticator authenticator = new Authenticator(appContext, database);
+        authenticator.addListenerForUserLoaded(new UserLoaded() {
+            @Override
+            public void onUserLoaded(User loadedUser, boolean shouldShowSignup) {
+                authenticator.deleteUser();
             }
         });
     }
