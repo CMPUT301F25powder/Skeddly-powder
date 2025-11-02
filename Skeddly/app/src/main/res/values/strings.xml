@@ -57,4 +57,5 @@
     <string name="enter_event_title">Enter Event Title</string>
     <string name="enter_geolocation_restriction">Enter geolocation restriction</string>
     <string name="catagory">Catagory</string>
+    <string name="nav_event_info">EventViewEntrant</string>
 </resources>

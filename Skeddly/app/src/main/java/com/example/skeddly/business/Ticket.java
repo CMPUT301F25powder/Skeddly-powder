@@ -25,6 +25,7 @@ public class Ticket extends DatabaseObject {
     @Nullable
     private CustomLocation location;
 
+    public Ticket() {}
     public Ticket(@NonNull String userId, @Nullable CustomLocation location) {
         this.userId = userId;
         this.location = location;

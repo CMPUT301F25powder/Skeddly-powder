@@ -22,14 +22,14 @@ public class Event extends DatabaseObject {
     public Event() {
         // Auto filled by Firebase DB
 
-        this.name = "";
-        this.description = "";
-        this.category = "";
+        //this.name = "";
+        //this.description = "";
+        //this.category = "";
         //this.startTime = (LocalDateTime) 0;
         //this.endTime = (LocalDateTime) 0;
         //this.owner = "";
-        applicants = new WaitingList();
-        attendees = new ParticipantList(20);
+        //applicants = new WaitingList();
+        //attendees = new ParticipantList(20);
 
     }
 

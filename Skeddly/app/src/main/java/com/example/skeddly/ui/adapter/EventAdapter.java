@@ -1,6 +1,9 @@
 package com.example.skeddly.ui.adapter;
 
+import static android.app.PendingIntent.getActivity;
+
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -10,14 +13,20 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.example.skeddly.R;
 import com.example.skeddly.business.Event;
 import com.example.skeddly.business.Ticket;
 import com.example.skeddly.business.WaitingList;
 import com.example.skeddly.business.database.DatabaseHandler;
+import com.example.skeddly.business.database.SingleListenUpdate;
 import com.example.skeddly.business.location.CustomLocation;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -56,12 +65,18 @@ public class EventAdapter extends ArrayAdapter<Event> {
                 buttonEdit.setVisibility(View.GONE);
             }
 
-            // Check if user is in event waiting list
+            // Check if the user has already joined the event
+
 
             // Handle button clicks
             buttonViewInfo.setOnClickListener(v -> {
                 // Handle view info button click
-                // TODO: Implement navigation to event details screen
+                Bundle bundle = new Bundle();
+                bundle.putString("eventId", event.getId());
+
+                NavController navController = Navigation.findNavController(v);
+                navController.navigate(R.id.action_navigation_home_to_event_view_info, bundle);
+
                 Toast.makeText(getContext(), "View info for " + event.getName(), Toast.LENGTH_SHORT).show();
             });
 
@@ -82,7 +97,6 @@ public class EventAdapter extends ArrayAdapter<Event> {
         return convertView;
 
     }
-
 
     private void joinEvent(Event event, String userId, CustomLocation location, DatabaseHandler dbHandler) {
         // Ensure applicants object and list exist to prevent NullPointerException
