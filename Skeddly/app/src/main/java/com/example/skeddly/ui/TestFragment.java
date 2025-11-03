@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
 
 import com.example.skeddly.databinding.FragmentTestBinding;
+import com.example.skeddly.ui.popup.DatePickerDialogFragment;
 import com.example.skeddly.ui.popup.MapPopupDialogFragment;
 import com.example.skeddly.ui.popup.StandardPopupDialogFragment;
 import com.example.skeddly.ui.popup.TimePickerDialogFragment;
@@ -65,6 +66,27 @@ public class TestFragment extends Fragment {
                 int minute = result.getInt("minute");
 
                 returnText.setText(String.format("%2d:%2d", hourOfDay, minute));
+            }
+        });
+
+        // === Date Picker Button Stuff ===
+        Button datePickerButton = binding.datePickerButton;
+        datePickerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatePickerDialogFragment dpf = new DatePickerDialogFragment();
+                dpf.show(getChildFragmentManager(), "datePicker");
+            }
+        });
+
+        getChildFragmentManager().setFragmentResultListener("datePicker", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                int year = result.getInt("year");
+                int month = result.getInt("month");
+                int day = result.getInt("day");
+
+                returnText.setText(String.format("%d:%d:%d", year, month, day));
             }
         });
 

@@ -83,6 +83,9 @@ public class CreateFragment extends Fragment {
     }
 
 
+    /**
+     *
+     */
     private void setupCategorySelector() {
         TextView textCategorySelector = binding.textCategorySelector;
         String[] catArray = {"Indoor", "Outdoor", "In-person", "Virtual", "Hybrid", "Arts & Crafts",
@@ -109,7 +112,6 @@ public class CreateFragment extends Fragment {
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // Initialize string builder
                         ArrayList<String> categories = new ArrayList<>();
 
                         for (int i = 0; i < selectedCategory.length; i++) {

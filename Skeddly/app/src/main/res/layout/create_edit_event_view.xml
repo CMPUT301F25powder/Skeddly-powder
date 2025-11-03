@@ -210,6 +210,7 @@
                         android:hint="@string/text_category_selector"
                         android:padding="8dp"
                         app:drawableEndCompat="@android:drawable/arrow_down_float"
+                        app:layout_constraintEnd_toStartOf="@+id/edit_waitlist_limit"
                         app:layout_constraintStart_toStartOf="@id/label_description"
                         app:layout_constraintTop_toBottomOf="@id/value_description" />
 
