@@ -174,27 +174,31 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/label_description" />
 
-                    <TextView
-                        android:id="@+id/label_geolocation"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="24dp"
-                        android:text="@string/description"
-                        android:textColor="@color/primary_navy"
-                        app:layout_constraintStart_toStartOf="@id/label_description"
-                        app:layout_constraintTop_toBottomOf="@id/value_description" />
+<!--                    I have no idea what this is supposed to be for so I commented it out
+                        The geolocation requirement doesn't say anything about making it so ppl
+                        can enter in a certain radius so I think we can just make it a checkbox
+                        thats like if its on, it records location of ppl who enter. -->
 
-                    <EditText
-                        android:id="@+id/value_geolocation"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginEnd="16dp"
-                        android:hint="@string/enter_geolocation_restriction"
-                        android:textColor="@color/neutral_brown_light"
-                        app:layout_constraintBaseline_toBaselineOf="@+id/label_geolocation"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/label_geolocation" />
+<!--                    <TextView-->
+<!--                        android:id="@+id/label_geolocation"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginTop="24dp"-->
+<!--                        android:text="Location:"-->
+<!--                        android:textColor="@color/primary_navy"-->
+<!--                        app:layout_constraintStart_toStartOf="@id/label_description"-->
+<!--                        app:layout_constraintTop_toBottomOf="@id/label_description" />-->
+
+<!--                    <EditText-->
+<!--                        android:id="@+id/value_geolocation"-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginEnd="16dp"-->
+<!--                        android:hint="@string/enter_geolocation_restriction"-->
+<!--                        android:textColor="@color/neutral_brown_light"-->
+<!--                        app:layout_constraintBaseline_toBaselineOf="@+id/label_geolocation"-->
+<!--                        app:layout_constraintEnd_toEndOf="parent"-->
+<!--                        app:layout_constraintStart_toStartOf="@+id/value_description" />-->
 
                     <TextView
                         android:id="@+id/text_category_selector"
@@ -206,9 +210,8 @@
                         android:hint="@string/text_category_selector"
                         android:padding="8dp"
                         app:drawableEndCompat="@android:drawable/arrow_down_float"
-                        app:layout_constraintEnd_toStartOf="@+id/label_max_waiting_list"
-                        app:layout_constraintStart_toStartOf="@id/label_geolocation"
-                        app:layout_constraintTop_toBottomOf="@id/value_geolocation" />
+                        app:layout_constraintStart_toStartOf="@id/label_description"
+                        app:layout_constraintTop_toBottomOf="@id/value_description" />
 
                     <!-- Right-aligned details -->
                     <TextView

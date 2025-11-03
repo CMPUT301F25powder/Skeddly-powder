@@ -13,13 +13,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 
-import com.example.skeddly.MainActivity;
 import com.example.skeddly.databinding.CreateEditEventViewBinding;
-import com.example.skeddly.databinding.CreateFragmentBinding;
+import com.example.skeddly.ui.popup.MapPopupDialogFragment;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Locale;
 
 
 public class CreateFragment extends Fragment {
@@ -33,21 +34,60 @@ public class CreateFragment extends Fragment {
 
         // Initialize Variables
         ImageButton buttonBack = binding.buttonBack;
-        Button buttonConfirm = binding.confirmButton;
+        ImageButton buttonQrCode = binding.buttonQrCode;
 
-        TextView textCategorySelector = binding.textCategorySelector;
-        String[] catArray = {"Indoor", "Outdoor", "In-person", "Virtual", "Hybrid", "Arts & Crafts",
-                "Physical activity", "???????????", "??????????", "???????????", "??????????"};
-        boolean[] selectedCategory = new boolean[catArray.length];
+        // Hide them because we don't want them here
+        buttonBack.setVisibility(View.INVISIBLE);
+        buttonQrCode.setVisibility(View.INVISIBLE);
+
+        setupCategorySelector();
+
+        TextView textEventTitleOverlay = binding.textEventTitleOverlay;
+
+        textEventTitleOverlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MapPopupDialogFragment lpf = MapPopupDialogFragment.newInstance("locationPicker");
+                lpf.show(getChildFragmentManager(), "LocationPicker");
+            }
+        });
+
+        getChildFragmentManager().setFragmentResultListener("locationPicker", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                LatLng location = result.getParcelable("LatLng");
+
+                if (location != null) {
+                    textEventTitleOverlay.setText(String.format(Locale.getDefault(), "%.2f, %.2f", location.latitude, location.longitude));
+                }
+            }
+        });
+
+        Button buttonConfirm = binding.confirmButton;
 
         buttonConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                // TODO: Fill in functionality
             }
         });
 
-        buttonBack.setVisibility(View.INVISIBLE);
+
+        return root;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
+
+
+    private void setupCategorySelector() {
+        TextView textCategorySelector = binding.textCategorySelector;
+        String[] catArray = {"Indoor", "Outdoor", "In-person", "Virtual", "Hybrid", "Arts & Crafts",
+                "Physical activity", "???????????", "??????????", "???????????", "??????????"};
+        boolean[] selectedCategory = new boolean[catArray.length];
 
         textCategorySelector.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,13 +146,5 @@ public class CreateFragment extends Fragment {
                 builder.show();
             }
         });
-
-        return root;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
     }
 }

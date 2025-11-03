@@ -13,8 +13,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
 
 import com.example.skeddly.databinding.FragmentTestBinding;
+import com.example.skeddly.ui.popup.MapPopupDialogFragment;
 import com.example.skeddly.ui.popup.StandardPopupDialogFragment;
 import com.example.skeddly.ui.popup.TimePickerDialogFragment;
+import com.google.android.gms.maps.model.LatLng;
 
 
 public class TestFragment extends Fragment {
@@ -63,6 +65,27 @@ public class TestFragment extends Fragment {
                 int minute = result.getInt("minute");
 
                 returnText.setText(String.format("%2d:%2d", hourOfDay, minute));
+            }
+        });
+
+        // === Location Picker Stuff ===
+        Button locationPickerButton = binding.locationPickerButton;
+        locationPickerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MapPopupDialogFragment lpf = MapPopupDialogFragment.newInstance("locationPicker");
+                lpf.show(getChildFragmentManager(), "LocationPicker");
+            }
+        });
+
+        getChildFragmentManager().setFragmentResultListener("locationPicker", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                LatLng location = result.getParcelable("LatLng");
+
+                if (location != null) {
+                    returnText.setText(String.format("Latitude is %f, Longitude is %f", location.latitude, location.longitude));
+                }
             }
         });
 

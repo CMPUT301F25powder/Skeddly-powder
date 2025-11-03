@@ -12,8 +12,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/timePickerButton"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:text="Test Button"
+        app:layout_constraintBottom_toTopOf="@id/returnText"
+        android:text="Popup"
         />
 
     <Button
@@ -21,10 +21,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@id/testButton"
+        app:layout_constraintEnd_toStartOf="@id/locationPickerButton"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/returnText"
+        android:text="Time Picker"
+        />
+
+    <Button
+        android:id="@+id/locationPickerButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/timePickerButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:text="Time Picker Button"
+        app:layout_constraintBottom_toTopOf="@id/returnText"
+        android:text="Location Picker"
         />
 
     <TextView
