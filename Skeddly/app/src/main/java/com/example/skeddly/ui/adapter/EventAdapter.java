@@ -23,11 +23,15 @@ import com.example.skeddly.business.WaitingList;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.location.CustomLocation;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class EventAdapter extends ArrayAdapter<Event> {
+
     public EventAdapter(Context context, ArrayList<Event> events) {
         super(context, 0, events);
     }
@@ -61,8 +65,8 @@ public class EventAdapter extends ArrayAdapter<Event> {
                 buttonEdit.setVisibility(View.GONE);
             }
 
-            // Check if the user has already joined the event
-
+            // Set button to join or leave depending on if user is on wait list of an event
+            isJoinedEvent(event, current_user_id, dbHandler, this::onResult, buttonJoin);
 
             // Handle button clicks
             buttonViewInfo.setOnClickListener(v -> {
@@ -78,9 +82,14 @@ public class EventAdapter extends ArrayAdapter<Event> {
 
             buttonJoin.setOnClickListener(v -> {
                 // Handle join button click
-                joinEvent(event, current_user_id, null, dbHandler);
-                Toast.makeText(getContext(), "Joining " + event.getName(), Toast.LENGTH_SHORT).show();
-
+                if (buttonJoin.getText().equals("Join")) {
+                    joinEvent(event, current_user_id, null, dbHandler);
+                    Toast.makeText(getContext(), "Joining " + event.getName(), Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    isJoinedEvent(event, current_user_id, dbHandler, this::leaveEvent, buttonJoin);
+                    Toast.makeText(getContext(), "Leaving " + event.getName(), Toast.LENGTH_SHORT).show();
+                }
             });
 
             buttonEdit.setOnClickListener(v -> {
@@ -92,6 +101,27 @@ public class EventAdapter extends ArrayAdapter<Event> {
 
         return convertView;
 
+    }
+
+    interface Callback {
+        void onResult(boolean result, Button buttonJoin, String ticketId, Event event, DatabaseHandler dbHandler);
+    }
+    private void onResult(boolean result, Button buttonJoin, String ticketId, Event event, DatabaseHandler dbHandler) {
+        if (result) {
+            buttonJoin.setText("Leave");
+        }
+        else {
+            buttonJoin.setText("Join");
+        }
+    }
+
+    private void leaveEvent(boolean result, Button buttonJoin, String ticketId, Event event, DatabaseHandler dbHandler) {
+        if (result) {
+            event.getApplicants().remove(ticketId);
+            dbHandler.getEventsPath().child(event.getId()).child("applicants").setValue(event.getApplicants());
+            dbHandler.getTicketsPath().child(ticketId).removeValue();
+            buttonJoin.setText("Join");
+        }
     }
 
     private void joinEvent(Event event, String userId, CustomLocation location, DatabaseHandler dbHandler) {
@@ -110,5 +140,25 @@ public class EventAdapter extends ArrayAdapter<Event> {
 
         // Save ticket to DB
         dbHandler.getTicketsPath().child(ticket.getId()).setValue(ticket);
+    }
+
+    private void isJoinedEvent(Event event, String userId, DatabaseHandler dbHandler, Callback callback, Button buttonJoin) {
+        ArrayList<String> ticketIds = event.getApplicants().getTicketIds();
+        for (String ticketId : ticketIds) {
+            dbHandler.getTicketsPath().child(ticketId).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    Ticket ticket = snapshot.getValue(Ticket.class);
+                    if (ticket != null && ticket.getUser().equals(userId)) {
+                        callback.onResult(true, buttonJoin, ticketId, event, dbHandler);
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    throw error.toException();
+                }
+            });
+        }
+        callback.onResult(false, buttonJoin, null, null, null);
     }
 }
