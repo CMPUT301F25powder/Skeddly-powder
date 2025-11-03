@@ -11,7 +11,7 @@ import java.util.UUID;
  * Unit tests for the Notification business object.
  * Verifies constructor logic and getter/setter functionality.
  */
-public class NotificationTest {
+public class NotificationUnitTest {
 
     private Notification notification;
 

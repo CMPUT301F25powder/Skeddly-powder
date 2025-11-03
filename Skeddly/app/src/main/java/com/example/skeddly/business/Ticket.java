@@ -51,7 +51,7 @@ public class Ticket extends DatabaseObject {
         return ticketTime;
     }
 
-    public void setTicketTime(@NonNull long ticketTime) {
+    public void setTicketTime(long ticketTime) {
         this.ticketTime = ticketTime;
     }
 
