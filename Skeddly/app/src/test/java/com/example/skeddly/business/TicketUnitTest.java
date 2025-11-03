@@ -1,4 +1,4 @@
-package com.example.skeddly;
+package com.example.skeddly.business;
 
 import org.junit.Test;
 
@@ -7,7 +7,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import com.example.skeddly.business.Ticket;
 import com.example.skeddly.business.location.CustomLocation;
 import com.example.skeddly.business.user.User;
 
