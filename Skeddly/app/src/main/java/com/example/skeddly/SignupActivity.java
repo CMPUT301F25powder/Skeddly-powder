@@ -15,7 +15,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.skeddly.business.Event;
+import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.database.DatabaseObjects;
 import com.example.skeddly.business.database.IterableListenUpdate;
@@ -74,14 +74,6 @@ public class SignupActivity extends CustomActivity {
                 } else {
                     mainLayout.setVisibility(View.VISIBLE);
                 }
-
-                // Listen for any changes to events
-                database.iterableListen(database.getEventsPath(), Event.class, new IterableListenUpdate() {
-                    @Override
-                    public void onUpdate(DatabaseObjects newValues) {
-                        user.setOwnedEvents(newValues.getIds());
-                    }
-                });
 
                 // Listen for any changes to the user itself
                 database.singleListen(database.getUsersPath().child(user.getId()), User.class, new SingleListenUpdate<User>() {

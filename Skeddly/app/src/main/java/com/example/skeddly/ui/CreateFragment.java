@@ -3,19 +3,28 @@ package com.example.skeddly.ui;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
 
+import com.example.skeddly.MainActivity;
+import com.example.skeddly.business.database.DatabaseHandler;
+import com.example.skeddly.business.event.Event;
+import com.example.skeddly.business.event.EventDetail;
+import com.example.skeddly.business.event.EventSchedule;
 import com.example.skeddly.databinding.CreateEditEventViewBinding;
 import com.example.skeddly.ui.popup.DatePickerDialogFragment;
 import com.example.skeddly.ui.popup.MapPopupDialogFragment;
@@ -23,14 +32,35 @@ import com.example.skeddly.ui.popup.TimePickerDialogFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.materialswitch.MaterialSwitch;
 
+import java.text.DateFormatSymbols;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 
 public class CreateFragment extends Fragment {
     private CreateEditEventViewBinding binding;
+    private DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a");
+    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MMM. d, yyyy");
+
+    private ArrayList<String> categories = new ArrayList<>();
+
+    private ArrayList<String> daysOfWeek = new ArrayList<>();
+    private boolean isRecurring;
+
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private LocalTime startTime;
+    private LocalTime endTime;
+
+    private LatLng eventLocation;
 
     @Nullable
     @Override
@@ -42,15 +72,15 @@ public class CreateFragment extends Fragment {
         ImageButton buttonBack = binding.buttonBack;
         ImageButton buttonQrCode = binding.buttonQrCode;
 
+        TextView textEventTitleOverlay = binding.textEventTitleOverlay;
+
         MaterialSwitch switchRecurrence = binding.switchRecurrence;
 
         TextView textDateStart = binding.textDateStart;
-        TextView textDateDash = binding.textDateDash;
         TextView textDateFinish = binding.textDateFinish;
 
         TextView textDayOfWeek = binding.textDayOfWeek;
-        String[] dayArray = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",
-                "Sunday"};
+        String[] dayArray = Arrays.copyOfRange(new DateFormatSymbols().getWeekdays(), 1, 8);
         String dayTitle = "Select Day";
 
         TextView textTimeStart = binding.textTimeStart;
@@ -67,8 +97,7 @@ public class CreateFragment extends Fragment {
         buttonBack.setVisibility(View.INVISIBLE);
         buttonQrCode.setVisibility(View.INVISIBLE);
 
-        TextView textEventTitleOverlay = binding.textEventTitleOverlay;
-
+        // Setup location picker
         textEventTitleOverlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,132 +106,111 @@ public class CreateFragment extends Fragment {
             }
         });
 
+        // Handle result
         getChildFragmentManager().setFragmentResultListener("locationPicker", this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-                LatLng location = result.getParcelable("LatLng");
+                eventLocation = result.getParcelable("LatLng");
 
-                if (location != null) {
-                    textEventTitleOverlay.setText(String.format(Locale.getDefault(), "%.2f, %.2f", location.latitude, location.longitude));
+                if (eventLocation != null) {
+                    textEventTitleOverlay.setText(String.format(Locale.getDefault(), "%.2f, %.2f", eventLocation.latitude, eventLocation.longitude));
+                    updateConfirmButton();
                 }
             }
         });
 
-        textDateDash.setVisibility(View.INVISIBLE);
-        textDateFinish.setVisibility(View.INVISIBLE);
-        textDayOfWeek.setVisibility(View.GONE);
+        isRecurring = false;
+        updateRecurring();
+        updateConfirmButton();
 
         switchRecurrence.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(@NonNull CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    textDateDash.setVisibility(View.VISIBLE);
-                    textDateFinish.setVisibility(View.VISIBLE);
-                    textDayOfWeek.setVisibility(View.VISIBLE);
-                } else {
-                    textDateDash.setVisibility(View.INVISIBLE);
-                    textDateFinish.setVisibility(View.INVISIBLE);
-                    textDayOfWeek.setVisibility(View.GONE);
-                }
+                isRecurring = isChecked;
+                updateRecurring();
+                updateConfirmButton();
             }
         });
 
-        textDateStart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DatePickerDialogFragment dpf = DatePickerDialogFragment.newInstance("dateStart");
-                dpf.show(getChildFragmentManager(), "dateStart");
-            }
-        });
+        setupSelector(textDayOfWeek, dayArray, dayTitle, daysOfWeek);
+        setupSelector(textCategorySelector, catArray, categoryTitle, categories);
 
-        getChildFragmentManager().setFragmentResultListener("dateStart",
-                this, new FragmentResultListener() {
+        setupDatePicker(textDateStart, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
                 int year = result.getInt("year");
-
                 int monthNum = result.getInt("month");
-                String month = Month.of(monthNum + 1)
-                        .getDisplayName(TextStyle.SHORT, Locale.getDefault());
-
                 int day = result.getInt("day");
 
-                textDateStart.setText(String.format("%d, %s, %d", year, month, day));
+                startDate = LocalDate.of(year, monthNum + 1, day);
+                textDateStart.setText(startDate.format(dateFormatter));
+                updateConfirmButton();
             }
         });
-
-        textDateFinish.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DatePickerDialogFragment dpf = DatePickerDialogFragment.newInstance("dateFinish");
-                dpf.show(getChildFragmentManager(), "dateFinish");
-            }
-        });
-
-        getChildFragmentManager().setFragmentResultListener("dateFinish",
-                this, new FragmentResultListener() {
+        setupDatePicker(textDateFinish, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
                 int year = result.getInt("year");
-
                 int monthNum = result.getInt("month");
-                String month = Month.of(monthNum + 1).getDisplayName(TextStyle.SHORT, Locale.getDefault());
-
                 int day = result.getInt("day");
 
-                textDateFinish.setText(String.format("%d, %s, %d", year, month, day));
+                endDate = LocalDate.of(year, monthNum + 1, day);
+                textDateFinish.setText(endDate.format(dateFormatter));
+                updateConfirmButton();
             }
         });
 
-        setupSelector(textDayOfWeek, dayArray, dayTitle);
-
-        textTimeStart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TimePickerDialogFragment tpf = TimePickerDialogFragment.newInstance("timeStart");
-                tpf.show(getChildFragmentManager(), "timeStart");
-            }
-        });
-
-        getChildFragmentManager().setFragmentResultListener("timeStart",
-                this, new FragmentResultListener() {
+        setupTimePicker(textTimeStart, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-                int hourOfDay = result.getInt("hourOfDay");
-                int minute = result.getInt("minute");
-
-                textTimeStart.setText(String.format("%d:%02d", hourOfDay, minute));
+                startTime = LocalTime.of(result.getInt("hourOfDay"), result.getInt("minute"));
+                textTimeStart.setText(startTime.format(timeFormatter));
+                updateConfirmButton();
             }
         });
 
-        textTimeFinish.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TimePickerDialogFragment tpf = TimePickerDialogFragment.newInstance("timeFinish");
-                tpf.show(getChildFragmentManager(), "timeFinish");
-            }
-        });
-
-        getChildFragmentManager().setFragmentResultListener("timeFinish",
-                this, new FragmentResultListener() {
+        setupTimePicker(textTimeFinish, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-                int hourOfDay = result.getInt("hourOfDay");
-                int minute = result.getInt("minute");
-
-                textTimeFinish.setText(String.format("%d:%02d", hourOfDay, minute));
+                endTime = LocalTime.of(result.getInt("hourOfDay"), result.getInt("minute"));
+                textTimeFinish.setText(endTime.format(timeFormatter));
+                updateConfirmButton();
             }
         });
-
-        setupSelector(textCategorySelector, catArray, categoryTitle);
 
         buttonConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: Fill in functionality
+                Event event = createEvent();
+                Toast.makeText(requireContext(), "Event created!", Toast.LENGTH_SHORT).show();
+
+                // Put event in db
+                DatabaseHandler dbHandler = new DatabaseHandler(requireContext());
+                dbHandler.getEventsPath().child(event.getId()).setValue(event);
+
+                // User owns the event
+                MainActivity mainActivity = (MainActivity) requireActivity();
+                mainActivity.getUser().addOwnedEvent(event);
+                mainActivity.notifyUserChanged();
             }
         });
 
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {}
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                updateConfirmButton();
+            }
+        };
+
+        binding.valueEventTitle.addTextChangedListener(textWatcher);
+        binding.valueDescription.addTextChangedListener(textWatcher);
+        binding.editAttendeeLimit.addTextChangedListener(textWatcher);
 
         return root;
     }
@@ -213,13 +221,12 @@ public class CreateFragment extends Fragment {
         binding = null;
     }
 
-
     /**
      *
      * @param textSelector
      * @param array
      */
-    private void setupSelector(TextView textSelector, String[] array, String title) {
+    private void setupSelector(TextView textSelector, String[] array, String title, ArrayList<String> selectedItems) {
         boolean[] selected = new boolean[array.length];
 
         textSelector.setOnClickListener(new View.OnClickListener() {
@@ -242,17 +249,18 @@ public class CreateFragment extends Fragment {
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        ArrayList<String> categories = new ArrayList<>();
+                        selectedItems.clear();
 
                         for (int i = 0; i < selected.length; i++) {
                             if (selected[i]) {
-                                categories.add(array[i]);
+                                selectedItems.add(array[i]);
                             }
                         }
 
-                        String result = String.join(", ", categories);
+                        String result = String.join(", ", selectedItems);
 
                         textSelector.setText(result);
+                        updateConfirmButton();
                     }
                 });
 
@@ -278,5 +286,164 @@ public class CreateFragment extends Fragment {
                 builder.show();
             }
         });
+    }
+
+    /**
+     *
+     * @param textView
+     */
+    private void setupTimePicker(TextView textView, FragmentResultListener callback) {
+        String requestKey = Integer.toString(textView.getId());
+
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TimePickerDialogFragment tpf = TimePickerDialogFragment.newInstance(requestKey);
+                tpf.show(getChildFragmentManager(), requestKey);
+            }
+        });
+
+        getChildFragmentManager().setFragmentResultListener(requestKey, this, callback);
+    }
+
+    /**
+     *
+     * @param textView
+     * @param callback
+     */
+    private void setupDatePicker(TextView textView, FragmentResultListener callback) {
+        String requestKey = Integer.toString(textView.getId());
+
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatePickerDialogFragment dpf = DatePickerDialogFragment.newInstance(requestKey);
+                dpf.show(getChildFragmentManager(), requestKey);
+            }
+        });
+
+        getChildFragmentManager().setFragmentResultListener(requestKey, this, callback);
+    }
+
+    /**
+     *
+     */
+    private void updateRecurring() {
+        if (isRecurring) {
+            binding.textDateDash.setVisibility(View.VISIBLE);
+            binding.textDateFinish.setVisibility(View.VISIBLE);
+            binding.textDayOfWeek.setVisibility(View.VISIBLE);
+        } else {
+            binding.textDateDash.setVisibility(View.INVISIBLE);
+            binding.textDateFinish.setVisibility(View.INVISIBLE);
+            binding.textDayOfWeek.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     *
+     */
+    private void updateConfirmButton() {
+        Button confirmButton = binding.confirmButton;
+
+
+        if (!isFilledIn()) {
+            confirmButton.setAlpha(.5f);
+            confirmButton.setEnabled(false);
+        } else {
+            confirmButton.setAlpha(1);
+            confirmButton.setEnabled(true);
+        }
+    }
+
+    /**
+     *
+     * @return
+     */
+    private boolean isFilledIn() {
+        // Event Title and Description check
+        EditText eventTitle = binding.valueEventTitle;
+        EditText eventDescription = binding.valueDescription;
+
+        if (eventTitle.length() <= 0 || eventDescription.length() <= 0) {
+            return false;
+        }
+
+        // Schedule must be set
+        if (startTime == null || endTime == null || startDate == null || (isRecurring && endDate == null)) {
+            return false;
+        }
+
+        // Start can't happen after the end
+        if (startTime.isAfter(endTime) || (isRecurring && startDate.isAfter(endDate))) {
+            return false;
+        }
+
+        // Event can't be scheduled in the past
+        LocalDateTime start = LocalDateTime.of(startDate, startTime);
+        if (start.isBefore(LocalDateTime.now())) {
+            return false;
+        }
+
+        // If it's recurring, we need at least one day of the week
+        if (isRecurring && daysOfWeek.isEmpty()) {
+            return false;
+        }
+
+        // Attendee Limit
+        EditText attendeeLimit = binding.editAttendeeLimit;
+
+        if (attendeeLimit.length() <= 0) {
+            return false;
+        }
+
+        // Location
+        if (eventLocation == null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private Event createEvent() {
+        EditText eventTitle = binding.valueEventTitle;
+        EditText eventDescription = binding.valueDescription;
+        EventDetail eventDetails = new EventDetail(eventTitle.getText().toString(), eventDescription.getText().toString(), categories);
+
+
+        LocalDateTime start = LocalDateTime.of(startDate, startTime);
+        LocalDate endDate = this.endDate;
+
+        if (!isRecurring) {
+            endDate = startDate;
+        }
+
+        LocalDateTime end = LocalDateTime.of(endDate, endTime);
+
+        Boolean[] eventDays = null;
+        if (isRecurring) {
+            eventDays = new Boolean[7];
+
+            for (String day : daysOfWeek) {
+                List<String> dayList = Arrays.asList(Arrays.copyOfRange(new DateFormatSymbols().getWeekdays(), 1, 8));
+                eventDays[dayList.indexOf(day)] = true;
+            }
+        }
+        EventSchedule eventSchedule = new EventSchedule(start, end, eventDays);
+
+        // Get the list limits
+        EditText editAttendeeLimit = binding.editAttendeeLimit;
+        EditText editWaitlistLimit = binding.editWaitlistLimit;
+        int attendeeLimit = Integer.parseInt(editAttendeeLimit.getText().toString());
+        int waitListLimit = 0;
+
+        if (editWaitlistLimit.length() > 0) {
+            waitListLimit = Integer.parseInt(editWaitlistLimit.getText().toString());
+        }
+
+        MainActivity mainActivity = (MainActivity) requireActivity();
+
+        return new Event(eventDetails, eventSchedule, eventLocation,
+                mainActivity.getUser().getId(), waitListLimit, attendeeLimit);
     }
 }

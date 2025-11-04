@@ -12,7 +12,6 @@ import androidx.navigation.NavGraph;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
-import com.example.skeddly.business.database.DatabaseObjects;
 import com.example.skeddly.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -20,8 +19,6 @@ import java.util.Objects;
 
 import com.example.skeddly.business.user.Authenticator;
 import com.example.skeddly.business.database.DatabaseHandler;
-import com.example.skeddly.business.Event;
-import com.example.skeddly.business.database.IterableListenUpdate;
 import com.example.skeddly.business.database.SingleListenUpdate;
 import com.example.skeddly.business.user.User;
 import com.example.skeddly.business.user.UserLoaded;
@@ -58,14 +55,6 @@ public class MainActivity extends CustomActivity {
             @Override
             public void onUserLoaded(User loadedUser, boolean shouldShowSignupPage) {
                 user = loadedUser;
-
-                // Listen for any changes to events
-                database.iterableListen(database.getEventsPath(), Event.class, new IterableListenUpdate() {
-                    @Override
-                    public void onUpdate(DatabaseObjects newValues) {
-                        user.setOwnedEvents(newValues.getIds());
-                    }
-                });
 
                 // Listen for any changes to the user itself
                 database.singleListen(database.getUsersPath().child(user.getId()), User.class, new SingleListenUpdate<User>() {
@@ -128,6 +117,10 @@ public class MainActivity extends CustomActivity {
 
     public Authenticator getAuthenticator() {
         return authenticator;
+    }
+
+    public void notifyUserChanged() {
+        authenticator.commitUserChanges();
     }
 
     public void switchToSignup() {

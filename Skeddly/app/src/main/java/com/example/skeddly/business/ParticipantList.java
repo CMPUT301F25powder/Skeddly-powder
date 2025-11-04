@@ -61,7 +61,7 @@ public class ParticipantList extends DatabaseObject {
      * Update the maximum number of attendees
      * @param maxAttend The new maximum amount of attendees
      */
-    void setMaxAttend(int maxAttend) {
+    public void setMaxAttend(int maxAttend) {
         this.maxAttend = maxAttend;
     }
 
