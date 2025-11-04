@@ -1,5 +1,8 @@
 package com.example.skeddly.business;
 
+import com.example.skeddly.business.database.DatabaseObject;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -7,7 +10,7 @@ import java.util.UUID;
  * Represents a single notification item within the application.
  * This class holds all relevant data for a notification, such as its type, content, and status.
  */
-public class Notification {
+public class Notification extends DatabaseObject {
     /**
      * Defines the different categories a notification can belong to.
      */

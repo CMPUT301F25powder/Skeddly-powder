@@ -1,12 +1,14 @@
 package com.example.skeddly.business;
 
+import com.example.skeddly.business.database.DatabaseObject;
+
 import java.util.ArrayList;
 
 /**
  * Class to represent a user's notification inbox
  */
-public class Inbox {
-    private final ArrayList<Notification> notifications;
+public class Inbox extends DatabaseObject {
+    private ArrayList<Notification> notifications;
 
     /**
      * Constructor for inbox. Simply initializes an empty list
@@ -30,4 +32,14 @@ public class Inbox {
     public void removeNotification(int index) {
         notifications.remove(index);
     }
+
+    public ArrayList<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(ArrayList<Notification> notifications) {
+        this.notifications = notifications;
+    }
+
+
 }
