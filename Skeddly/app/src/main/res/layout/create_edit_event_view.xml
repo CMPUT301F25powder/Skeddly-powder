@@ -104,30 +104,108 @@
                         tools:ignore="ContentDescription" />
 
                     <!-- Event Time -->
-                    <TextView
-                        android:id="@+id/text_event_time"
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switch_recurrence"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
-                        android:text="@string/monday_wednesday_9_30_10_00"
-                        android:textColor="@color/primary_navy"
-                        android:textSize="14sp"
+                        android:text="@string/switch_recurrence"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/event_image" />
+                        app:layout_constraintTop_toBottomOf="@+id/event_image" />
+
+                    <TextView
+                        android:id="@+id/text_date_start"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/text_date"
+                        app:layout_constraintStart_toStartOf="@+id/switch_recurrence"
+                        app:layout_constraintTop_toBottomOf="@+id/switch_recurrence" />
+
+                    <TextView
+                        android:id="@+id/text_date_dash"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/text_dash"
+                        app:layout_constraintBottom_toBottomOf="@+id/text_date_start"
+                        app:layout_constraintStart_toEndOf="@+id/text_date_start"
+                        app:layout_constraintTop_toTopOf="@+id/text_date_start" />
+
+                    <TextView
+                        android:id="@+id/text_date_finish"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/text_date"
+                        app:layout_constraintBottom_toBottomOf="@+id/text_date_dash"
+                        app:layout_constraintStart_toEndOf="@+id/text_date_dash"
+                        app:layout_constraintTop_toTopOf="@+id/text_date_dash" />
+
+<!--                    <TextView-->
+<!--                        android:id="@+id/text_day_of_week"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginTop="8dp"-->
+<!--                        android:text="@string/monday_wednesday_9_30_10_00"-->
+<!--                        android:textColor="@color/primary_navy"-->
+<!--                        android:textSize="14sp"-->
+<!--                        app:layout_constraintStart_toStartOf="@+id/text_date_start"-->
+<!--                        app:layout_constraintTop_toBottomOf="@+id/text_date_start" />-->
+                    <!-- ^ OLD probably remove? -->
+
+                    <TextView
+                        android:id="@+id/text_day_of_week"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:background="@android:drawable/editbox_background"
+                        android:drawablePadding="16dp"
+                        android:hint="@string/text_day_of_week"
+                        android:padding="8dp"
+                        app:drawableEndCompat="@android:drawable/arrow_down_float"
+                        app:layout_constraintEnd_toEndOf="@+id/text_date_finish"
+                        app:layout_constraintStart_toStartOf="@id/text_date_start"
+                        app:layout_constraintTop_toBottomOf="@id/text_date_start" />
 
                     <!-- Information Section -->
+                    <TextView
+                        android:id="@+id/text_time_start"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/text_time"
+                        app:layout_constraintStart_toStartOf="@+id/switch_recurrence"
+                        app:layout_constraintTop_toBottomOf="@+id/text_day_of_week" />
+
+                    <TextView
+                        android:id="@+id/text_time_dash"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/text_dash"
+                        app:layout_constraintStart_toEndOf="@+id/text_time_start"
+                        app:layout_constraintTop_toTopOf="@+id/text_time_start" />
+
+                    <TextView
+                        android:id="@+id/text_time_finish"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/text_time"
+                        app:layout_constraintStart_toEndOf="@+id/text_time_dash"
+                        app:layout_constraintTop_toTopOf="@+id/text_time_start" />
+
                     <TextView
                         android:id="@+id/label_information"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
                         android:text="@string/information"
                         android:textColor="@color/primary_navy"
                         android:textSize="16sp"
                         android:textStyle="bold"
-                        app:layout_constraintStart_toStartOf="@id/text_event_time"
-                        app:layout_constraintTop_toBottomOf="@id/text_event_time" />
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/text_time_start" />
 
                     <TextView
                         android:id="@+id/label_event_title"
@@ -229,7 +307,7 @@
                         android:id="@+id/edit_waitlist_limit"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:hint="OPTIONAL"
+                        android:hint="@string/edit_waitlist_limit"
                         android:inputType="number"
                         android:textSize="14sp"
                         app:layout_constraintEnd_toEndOf="@id/label_waitlist_limit"
@@ -249,7 +327,7 @@
                         android:id="@+id/edit_attendee_limit"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:hint="Enter Limit"
+                        android:hint="@string/edit_attendee_limit"
                         android:inputType="number"
                         android:textSize="14sp"
                         app:layout_constraintEnd_toEndOf="@id/label_attendee_limit"

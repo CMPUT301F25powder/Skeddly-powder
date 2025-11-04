@@ -62,4 +62,11 @@
     <string name="button_cancel">Cancel</string>
     <string name="button_confirm">Confirm</string>
     <string name="text_category_selector">Categories</string>
+    <string name="switch_recurrence">Recurring</string>
+    <string name="text_date">year, month, day</string>
+    <string name="text_dash">-</string>
+    <string name="text_day_of_week">Day of the Week</string>
+    <string name="text_time">hh:mm</string>
+    <string name="edit_waitlist_limit">OPTIONAL</string>
+    <string name="edit_attendee_limit">Enter Limit</string>
 </resources>

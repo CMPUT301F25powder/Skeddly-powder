@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -16,9 +17,14 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
 
 import com.example.skeddly.databinding.CreateEditEventViewBinding;
+import com.example.skeddly.ui.popup.DatePickerDialogFragment;
 import com.example.skeddly.ui.popup.MapPopupDialogFragment;
+import com.example.skeddly.ui.popup.TimePickerDialogFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.material.materialswitch.MaterialSwitch;
 
+import java.time.Month;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -36,11 +42,30 @@ public class CreateFragment extends Fragment {
         ImageButton buttonBack = binding.buttonBack;
         ImageButton buttonQrCode = binding.buttonQrCode;
 
+        MaterialSwitch switchRecurrence = binding.switchRecurrence;
+
+        TextView textDateStart = binding.textDateStart;
+        TextView textDateDash = binding.textDateDash;
+        TextView textDateFinish = binding.textDateFinish;
+
+        TextView textDayOfWeek = binding.textDayOfWeek;
+        String[] dayArray = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",
+                "Sunday"};
+        String dayTitle = "Select Day";
+
+        TextView textTimeStart = binding.textTimeStart;
+        TextView textTimeFinish = binding.textTimeFinish;
+
+        TextView textCategorySelector = binding.textCategorySelector;
+        String[] catArray = {"Indoor", "Outdoor", "In-person", "Virtual", "Hybrid", "Arts & Crafts",
+                "Physical activity", "???????????", "??????????", "???????????", "??????????"};
+        String categoryTitle = "Select Category";
+
+        Button buttonConfirm = binding.confirmButton;
+
         // Hide them because we don't want them here
         buttonBack.setVisibility(View.INVISIBLE);
         buttonQrCode.setVisibility(View.INVISIBLE);
-
-        setupCategorySelector();
 
         TextView textEventTitleOverlay = binding.textEventTitleOverlay;
 
@@ -63,7 +88,113 @@ public class CreateFragment extends Fragment {
             }
         });
 
-        Button buttonConfirm = binding.confirmButton;
+        textDateDash.setVisibility(View.INVISIBLE);
+        textDateFinish.setVisibility(View.INVISIBLE);
+        textDayOfWeek.setVisibility(View.GONE);
+
+        switchRecurrence.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(@NonNull CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    textDateDash.setVisibility(View.VISIBLE);
+                    textDateFinish.setVisibility(View.VISIBLE);
+                    textDayOfWeek.setVisibility(View.VISIBLE);
+                } else {
+                    textDateDash.setVisibility(View.INVISIBLE);
+                    textDateFinish.setVisibility(View.INVISIBLE);
+                    textDayOfWeek.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        textDateStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatePickerDialogFragment dpf = DatePickerDialogFragment.newInstance("dateStart");
+                dpf.show(getChildFragmentManager(), "dateStart");
+            }
+        });
+
+        getChildFragmentManager().setFragmentResultListener("dateStart",
+                this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                int year = result.getInt("year");
+
+                int monthNum = result.getInt("month");
+                String month = Month.of(monthNum + 1)
+                        .getDisplayName(TextStyle.SHORT, Locale.getDefault());
+
+                int day = result.getInt("day");
+
+                textDateStart.setText(String.format("%d, %s, %d", year, month, day));
+            }
+        });
+
+        textDateFinish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatePickerDialogFragment dpf = DatePickerDialogFragment.newInstance("dateFinish");
+                dpf.show(getChildFragmentManager(), "dateFinish");
+            }
+        });
+
+        getChildFragmentManager().setFragmentResultListener("dateFinish",
+                this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                int year = result.getInt("year");
+
+                int monthNum = result.getInt("month");
+                String month = Month.of(monthNum + 1).getDisplayName(TextStyle.SHORT, Locale.getDefault());
+
+                int day = result.getInt("day");
+
+                textDateFinish.setText(String.format("%d, %s, %d", year, month, day));
+            }
+        });
+
+        setupSelector(textDayOfWeek, dayArray, dayTitle);
+
+        textTimeStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TimePickerDialogFragment tpf = TimePickerDialogFragment.newInstance("timeStart");
+                tpf.show(getChildFragmentManager(), "timeStart");
+            }
+        });
+
+        getChildFragmentManager().setFragmentResultListener("timeStart",
+                this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                int hourOfDay = result.getInt("hourOfDay");
+                int minute = result.getInt("minute");
+
+                textTimeStart.setText(String.format("%d:%02d", hourOfDay, minute));
+            }
+        });
+
+        textTimeFinish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TimePickerDialogFragment tpf = TimePickerDialogFragment.newInstance("timeFinish");
+                tpf.show(getChildFragmentManager(), "timeFinish");
+            }
+        });
+
+        getChildFragmentManager().setFragmentResultListener("timeFinish",
+                this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                int hourOfDay = result.getInt("hourOfDay");
+                int minute = result.getInt("minute");
+
+                textTimeFinish.setText(String.format("%d:%02d", hourOfDay, minute));
+            }
+        });
+
+        setupSelector(textCategorySelector, catArray, categoryTitle);
 
         buttonConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,26 +216,25 @@ public class CreateFragment extends Fragment {
 
     /**
      *
+     * @param textSelector
+     * @param array
      */
-    private void setupCategorySelector() {
-        TextView textCategorySelector = binding.textCategorySelector;
-        String[] catArray = {"Indoor", "Outdoor", "In-person", "Virtual", "Hybrid", "Arts & Crafts",
-                "Physical activity", "???????????", "??????????", "???????????", "??????????"};
-        boolean[] selectedCategory = new boolean[catArray.length];
+    private void setupSelector(TextView textSelector, String[] array, String title) {
+        boolean[] selected = new boolean[array.length];
 
-        textCategorySelector.setOnClickListener(new View.OnClickListener() {
+        textSelector.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Initialize alert dialog
                 AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
 
                 // Set title
-                builder.setTitle("Select Category");
+                builder.setTitle(title);
 
                 // Set dialog non cancelable
                 builder.setCancelable(false);
 
-                builder.setMultiChoiceItems(catArray, selectedCategory, new DialogInterface.OnMultiChoiceClickListener() {
+                builder.setMultiChoiceItems(array, selected, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which, boolean isChecked) {}
                 });
@@ -114,15 +244,15 @@ public class CreateFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         ArrayList<String> categories = new ArrayList<>();
 
-                        for (int i = 0; i < selectedCategory.length; i++) {
-                            if (selectedCategory[i]) {
-                                categories.add(catArray[i]);
+                        for (int i = 0; i < selected.length; i++) {
+                            if (selected[i]) {
+                                categories.add(array[i]);
                             }
                         }
 
                         String result = String.join(", ", categories);
 
-                        textCategorySelector.setText(result);
+                        textSelector.setText(result);
                     }
                 });
 
@@ -136,11 +266,11 @@ public class CreateFragment extends Fragment {
                 builder.setNeutralButton("Clear All", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        for (int i = 0; i < selectedCategory.length; i++) {
+                        for (int i = 0; i < selected.length; i++) {
                             // Remove all selection
-                            selectedCategory[i] = false;
+                            selected[i] = false;
 
-                            textCategorySelector.setText("");
+                            textSelector.setText("");
                         }
                     }
                 });
