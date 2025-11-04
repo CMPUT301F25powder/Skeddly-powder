@@ -1,12 +1,16 @@
 package com.example.skeddly.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -22,6 +26,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class TestFragment extends Fragment {
     private FragmentTestBinding binding;
+    private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
 
     @Nullable
     @Override
@@ -108,6 +113,30 @@ public class TestFragment extends Fragment {
                 if (location != null) {
                     returnText.setText(String.format("Latitude is %f, Longitude is %f", location.latitude, location.longitude));
                 }
+            }
+        });
+
+
+        // === Photo Picker Stuff ===
+        // Registers a photo picker activity launcher in single-select mode.
+        this.pickMedia = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
+            // Callback is invoked after the user selects a media item or closes the
+            // photo picker.
+            if (uri != null) {
+                Log.d("PhotoPicker", "Selected URI: " + uri);
+            } else {
+                Log.d("PhotoPicker", "No media selected");
+            }
+        });
+
+        Button photoPickerButton = binding.photoPickerButton;
+        photoPickerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Launch the photo picker and let the user choose only images.
+                pickMedia.launch(new PickVisualMediaRequest.Builder()
+                        .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                        .build());
             }
         });
 
