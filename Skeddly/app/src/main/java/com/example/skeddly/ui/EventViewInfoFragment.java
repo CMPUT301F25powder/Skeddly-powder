@@ -17,6 +17,7 @@ import com.example.skeddly.business.Event;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.databinding.EventViewFragmentBinding;
 import com.example.skeddly.ui.adapter.EventAdapter;
+import com.google.firebase.database.ValueEventListener;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -32,6 +33,7 @@ public class EventViewInfoFragment extends Fragment {
     private String eventId;
     private String userId;
     private EventAdapter eventAdapter;
+    private ValueEventListener valueEventListener;
 
     @Nullable
     @Override
@@ -63,7 +65,7 @@ public class EventViewInfoFragment extends Fragment {
         // Set up the back button to navigate up
         binding.buttonBack.setOnClickListener(v -> {
             NavController navController = Navigation.findNavController(v);
-            navController.navigateUp(); // The correct way to go back
+            navController.navigateUp();
         });
 
         return root;
@@ -74,7 +76,7 @@ public class EventViewInfoFragment extends Fragment {
      */
     private void fetchEventDetails() {
         // Use addValueEventListener to continuously listen for changes to the event data.
-        dbHandler.getEventsPath().child(eventId).addValueEventListener(new com.google.firebase.database.ValueEventListener() {
+        this.valueEventListener = new com.google.firebase.database.ValueEventListener() {
             @Override
             public void onDataChange(@NonNull com.google.firebase.database.DataSnapshot snapshot) {
                 Event event = snapshot.getValue(Event.class);
@@ -83,7 +85,7 @@ public class EventViewInfoFragment extends Fragment {
                     event.setId(snapshot.getKey());
 
                     // Set button state and on click listener
-                    eventAdapter.updateJoinButtonState(binding.buttonJoin, event, userId, dbHandler);
+                    eventAdapter.updateJoinButtonState(binding.buttonEventJoin, event, userId, dbHandler);
 
                     // Once data is loaded or updated, populate the screen
                     populateUI(event);
@@ -96,7 +98,14 @@ public class EventViewInfoFragment extends Fragment {
             public void onCancelled(@NonNull com.google.firebase.database.DatabaseError error) {
                 Log.e("EventViewInfoFragment", "Database error: " + error.getMessage());
             }
-        });
+        };
+        dbHandler.getEventsPath().child(eventId).addValueEventListener(this.valueEventListener);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        dbHandler.getEventsPath().child(eventId).removeEventListener(valueEventListener);
     }
 
     /**
