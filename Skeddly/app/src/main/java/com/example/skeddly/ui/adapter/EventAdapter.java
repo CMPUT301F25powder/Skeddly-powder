@@ -108,9 +108,4 @@ public class EventAdapter extends ArrayAdapter<Event> {
         });
     }
 
-    // Callback interface, needed to pass callback function to findUserTicketId
-    interface FindTicketCallback {
-        void onResult(String ticketId);
-    }
-
 }
