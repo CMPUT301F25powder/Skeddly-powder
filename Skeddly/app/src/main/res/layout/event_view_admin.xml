@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="@color/primary_light_blue">
 
-    <!-- Back Button -->
     <ImageButton
         android:id="@+id/button_back"
         android:layout_width="40dp"
@@ -20,7 +19,6 @@
         app:tint="@color/neutral_lighter_off_white"
         tools:ignore="ContentDescription" />
 
-    <!-- Main Content Card -->
     <androidx.cardview.widget.CardView
         android:id="@+id/main_content_card"
         android:layout_width="0dp"
@@ -42,7 +40,6 @@
             android:layout_height="wrap_content"
             android:paddingBottom="24dp">
 
-            <!-- Event Image Banner -->
             <ImageView
                 android:id="@+id/event_image"
                 android:layout_width="0dp"
@@ -52,9 +49,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                />
+                tools:ignore="ContentDescription" />
 
-            <!-- Event Title and Location Overlay -->
             <TextView
                 android:id="@+id/text_event_title_overlay"
                 android:layout_width="wrap_content"
@@ -74,7 +70,6 @@
                 app:layout_constraintBottom_toBottomOf="@id/event_image"
                 app:layout_constraintStart_toStartOf="parent" />
 
-            <!-- QR Code Style Button -->
             <ImageButton
                 android:id="@+id/button_qr_code"
                 android:layout_width="48dp"
@@ -91,7 +86,6 @@
                 app:tint="@color/neutral_lighter_off_white"
                 tools:ignore="ContentDescription" />
 
-            <!-- Event Time -->
             <TextView
                 android:id="@+id/text_event_time"
                 android:layout_width="wrap_content"
@@ -104,7 +98,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/event_image" />
 
-            <!-- Information Section -->
             <TextView
                 android:id="@+id/label_information"
                 android:layout_width="wrap_content"
@@ -136,8 +129,8 @@
                 android:text="@string/community_meetup"
                 android:textColor="@color/neutral_brown_light"
                 app:layout_constraintBaseline_toBaselineOf="@+id/label_event_title"
-                app:layout_constraintStart_toEndOf="@+id/label_event_title"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/label_event_title" />
 
             <TextView
                 android:id="@+id/label_description"
@@ -158,8 +151,8 @@
                 android:text="@string/a_casual_get_together_for_all_members"
                 android:textColor="@color/neutral_brown_light"
                 app:layout_constraintBaseline_toBaselineOf="@+id/label_description"
-                app:layout_constraintStart_toEndOf="@+id/label_description"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/label_description" />
 
             <TextView
                 android:id="@+id/label_geolocation"
@@ -180,8 +173,8 @@
                 android:text="@string/within_5km_of_venue"
                 android:textColor="@color/neutral_brown_light"
                 app:layout_constraintBaseline_toBaselineOf="@+id/label_geolocation"
-                app:layout_constraintStart_toEndOf="@+id/label_geolocation"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/label_geolocation" />
 
             <TextView
                 android:id="@+id/label_category"
@@ -203,7 +196,6 @@
                 app:layout_constraintBaseline_toBaselineOf="@+id/label_category"
                 app:layout_constraintStart_toEndOf="@+id/label_category" />
 
-            <!-- Right-aligned details -->
             <TextView
                 android:id="@+id/label_waitlist_limit"
                 android:layout_width="wrap_content"
@@ -261,19 +253,41 @@
                 app:layout_constraintEnd_toEndOf="@id/label_max_waiting_list"
                 app:layout_constraintTop_toBottomOf="@id/label_max_waiting_list" />
 
+            <!-- The 'Join' button, intended for regular users -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/button_join"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="16dp"
+                android:background="@color/primary_purple"
+                android:text="@string/join"
+                android:textAllCaps="false"
+                android:textColor="@color/neutral_lighter_off_white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/value_max_waiting_list" />
+
+            <!-- A Group to easily control visibility of all admin buttons at once -->
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/admin_button_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="button_draw,button_edit,button_participants" />
+
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/button_draw"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="24dp"
-                android:layout_marginEnd="6dp"
+                android:layout_marginEnd="8dp"
                 android:background="@color/primary_purple"
                 android:text="@string/draw"
                 android:textAllCaps="false"
                 android:textColor="@color/neutral_lighter_off_white"
                 app:layout_constraintEnd_toStartOf="@+id/button_edit"
-                app:layout_constraintHorizontal_chainStyle="spread"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/value_max_waiting_list" />
 
@@ -281,6 +295,7 @@
                 android:id="@+id/button_edit"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginEnd="16dp"
                 android:background="@color/primary_purple"
                 android:text="@string/edit"
@@ -299,21 +314,9 @@
                 android:text="@string/participants"
                 android:textAllCaps="false"
                 android:textColor="@color/neutral_lighter_off_white"
-                app:layout_constraintEnd_toEndOf="@id/button_draw"
+                app:layout_constraintEnd_toEndOf="@id/button_edit"
                 app:layout_constraintStart_toStartOf="@id/button_draw"
                 app:layout_constraintTop_toBottomOf="@id/button_draw" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/button_join"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:background="@color/primary_purple"
-                android:text="@string/join"
-                android:textAllCaps="false"
-                android:textColor="@color/neutral_lighter_off_white"
-                app:layout_constraintEnd_toEndOf="@id/button_edit"
-                app:layout_constraintStart_toStartOf="@id/button_edit"
-                app:layout_constraintTop_toTopOf="@id/button_participants" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
