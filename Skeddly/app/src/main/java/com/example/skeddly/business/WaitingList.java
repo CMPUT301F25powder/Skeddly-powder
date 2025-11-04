@@ -1,7 +1,6 @@
 package com.example.skeddly.business;
 
 import com.example.skeddly.business.database.DatabaseObject;
-import com.example.skeddly.business.database.DatabaseObjects;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -89,11 +88,11 @@ public class WaitingList extends DatabaseObject {
         this.maxWait = maxWait;
     }
 
-    public ArrayList<String> getTicketList() {
+    public ArrayList<String> getTicketIds() {
         return ticketIds;
     }
 
-    public void setTicketList(ArrayList<String> ticketList) {
+    public void setTicketIds(ArrayList<String> ticketIds) {
         this.ticketIds = ticketIds;
     }
 }

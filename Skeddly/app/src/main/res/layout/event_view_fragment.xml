@@ -263,7 +263,7 @@
 
             <!-- Join Button -->
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/button_join"
+                android:id="@+id/button_event_join"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:background="@color/primary_purple"

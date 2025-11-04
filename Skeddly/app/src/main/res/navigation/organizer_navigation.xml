@@ -7,8 +7,11 @@
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.example.skeddly.ui.HomeFragment"
-        android:label="@string/nav_home"
-        />
+        android:label="@string/nav_home">
+    <action
+        android:id="@+id/action_navigation_home_to_event_view_info"
+        app:destination="@id/event_view_info" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_inbox"
@@ -27,6 +30,15 @@
         android:name="com.example.skeddly.ui.MyEventsFragment"
         android:label="@string/nav_my_events"
         />
+
+    <fragment
+        android:id="@+id/event_view_info"
+        android:name="com.example.skeddly.ui.EventViewInfoFragment"
+        android:label="@string/nav_event_info">
+        <argument
+            android:name="eventId"
+            app:argType="string" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_profile"
