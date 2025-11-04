@@ -1,11 +1,10 @@
 package com.example.skeddly.ui.adapter;
 
-import static android.app.PendingIntent.getActivity;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.View;import android.view.ViewGroup;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
@@ -19,9 +18,7 @@ import androidx.navigation.Navigation;
 import com.example.skeddly.R;
 import com.example.skeddly.business.Event;
 import com.example.skeddly.business.Ticket;
-import com.example.skeddly.business.WaitingList;
 import com.example.skeddly.business.database.DatabaseHandler;
-import com.example.skeddly.business.location.CustomLocation;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -65,100 +62,55 @@ public class EventAdapter extends ArrayAdapter<Event> {
                 buttonEdit.setVisibility(View.GONE);
             }
 
-            // Set button to join or leave depending on if user is on wait list of an event
-            isJoinedEvent(event, current_user_id, dbHandler, this::onResult, buttonJoin);
+            // Set button state, and button's on click listener
+            updateJoinButtonState(buttonJoin, event, current_user_id, dbHandler);
 
-            // Handle button clicks
+            // Handle view info button click
             buttonViewInfo.setOnClickListener(v -> {
-                // Handle view info button click
                 Bundle bundle = new Bundle();
                 bundle.putString("eventId", event.getId());
-
-                NavController navController = Navigation.findNavController(v);
-                navController.navigate(R.id.action_navigation_home_to_event_view_info, bundle);
-
+                bundle.putString("userId", current_user_id);
+                Navigation.findNavController(v).navigate(R.id.action_navigation_home_to_event_view_info, bundle);
                 Toast.makeText(getContext(), "View info for " + event.getName(), Toast.LENGTH_SHORT).show();
             });
 
-            buttonJoin.setOnClickListener(v -> {
-                // Handle join button click
-                if (buttonJoin.getText().equals("Join")) {
-                    joinEvent(event, current_user_id, null, dbHandler);
-                    Toast.makeText(getContext(), "Joining " + event.getName(), Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    isJoinedEvent(event, current_user_id, dbHandler, this::leaveEvent, buttonJoin);
-                    Toast.makeText(getContext(), "Leaving " + event.getName(), Toast.LENGTH_SHORT).show();
-                }
-            });
-
+            // Handle edit button click
             buttonEdit.setOnClickListener(v -> {
-                // Handle edit button click
                 // TODO: Implement navigation to event edit screen
                 Toast.makeText(getContext(), "Editing " + event.getName(), Toast.LENGTH_SHORT).show();
             });
         }
 
         return convertView;
-
     }
 
-    interface Callback {
-        void onResult(boolean result, Button buttonJoin, String ticketId, Event event, DatabaseHandler dbHandler);
-    }
-    private void onResult(boolean result, Button buttonJoin, String ticketId, Event event, DatabaseHandler dbHandler) {
-        if (result) {
-            buttonJoin.setText("Leave");
-        }
-        else {
-            buttonJoin.setText("Join");
-        }
-    }
-
-    private void leaveEvent(boolean result, Button buttonJoin, String ticketId, Event event, DatabaseHandler dbHandler) {
-        if (result) {
-            event.getApplicants().remove(ticketId);
-            dbHandler.getEventsPath().child(event.getId()).child("applicants").setValue(event.getApplicants());
-            dbHandler.getTicketsPath().child(ticketId).removeValue();
-            buttonJoin.setText("Join");
-        }
-    }
-
-    private void joinEvent(Event event, String userId, CustomLocation location, DatabaseHandler dbHandler) {
-        // Ensure applicants object and list exist to prevent NullPointerException
-        if (event.getApplicants() == null) {
-            event.setApplications(new WaitingList());
-        }
-        if (event.getApplicants().getTicketIds() == null) {
-            event.getApplicants().setTicketIds(new ArrayList<>());
-        }
-
-        Ticket ticket = new Ticket(userId, location);
-        // Add the ticket to the event's applicants
-        event.getApplicants().addTicket(ticket.getId());
-        dbHandler.getEventsPath().child(event.getId()).child("applicants").setValue(event.getApplicants());
-
-        // Save ticket to DB
-        dbHandler.getTicketsPath().child(ticket.getId()).setValue(ticket);
+    // Encapsulates the logic for setting the join/leave button
+    public void updateJoinButtonState(Button buttonJoin, Event event, String userId, DatabaseHandler dbHandler) {
+        buttonJoin.setEnabled(false); // Disable button while we check
+        event.findUserTicketId(userId, dbHandler, ticketId -> {
+            // This code runs when the check is complete
+            if (ticketId != null) {
+                // User is on the waitlist
+                buttonJoin.setText("Leave");
+                buttonJoin.setOnClickListener(v -> {
+                    event.leave(dbHandler, ticketId);
+                    Toast.makeText(getContext(), "Leaving " + event.getName(), Toast.LENGTH_SHORT).show();
+                });
+            } else {
+                // User is not on the waitlist
+                buttonJoin.setText("Join");
+                buttonJoin.setOnClickListener(v -> {
+                    event.join(dbHandler, userId);
+                    Toast.makeText(getContext(), "Joining " + event.getName(), Toast.LENGTH_SHORT).show();
+                });
+            }
+            buttonJoin.setEnabled(true); // Re-enable the button
+        });
     }
 
-    private void isJoinedEvent(Event event, String userId, DatabaseHandler dbHandler, Callback callback, Button buttonJoin) {
-        ArrayList<String> ticketIds = event.getApplicants().getTicketIds();
-        for (String ticketId : ticketIds) {
-            dbHandler.getTicketsPath().child(ticketId).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    Ticket ticket = snapshot.getValue(Ticket.class);
-                    if (ticket != null && ticket.getUser().equals(userId)) {
-                        callback.onResult(true, buttonJoin, ticketId, event, dbHandler);
-                    }
-                }
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    throw error.toException();
-                }
-            });
-        }
-        callback.onResult(false, buttonJoin, null, null, null);
+    // Callback interface, needed to pass callback function to findUserTicketId
+    interface FindTicketCallback {
+        void onResult(String ticketId);
     }
+
 }

@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,11 +16,13 @@ import androidx.navigation.Navigation;
 import com.example.skeddly.business.Event;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.databinding.EventViewFragmentBinding;
+import com.example.skeddly.ui.adapter.EventAdapter;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Locale;
 
 
@@ -27,6 +30,8 @@ public class EventViewInfoFragment extends Fragment {
     private EventViewFragmentBinding binding;
     private DatabaseHandler dbHandler;
     private String eventId;
+    private String userId;
+    private EventAdapter eventAdapter;
 
     @Nullable
     @Override
@@ -37,9 +42,14 @@ public class EventViewInfoFragment extends Fragment {
         // Initialize database handler
         dbHandler = new DatabaseHandler(getContext());
 
+        // Initialize eventAdapter
+        eventAdapter = new EventAdapter(getContext(), new ArrayList<>());
+
         // Get the eventId passed from the HomeFragment
         if (getArguments() != null) {
             eventId = getArguments().getString("eventId");
+            userId = getArguments().getString("userId");
+        } else {
         }
 
         // Fetch data from Firebase if we have a valid ID
@@ -71,6 +81,10 @@ public class EventViewInfoFragment extends Fragment {
                 if (event != null) {
                     // Set the ID manually since it's the key of the snapshot
                     event.setId(snapshot.getKey());
+
+                    // Set button state and on click listener
+                    eventAdapter.updateJoinButtonState(binding.buttonJoin, event, userId, dbHandler);
+
                     // Once data is loaded or updated, populate the screen
                     populateUI(event);
                 } else {
