@@ -17,15 +17,13 @@ import com.example.skeddly.business.user.Authenticator;
 import com.example.skeddly.business.user.User;
 import com.example.skeddly.databinding.InboxFragmentBinding;
 import com.example.skeddly.ui.adapter.InboxAdapter;
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 
 public class InboxFragment extends Fragment {
     private InboxFragmentBinding binding;
-    private ArrayList<Notification> notifList;
+    private Inbox inbox;
     private DatabaseHandler dbHandler;
     private InboxAdapter inboxAdapter;
     private String userId;
@@ -45,10 +43,10 @@ public class InboxFragment extends Fragment {
         User user = activity.getUser();
 
         // Notif list
-        notifList = user.getInbox().getNotifications();
+        inbox = user.getInbox();
 
         // Inbox Adapter
-        inboxAdapter = new InboxAdapter(getContext(), notifList);
+        inboxAdapter = new InboxAdapter(getContext(), inbox);
 
         // Set event adapter to list view
         binding.listNotifications.setAdapter(inboxAdapter);

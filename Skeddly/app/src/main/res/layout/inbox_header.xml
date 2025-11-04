@@ -6,20 +6,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/secondary_dark_purple">
 
-    <ImageButton
-        android:id="@+id/button_back"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="15dp"
-        android:background="@drawable/image_round_style"
-        android:src="@drawable/ic_arrow_back"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/neutral_lighter_off_white"
-        tools:ignore="ContentDescription"
-        tools:layout_editor_absoluteY="22dp" />
-
     <TextView
         android:id="@+id/inbox_title"
         android:layout_width="wrap_content"
