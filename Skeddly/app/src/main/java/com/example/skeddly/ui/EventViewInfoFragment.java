@@ -13,8 +13,13 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.example.skeddly.MainActivity;
 import com.example.skeddly.business.Event;
 import com.example.skeddly.business.database.DatabaseHandler;
+import com.example.skeddly.business.user.Authenticator;
+import com.example.skeddly.business.user.User;
+import com.example.skeddly.business.user.UserLevel;
+import com.example.skeddly.databinding.EventViewAdminBinding;
 import com.example.skeddly.databinding.EventViewFragmentBinding;
 import com.example.skeddly.ui.adapter.EventAdapter;
 import com.google.firebase.database.ValueEventListener;
@@ -28,17 +33,18 @@ import java.util.Locale;
 
 
 public class EventViewInfoFragment extends Fragment {
-    private EventViewFragmentBinding binding;
+    private EventViewAdminBinding binding;
     private DatabaseHandler dbHandler;
     private String eventId;
     private String userId;
+    private String organizerId;
     private EventAdapter eventAdapter;
     private ValueEventListener valueEventListener;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = EventViewFragmentBinding.inflate(inflater, container, false);
+        binding = EventViewAdminBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         // Initialize database handler
@@ -51,7 +57,20 @@ public class EventViewInfoFragment extends Fragment {
         if (getArguments() != null) {
             eventId = getArguments().getString("eventId");
             userId = getArguments().getString("userId");
+            organizerId = getArguments().getString("organizerId");
+        }
+
+        // Set view based on level
+        boolean isOrganizer = userId.equals(organizerId);
+        User currentUser = ((MainActivity) requireActivity()).getUser();
+        if (currentUser != null && (isOrganizer || currentUser.getPrivilegeLevel() == UserLevel.ADMIN)) {
+            // USER IS ADMIN/ORGANIZER: Show admin buttons, hide join button.
+            binding.adminButtonGroup.setVisibility(View.VISIBLE);
+            binding.buttonJoin.setVisibility(View.GONE);
         } else {
+            // USER IS ENTRANT: Hide admin buttons, show join button.
+            binding.adminButtonGroup.setVisibility(View.GONE);
+            binding.buttonJoin.setVisibility(View.VISIBLE);
         }
 
         // Fetch data from Firebase if we have a valid ID
@@ -61,6 +80,7 @@ public class EventViewInfoFragment extends Fragment {
             // Log an error if for some reason the eventId wasn't passed correctly
             Log.e("EventViewInfoFragment", "Event ID is null or empty!");
         }
+
 
         // Set up the back button to navigate up
         binding.buttonBack.setOnClickListener(v -> {
@@ -85,7 +105,7 @@ public class EventViewInfoFragment extends Fragment {
                     event.setId(snapshot.getKey());
 
                     // Set button state and on click listener
-                    eventAdapter.updateJoinButtonState(binding.buttonEventJoin, event, userId, dbHandler);
+                    eventAdapter.updateJoinButtonState(binding.buttonJoin, event, userId, dbHandler);
 
                     // Once data is loaded or updated, populate the screen
                     populateUI(event);

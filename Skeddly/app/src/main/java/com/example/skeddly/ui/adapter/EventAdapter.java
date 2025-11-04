@@ -70,6 +70,7 @@ public class EventAdapter extends ArrayAdapter<Event> {
                 Bundle bundle = new Bundle();
                 bundle.putString("eventId", event.getId());
                 bundle.putString("userId", current_user_id);
+                bundle.putString("organizerId", event.getOrganizer());
                 Navigation.findNavController(v).navigate(R.id.action_navigation_home_to_event_view_info, bundle);
                 Toast.makeText(getContext(), "View info for " + event.getName(), Toast.LENGTH_SHORT).show();
             });
