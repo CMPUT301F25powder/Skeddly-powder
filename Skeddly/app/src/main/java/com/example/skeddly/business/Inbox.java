@@ -40,6 +40,4 @@ public class Inbox extends DatabaseObject {
     public void setNotifications(ArrayList<Notification> notifications) {
         this.notifications = notifications;
     }
-
-
 }

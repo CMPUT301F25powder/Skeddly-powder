@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.database.DatabaseObject;
+import com.example.skeddly.business.database.SingleListenUpdate;
 import com.example.skeddly.business.location.CustomLocation;
 import com.example.skeddly.business.user.User;
 import com.google.firebase.database.DataSnapshot;
@@ -202,6 +203,15 @@ public class Event extends DatabaseObject {
             });
         }
         callback.onResult(null); // Didn't find it
+    }
+
+    public void notifyWaiting(Notification notif, DatabaseHandler dbHandler) {
+        SingleListenUpdate<Ticket> getUserFromTicket = (ticket) -> {
+           String userId = ticket.getUser();
+        };
+        for (String ticketId : this.getApplicants().getTicketIds()) {
+            dbHandler.singleListen(dbHandler.getTicketsPath().child(ticketId), Ticket.class, getUserFromTicket);
+        }
     }
 
 }
