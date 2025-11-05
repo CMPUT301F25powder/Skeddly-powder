@@ -8,7 +8,10 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextWatcher;
+import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +43,7 @@ import com.example.skeddly.ui.popup.DatePickerDialogFragment;
 import com.example.skeddly.ui.popup.MapPopupDialogFragment;
 import com.example.skeddly.ui.popup.TimePickerDialogFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.StyleSpan;
 import com.google.android.material.materialswitch.MaterialSwitch;
 
 import java.io.ByteArrayOutputStream;
@@ -92,6 +96,8 @@ public class CreateFragment extends Fragment {
         TextView textEventTitleOverlay = binding.textEventTitleOverlay;
 
         MaterialSwitch switchRecurrence = binding.switchRecurrence;
+
+        UnderlineSpan underlineSpan = new UnderlineSpan();
 
         TextView textDateStart = binding.textDateStart;
         TextView textDateFinish = binding.textDateFinish;
@@ -192,7 +198,11 @@ public class CreateFragment extends Fragment {
                 int day = result.getInt("day");
 
                 startDate = LocalDate.of(year, monthNum + 1, day);
-                textDateStart.setText(startDate.format(dateFormatter));
+
+                SpannableString startDateStr = new SpannableString(startDate.format(dateFormatter));
+                startDateStr.setSpan(underlineSpan, 0, startDateStr.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+                textDateStart.setText(startDateStr);
                 updateConfirmButton();
             }
         });
@@ -204,7 +214,11 @@ public class CreateFragment extends Fragment {
                 int day = result.getInt("day");
 
                 endDate = LocalDate.of(year, monthNum + 1, day);
-                textDateFinish.setText(endDate.format(dateFormatter));
+
+                SpannableString endDateStr = new SpannableString(endDate.format(dateFormatter));
+                endDateStr.setSpan(underlineSpan, 0, endDateStr.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+                textDateFinish.setText(endDateStr);
                 updateConfirmButton();
             }
         });
@@ -213,7 +227,11 @@ public class CreateFragment extends Fragment {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
                 startTime = LocalTime.of(result.getInt("hourOfDay"), result.getInt("minute"));
-                textTimeStart.setText(startTime.format(timeFormatter));
+
+                SpannableString startTimeStr = new SpannableString(startTime.format(timeFormatter));
+                startTimeStr.setSpan(underlineSpan, 0, startTimeStr.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+                textTimeStart.setText(startTimeStr);
                 updateConfirmButton();
             }
         });
@@ -222,7 +240,11 @@ public class CreateFragment extends Fragment {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
                 endTime = LocalTime.of(result.getInt("hourOfDay"), result.getInt("minute"));
-                textTimeFinish.setText(endTime.format(timeFormatter));
+
+                SpannableString endTimeStr = new SpannableString(endTime.format(timeFormatter));
+                endTimeStr.setSpan(underlineSpan, 0, endTimeStr.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+                textTimeFinish.setText(endTimeStr);
                 updateConfirmButton();
             }
         });

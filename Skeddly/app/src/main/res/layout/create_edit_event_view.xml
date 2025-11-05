@@ -111,6 +111,7 @@
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
                         android:text="@string/switch_recurrence"
+                        android:textSize="16sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/event_image" />
 
@@ -118,7 +119,9 @@
                         android:id="@+id/text_date_start"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
                         android:text="@string/text_date"
+                        android:textSize="18sp"
                         app:layout_constraintStart_toStartOf="@+id/switch_recurrence"
                         app:layout_constraintTop_toBottomOf="@+id/switch_recurrence" />
 
@@ -128,6 +131,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:text="@string/text_dash"
+                        android:textSize="18sp"
                         app:layout_constraintBottom_toBottomOf="@+id/text_date_start"
                         app:layout_constraintStart_toEndOf="@+id/text_date_start"
                         app:layout_constraintTop_toTopOf="@+id/text_date_start" />
@@ -138,32 +142,23 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:text="@string/text_date"
+                        android:textSize="18sp"
                         app:layout_constraintBottom_toBottomOf="@+id/text_date_dash"
                         app:layout_constraintStart_toEndOf="@+id/text_date_dash"
                         app:layout_constraintTop_toTopOf="@+id/text_date_dash" />
-
-<!--                    <TextView-->
-<!--                        android:id="@+id/text_day_of_week"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginTop="8dp"-->
-<!--                        android:text="@string/monday_wednesday_9_30_10_00"-->
-<!--                        android:textColor="@color/primary_navy"-->
-<!--                        android:textSize="14sp"-->
-<!--                        app:layout_constraintStart_toStartOf="@+id/text_date_start"-->
-<!--                        app:layout_constraintTop_toBottomOf="@+id/text_date_start" />-->
-                    <!-- ^ OLD probably remove? -->
 
                     <TextView
                         android:id="@+id/text_day_of_week"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
                         android:background="@android:drawable/editbox_background"
                         android:drawablePadding="16dp"
                         android:hint="@string/text_day_of_week"
                         android:padding="8dp"
+                        android:textSize="18sp"
                         app:drawableEndCompat="@android:drawable/arrow_down_float"
-                        app:layout_constraintEnd_toEndOf="@+id/text_date_finish"
+                        app:layout_constraintEnd_toEndOf="@+id/text_category_selector"
                         app:layout_constraintStart_toStartOf="@id/text_date_start"
                         app:layout_constraintTop_toBottomOf="@id/text_date_start" />
 
@@ -172,7 +167,9 @@
                         android:id="@+id/text_time_start"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
                         android:text="@string/text_time"
+                        android:textSize="18sp"
                         app:layout_constraintStart_toStartOf="@+id/switch_recurrence"
                         app:layout_constraintTop_toBottomOf="@+id/text_day_of_week" />
 
@@ -182,6 +179,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:text="@string/text_dash"
+                        android:textSize="18sp"
                         app:layout_constraintStart_toEndOf="@+id/text_time_start"
                         app:layout_constraintTop_toTopOf="@+id/text_time_start" />
 
@@ -191,6 +189,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:text="@string/text_time"
+                        android:textSize="18sp"
                         app:layout_constraintStart_toEndOf="@+id/text_time_dash"
                         app:layout_constraintTop_toTopOf="@+id/text_time_start" />
 
@@ -252,32 +251,6 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/label_description" />
 
-<!--                    I have no idea what this is supposed to be for so I commented it out
-                        The geolocation requirement doesn't say anything about making it so ppl
-                        can enter in a certain radius so I think we can just make it a checkbox
-                        thats like if its on, it records location of ppl who enter. -->
-
-<!--                    <TextView-->
-<!--                        android:id="@+id/label_geolocation"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginTop="24dp"-->
-<!--                        android:text="Location:"-->
-<!--                        android:textColor="@color/primary_navy"-->
-<!--                        app:layout_constraintStart_toStartOf="@id/label_description"-->
-<!--                        app:layout_constraintTop_toBottomOf="@id/label_description" />-->
-
-<!--                    <EditText-->
-<!--                        android:id="@+id/value_geolocation"-->
-<!--                        android:layout_width="0dp"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginEnd="16dp"-->
-<!--                        android:hint="@string/enter_geolocation_restriction"-->
-<!--                        android:textColor="@color/neutral_brown_light"-->
-<!--                        app:layout_constraintBaseline_toBaselineOf="@+id/label_geolocation"-->
-<!--                        app:layout_constraintEnd_toEndOf="parent"-->
-<!--                        app:layout_constraintStart_toStartOf="@+id/value_description" />-->
-
                     <TextView
                         android:id="@+id/text_category_selector"
                         android:layout_width="0dp"
@@ -287,6 +260,7 @@
                         android:drawablePadding="16dp"
                         android:hint="@string/text_category_selector"
                         android:padding="8dp"
+                        android:textSize="18sp"
                         app:drawableEndCompat="@android:drawable/arrow_down_float"
                         app:layout_constraintEnd_toStartOf="@+id/edit_waitlist_limit"
                         app:layout_constraintStart_toStartOf="@id/label_description"
@@ -309,7 +283,8 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/edit_waitlist_limit"
                         android:inputType="number"
-                        android:textSize="14sp"
+                        android:textAlignment="textEnd"
+                        android:textSize="18sp"
                         app:layout_constraintEnd_toEndOf="@id/label_waitlist_limit"
                         app:layout_constraintTop_toBottomOf="@id/label_waitlist_limit" />
 
@@ -329,7 +304,8 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/edit_attendee_limit"
                         android:inputType="number"
-                        android:textSize="14sp"
+                        android:textAlignment="textEnd"
+                        android:textSize="18sp"
                         app:layout_constraintEnd_toEndOf="@id/label_attendee_limit"
                         app:layout_constraintTop_toBottomOf="@id/label_attendee_limit" />
 
