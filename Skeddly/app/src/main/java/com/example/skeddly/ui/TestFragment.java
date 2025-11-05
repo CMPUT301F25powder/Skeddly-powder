@@ -20,6 +20,7 @@ import androidx.fragment.app.FragmentResultListener;
 import com.example.skeddly.databinding.FragmentTestBinding;
 import com.example.skeddly.ui.popup.DatePickerDialogFragment;
 import com.example.skeddly.ui.popup.MapPopupDialogFragment;
+import com.example.skeddly.ui.popup.QRPopupDialogFragment;
 import com.example.skeddly.ui.popup.StandardPopupDialogFragment;
 import com.example.skeddly.ui.popup.TimePickerDialogFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -149,6 +150,16 @@ public class TestFragment extends Fragment {
                 pickMedia.launch(new PickVisualMediaRequest.Builder()
                         .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
                         .build());
+            }
+        });
+
+        // === QR Code stuff ===
+        Button qrButton = binding.qrButton;
+        qrButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                QRPopupDialogFragment qpf = QRPopupDialogFragment.newInstance("https://github.com/CMPUT301F25powder/Skeddly-powder");
+                qpf.show(getChildFragmentManager(), null);
             }
         });
 

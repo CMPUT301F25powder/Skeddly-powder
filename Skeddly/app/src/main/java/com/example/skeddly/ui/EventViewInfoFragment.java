@@ -5,6 +5,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -25,6 +27,7 @@ import com.example.skeddly.business.user.UserLevel;
 import com.example.skeddly.databinding.EventViewAdminBinding;
 import com.example.skeddly.databinding.EventViewFragmentBinding;
 import com.example.skeddly.ui.adapter.EventAdapter;
+import com.example.skeddly.ui.popup.QRPopupDialogFragment;
 import com.google.firebase.database.ValueEventListener;
 
 import java.time.Instant;
@@ -85,6 +88,15 @@ public class EventViewInfoFragment extends Fragment {
             Log.e("EventViewInfoFragment", "Event ID is null or empty!");
         }
 
+        // === QR Code shenanigans ===
+        ImageButton buttonQrCode = binding.buttonQrCode;
+        buttonQrCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                QRPopupDialogFragment qpf = QRPopupDialogFragment.newInstance(String.format("skeddly://event/%s", eventId));
+                qpf.show(getChildFragmentManager(), null);
+            }
+        });
 
         // Set up the back button to navigate up
         binding.buttonBack.setOnClickListener(v -> {
