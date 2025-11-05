@@ -170,13 +170,6 @@ public class EventViewInfoFragment extends Fragment {
         binding.valueDescription.setText(eventDetails.getDescription());
         binding.valueCategory.setText(String.join(", ", eventDetails.getCategories()));
 
-        // Format Geolocation Text
-        if (event.getLocation() != null) {
-            // binding.valueGeolocation.setText(String.format(Locale.getDefault(), "Within %.1fkm of venue", event.getLocation()));
-        } else {
-            binding.valueGeolocation.setText("Not required");
-        }
-
         // Calculate and display Attendee Count
         int currentAttendees = 0;
         if (event.getParticipantList() != null && event.getParticipantList().getUserList() != null) {
