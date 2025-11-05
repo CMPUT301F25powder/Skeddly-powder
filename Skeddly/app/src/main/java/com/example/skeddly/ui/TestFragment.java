@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -35,6 +36,7 @@ public class TestFragment extends Fragment {
         View root = binding.getRoot();
 
         TextView returnText = binding.returnText;
+        ImageView photoPickerImage = binding.photoPickerImage;
 
         // === Generic popup stuff ===
         Button testButton = binding.testButton;
@@ -133,6 +135,16 @@ public class TestFragment extends Fragment {
         photoPickerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Launch the photo picker and let the user choose only images.
+                pickMedia.launch(new PickVisualMediaRequest.Builder()
+                        .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                        .build());
+            }
+        });
+
+        photoPickerImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 // Launch the photo picker and let the user choose only images.
                 pickMedia.launch(new PickVisualMediaRequest.Builder()
                         .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)

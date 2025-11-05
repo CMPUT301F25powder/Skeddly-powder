@@ -14,6 +14,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
 
 public class Event extends DatabaseObject {
     private EventDetail eventDetails;
@@ -23,23 +26,27 @@ public class Event extends DatabaseObject {
     private WaitingList waitingList;
     private ParticipantList participantList;
 
+    private String imageb64;
+
     public Event() {
 
     }
 
     public Event(EventDetail eventDetails, EventSchedule eventSchedule, LatLng location,
-                 String organizer, int waitingListLimit, int participantListLimit) {
+                 String organizer, int waitingListLimit, int participantListLimit, byte[] image) {
         this.eventDetails = eventDetails;
         this.eventSchedule = eventSchedule;
         this.location = new CustomLocation(location.longitude, location.latitude);
         this.organizer = organizer;
         this.waitingList = new WaitingList(waitingListLimit);
         this.participantList = new ParticipantList(participantListLimit);
+
+        this.imageb64 = Base64.getEncoder().encodeToString(image);
     }
 
     public Event(EventDetail eventDetails, EventSchedule eventSchedule, LatLng location,
-                 String organizer, int participantListLimit) {
-        this(eventDetails, eventSchedule, location, organizer, 0, participantListLimit);
+                 String organizer, int participantListLimit, byte[] image) {
+        this(eventDetails, eventSchedule, location, organizer, 0, participantListLimit, image);
     }
 
     public EventDetail getEventDetails() {
@@ -88,6 +95,14 @@ public class Event extends DatabaseObject {
 
     public void setParticipantList(ParticipantList participantList) {
         this.participantList = participantList;
+    }
+
+    public String getImageb64() {
+        return imageb64;
+    }
+
+    public void setImageb64(String imageb64) {
+        this.imageb64 = imageb64;
     }
 
     /**

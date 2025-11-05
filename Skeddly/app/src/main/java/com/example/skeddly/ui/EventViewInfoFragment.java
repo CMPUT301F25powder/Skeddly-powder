@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.bumptech.glide.Glide;
 import com.example.skeddly.MainActivity;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.database.DatabaseHandler;
@@ -31,6 +32,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Locale;
 
 
@@ -134,6 +136,7 @@ public class EventViewInfoFragment extends Fragment {
      * Populates the UI elements with data from the fetched Event object.
      */
     private void populateUI(Event event) {
+        Glide.with(this).load(Base64.getDecoder().decode(event.getImageb64())).into(binding.eventImage);
         EventDetail eventDetails = event.getEventDetails();
         EventSchedule eventSchedule = event.getEventSchedule();
 

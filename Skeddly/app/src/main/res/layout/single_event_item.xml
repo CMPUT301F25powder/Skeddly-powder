@@ -23,6 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="97dp"
             android:background="@color/neutral_cream_warm"
+            android:scaleType="centerCrop"
             app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

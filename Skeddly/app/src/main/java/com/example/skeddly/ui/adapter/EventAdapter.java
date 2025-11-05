@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.bumptech.glide.Glide;
 import com.example.skeddly.R;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.Ticket;
@@ -25,6 +27,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Objects;
 
 public class EventAdapter extends ArrayAdapter<Event> {
@@ -44,6 +47,7 @@ public class EventAdapter extends ArrayAdapter<Event> {
         Event event = getItem(position);
 
         // Find the views in the layout
+        ImageView imageView = convertView.findViewById(R.id.imageView);
         TextView textEventName = convertView.findViewById(R.id.text_event_name);
         Button buttonViewInfo = convertView.findViewById(R.id.button_view_info);
         Button buttonJoin = convertView.findViewById(R.id.button_join);
@@ -51,6 +55,7 @@ public class EventAdapter extends ArrayAdapter<Event> {
 
         // Populate data
         if (event != null) {
+            Glide.with(getContext()).load(Base64.getDecoder().decode(event.getImageb64())).into(imageView);
             textEventName.setText(event.getEventDetails().getName());
             String current_user_id = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
             DatabaseHandler dbHandler = new DatabaseHandler(getContext());

@@ -2,9 +2,14 @@ package com.example.skeddly.ui;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +17,19 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
 
+import com.bumptech.glide.Glide;
 import com.example.skeddly.MainActivity;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.event.Event;
@@ -32,13 +42,13 @@ import com.example.skeddly.ui.popup.TimePickerDialogFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.materialswitch.MaterialSwitch;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.text.DateFormatSymbols;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.Month;
 import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,6 +57,9 @@ import java.util.Locale;
 
 public class CreateFragment extends Fragment {
     private CreateEditEventViewBinding binding;
+
+    private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
+
     private DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a");
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MMM. d, yyyy");
 
@@ -54,6 +67,8 @@ public class CreateFragment extends Fragment {
 
     private ArrayList<String> daysOfWeek = new ArrayList<>();
     private boolean isRecurring;
+
+    private byte[] imageBytes;
 
     private LocalDate startDate;
     private LocalDate endDate;
@@ -71,6 +86,8 @@ public class CreateFragment extends Fragment {
         // Initialize Variables
         ImageButton buttonBack = binding.buttonBack;
         ImageButton buttonQrCode = binding.buttonQrCode;
+
+        ImageView eventImage = binding.eventImage;
 
         TextView textEventTitleOverlay = binding.textEventTitleOverlay;
 
@@ -96,6 +113,38 @@ public class CreateFragment extends Fragment {
         // Hide them because we don't want them here
         buttonBack.setVisibility(View.INVISIBLE);
         buttonQrCode.setVisibility(View.INVISIBLE);
+
+        // Registers a photo picker activity launcher in single-select mode.
+        this.pickMedia = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
+            // Callback is invoked after the user selects a media item or closes the photo picker.
+            if (uri != null) {
+                Log.d("PhotoPicker", "Selected URI: " + uri);
+
+                try {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(), uri);
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
+                    imageBytes = stream.toByteArray();
+                    bitmap.recycle();
+
+                    updateEventImage();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                Log.d("PhotoPicker", "No media selected");
+            }
+        });
+
+        eventImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Launch the photo picker and let the user choose only images.
+                pickMedia.launch(new PickVisualMediaRequest.Builder()
+                        .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                        .build());
+            }
+        });
 
         // Setup location picker
         textEventTitleOverlay.setOnClickListener(new View.OnClickListener() {
@@ -444,6 +493,10 @@ public class CreateFragment extends Fragment {
         MainActivity mainActivity = (MainActivity) requireActivity();
 
         return new Event(eventDetails, eventSchedule, eventLocation,
-                mainActivity.getUser().getId(), waitListLimit, attendeeLimit);
+                mainActivity.getUser().getId(), waitListLimit, attendeeLimit, imageBytes);
+    }
+
+    private void updateEventImage() {
+        Glide.with(this).load(imageBytes).into(binding.eventImage);
     }
 }
