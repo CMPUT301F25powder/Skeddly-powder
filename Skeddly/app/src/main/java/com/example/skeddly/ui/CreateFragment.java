@@ -134,6 +134,7 @@ public class CreateFragment extends Fragment {
                     bitmap.recycle();
 
                     updateEventImage();
+                    updateConfirmButton();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -470,6 +471,11 @@ public class CreateFragment extends Fragment {
 
         // Location
         if (eventLocation == null) {
+            return false;
+        }
+
+        // Needs an image
+        if (imageBytes == null) {
             return false;
         }
 
