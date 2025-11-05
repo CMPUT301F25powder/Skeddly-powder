@@ -60,12 +60,12 @@ public class CreateFragment extends Fragment {
 
     private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
 
-    private DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a");
-    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MMM. d, yyyy");
+    private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a");
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MMM. d, yyyy");
 
-    private ArrayList<String> categories = new ArrayList<>();
+    private final ArrayList<String> categories = new ArrayList<>();
 
-    private ArrayList<String> daysOfWeek = new ArrayList<>();
+    private final ArrayList<String> daysOfWeek = new ArrayList<>();
     private boolean isRecurring;
 
     private byte[] imageBytes;

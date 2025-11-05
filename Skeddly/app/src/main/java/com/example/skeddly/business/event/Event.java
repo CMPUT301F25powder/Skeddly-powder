@@ -128,7 +128,7 @@ public class Event extends DatabaseObject {
         this.getWaitingList().addTicket(ticket.getId());
 
         // Save the updated applicants object back to this event in Firebase
-        dbHandler.getEventsPath().child(this.getId()).child("applicants").setValue(this.getWaitingList());
+        dbHandler.getEventsPath().child(this.getId()).child("waitingList").setValue(this.getWaitingList());
 
         // Save the full ticket object
         dbHandler.getTicketsPath().child(ticket.getId()).setValue(ticket);
@@ -145,7 +145,7 @@ public class Event extends DatabaseObject {
             // remove ticket id from event waiting list
             this.getWaitingList().remove(ticketId);
             // save updated list to DB
-            dbHandler.getEventsPath().child(this.getId()).child("applicants").setValue(this.getWaitingList());
+            dbHandler.getEventsPath().child(this.getId()).child("waitingList").setValue(this.getWaitingList());
             // remove ticket object from DB
             dbHandler.getTicketsPath().child(ticketId).removeValue();
         }

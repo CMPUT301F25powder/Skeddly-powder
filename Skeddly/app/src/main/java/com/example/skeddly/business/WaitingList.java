@@ -46,16 +46,8 @@ public class WaitingList extends DatabaseObject {
     }
 
     /**
-     * Remove a user from the waiting list
-     * @param u User to remove
-     */
-//    public void remove(User u) {
-//        ticketList.removeIf(t -> t.getUser().equals(u));
-//    }
-
-    /**
      * Remove a ticket from the waiting list
-     * @param t Ticket to remove
+     * @param ticketId ID of the ticket to remove
      */
     public void remove(String ticketId) {
         ticketIds.remove(ticketId);
