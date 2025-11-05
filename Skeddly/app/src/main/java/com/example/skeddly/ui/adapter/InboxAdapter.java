@@ -11,22 +11,21 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.skeddly.R;
-import com.example.skeddly.business.Inbox;
 import com.example.skeddly.business.Notification;
 
 import java.util.ArrayList;
 
 public class InboxAdapter extends ArrayAdapter<Notification> {
-    private Inbox inbox;
+    private ArrayList<Notification> inbox;
     Context context;
-    public InboxAdapter(Context context, Inbox inbox) {
-        super(context, 0, inbox.getNotifications());
+    public InboxAdapter(Context context, ArrayList<Notification> inbox) {
+        super(context, 0, inbox);
         this.inbox = inbox;
         this.context = context;
         Notification testNotif = new Notification();
         testNotif.setTitle("Test!");
         testNotif.setMessage("This is a fake notification.");
-        this.inbox.addNotification(testNotif);
+        this.inbox.add(testNotif);
     }
 
     @NonNull
@@ -36,7 +35,7 @@ public class InboxAdapter extends ArrayAdapter<Notification> {
             view = LayoutInflater.from(context).inflate(R.layout.notification, parent, false);
         }
 
-        Notification notif = inbox.getNotifications().get(position);
+        Notification notif = inbox.get(position);
         TextView title = view.findViewById(R.id.notification_title);
         TextView description = view.findViewById(R.id.notification_subtitle);
 

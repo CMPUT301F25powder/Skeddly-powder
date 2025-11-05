@@ -10,7 +10,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.skeddly.MainActivity;
-import com.example.skeddly.business.Inbox;
 import com.example.skeddly.business.Notification;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.user.Authenticator;
@@ -23,7 +22,7 @@ import java.util.ArrayList;
 
 public class InboxFragment extends Fragment {
     private InboxFragmentBinding binding;
-    private Inbox inbox;
+    private ArrayList<Notification> inbox;
     private DatabaseHandler dbHandler;
     private InboxAdapter inboxAdapter;
     private String userId;
