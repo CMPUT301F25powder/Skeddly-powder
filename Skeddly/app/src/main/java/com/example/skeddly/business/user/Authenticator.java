@@ -129,6 +129,9 @@ public class Authenticator {
     }
 
     public void commitUserChanges() {
-        databaseHandler.getUsersPath().child(user.getId()).setValue(user);
+        DatabaseReference userPath = databaseHandler.getUsersPath().child(user.getId());
+
+        userPath.setValue(user);
+        databaseHandler.customSerializer(userPath, user);
     }
 }
