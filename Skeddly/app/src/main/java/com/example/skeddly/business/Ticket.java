@@ -25,10 +25,13 @@ public class Ticket extends DatabaseObject {
     @Nullable
     private CustomLocation location;
 
+    private boolean cancelled;
+
     public Ticket() {}
     public Ticket(@NonNull String userId, @Nullable CustomLocation location) {
         this.userId = userId;
         this.location = location;
+        this.cancelled = false;
 
         ZoneId zoneId = ZoneId.systemDefault();
         this.ticketTime = LocalDateTime.now().atZone(zoneId).toEpochSecond();
@@ -64,4 +67,8 @@ public class Ticket extends DatabaseObject {
     public void setLocation(@Nullable CustomLocation location) {
         this.location = location;
     }
+
+    public boolean getCancelled() {return cancelled;}
+
+    public void setCancelled(boolean cancelled) {this.cancelled = cancelled;}
 }
