@@ -1,11 +1,15 @@
 package com.example.skeddly.ui.popup;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +20,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
@@ -26,12 +35,18 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 
 /**
  *
  */
 public class QRPopupDialogFragment extends DialogFragment {
     private String link = "link";
+    private ActivityResultLauncher<Intent> filePickerActivityResultLauncher;
+    private Bitmap qrBitmap;
 
     /**
      *
@@ -67,14 +82,13 @@ public class QRPopupDialogFragment extends DialogFragment {
 
         // Create QR Code image and set image of imageView
         Log.d("Link", "Given link: " + link);
-        Bitmap qrBitmap = createQR(link);
+        qrBitmap = createQR(link);
         imageQrCode.setImageBitmap(qrBitmap);
 
         buttonExport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(requireContext(), "QR code has been exported!", Toast.LENGTH_SHORT).show();
-
+                createFile();
             }
         });
 
@@ -84,6 +98,22 @@ public class QRPopupDialogFragment extends DialogFragment {
                 dismiss();
             }
         });
+
+        // You can do the assignment inside onAttach or onCreate, i.e, before the activity is displayed
+        filePickerActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            if (result.getData() != null) {
+                                Uri uri = result.getData().getData();
+                                alterDocument(uri, qrBitmap);
+                                Toast.makeText(requireContext(), "QR code has been exported!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                });
 
         return view;
     }
@@ -131,5 +161,30 @@ public class QRPopupDialogFragment extends DialogFragment {
         }
 
         return null;
+    }
+
+    private void createFile() {
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("image/png");
+        intent.putExtra(Intent.EXTRA_TITLE, "qr.png");
+
+        filePickerActivityResultLauncher.launch(intent);
+    }
+
+    private void alterDocument(Uri uri, Bitmap bitmap) {
+        try {
+            ParcelFileDescriptor pfd = requireActivity().getContentResolver().openFileDescriptor(uri, "w");
+            FileOutputStream fileOutputStream = new FileOutputStream(pfd.getFileDescriptor());
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
+
+            // Let the document provider know you're done by closing the stream.
+            fileOutputStream.close();
+            pfd.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

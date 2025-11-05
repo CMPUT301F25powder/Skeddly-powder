@@ -1,9 +1,11 @@
 package com.example.skeddly;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -12,6 +14,7 @@ import androidx.navigation.NavGraph;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
+import com.example.skeddly.business.event.Event;
 import com.example.skeddly.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -22,11 +25,16 @@ import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.database.SingleListenUpdate;
 import com.example.skeddly.business.user.User;
 import com.example.skeddly.business.user.UserLoaded;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends CustomActivity {
     private User user;
     private Authenticator authenticator;
     private ActivityMainBinding binding;
+    private NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,12 +50,18 @@ public class MainActivity extends CustomActivity {
         // Don't go off the screen
         ViewCompat.setOnApplyWindowInsetsListener(binding.main, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            // Dont need bottom padding since nav bar takes care of it
+            // Don't need bottom padding since nav bar takes care of it
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
             return insets;
         });
 
-        user = (User) Objects.requireNonNull(getIntent().getExtras()).getSerializable("USER");
+        Bundle extras = getIntent().getExtras();
+        Uri qr = null;
+
+        if (extras != null) {
+            user = (User) Objects.requireNonNull(extras.getSerializable("USER"));
+            qr = Objects.requireNonNull(extras).getParcelable("QR");
+        }
 
         DatabaseHandler database = new DatabaseHandler(this);
         authenticator = new Authenticator(this, database, user);
@@ -71,6 +85,35 @@ public class MainActivity extends CustomActivity {
         });
 
         setupNavBar();
+
+        if (qr != null) {
+            String eventId = qr.getEncodedPath();
+
+            if (eventId != null && eventId.length() > 1) {
+                String choppedEventId = eventId.substring(1);
+
+                database.getEventsPath().child(eventId).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            Event theEvent = snapshot.getValue(Event.class);
+
+                            if (theEvent == null) {
+                                return;
+                            }
+
+                            theEvent.setId(choppedEventId);
+                            navigateToEvent(theEvent);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        throw error.toException();
+                    }
+                });
+            }
+        }
     }
 
     private void setupNavBar() {
@@ -83,7 +126,7 @@ public class MainActivity extends CustomActivity {
         // Get nav controller
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.nav_host_fragment_activity_main);
-        NavController navController = Objects.requireNonNull(navHostFragment).getNavController();
+        navController = Objects.requireNonNull(navHostFragment).getNavController();
 
         // Inflate the correct navGraph for our privilege level and set the icons properly
         NavGraph navGraph;
@@ -128,5 +171,13 @@ public class MainActivity extends CustomActivity {
         signupActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(signupActivity);
         finish();
+    }
+
+    private void navigateToEvent(Event event) {
+        Bundle bundle = new Bundle();
+        bundle.putString("eventId", event.getId());
+        bundle.putString("userId", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
+        bundle.putString("organizerId", event.getOrganizer());
+        navController.navigate(R.id.event_view_info, bundle);
     }
 }
