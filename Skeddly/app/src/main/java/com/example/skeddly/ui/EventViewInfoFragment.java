@@ -58,7 +58,7 @@ public class EventViewInfoFragment extends Fragment {
         dbHandler = new DatabaseHandler(getContext());
 
         // Initialize eventAdapter
-        eventAdapter = new EventAdapter(getContext(), new ArrayList<>());
+        eventAdapter = new EventAdapter(getContext(), new ArrayList<>(), userId);
 
         // Get the eventId passed from the HomeFragment
         if (getArguments() != null) {

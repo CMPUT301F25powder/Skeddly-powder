@@ -2,6 +2,7 @@ package com.example.skeddly.ui.adapter;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,9 +32,11 @@ import java.util.Base64;
 import java.util.Objects;
 
 public class EventAdapter extends ArrayAdapter<Event> {
+    private String userId;
 
-    public EventAdapter(Context context, ArrayList<Event> events) {
+    public EventAdapter(Context context, ArrayList<Event> events, String userId) {
         super(context, 0, events);
+        this.userId = userId;
     }
 
     @NonNull
@@ -57,24 +60,24 @@ public class EventAdapter extends ArrayAdapter<Event> {
         if (event != null) {
             Glide.with(getContext()).load(Base64.getDecoder().decode(event.getImageb64())).into(imageView);
             textEventName.setText(event.getEventDetails().getName());
-            String current_user_id = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
             DatabaseHandler dbHandler = new DatabaseHandler(getContext());
 
             // Handle privilege assignment for editing
-            if (current_user_id.equals(event.getOrganizer())) {
+            if (userId.equals(event.getOrganizer())) {
                 buttonEdit.setVisibility(View.VISIBLE);
+                buttonJoin.setVisibility(View.INVISIBLE);
             } else {
-                buttonEdit.setVisibility(View.GONE);
+                buttonEdit.setVisibility(View.INVISIBLE);
             }
 
             // Set button state, and button's on click listener
-            updateJoinButtonState(buttonJoin, event, current_user_id, dbHandler);
+            updateJoinButtonState(buttonJoin, event, userId, dbHandler);
 
             // Handle view info button click
             buttonViewInfo.setOnClickListener(v -> {
                 Bundle bundle = new Bundle();
                 bundle.putString("eventId", event.getId());
-                bundle.putString("userId", current_user_id);
+                bundle.putString("userId", userId);
                 bundle.putString("organizerId", event.getOrganizer());
                 Navigation.findNavController(v).navigate(R.id.action_navigation_home_to_event_view_info, bundle);
                 Toast.makeText(getContext(), "View info for " + event.getEventDetails().getName(), Toast.LENGTH_SHORT).show();

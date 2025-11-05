@@ -45,6 +45,7 @@ import com.example.skeddly.ui.popup.TimePickerDialogFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.StyleSpan;
 import com.google.android.material.materialswitch.MaterialSwitch;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -57,6 +58,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 
 public class CreateFragment extends Fragment {
@@ -521,7 +523,8 @@ public class CreateFragment extends Fragment {
         MainActivity mainActivity = (MainActivity) requireActivity();
 
         return new Event(eventDetails, eventSchedule, eventLocation,
-                mainActivity.getUser().getId(), waitListLimit, attendeeLimit, imageBytes);
+                Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid(),
+                waitListLimit, attendeeLimit, imageBytes);
     }
 
     private void updateEventImage() {
