@@ -67,10 +67,10 @@ public class ParticipantAdapter extends ArrayAdapter<Ticket> {
             dateText.setText(this.joinDate);
 
             // Set status
-            if (ticket.getCancelled() == TicketStatus.CANCELLED) {
+            if (ticket.getStatus() == TicketStatus.CANCELLED) {
                 statusTextView.setBackgroundResource(R.drawable.status_chip_cancelled);
             }
-            else if (ticket.getCancelled() == TicketStatus.INVITED){
+            else if (ticket.getStatus() == TicketStatus.INVITED){
                 statusTextView.setBackgroundResource(R.drawable.status_chip_invited);
             }
             else {
