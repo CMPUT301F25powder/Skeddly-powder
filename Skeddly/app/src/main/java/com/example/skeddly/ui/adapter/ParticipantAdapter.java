@@ -27,7 +27,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class ParticipantAdapter extends ArrayAdapter<Ticket> {
-    private final boolean isWaitingList;
+    private boolean isWaitingList;
     private DatabaseHandler dbHandler;
     private String fullname;
     private String joinDate;
@@ -98,5 +98,7 @@ public class ParticipantAdapter extends ArrayAdapter<Ticket> {
             }
         });
     }
+
+
 
 }

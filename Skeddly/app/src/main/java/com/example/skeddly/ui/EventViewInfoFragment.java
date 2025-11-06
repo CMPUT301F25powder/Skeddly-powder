@@ -14,6 +14,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.example.skeddly.MainActivity;
+import com.example.skeddly.R;
 import com.example.skeddly.business.Event;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.user.Authenticator;
@@ -80,6 +81,15 @@ public class EventViewInfoFragment extends Fragment {
             // Log an error if for some reason the eventId wasn't passed correctly
             Log.e("EventViewInfoFragment", "Event ID is null or empty!");
         }
+
+        // Set up participant button
+        binding.buttonParticipants.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putString("eventId", eventId);
+            NavController navController = Navigation.findNavController(v);
+            navController.navigate(R.id.action_event_view_info_to_participant_list, bundle);
+
+        });
 
 
         // Set up the back button to navigate up
