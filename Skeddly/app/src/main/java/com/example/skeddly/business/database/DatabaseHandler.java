@@ -119,8 +119,6 @@ public class DatabaseHandler {
                     DatabaseObjects<DatabaseObject> unserializedObjects = new DatabaseObjects(parameter);
 
                     for (DatabaseObject someObject : allObjects) {
-                        Log.w("db", someObject.getId());
-                        Log.w("db", ownerIds.toString());
                         if (ownerIds.contains(someObject.getId())) {
                             unserializedObjects.add(someObject);
                         }
@@ -167,9 +165,7 @@ public class DatabaseHandler {
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                         T loadedResult = childSnapshot.getValue(classType);
-                        Log.w("getNodeChildren", childSnapshot.getKey());
                         loadedResult.setId(childSnapshot.getKey());
-                        Log.w("getNodeChildren", loadedResult.getId());
 
                         result.add(loadedResult);
                     }
