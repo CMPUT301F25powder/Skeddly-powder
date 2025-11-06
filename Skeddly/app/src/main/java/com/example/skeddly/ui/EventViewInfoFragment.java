@@ -168,7 +168,12 @@ public class EventViewInfoFragment extends Fragment {
         // Set Information Fields
         binding.valueEventTitle.setText(eventDetails.getName());
         binding.valueDescription.setText(eventDetails.getDescription());
-        binding.valueCategory.setText(String.join(", ", eventDetails.getCategories()));
+
+        if (eventDetails.getCategories() != null) {
+            binding.valueCategory.setText(String.join(", ", eventDetails.getCategories()));
+        } else {
+            binding.valueCategory.setText("N/A");
+        }
 
         // Calculate and display Attendee Count
         int currentAttendees = 0;
