@@ -160,17 +160,10 @@ public class EventViewInfoFragment extends Fragment {
         binding.valueDescription.setText(event.getDescription());
         binding.valueCategory.setText(event.getCategory());
 
-        // Format Geolocation Text
-        if (event.getLocation() != null) {
-            binding.valueGeolocation.setText(String.format(Locale.getDefault(), "Within %.1fkm of venue", event.getLocation()));
-        } else {
-            binding.valueGeolocation.setText("Not required");
-        }
-
         // Calculate and display Attendee Count
         int currentAttendees = 0;
-        if (event.getAttendees() != null && event.getAttendees().getUserList() != null) {
-            currentAttendees = event.getAttendees().getUserList().size();
+        if (event.getAttendees() != null && event.getAttendees().getTicketIds() != null) {
+            currentAttendees = event.getAttendees().getTicketIds().size();
         }
         binding.valueAttendeeLimit.setText(String.format(Locale.getDefault(), "%d / %d", currentAttendees, event.getAttendeeLimit()));
 
