@@ -1,99 +1,68 @@
-package com.example.skeddly.business;
-
-import android.location.Location;
+package com.example.skeddly.business.event;
 
 import androidx.annotation.NonNull;
 
+import com.example.skeddly.business.ParticipantList;
+import com.example.skeddly.business.Ticket;
+import com.example.skeddly.business.WaitingList;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.database.DatabaseObject;
 import com.example.skeddly.business.location.CustomLocation;
-import com.example.skeddly.business.user.User;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
 
 public class Event extends DatabaseObject {
-    private String name;
-    private String description;
-    private String category;
-    private long startTime;
-    private long endTime;
+    private EventDetail eventDetails;
+    private EventSchedule eventSchedule;
     private CustomLocation location;
     private String organizer;
-    private WaitingList applicants;
-    private ParticipantList attendees;
+    private WaitingList waitingList;
+    private ParticipantList participantList;
+
+    private String imageb64;
 
     public Event() {
-        // Auto filled by Firebase DB
-
-        //this.name = "";
-        //this.description = "";
-        //this.category = "";
-        //this.startTime = (LocalDateTime) 0;
-        //this.endTime = (LocalDateTime) 0;
-        //this.owner = "";
-        //applicants = new WaitingList();
-        //attendees = new ParticipantList(20);
 
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public int getAttendeeLimit() {
-        return attendees.getMaxAttend();
-    }
-
-    public void setAttendeeLimit(int attendeeLimit) {
-        this.attendees.setMaxAttend(attendeeLimit);
-    }
-
-    public long getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(long startTime) {
-        this.startTime = startTime;
-    }
-
-    public long getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(long endTime) {
-        this.endTime = endTime;
-    }
-
-    public String getOrganizer() {
-        return organizer;
-    }
-
-    public void setOrganizer(String organizer) {
+    public Event(EventDetail eventDetails, EventSchedule eventSchedule, LatLng location,
+                 String organizer, int waitingListLimit, int participantListLimit, byte[] image) {
+        this.eventDetails = eventDetails;
+        this.eventSchedule = eventSchedule;
+        this.location = new CustomLocation(location.longitude, location.latitude);
         this.organizer = organizer;
+        this.waitingList = new WaitingList(waitingListLimit);
+        this.participantList = new ParticipantList(participantListLimit);
+
+        this.imageb64 = Base64.getEncoder().encodeToString(image);
+    }
+
+    public Event(EventDetail eventDetails, EventSchedule eventSchedule, LatLng location,
+                 String organizer, int participantListLimit, byte[] image) {
+        this(eventDetails, eventSchedule, location, organizer, 0, participantListLimit, image);
+    }
+
+    public EventDetail getEventDetails() {
+        return eventDetails;
+    }
+
+    public void setEventDetails(EventDetail eventDetails) {
+        this.eventDetails = eventDetails;
+    }
+
+    public EventSchedule getEventSchedule() {
+        return eventSchedule;
+    }
+
+    public void setEventSchedule(EventSchedule eventSchedule) {
+        this.eventSchedule = eventSchedule;
     }
 
     public CustomLocation getLocation() {
@@ -104,20 +73,36 @@ public class Event extends DatabaseObject {
         this.location = location;
     }
 
-    public WaitingList getApplicants() {
-        return applicants;
+    public String getOrganizer() {
+        return organizer;
     }
 
-    public void setApplicants(WaitingList applicants) {
-        this.applicants = applicants;
+    public void setOrganizer(String organizer) {
+        this.organizer = organizer;
     }
 
-    public ParticipantList getAttendees() {
-        return attendees;
+    public WaitingList getWaitingList() {
+        return waitingList;
     }
 
-    public void setAttendees(ParticipantList attendees) {
-        this.attendees = attendees;
+    public void setWaitingList(WaitingList waitingList) {
+        this.waitingList = waitingList;
+    }
+
+    public ParticipantList getParticipantList() {
+        return participantList;
+    }
+
+    public void setParticipantList(ParticipantList participantList) {
+        this.participantList = participantList;
+    }
+
+    public String getImageb64() {
+        return imageb64;
+    }
+
+    public void setImageb64(String imageb64) {
+        this.imageb64 = imageb64;
     }
 
     /**
@@ -129,21 +114,21 @@ public class Event extends DatabaseObject {
         CustomLocation location = null; // Location is not implemented yet
 
         // Ensure applicants object and list exist to prevent NullPointerException
-        if (this.getApplicants() == null) {
-            this.setApplicants(new WaitingList());
+        if (this.getWaitingList() == null) {
+            this.setWaitingList(new WaitingList());
         }
-        if (this.getApplicants().getTicketIds() == null) {
-            this.getApplicants().setTicketIds(new ArrayList<>());
+        if (this.getWaitingList().getTicketIds() == null) {
+            this.getWaitingList().setTicketIds(new ArrayList<>());
         }
 
         // Create a new ticket for the user
         Ticket ticket = new Ticket(userId, location);
 
         // Add the ticket's ID to the event's applicants list
-        this.getApplicants().addTicket(ticket.getId());
+        this.getWaitingList().addTicket(ticket.getId());
 
         // Save the updated applicants object back to this event in Firebase
-        dbHandler.getEventsPath().child(this.getId()).child("applicants").setValue(this.getApplicants());
+        dbHandler.getEventsPath().child(this.getId()).child("waitingList").setValue(this.getWaitingList());
 
         // Save the full ticket object
         dbHandler.getTicketsPath().child(ticket.getId()).setValue(ticket);
@@ -156,11 +141,11 @@ public class Event extends DatabaseObject {
      */
     public void leave(DatabaseHandler dbHandler, String ticketId) {
         // Ensure applicants and ticket list exist
-        if (this.getApplicants() != null && this.getApplicants().getTicketIds() != null) {
+        if (this.getWaitingList() != null && this.getWaitingList().getTicketIds() != null) {
             // remove ticket id from event waiting list
-            this.getApplicants().remove(ticketId);
+            this.getWaitingList().remove(ticketId);
             // save updated list to DB
-            dbHandler.getEventsPath().child(this.getId()).child("applicants").setValue(this.getApplicants());
+            dbHandler.getEventsPath().child(this.getId()).child("waitingList").setValue(this.getWaitingList());
             // remove ticket object from DB
             dbHandler.getTicketsPath().child(ticketId).removeValue();
         }
@@ -174,13 +159,13 @@ public class Event extends DatabaseObject {
     }
 
     public void findUserTicketId(String userId, DatabaseHandler dbHandler, FindTicketCallback callback) {
-        if (this.getApplicants() == null || this.getApplicants().getTicketIds() == null || this.getApplicants().getTicketIds().isEmpty()) {
+        if (this.getWaitingList() == null || this.getWaitingList().getTicketIds() == null || this.getWaitingList().getTicketIds().isEmpty()) {
             callback.onResult(null); // No applicants, so user can't be joined
             return;
         }
 
         final boolean[] found = {false};
-        ArrayList<String> ticketIds = new ArrayList<>(this.getApplicants().getTicketIds());
+        ArrayList<String> ticketIds = new ArrayList<>(this.getWaitingList().getTicketIds());
 
         for (String ticketId : ticketIds) {
             dbHandler.getTicketsPath().child(ticketId).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -203,5 +188,4 @@ public class Event extends DatabaseObject {
         }
         callback.onResult(null); // Didn't find it
     }
-
 }

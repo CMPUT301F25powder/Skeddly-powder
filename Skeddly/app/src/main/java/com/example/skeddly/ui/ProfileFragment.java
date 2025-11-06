@@ -10,12 +10,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 
 import com.example.skeddly.MainActivity;
 import com.example.skeddly.business.user.Authenticator;
 import com.example.skeddly.business.user.PersonalInformation;
 import com.example.skeddly.business.user.User;
 import com.example.skeddly.databinding.ProfileFragmentBinding;
+import com.example.skeddly.ui.popup.StandardPopupDialogFragment;
 
 
 public class ProfileFragment extends Fragment {
@@ -43,12 +45,30 @@ public class ProfileFragment extends Fragment {
         profileEmail.setText(userInformation.getEmail());
         profilePhone.setText(userInformation.getPhoneNumber());
 
+        String deletePopupTitle = "Delete Account";
+        String deletePopupContent = "Are you sure you want to delete your account?";
+        String deletePopupRequestKey = "confirmationDialog";
+
         deleteAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                authenticator.deleteUser();
-                MainActivity mainActivity = (MainActivity) requireActivity();
-                mainActivity.switchToSignup();
+                StandardPopupDialogFragment spf = StandardPopupDialogFragment
+                        .newInstance(deletePopupTitle, deletePopupContent, deletePopupRequestKey);
+                spf.show(getChildFragmentManager(), deletePopupRequestKey);
+            }
+        });
+
+        getChildFragmentManager().setFragmentResultListener(deletePopupRequestKey,
+                this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                boolean confirmation = result.getBoolean("buttonChoice");
+
+                if (confirmation) {
+                    authenticator.deleteUser();
+                    MainActivity mainActivity = (MainActivity) requireActivity();
+                    mainActivity.switchToSignup();
+                }
             }
         });
 
