@@ -13,6 +13,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Stream;
 
 /**
  * Handles edits and realtime updates to the realtime DB in Firebase
@@ -43,72 +45,67 @@ public class DatabaseHandler {
     private String getBaseName(String name) {
         return name.replace(INTERNAL, "");
     }
-    public void customSerializer(DatabaseReference ref, Object object) {
-        Method [] methods =  object.getClass().getDeclaredMethods();
+
+    public void customSerializer(DatabaseReference ref, DatabaseObject object) {
+        Method [] methods = object.getDatabaseObjectRelatedMethods();
 
         for (Method method : methods) {
-            if (method.getReturnType() == DatabaseObjects.class) {
-                String internalName = this.serializeGetterName(method.getName());
-                String baseName = this.getBaseName(internalName);
-                try {
-                    DatabaseObjects values = (DatabaseObjects) method.invoke(object);
+            String internalName = this.serializeGetterName(method.getName());
+            String baseName = this.getBaseName(internalName);
+            try {
+                DatabaseObjects values = (DatabaseObjects) method.invoke(object);
 
-                    this.database.child(baseName).setValue(values);
+                this.database.child(baseName).setValue(values);
 
-                    for (int i = 0; i < values.size(); i++) {
-                        DatabaseObject value = (DatabaseObject) values.get(i);
-                        String valueId = value.getId();
+                for (int i = 0; i < values.size(); i++) {
+                    DatabaseObject value = (DatabaseObject) values.get(i);
+                    String valueId = value.getId();
 
-                        ref.child(internalName).child(String.valueOf(i)).setValue(valueId);
-                    }
-
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                } catch (InvocationTargetException e) {
-                    throw new RuntimeException(e);
+                    ref.child(internalName).child(String.valueOf(i)).setValue(valueId);
                 }
+
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                throw new RuntimeException(e);
             }
         }
     }
 
-    public void customUnserializer(DatabaseReference ref, Object object) {
-        Method [] methods =  object.getClass().getDeclaredMethods();
+    public void customUnserializer(DatabaseReference ref, DatabaseObject object) {
+        Method [] methods = object.getDatabaseObjectRelatedMethods();
 
         for (Method method : methods) {
-            if (method.getReturnType() == DatabaseObjects.class) {
-                String internalName = this.serializeGetterName(method.getName());
-                String setterName = this.unserializeGetterName(internalName);
-                String baseName = this.getBaseName(internalName);
+            String internalName = this.serializeGetterName(method.getName());
+            String setterName = this.unserializeGetterName(internalName);
+            String baseName = this.getBaseName(internalName);
 
-                try {
-                    DatabaseObjects<?> value = (DatabaseObjects<?>) method.invoke(object);
-                    if (value != null) {
-                        Class<? extends DatabaseObject> parameter = value.getParameter();
-                        Class<?>[] getterParams = new Class<?>[] {
-                                DatabaseObjects.class
-                        };
-                        Method setter = object.getClass().getMethod(setterName, getterParams);
+            try {
+                DatabaseObjects<?> value = (DatabaseObjects<?>) method.invoke(object);
+                if (value != null) {
+                    Class<? extends DatabaseObject> parameter = value.getParameter();
+                    Class<?>[] getterParams = new Class<?>[] {
+                            DatabaseObjects.class
+                    };
+                    Method setter = object.getClass().getMethod(setterName, getterParams);
 
-                        ArrayList<String> ownerIds = getNodeChildren(ref.child(internalName));
+                    ArrayList<String> ownerIds = getNodeChildren(ref.child(internalName));
 
-                        DatabaseObjects<?> allObjects = getNodeChildren(this.database.child(baseName), parameter);
+                    DatabaseObjects<?> allObjects = getNodeChildren(this.database.child(baseName), parameter);
 
-                        DatabaseObjects<DatabaseObject> unserializedObjects = new DatabaseObjects(parameter);
+                    DatabaseObjects<DatabaseObject> unserializedObjects = new DatabaseObjects(parameter);
 
-                        for (DatabaseObject someObject : allObjects) {
-                            if (ownerIds.contains(someObject.getId())) {
-                                unserializedObjects.add(someObject);
-                            }
+                    for (DatabaseObject someObject : allObjects) {
+                        if (ownerIds.contains(someObject.getId())) {
+                            unserializedObjects.add(someObject);
                         }
-
-                        setter.invoke(object, unserializedObjects);
                     }
 
-
-                } catch (IllegalAccessException | InvocationTargetException |
-                         NoSuchMethodException e) {
-                    throw new RuntimeException(e);
+                    setter.invoke(object, unserializedObjects);
                 }
+
+
+            } catch (IllegalAccessException | InvocationTargetException |
+                     NoSuchMethodException e) {
+                throw new RuntimeException(e);
             }
         }
     }
