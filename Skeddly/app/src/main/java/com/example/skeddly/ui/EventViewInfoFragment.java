@@ -56,7 +56,7 @@ public class EventViewInfoFragment extends Fragment {
         View root = binding.getRoot();
 
         // Initialize database handler
-        dbHandler = new DatabaseHandler(getContext());
+        dbHandler = new DatabaseHandler();
 
         // Initialize eventAdapter
         eventAdapter = new EventAdapter(getContext(), new ArrayList<>(), userId);

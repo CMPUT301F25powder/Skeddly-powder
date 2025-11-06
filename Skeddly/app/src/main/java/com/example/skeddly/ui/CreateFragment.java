@@ -222,7 +222,7 @@ public class CreateFragment extends Fragment {
                 Toast.makeText(requireContext(), "Event created!", Toast.LENGTH_SHORT).show();
 
                 // Put event in db
-                DatabaseHandler dbHandler = new DatabaseHandler(requireContext());
+                DatabaseHandler dbHandler = new DatabaseHandler();
                 dbHandler.getEventsPath().child(event.getId()).setValue(event);
 
                 // User owns the event
