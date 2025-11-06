@@ -50,15 +50,23 @@ public class DatabaseHandler {
         Method [] methods = object.getDatabaseObjectRelatedMethods();
 
         for (Method method : methods) {
+            // Formatted strings for saving to DB
+            // For example, in the user, it will be saved as field_internal so it knows where to load from next time
+            // Only ids are saved to the internalName field
             String internalName = this.serializeGetterName(method.getName());
-            String baseName = this.getBaseName(internalName);
-            try {
-                DatabaseObjects values = (DatabaseObjects) method.invoke(object);
 
+            // The higher level place in the DB where the object itself is stored
+            String baseName = this.getBaseName(internalName);
+
+            try {
+                DatabaseObjects<?> values = (DatabaseObjects<?>) method.invoke(object);
+
+                // Save to the higher level line in the DB
                 this.database.child(baseName).setValue(values);
 
+                // Handle all values in the DatabaseObjects to serialize
                 for (int i = 0; i < values.size(); i++) {
-                    DatabaseObject value = (DatabaseObject) values.get(i);
+                    DatabaseObject value = values.get(i);
                     String valueId = value.getId();
 
                     ref.child(internalName).child(String.valueOf(i)).setValue(valueId);
@@ -74,23 +82,37 @@ public class DatabaseHandler {
         Method [] methods = object.getDatabaseObjectRelatedMethods();
 
         for (Method method : methods) {
+            // Formatted strings for reading from DB
+            // For example, in the user, it will be saved as field_internal so it knows where to load from next time
+            // Only ids are saved to the internalName field
             String internalName = this.serializeGetterName(method.getName());
             String setterName = this.unserializeGetterName(internalName);
             String baseName = this.getBaseName(internalName);
 
             try {
+                // Invoke getter to determine its type
                 DatabaseObjects<?> value = (DatabaseObjects<?>) method.invoke(object);
+
                 if (value != null) {
+                    // Get type
                     Class<? extends DatabaseObject> parameter = value.getParameter();
-                    Class<?>[] getterParams = new Class<?>[] {
+
+                    // Prepare values to
+                    Class<?>[] setterParams = new Class<?>[] {
                             DatabaseObjects.class
                     };
-                    Method setter = object.getClass().getMethod(setterName, getterParams);
 
+                    // Get the setter
+                    Method setter = object.getClass().getMethod(setterName, setterParams);
+
+                    // All of the ids that are in the _internal field
                     ArrayList<String> ownerIds = getNodeChildren(ref.child(internalName));
 
+                    // All of the objects related to this DatabaseObject
+                    // For example, this would be all Notification objects (that the user is allowed to read)
                     DatabaseObjects<?> allObjects = getNodeChildren(this.database.child(baseName), parameter);
 
+                    // Empty to fill with values to save to the DB
                     DatabaseObjects<DatabaseObject> unserializedObjects = new DatabaseObjects(parameter);
 
                     for (DatabaseObject someObject : allObjects) {
@@ -101,7 +123,6 @@ public class DatabaseHandler {
 
                     setter.invoke(object, unserializedObjects);
                 }
-
 
             } catch (IllegalAccessException | InvocationTargetException |
                      NoSuchMethodException e) {
