@@ -28,9 +28,9 @@ public class DatabaseObject implements Serializable {
         this.id = id;
     }
 
-    public Method[] getDatabaseObjectRelatedMethods() {
+    public Method[] fetchDatabaseObjectRelatedMethods() {
         Stream<Method> stream = Arrays.stream(this.getClass().getDeclaredMethods()).filter(method -> method.getReturnType() == DatabaseObjects.class);
 
-        return (Method[]) stream.toArray();
+        return stream.toArray(Method[]::new);
     }
 }

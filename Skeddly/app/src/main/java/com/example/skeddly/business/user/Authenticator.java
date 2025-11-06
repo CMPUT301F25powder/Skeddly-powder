@@ -2,6 +2,7 @@ package com.example.skeddly.business.user;
 
 import android.content.Context;
 import android.provider.Settings;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -16,6 +17,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
 public class Authenticator {
@@ -76,8 +78,14 @@ public class Authenticator {
 
                     currentUserPath.setValue(user);
                 } else {
+                    DatabaseReference userPath = databaseHandler.getUsersPath().child(currentUser.getUid());
+
                     user = dataSnapshot.getValue(User.class);
-                    databaseHandler.customUnserializer(databaseHandler.getUsersPath(), user);
+                    try {
+                        databaseHandler.customUnserializer(userPath, user);
+                    } catch (InvocationTargetException | IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
 
                 user.setId(currentUser.getUid());

@@ -31,7 +31,6 @@ public class Notification extends DatabaseObject {
     }
 
     // Fields for the notification object
-    private final String id;
     private String title;
     private String message;
     private LocalDateTime timestamp;
@@ -48,16 +47,7 @@ public class Notification extends DatabaseObject {
 //        this.timestamp = LocalDateTime.now();
         this.isRead = false;
         this.status = invitation_status.PENDING;
-        this.id = UUID.randomUUID().toString();
 
-    }
-
-    /**
-     * Gets the unique identifier of the notification.
-     * @return A string representing the notification ID.
-     */
-    public String getId() {
-        return id;
     }
 
     /**

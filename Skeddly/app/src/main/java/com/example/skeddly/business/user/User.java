@@ -63,10 +63,12 @@ public class User extends DatabaseObject {
         ownedEvents.add(event.getId());
     }
 
+    @Exclude // Exclude so we can handle ourselves
     public ArrayList<String> getJoinedEvents() {
         return joinedEvents;
     }
 
+    @Exclude // Exclude so we can handle ourselves
     public void setJoinedEvents(ArrayList<String> joinedEvents) {
         this.joinedEvents = joinedEvents;
     }
@@ -76,6 +78,7 @@ public class User extends DatabaseObject {
         return notifications;
     }
 
+    @Exclude // Exclude so we can handle ourselves
     public void setNotifications(DatabaseObjects<Notification> notifications) {
         this.notifications = notifications;
     }

@@ -7,6 +7,11 @@ import java.util.Collection;
 
 public class DatabaseObjects<T extends DatabaseObject> extends ArrayList<T> {
     final Class<T> parameter;
+
+    public DatabaseObjects() {
+        parameter = (Class<T>) DatabaseObject.class;
+    }
+
     public DatabaseObjects(Class<T> parameter) {
         this.parameter = parameter;
     }
