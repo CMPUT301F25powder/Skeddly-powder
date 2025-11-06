@@ -66,5 +66,5 @@ public class Ticket extends DatabaseObject {
 
     public TicketStatus getStatus() {return status;}
 
-    public void setStatus(TicketStatus cancelled) {this.status = status;}
+    public void setStatus(TicketStatus status) {this.status = status;}
 }
