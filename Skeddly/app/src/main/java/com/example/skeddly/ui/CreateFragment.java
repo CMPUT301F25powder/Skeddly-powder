@@ -30,6 +30,7 @@ import androidx.fragment.app.FragmentResultListener;
 
 import com.bumptech.glide.Glide;
 import com.example.skeddly.MainActivity;
+import com.example.skeddly.R;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.event.EventDetail;
@@ -243,6 +244,9 @@ public class CreateFragment extends Fragment {
                 MainActivity mainActivity = (MainActivity) requireActivity();
                 mainActivity.getUser().addOwnedEvent(event);
                 mainActivity.notifyUserChanged();
+
+                // Reset the create event screen
+                resetCreateScreen();
             }
         });
 
@@ -475,5 +479,25 @@ public class CreateFragment extends Fragment {
      */
     private void updateEventImage() {
         Glide.with(this).load(imageBytes).into(binding.eventImage);
+    }
+
+    /**
+     * Resets the create event screen after creating an event.
+     */
+    private void resetCreateScreen() {
+        binding.eventImage.setImageDrawable(null);
+        binding.textEventTitleOverlay.setText(R.string.event_title_location);
+        binding.switchRecurrence.setChecked(false);
+        binding.textDateStart.setText(R.string.text_date);
+        binding.textDateFinish.setText(R.string.text_date);
+        binding.textDayOfWeek.setText("");
+        binding.textTimeStart.setText(R.string.text_time);
+        binding.textTimeFinish.setText(R.string.text_time);
+        binding.valueEventTitle.setText("");
+        binding.valueDescription.setText("");
+        binding.textCategorySelector.setText("");
+        binding.editWaitlistLimit.setText("");
+        binding.editAttendeeLimit.setText("");
+        updateConfirmButton();
     }
 }
