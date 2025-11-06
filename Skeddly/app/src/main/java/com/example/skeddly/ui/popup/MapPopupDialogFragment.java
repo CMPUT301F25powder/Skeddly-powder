@@ -236,7 +236,7 @@ public class MapPopupDialogFragment extends DialogFragment implements OnMapReady
         try {
             // May throw an IOException
             address = coder.getFromLocationName(strAddress, 5);
-            if (address == null) {
+            if (address == null || address.isEmpty()) {
                 return null;
             }
 
@@ -244,7 +244,6 @@ public class MapPopupDialogFragment extends DialogFragment implements OnMapReady
             p1 = new LatLng(location.getLatitude(), location.getLongitude() );
 
         } catch (IOException ex) {
-
             ex.printStackTrace();
         }
 
