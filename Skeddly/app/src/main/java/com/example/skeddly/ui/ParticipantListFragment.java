@@ -36,7 +36,7 @@ public class ParticipantListFragment extends Fragment {
         // Initialize the ID lists
         finalTicketIds = new ArrayList<>();
         waitingTicketIds = new ArrayList<>();
-        dbhandler = new DatabaseHandler(getContext());
+        dbhandler = new DatabaseHandler();
 
         if (getArguments() != null) {
             String eventId = getArguments().getString("eventId");
