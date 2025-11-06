@@ -255,18 +255,116 @@
                         android:id="@+id/text_category_selector"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="24dp"
                         android:background="@android:drawable/editbox_background"
                         android:drawablePadding="16dp"
                         android:hint="@string/text_category_selector"
                         android:padding="8dp"
                         android:textSize="18sp"
                         app:drawableEndCompat="@android:drawable/arrow_down_float"
-                        app:layout_constraintEnd_toStartOf="@+id/edit_waitlist_limit"
+                        app:layout_constraintEnd_toEndOf="@+id/edit_lottery_criteria"
                         app:layout_constraintStart_toStartOf="@id/label_description"
                         app:layout_constraintTop_toBottomOf="@id/value_description" />
 
+                    <TextView
+                        android:id="@+id/text_registration_period"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/text_registration_period"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/text_category_selector" />
+
+                    <TextView
+                        android:id="@+id/text_reg_date_start"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/text_date"
+                        android:textSize="18sp"
+                        app:layout_constraintStart_toStartOf="@+id/text_registration_period"
+                        app:layout_constraintTop_toBottomOf="@+id/text_registration_period" />
+
+                    <TextView
+                        android:id="@+id/text_reg_date_dash"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/text_dash"
+                        android:textSize="18sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/text_reg_date_start"
+                        app:layout_constraintStart_toEndOf="@+id/text_reg_date_start"
+                        app:layout_constraintTop_toTopOf="@+id/text_reg_date_start" />
+
+                    <TextView
+                        android:id="@+id/text_reg_date_finish"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/text_date"
+                        android:textSize="18sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/text_reg_date_start"
+                        app:layout_constraintStart_toEndOf="@+id/text_reg_date_dash"
+                        app:layout_constraintTop_toTopOf="@+id/text_reg_date_start" />
+
+                    <TextView
+                        android:id="@+id/text_reg_time_start"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/text_time"
+                        android:textSize="18sp"
+                        app:layout_constraintStart_toStartOf="@+id/text_registration_period"
+                        app:layout_constraintTop_toBottomOf="@+id/text_reg_date_start" />
+
+                    <TextView
+                        android:id="@+id/text_reg_time_dash"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/text_dash"
+                        android:textSize="18sp"
+                        app:layout_constraintStart_toEndOf="@+id/text_reg_time_start"
+                        app:layout_constraintTop_toTopOf="@+id/text_reg_time_start" />
+
+                    <TextView
+                        android:id="@+id/text_reg_time_finish"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/text_time"
+                        android:textSize="18sp"
+                        app:layout_constraintStart_toEndOf="@+id/text_reg_time_dash"
+                        app:layout_constraintTop_toTopOf="@+id/text_reg_time_start" />
+
                     <!-- Right-aligned details -->
+                    <TextView
+                        android:id="@+id/text_lottery_criteria"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/text_lottery_selection_criteria"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/text_reg_time_start" />
+
+                    <EditText
+                        android:id="@+id/edit_lottery_criteria"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="24dp"
+                        android:ems="10"
+                        android:hint="@string/text_enter_criteria"
+                        android:inputType="text"
+                        android:textColor="@color/neutral_brown_light"
+                        app:layout_constraintEnd_toStartOf="@+id/edit_waitlist_limit"
+                        app:layout_constraintStart_toStartOf="@+id/text_lottery_criteria"
+                        app:layout_constraintTop_toBottomOf="@+id/text_lottery_criteria" />
+
                     <TextView
                         android:id="@+id/label_waitlist_limit"
                         android:layout_width="wrap_content"
@@ -275,7 +373,7 @@
                         android:text="@string/wait_list_limit"
                         android:textColor="@color/primary_navy"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/text_category_selector" />
+                        app:layout_constraintTop_toTopOf="@+id/text_lottery_criteria" />
 
                     <EditText
                         android:id="@+id/edit_waitlist_limit"

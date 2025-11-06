@@ -77,6 +77,12 @@ public class CreateFragment extends Fragment {
     private LocalTime startTime;
     private LocalTime endTime;
 
+    // Registration
+    private LocalDate regStartDate;
+    private LocalDate regEndDate;
+    private LocalTime regStartTime;
+    private LocalTime regEndTime;
+
     private LatLng eventLocation;
 
     // Popup Selector Constants
@@ -187,6 +193,7 @@ public class CreateFragment extends Fragment {
                 updateConfirmButton();
             }
         });
+
         setupDatePicker(binding.textDateFinish, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
@@ -200,6 +207,40 @@ public class CreateFragment extends Fragment {
                 endDateStr.setSpan(underlineSpan, 0, endDateStr.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
                 binding.textDateFinish.setText(endDateStr);
+                updateConfirmButton();
+            }
+        });
+
+        setupDatePicker(binding.textRegDateStart, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                int year = result.getInt("year");
+                int monthNum = result.getInt("month");
+                int day = result.getInt("day");
+
+                regStartDate = LocalDate.of(year, monthNum + 1, day);
+
+                SpannableString regStartDateStr = new SpannableString(regStartDate.format(dateFormatter));
+                regStartDateStr.setSpan(underlineSpan, 0, regStartDateStr.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+                binding.textRegDateStart.setText(regStartDateStr);
+                updateConfirmButton();
+            }
+        });
+
+        setupDatePicker(binding.textRegDateFinish, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                int year = result.getInt("year");
+                int monthNum = result.getInt("month");
+                int day = result.getInt("day");
+
+                regEndDate = LocalDate.of(year, monthNum + 1, day);
+
+                SpannableString regEndDateStr = new SpannableString(regEndDate.format(dateFormatter));
+                regEndDateStr.setSpan(underlineSpan, 0, regEndDateStr.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+                binding.textRegDateFinish.setText(regEndDateStr);
                 updateConfirmButton();
             }
         });
@@ -226,6 +267,32 @@ public class CreateFragment extends Fragment {
                 endTimeStr.setSpan(underlineSpan, 0, endTimeStr.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
                 binding.textTimeFinish.setText(endTimeStr);
+                updateConfirmButton();
+            }
+        });
+
+        setupTimePicker(binding.textRegTimeStart, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                regStartTime = LocalTime.of(result.getInt("hourOfDay"), result.getInt("minute"));
+
+                SpannableString regStartTimeStr = new SpannableString(regStartTime.format(timeFormatter));
+                regStartTimeStr.setSpan(underlineSpan, 0, regStartTimeStr.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+                binding.textRegTimeStart.setText(regStartTimeStr);
+                updateConfirmButton();
+            }
+        });
+
+        setupTimePicker(binding.textRegTimeFinish, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                regEndTime = LocalTime.of(result.getInt("hourOfDay"), result.getInt("minute"));
+
+                SpannableString regEndTimeStr = new SpannableString(regEndTime.format(timeFormatter));
+                regEndTimeStr.setSpan(underlineSpan, 0, regEndTimeStr.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+                binding.textRegTimeFinish.setText(regEndTimeStr);
                 updateConfirmButton();
             }
         });
@@ -265,6 +332,7 @@ public class CreateFragment extends Fragment {
 
         binding.valueEventTitle.addTextChangedListener(textWatcher);
         binding.valueDescription.addTextChangedListener(textWatcher);
+        binding.editLotteryCriteria.addTextChangedListener(textWatcher);
         binding.editWaitlistLimit.addTextChangedListener(textWatcher);
         binding.editAttendeeLimit.addTextChangedListener(textWatcher);
 
@@ -385,7 +453,8 @@ public class CreateFragment extends Fragment {
      * @return True if the form has been fully filled. False otherwise.
      */
     private boolean isFilledIn() {
-        if (binding.valueEventTitle.length() <= 0 || binding.valueDescription.length() <= 0) {
+        if (binding.valueEventTitle.length() <= 0 || binding.valueDescription.length() <= 0 ||
+                binding.editLotteryCriteria.length() <= 0) {
             return false;
         }
 
@@ -409,6 +478,22 @@ public class CreateFragment extends Fragment {
         if (isRecurring && daysOfWeek.isEmpty()) {
             return false;
         }
+
+        // Registration period must be set
+        if (regStartTime == null || regEndTime == null || regStartDate == null || regEndDate == null) {
+            return false;
+        }
+
+        // Registration start date can't happen after registration end date
+        if (regStartDate.isAfter(regEndDate)) {
+            return false;
+        }
+
+        // Registration start and end date must happen before event start date
+        //...
+
+        // Registration start and end date can't happen in the past
+        //...
 
         // Attendee Limit
         if (binding.editAttendeeLimit.length() <= 0) {
@@ -510,6 +595,11 @@ public class CreateFragment extends Fragment {
         binding.valueEventTitle.setText("");
         binding.valueDescription.setText("");
         binding.textCategorySelector.setText("");
+        binding.textRegDateStart.setText(R.string.text_date);
+        binding.textRegDateFinish.setText(R.string.text_date);
+        binding.textRegTimeStart.setText(R.string.text_time);
+        binding.textRegTimeFinish.setText(R.string.text_time);
+        binding.editLotteryCriteria.setText("");
         binding.editWaitlistLimit.setText("");
         binding.editAttendeeLimit.setText("");
         updateConfirmButton();

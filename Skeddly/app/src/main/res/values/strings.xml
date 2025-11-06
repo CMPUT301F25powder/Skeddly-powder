@@ -71,4 +71,7 @@
     <string name="text_time"><u>hh:mm</u></string>
     <string name="edit_waitlist_limit">OPTIONAL</string>
     <string name="edit_attendee_limit">Enter Limit</string>
+    <string name="text_registration_period">Registration Period:</string>
+    <string name="text_lottery_selection_criteria">Lottery Selection Criteria:</string>
+    <string name="text_enter_criteria">Enter Criteria</string>
 </resources>
