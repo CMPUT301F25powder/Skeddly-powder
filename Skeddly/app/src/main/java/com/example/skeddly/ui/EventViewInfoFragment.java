@@ -5,6 +5,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -13,15 +15,19 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.bumptech.glide.Glide;
 import com.example.skeddly.MainActivity;
-import com.example.skeddly.business.Event;
+import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.database.DatabaseHandler;
+import com.example.skeddly.business.event.EventDetail;
+import com.example.skeddly.business.event.EventSchedule;
 import com.example.skeddly.business.user.Authenticator;
 import com.example.skeddly.business.user.User;
 import com.example.skeddly.business.user.UserLevel;
 import com.example.skeddly.databinding.EventViewAdminBinding;
 import com.example.skeddly.databinding.EventViewFragmentBinding;
 import com.example.skeddly.ui.adapter.EventAdapter;
+import com.example.skeddly.ui.popup.QRPopupDialogFragment;
 import com.google.firebase.database.ValueEventListener;
 
 import java.time.Instant;
@@ -29,6 +35,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Locale;
 
 
@@ -51,7 +58,7 @@ public class EventViewInfoFragment extends Fragment {
         dbHandler = new DatabaseHandler(getContext());
 
         // Initialize eventAdapter
-        eventAdapter = new EventAdapter(getContext(), new ArrayList<>());
+        eventAdapter = new EventAdapter(getContext(), new ArrayList<>(), userId);
 
         // Get the eventId passed from the HomeFragment
         if (getArguments() != null) {
@@ -81,6 +88,15 @@ public class EventViewInfoFragment extends Fragment {
             Log.e("EventViewInfoFragment", "Event ID is null or empty!");
         }
 
+        // === QR Code shenanigans ===
+        ImageButton buttonQrCode = binding.buttonQrCode;
+        buttonQrCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                QRPopupDialogFragment qpf = QRPopupDialogFragment.newInstance(String.format("skeddly://event/%s", eventId));
+                qpf.show(getChildFragmentManager(), null);
+            }
+        });
 
         // Set up the back button to navigate up
         binding.buttonBack.setOnClickListener(v -> {
@@ -132,46 +148,43 @@ public class EventViewInfoFragment extends Fragment {
      * Populates the UI elements with data from the fetched Event object.
      */
     private void populateUI(Event event) {
+        Glide.with(this).load(Base64.getDecoder().decode(event.getImageb64())).into(binding.eventImage);
+        EventDetail eventDetails = event.getEventDetails();
+        EventSchedule eventSchedule = event.getEventSchedule();
+
         // Set Title and Location
         if (event.getLocation() != null) {
-            binding.textEventTitleOverlay.setText(String.format("%s - %s", event.getName(), event.getLocation()));
+            binding.textEventTitleOverlay.setText(String.format("%s - %s", eventDetails.getName(), event.getLocation().toString()));
         } else {
-            binding.textEventTitleOverlay.setText(event.getName());
+            binding.textEventTitleOverlay.setText(eventDetails.getName());
         }
 
         // Set Event Time
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, MMM d, HH:mm");
-        LocalDateTime startTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(event.getStartTime()), ZoneId.systemDefault());
-        LocalDateTime endTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(event.getEndTime()), ZoneId.systemDefault());
-        binding.textEventTime.setText(String.format("%s - %s", startTime.format(formatter), endTime.toLocalTime().toString()));
+        LocalDateTime startTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(eventSchedule.getStartTime()), ZoneId.systemDefault());
+        LocalDateTime endTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(eventSchedule.getEndTime()), ZoneId.systemDefault());
+        binding.textDayOfWeek.setText(String.format("%s - %s", startTime.format(formatter), endTime.toLocalTime().toString()));
 
         // Set Information Fields
-        binding.valueEventTitle.setText(event.getName());
-        binding.valueDescription.setText(event.getDescription());
-        binding.valueCategory.setText(event.getCategory());
-
-        // Format Geolocation Text
-        if (event.getLocation() != null) {
-            binding.valueGeolocation.setText(String.format(Locale.getDefault(), "Within %.1fkm of venue", event.getLocation()));
-        } else {
-            binding.valueGeolocation.setText("Not required");
-        }
+        binding.valueEventTitle.setText(eventDetails.getName());
+        binding.valueDescription.setText(eventDetails.getDescription());
+        binding.valueCategory.setText(String.join(", ", eventDetails.getCategories()));
 
         // Calculate and display Attendee Count
         int currentAttendees = 0;
-        if (event.getAttendees() != null && event.getAttendees().getUserList() != null) {
-            currentAttendees = event.getAttendees().getUserList().size();
+        if (event.getParticipantList() != null && event.getParticipantList().getUserList() != null) {
+            currentAttendees = event.getParticipantList().getUserList().size();
         }
-        binding.valueAttendeeLimit.setText(String.format(Locale.getDefault(), "%d / %d", currentAttendees, event.getAttendeeLimit()));
+        binding.valueAttendeeLimit.setText(String.format(Locale.getDefault(), "%d / %d", currentAttendees, event.getParticipantList().getMaxAttend()));
 
         // Calculate and display Waitlist Count
         int currentWaitlist = 0;
         int maxWaitlist = 0;
-        if (event.getApplicants() != null) {
-            if (event.getApplicants().getTicketIds() != null) {
-                currentWaitlist = event.getApplicants().getTicketIds().size();
+        if (event.getWaitingList() != null) {
+            if (event.getWaitingList().getTicketIds() != null) {
+                currentWaitlist = event.getWaitingList().getTicketIds().size();
             }
-            maxWaitlist = event.getApplicants().getLimit();
+            maxWaitlist = event.getWaitingList().getLimit();
         }
 
         if (maxWaitlist == Integer.MAX_VALUE) {
@@ -180,7 +193,6 @@ public class EventViewInfoFragment extends Fragment {
             binding.valueWaitlistLimit.setText(String.format(Locale.getDefault(), "%d / %d", currentWaitlist, maxWaitlist));
         }
     }
-
 
     @Override
     public void onDestroyView() {
