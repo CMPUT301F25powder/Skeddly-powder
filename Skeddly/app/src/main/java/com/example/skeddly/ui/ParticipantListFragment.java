@@ -87,7 +87,6 @@ public class ParticipantListFragment extends Fragment {
 
                     // Set the button listeners to clear the adapter and fetch the correct data.
                     binding.buttonFinalList.setOnClickListener(v -> {
-                        finalTicketIds.add("6bf72798-9649-473e-90dc-f010a1ceb5f8");
                         participantAdapter.setWaitingList(false);
                         fetchAndDisplayTickets(finalTicketIds);
                     });
