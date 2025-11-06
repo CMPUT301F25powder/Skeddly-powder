@@ -73,11 +73,22 @@ public class ParticipantAdapter extends ArrayAdapter<Ticket> {
             }
 
 
-            // remove status for the finalized list
+            // remove status for the finalized list and long press to delete
             if (!isWaitingList) {
                 statusTextView.setVisibility(View.INVISIBLE);
+                // long press to delete
+                convertView.setOnLongClickListener(v -> {
+                    if (dbHandler != null) {
+                        dbHandler.getTicketsPath().child(ticket.getId()).removeValue();
+                        remove(ticket);
+                        dbHandler.getEventsPath().child(ticket.getId()).removeValue();
+                        notifyDataSetChanged();
+                    }
+                    return true;
+                });
             }
             else {
+                // no delete feature
                 statusTextView.setVisibility(View.VISIBLE);
             }
 
