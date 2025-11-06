@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 public class InboxFragment extends Fragment {
     private InboxFragmentBinding binding;
-    private ArrayList<Notification> inbox;
+    private ArrayList<String> inbox;
     private DatabaseHandler dbHandler;
     private InboxAdapter inboxAdapter;
     private String userId;
@@ -46,6 +46,17 @@ public class InboxFragment extends Fragment {
 
         // Inbox Adapter
         inboxAdapter = new InboxAdapter(getContext(), inbox);
+
+        Notification testNotif = new Notification();
+        testNotif.setTitle("Test!");
+        testNotif.setMessage("This is a fake notification.");
+        inbox.add(testNotif.getId());
+
+        DatabaseHandler db = new DatabaseHandler(getContext());
+
+        db.getNotificationsPath().child(testNotif.getId()).setValue(testNotif);
+
+        authenticator.commitUserChanges();
 
         // Set event adapter to list view
         binding.listNotifications.setAdapter(inboxAdapter);

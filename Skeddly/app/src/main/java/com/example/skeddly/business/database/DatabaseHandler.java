@@ -152,4 +152,8 @@ public class DatabaseHandler {
     public DatabaseReference getTicketsPath() {
         return database.child("tickets");
     }
+
+    public DatabaseReference getNotificationsPath() {
+        return database.child("notifications");
+    }
 }

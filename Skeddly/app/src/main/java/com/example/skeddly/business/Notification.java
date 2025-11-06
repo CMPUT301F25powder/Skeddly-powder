@@ -45,7 +45,7 @@ public class Notification extends DatabaseObject {
      * Initializes the timestamp to the current time and sets its read status to false.
      */
     public Notification() {
-        this.timestamp = LocalDateTime.now();
+//        this.timestamp = LocalDateTime.now();
         this.isRead = false;
         this.status = invitation_status.PENDING;
         this.id = UUID.randomUUID().toString();
@@ -97,16 +97,16 @@ public class Notification extends DatabaseObject {
      * @return A Date object representing the creation time.
      */
     public LocalDateTime getTimestamp() {
-        return timestamp;
+        return LocalDateTime.now();
     }
 
     /**
      * Sets the timestamp for the notification.
      * @param timestamp The Date to set.
      */
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
-    }
+//    public void setTimestamp(LocalDateTime timestamp) {
+//        this.timestamp = timestamp;
+//    }
 
     /**
      * Gets the type of the notification.

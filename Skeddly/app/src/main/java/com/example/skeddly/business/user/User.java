@@ -13,8 +13,7 @@ public class User extends DatabaseObject {
     private ArrayList<String> ownedEvents;
     private ArrayList<String> joinedEvents;
     private UserLevel privilegeLevel;
-    private ArrayList<Notification> inbox;
-
+    private ArrayList<String> inbox;
 
     @SuppressLint("HardwareIds")
     public User() {
@@ -22,7 +21,7 @@ public class User extends DatabaseObject {
         this.personalInformation = new PersonalInformation();
         this.notificationSettings = new NotificationSettings();
         this.privilegeLevel = UserLevel.ENTRANT;
-        this.inbox = new ArrayList<Notification>();
+        this.inbox = new ArrayList<String>();
     }
 
     public ArrayList<String> getOwnedEvents() {
@@ -73,11 +72,11 @@ public class User extends DatabaseObject {
         this.joinedEvents = joinedEvents;
     }
 
-    public ArrayList<Notification> getInbox() {
+    public ArrayList<String> getInbox() {
         return inbox;
     }
 
-    public void setInbox(ArrayList<Notification> inbox) {
+    public void setInbox(ArrayList<String> inbox) {
         this.inbox = inbox;
     }
 }
