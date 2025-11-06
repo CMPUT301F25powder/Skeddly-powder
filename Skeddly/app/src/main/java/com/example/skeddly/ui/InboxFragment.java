@@ -12,20 +12,16 @@ import androidx.fragment.app.Fragment;
 import com.example.skeddly.MainActivity;
 import com.example.skeddly.business.Notification;
 import com.example.skeddly.business.database.DatabaseHandler;
-import com.example.skeddly.business.user.Authenticator;
+import com.example.skeddly.business.database.DatabaseObjects;
 import com.example.skeddly.business.user.User;
 import com.example.skeddly.databinding.InboxFragmentBinding;
 import com.example.skeddly.ui.adapter.InboxAdapter;
 
-import java.util.ArrayList;
-
 
 public class InboxFragment extends Fragment {
     private InboxFragmentBinding binding;
-    private ArrayList<String> inbox;
-    private DatabaseHandler dbHandler;
+    private DatabaseObjects<Notification> inbox;
     private InboxAdapter inboxAdapter;
-    private String userId;
 
     @Nullable
     @Override
@@ -33,30 +29,24 @@ public class InboxFragment extends Fragment {
         binding = InboxFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        // Database handler
-        dbHandler = new DatabaseHandler(getContext());
-
         // Get the user
         MainActivity activity = (MainActivity) requireActivity();
-        Authenticator authenticator = activity.getAuthenticator();
         User user = activity.getUser();
 
         // Notif list
-        inbox = user.getInbox();
-
-        // Inbox Adapter
-        inboxAdapter = new InboxAdapter(getContext(), inbox);
+        inbox = user.customGetNotifications();
 
         Notification testNotif = new Notification();
         testNotif.setTitle("Test!");
         testNotif.setMessage("This is a fake notification.");
-        inbox.add(testNotif.getId());
+        inbox.add(testNotif);
 
-        DatabaseHandler db = new DatabaseHandler(getContext());
+        user.customSetNotifications(inbox);
 
-        db.getNotificationsPath().child(testNotif.getId()).setValue(testNotif);
+        activity.notifyUserChanged();
 
-        authenticator.commitUserChanges();
+        // Inbox Adapter
+        inboxAdapter = new InboxAdapter(getContext(), user);
 
         // Set event adapter to list view
         binding.listNotifications.setAdapter(inboxAdapter);

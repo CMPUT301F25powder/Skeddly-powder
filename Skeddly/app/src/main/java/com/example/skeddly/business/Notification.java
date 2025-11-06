@@ -96,9 +96,9 @@ public class Notification extends DatabaseObject {
      * Gets the timestamp indicating when the notification was created.
      * @return A Date object representing the creation time.
      */
-    public LocalDateTime getTimestamp() {
-        return LocalDateTime.now();
-    }
+//    public LocalDateTime getTimestamp() {
+//        return LocalDateTime.now();
+//    }
 
     /**
      * Sets the timestamp for the notification.

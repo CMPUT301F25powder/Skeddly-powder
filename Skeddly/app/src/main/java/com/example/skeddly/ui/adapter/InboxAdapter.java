@@ -13,19 +13,23 @@ import androidx.annotation.Nullable;
 import com.example.skeddly.R;
 import com.example.skeddly.business.Notification;
 import com.example.skeddly.business.database.DatabaseHandler;
+import com.example.skeddly.business.database.DatabaseObjects;
 import com.example.skeddly.business.database.SingleListenUpdate;
+import com.example.skeddly.business.user.User;
 
 import java.util.ArrayList;
 
-public class InboxAdapter extends ArrayAdapter<String> {
-    private ArrayList<String> inbox;
+public class InboxAdapter extends ArrayAdapter<Notification> {
+    private User user;
     Context context;
     DatabaseHandler databaseHandler;
-    public InboxAdapter(Context context, ArrayList<String> inbox) {
-        super(context, 0, inbox);
-        this.inbox = inbox;
+    public InboxAdapter(Context context, User user) {
+        super(context, 0);
+        this.user = user;
         this.context = context;
-        this.databaseHandler = new DatabaseHandler(context);
+        this.databaseHandler = new DatabaseHandler();
+
+        this.addAll(user.customGetNotifications());
     }
 
     @NonNull
@@ -35,17 +39,13 @@ public class InboxAdapter extends ArrayAdapter<String> {
             view = LayoutInflater.from(context).inflate(R.layout.notification, parent, false);
         }
 
-        String notifId = inbox.get(position);
+        Notification notif = this.getItem(position);
 
         TextView title = view.findViewById(R.id.notification_title);
         TextView description = view.findViewById(R.id.notification_subtitle);
 
-        SingleListenUpdate<Notification> update = (notif) -> {
-            title.setText(notif.getTitle());
-            description.setText(notif.getMessage());
-        };
-
-        this.databaseHandler.singleListen(this.databaseHandler.getNotificationsPath().child(notifId), Notification.class, update);
+        title.setText(notif.getTitle());
+        description.setText(notif.getMessage());
 
         return view;
     }

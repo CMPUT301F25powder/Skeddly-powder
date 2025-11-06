@@ -5,17 +5,22 @@ import androidx.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class DatabaseObjects extends ArrayList<DatabaseObject> {
-
-    public DatabaseObjects() {
+public class DatabaseObjects<T extends DatabaseObject> extends ArrayList<T> {
+    final Class<T> parameter;
+    public DatabaseObjects(Class<T> parameter) {
+        this.parameter = parameter;
     }
 
-    public DatabaseObjects(int initialCapacity) {
+    public DatabaseObjects(Class<T> parameter, int initialCapacity) {
         super(initialCapacity);
+
+        this.parameter = parameter;
     }
 
-    public DatabaseObjects(@NonNull Collection<? extends DatabaseObject> c) {
+    public DatabaseObjects(Class<T> parameter, @NonNull Collection<? extends T> c) {
         super(c);
+
+        this.parameter = parameter;
     }
 
     public ArrayList<String> getIds() {
@@ -26,5 +31,9 @@ public class DatabaseObjects extends ArrayList<DatabaseObject> {
         }
 
         return result;
+    }
+
+    public Class<T> getParameter() {
+        return parameter;
     }
 }

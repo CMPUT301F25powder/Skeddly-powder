@@ -1,11 +1,9 @@
 package com.example.skeddly.business.database;
 
-import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.example.skeddly.business.user.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -14,6 +12,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 
 /**
  * Handles edits and realtime updates to the realtime DB in Firebase
@@ -26,25 +25,33 @@ public class DatabaseHandler {
     }
 
     private String serializeGetterName(String name) {
-        String replaced = name.replaceFirst("get", "");
+        String replaced = name.replaceFirst("customGet", "");
         String firstLetter = replaced.substring(0, 1).toLowerCase();
 
         return firstLetter.concat(replaced.substring(1));
+    }
+
+    private String unserializeGetterName(String name) {
+        String firstLetter = name.substring(0, 1).toUpperCase();
+        String replaced = firstLetter.concat(name.substring(1));
+
+        return "customSet".concat(replaced);
     }
     public void customSerializer(DatabaseReference ref, Object object) {
         Method [] methods =  object.getClass().getDeclaredMethods();
 
         for (Method method : methods) {
             if (method.getReturnType() == DatabaseObjects.class) {
-                String formattedMethodName = this.serializeGetterName(method.getName());
+                String rawName = this.serializeGetterName(method.getName());
                 try {
                     DatabaseObjects values = (DatabaseObjects) method.invoke(object);
 
                     for (int i = 0; i < values.size(); i++) {
-                        DatabaseObject value = values.get(i);
+                        DatabaseObject value = (DatabaseObject) values.get(i);
                         String valueId = value.getId();
 
-                        ref.child(formattedMethodName).child(String.valueOf(i)).setValue(valueId);
+                        ref.child(rawName).child(String.valueOf(i)).setValue(valueId);
+                        ref.getRoot().child(rawName).setValue(value);
                     }
 
                 } catch (IllegalAccessException e) {
@@ -54,6 +61,83 @@ public class DatabaseHandler {
                 }
             }
         }
+    }
+
+    public void customUnserializer(DatabaseReference ref, Object object) {
+        Method [] methods =  object.getClass().getDeclaredMethods();
+
+        for (Method method : methods) {
+            if (method.getReturnType() == DatabaseObjects.class) {
+                String rawName = this.serializeGetterName(method.getName());
+                String setterName = this.unserializeGetterName(rawName);
+
+                try {
+                    DatabaseObjects<?> value = (DatabaseObjects<?>) method.invoke(object);
+                    if (value != null) {
+                        Class<? extends DatabaseObject> parameter = value.getParameter();
+                        Class<?>[] getterParams = new Class<?>[] {
+                                DatabaseObjects.class
+                        };
+                        Method setter = object.getClass().getMethod(setterName, getterParams);
+
+                        ArrayList<String> ownerIds = getNodeChildren(ref.child(rawName));
+
+                        DatabaseObjects<?> allObjects = getNodeChildren(ref.getRoot().child(rawName), parameter);
+
+                        DatabaseObjects<DatabaseObject> unserializedObjects = new DatabaseObjects(parameter);
+
+                        for (DatabaseObject someObject : allObjects) {
+                            if (ownerIds.contains(someObject.getId())) {
+                                unserializedObjects.add(someObject);
+                            }
+                        }
+
+                        Log.w("dbobjects", unserializedObjects.toString());
+
+                        setter.invoke(object, unserializedObjects);
+                    }
+
+
+                } catch (IllegalAccessException | InvocationTargetException |
+                         NoSuchMethodException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+
+    public ArrayList<String> getNodeChildren(DatabaseReference ref) {
+        ArrayList<String> result = new ArrayList<>();
+
+        ref.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DataSnapshot dataSnapshot = task.getResult();
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                        result.add(childSnapshot.getValue(String.class));
+                    }
+                }
+            }
+        });
+
+        return result;
+    }
+
+    public <T extends DatabaseObject> DatabaseObjects<T> getNodeChildren(DatabaseReference ref, Class<T> classType) {
+        DatabaseObjects<T> result = new DatabaseObjects<>(classType);
+
+        ref.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DataSnapshot dataSnapshot = task.getResult();
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                        result.add(childSnapshot.getValue(classType));
+                    }
+                }
+            }
+        });
+
+        return result;
     }
 
     /**
@@ -97,7 +181,7 @@ public class DatabaseHandler {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                DatabaseObjects result = new DatabaseObjects();
+                DatabaseObjects<T> result = new DatabaseObjects<>((Class<T>) DatabaseObject.class);
                 Iterable<DataSnapshot> subSnapshot = snapshot.getChildren();
 
                 for (DataSnapshot item : subSnapshot) {

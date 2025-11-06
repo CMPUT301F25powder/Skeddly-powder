@@ -2,8 +2,11 @@ package com.example.skeddly.business.user;
 
 import android.annotation.SuppressLint;
 
+import com.example.skeddly.business.Notification;
 import com.example.skeddly.business.database.DatabaseObject;
+import com.example.skeddly.business.database.DatabaseObjects;
 import com.example.skeddly.business.event.Event;
+import com.google.firebase.database.Exclude;
 
 import java.util.ArrayList;
 
@@ -13,7 +16,7 @@ public class User extends DatabaseObject {
     private ArrayList<String> ownedEvents;
     private ArrayList<String> joinedEvents;
     private UserLevel privilegeLevel;
-    private ArrayList<String> inbox;
+    private DatabaseObjects<Notification> notifications;
 
     @SuppressLint("HardwareIds")
     public User() {
@@ -21,7 +24,7 @@ public class User extends DatabaseObject {
         this.personalInformation = new PersonalInformation();
         this.notificationSettings = new NotificationSettings();
         this.privilegeLevel = UserLevel.ENTRANT;
-        this.inbox = new ArrayList<String>();
+        this.notifications = new DatabaseObjects<>(Notification.class);
     }
 
     public ArrayList<String> getOwnedEvents() {
@@ -68,11 +71,11 @@ public class User extends DatabaseObject {
         this.joinedEvents = joinedEvents;
     }
 
-    public ArrayList<String> getInbox() {
-        return inbox;
+    public DatabaseObjects<Notification> customGetNotifications() {
+        return notifications;
     }
 
-    public void setInbox(ArrayList<String> inbox) {
-        this.inbox = inbox;
+    public void customSetNotifications(DatabaseObjects<Notification> notifications) {
+        this.notifications = notifications;
     }
 }

@@ -22,22 +22,11 @@ public class Authenticator {
     private String androidId;
     private User user;
     private FirebaseAuth mAuth;
-    private Context context;
     private DatabaseHandler databaseHandler;
     private boolean showSignUp;
     UserLoaded callback;
 
-    public Authenticator(Context context, DatabaseHandler databaseHandler, User user) {
-        this.context = context;
-        this.databaseHandler = databaseHandler;
-        this.mAuth = FirebaseAuth.getInstance();
-        this.androidId = Settings.Secure.getString(context.getContentResolver(),Settings.Secure.ANDROID_ID);
-        this.showSignUp = false;
-
-        createAndTieUser();
-    }
     public Authenticator(Context context, DatabaseHandler databaseHandler) {
-        this.context = context;
         this.databaseHandler = databaseHandler;
         this.mAuth = FirebaseAuth.getInstance();
         this.androidId = Settings.Secure.getString(context.getContentResolver(),Settings.Secure.ANDROID_ID);
@@ -88,6 +77,7 @@ public class Authenticator {
                     currentUserPath.setValue(user);
                 } else {
                     user = dataSnapshot.getValue(User.class);
+//                    databaseHandler.customUnserializer(databaseHandler.getUsersPath(), user);
                 }
 
                 user.setId(currentUser.getUid());
