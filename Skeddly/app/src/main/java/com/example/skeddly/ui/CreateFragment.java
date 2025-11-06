@@ -1,7 +1,5 @@
 package com.example.skeddly.ui;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -16,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -370,12 +367,14 @@ public class CreateFragment extends Fragment {
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
                 ArrayList<String> selected = result.getStringArrayList("selectedItems");
 
-                selectedItems.clear();
-                selectedItems.addAll(selected);
-                String selectedString = String.join(", ", selectedItems);
+                if (selected != null) {
+                    selectedItems.clear();
+                    selectedItems.addAll(selected);
+                    String selectedString = String.join(", ", selectedItems);
 
-                textView.setText(selectedString);
-                updateConfirmButton();
+                    textView.setText(selectedString);
+                    updateConfirmButton();
+                }
             }
         });
     }
@@ -469,8 +468,8 @@ public class CreateFragment extends Fragment {
         }
 
         // Event can't be scheduled in the past
-        LocalDateTime start = LocalDateTime.of(startDate, startTime);
-        if (start.isBefore(LocalDateTime.now())) {
+        LocalDateTime eventStart = LocalDateTime.of(startDate, startTime);
+        if (eventStart.isBefore(LocalDateTime.now())) {
             return false;
         }
 
@@ -489,11 +488,18 @@ public class CreateFragment extends Fragment {
             return false;
         }
 
+        LocalDateTime regStart = LocalDateTime.of(regStartDate, regStartTime);
+        LocalDateTime regEnd = LocalDateTime.of(regEndDate, regEndTime);
+
         // Registration start and end date must happen before event start date
-        //...
+        if (regEnd.isAfter(eventStart)) {
+            return false;
+        }
 
         // Registration start and end date can't happen in the past
-        //...
+        if (regStart.isBefore(LocalDateTime.now())) {
+            return false;
+        }
 
         // Attendee Limit
         if (binding.editAttendeeLimit.length() <= 0) {
@@ -532,8 +538,11 @@ public class CreateFragment extends Fragment {
      * @return The event constructed from the form data.
      */
     private Event createEvent() {
-        EventDetail eventDetails = new EventDetail(binding.valueEventTitle.getText().toString(),
-                binding.valueDescription.getText().toString(), categories);
+        EventDetail eventDetails = new EventDetail(
+                binding.valueEventTitle.getText().toString(),
+                binding.valueDescription.getText().toString(),
+                binding.editLotteryCriteria.getText().toString(),
+                categories);
 
         LocalDateTime start = LocalDateTime.of(startDate, startTime);
         LocalDate endDate = this.endDate;
@@ -565,8 +574,6 @@ public class CreateFragment extends Fragment {
         if (binding.editWaitlistLimit.length() > 0) {
             waitListLimit = Integer.parseInt(binding.editWaitlistLimit.getText().toString());
         }
-
-        MainActivity mainActivity = (MainActivity) requireActivity();
 
         return new Event(eventDetails, eventSchedule, eventLocation,
                 Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid(),

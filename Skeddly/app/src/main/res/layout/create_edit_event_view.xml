@@ -359,7 +359,7 @@
                         android:layout_marginEnd="24dp"
                         android:ems="10"
                         android:hint="@string/text_enter_criteria"
-                        android:inputType="text"
+                        android:inputType="textMultiLine"
                         android:textColor="@color/neutral_brown_light"
                         app:layout_constraintEnd_toStartOf="@+id/edit_waitlist_limit"
                         app:layout_constraintStart_toStartOf="@+id/text_lottery_criteria"
