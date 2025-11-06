@@ -12,19 +12,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.logging.Logger;
 
 /**
  * Handles edits and realtime updates to the realtime DB in Firebase
  */
 public class DatabaseHandler {
-    private User user;
-    private Context context;
     private DatabaseReference database;
+
+    public DatabaseHandler() {
+        this.database = FirebaseDatabase.getInstance().getReference();
+    }
 
     private String serializeGetterName(String name) {
         String replaced = name.replaceFirst("get", "");
@@ -55,11 +54,6 @@ public class DatabaseHandler {
                 }
             }
         }
-    }
-
-    public DatabaseHandler(Context context) {
-        this.context = context;
-        this.database = FirebaseDatabase.getInstance().getReference();
     }
 
     /**
@@ -155,5 +149,14 @@ public class DatabaseHandler {
 
     public DatabaseReference getNotificationsPath() {
         return database.child("notifications");
+    }
+
+    /**
+     * Returns a {@link DatabaseReference} pointing to the specified path
+     * @return A {@link DatabaseReference} pointing to the specified path
+     * @see DatabaseReference
+     */
+    public DatabaseReference getPath(String path) {
+        return database.child(path);
     }
 }

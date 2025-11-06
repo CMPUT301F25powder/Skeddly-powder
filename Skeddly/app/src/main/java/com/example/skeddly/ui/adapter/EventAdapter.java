@@ -2,11 +2,13 @@ package com.example.skeddly.ui.adapter;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,8 +17,9 @@ import androidx.annotation.Nullable;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.bumptech.glide.Glide;
 import com.example.skeddly.R;
-import com.example.skeddly.business.Event;
+import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.Ticket;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,12 +28,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Objects;
 
 public class EventAdapter extends ArrayAdapter<Event> {
+    private String userId;
 
-    public EventAdapter(Context context, ArrayList<Event> events) {
+    public EventAdapter(Context context, ArrayList<Event> events, String userId) {
         super(context, 0, events);
+        this.userId = userId;
     }
 
     @NonNull
@@ -44,6 +50,7 @@ public class EventAdapter extends ArrayAdapter<Event> {
         Event event = getItem(position);
 
         // Find the views in the layout
+        ImageView imageView = convertView.findViewById(R.id.imageView);
         TextView textEventName = convertView.findViewById(R.id.text_event_name);
         Button buttonViewInfo = convertView.findViewById(R.id.button_view_info);
         Button buttonJoin = convertView.findViewById(R.id.button_join);
@@ -51,34 +58,35 @@ public class EventAdapter extends ArrayAdapter<Event> {
 
         // Populate data
         if (event != null) {
-            textEventName.setText(event.getName());
-            String current_user_id = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
-            DatabaseHandler dbHandler = new DatabaseHandler(getContext());
+            Glide.with(getContext()).load(Base64.getDecoder().decode(event.getImageb64())).into(imageView);
+            textEventName.setText(event.getEventDetails().getName());
+            DatabaseHandler dbHandler = new DatabaseHandler();
 
             // Handle privilege assignment for editing
-            if (current_user_id.equals(event.getOrganizer())) {
+            if (userId.equals(event.getOrganizer())) {
                 buttonEdit.setVisibility(View.VISIBLE);
+                buttonJoin.setVisibility(View.INVISIBLE);
             } else {
-                buttonEdit.setVisibility(View.GONE);
+                buttonEdit.setVisibility(View.INVISIBLE);
             }
 
             // Set button state, and button's on click listener
-            updateJoinButtonState(buttonJoin, event, current_user_id, dbHandler);
+            updateJoinButtonState(buttonJoin, event, userId, dbHandler);
 
             // Handle view info button click
             buttonViewInfo.setOnClickListener(v -> {
                 Bundle bundle = new Bundle();
                 bundle.putString("eventId", event.getId());
-                bundle.putString("userId", current_user_id);
+                bundle.putString("userId", userId);
                 bundle.putString("organizerId", event.getOrganizer());
                 Navigation.findNavController(v).navigate(R.id.action_navigation_home_to_event_view_info, bundle);
-                Toast.makeText(getContext(), "View info for " + event.getName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "View info for " + event.getEventDetails().getName(), Toast.LENGTH_SHORT).show();
             });
 
             // Handle edit button click
             buttonEdit.setOnClickListener(v -> {
                 // TODO: Implement navigation to event edit screen
-                Toast.makeText(getContext(), "Editing " + event.getName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Editing " + event.getEventDetails().getName(), Toast.LENGTH_SHORT).show();
             });
         }
 
@@ -95,14 +103,14 @@ public class EventAdapter extends ArrayAdapter<Event> {
                 buttonJoin.setText("Leave");
                 buttonJoin.setOnClickListener(v -> {
                     event.leave(dbHandler, ticketId);
-                    Toast.makeText(getContext(), "Leaving " + event.getName(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Leaving " + event.getEventDetails().getName(), Toast.LENGTH_SHORT).show();
                 });
             } else {
                 // User is not on the waitlist
                 buttonJoin.setText("Join");
                 buttonJoin.setOnClickListener(v -> {
                     event.join(dbHandler, userId);
-                    Toast.makeText(getContext(), "Joining " + event.getName(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Joining " + event.getEventDetails().getName(), Toast.LENGTH_SHORT).show();
                 });
             }
             buttonJoin.setEnabled(true); // Re-enable the button

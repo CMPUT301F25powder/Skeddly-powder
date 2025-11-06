@@ -1,6 +1,7 @@
 package com.example.skeddly.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,14 +10,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.skeddly.MainActivity;
 import com.example.skeddly.business.database.DatabaseHandler;
+import com.example.skeddly.business.user.User;
 import com.example.skeddly.databinding.HomeFragmentBinding;
 import com.example.skeddly.ui.adapter.EventAdapter;
-import com.example.skeddly.business.Event;
+import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.database.DatabaseObjects;
+import com.google.firebase.auth.FirebaseAuth;
 
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 public class HomeFragment extends Fragment {
@@ -33,11 +38,12 @@ public class HomeFragment extends Fragment {
         View root = binding.getRoot();
 
         // Initialize DatabaseHandler and list of events
-        databaseHandler = new DatabaseHandler(getContext());
+        databaseHandler = new DatabaseHandler();
         eventList = new ArrayList<>();
 
         // Initialize event adapter
-        eventAdapter = new EventAdapter(getContext(), eventList);
+        MainActivity mainActivity = (MainActivity) requireActivity();
+        eventAdapter = new EventAdapter(getContext(), eventList, Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
 
         // Set event adapter to list view
         binding.listEvents.setAdapter(eventAdapter);

@@ -87,7 +87,7 @@
                 tools:ignore="ContentDescription" />
 
             <TextView
-                android:id="@+id/text_event_time"
+                android:id="@+id/text_day_of_week"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -107,8 +107,8 @@
                 android:textColor="@color/primary_navy"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@id/text_event_time"
-                app:layout_constraintTop_toBottomOf="@id/text_event_time" />
+                app:layout_constraintStart_toStartOf="@id/text_day_of_week"
+                app:layout_constraintTop_toBottomOf="@id/text_day_of_week" />
 
             <TextView
                 android:id="@+id/label_event_title"
@@ -155,36 +155,14 @@
                 app:layout_constraintStart_toEndOf="@+id/label_description" />
 
             <TextView
-                android:id="@+id/label_geolocation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="@string/geo_location_requirement"
-                android:textColor="@color/primary_navy"
-                app:layout_constraintStart_toStartOf="@id/label_description"
-                app:layout_constraintTop_toBottomOf="@id/value_description" />
-
-            <TextView
-                android:id="@+id/value_geolocation"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="16dp"
-                android:text="@string/within_5km_of_venue"
-                android:textColor="@color/neutral_brown_light"
-                app:layout_constraintBaseline_toBaselineOf="@+id/label_geolocation"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/label_geolocation" />
-
-            <TextView
                 android:id="@+id/label_category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:text="@string/category"
                 android:textColor="@color/primary_navy"
-                app:layout_constraintStart_toStartOf="@id/label_geolocation"
-                app:layout_constraintTop_toBottomOf="@id/value_geolocation" />
+                app:layout_constraintStart_toStartOf="@id/label_description"
+                app:layout_constraintTop_toBottomOf="@id/label_description" />
 
             <TextView
                 android:id="@+id/value_category"
@@ -234,40 +212,21 @@
                 app:layout_constraintEnd_toEndOf="@id/label_attendee_limit"
                 app:layout_constraintTop_toBottomOf="@id/label_attendee_limit" />
 
-            <TextView
-                android:id="@+id/label_max_waiting_list"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/max_waiting_list_size"
-                android:textColor="@color/primary_navy"
-                app:layout_constraintEnd_toEndOf="@id/value_attendee_limit"
-                app:layout_constraintTop_toBottomOf="@id/value_attendee_limit" />
-
-            <TextView
-                android:id="@+id/value_max_waiting_list"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/n_a"
-                android:textColor="@color/neutral_brown_light"
-                app:layout_constraintEnd_toEndOf="@id/label_max_waiting_list"
-                app:layout_constraintTop_toBottomOf="@id/label_max_waiting_list" />
-
             <!-- The 'Join' button, intended for regular users -->
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/button_join"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="24dp"
                 android:layout_marginEnd="16dp"
                 android:background="@color/primary_purple"
                 android:text="@string/join"
                 android:textAllCaps="false"
                 android:textColor="@color/neutral_lighter_off_white"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/value_attendee_limit"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/value_max_waiting_list" />
+                app:layout_constraintEnd_toEndOf="parent"
+                 />
 
             <!-- A Group to easily control visibility of all admin buttons at once -->
             <androidx.constraintlayout.widget.Group
@@ -281,7 +240,6 @@
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="24dp"
                 android:layout_marginEnd="8dp"
                 android:background="@color/primary_purple"
                 android:text="@string/draw"
@@ -289,7 +247,7 @@
                 android:textColor="@color/neutral_lighter_off_white"
                 app:layout_constraintEnd_toStartOf="@+id/button_edit"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/value_max_waiting_list" />
+                app:layout_constraintTop_toBottomOf="@id/value_attendee_limit" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/button_edit"

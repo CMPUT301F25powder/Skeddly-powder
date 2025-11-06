@@ -2,8 +2,8 @@ package com.example.skeddly.business.user;
 
 import android.annotation.SuppressLint;
 
-import com.example.skeddly.business.Notification;
 import com.example.skeddly.business.database.DatabaseObject;
+import com.example.skeddly.business.event.Event;
 
 import java.util.ArrayList;
 
@@ -48,20 +48,16 @@ public class User extends DatabaseObject {
         this.privilegeLevel = privilegeLevel;
     }
 
-    public PersonalInformation getExtraInformation() {
-        return personalInformation;
-    }
-
-    public void setExtraInformation(PersonalInformation personalInformation) {
-        this.personalInformation = personalInformation;
-    }
-
     public PersonalInformation getPersonalInformation() {
         return personalInformation;
     }
 
     public void setPersonalInformation(PersonalInformation personalInformation) {
         this.personalInformation = personalInformation;
+    }
+
+    public void addOwnedEvent(Event event) {
+        ownedEvents.add(event.getId());
     }
 
     public ArrayList<String> getJoinedEvents() {

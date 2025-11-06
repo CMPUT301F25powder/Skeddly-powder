@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Skeddly</string>
+    <string name="app_name_lower">skeddly</string>
     <string name="nav_home">Home</string>
     <string name="nav_inbox">Inbox</string>
     <string name="nav_create">Create</string>
@@ -65,4 +66,12 @@
     <string name="popup_contents">Description</string>
     <string name="button_cancel">Cancel</string>
     <string name="button_confirm">Confirm</string>
+    <string name="text_category_selector">Categories</string>
+    <string name="switch_recurrence">Recurring</string>
+    <string name="text_date"><u>month. day, year</u></string>
+    <string name="text_dash">-</string>
+    <string name="text_day_of_week">Day of the Week</string>
+    <string name="text_time"><u>hh:mm</u></string>
+    <string name="edit_waitlist_limit">OPTIONAL</string>
+    <string name="edit_attendee_limit">Enter Limit</string>
 </resources>
