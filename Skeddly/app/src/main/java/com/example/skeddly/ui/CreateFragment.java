@@ -81,10 +81,10 @@ public class CreateFragment extends Fragment {
     private byte[] imageBytes;
 
     // Scheduling
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private LocalTime startTime;
-    private LocalTime endTime;
+    private LocalDate eventStartDate;
+    private LocalDate eventEndDate;
+    private LocalTime eventStartTime;
+    private LocalTime eventEndTime;
 
     // Registration
     private LocalDate regStartDate;
@@ -190,16 +190,16 @@ public class CreateFragment extends Fragment {
         setupDatePicker(binding.textDateStart, new MaterialPickerOnPositiveButtonClickListener<Long>() {
             @Override
             public void onPositiveButtonClick(Long selection) {
-                startDate = LocalDate.ofInstant(Instant.ofEpochMilli(selection), ZoneOffset.UTC);
-                binding.textDateStart.setText(underlineString(startDate.format(dateFormatter)));
+                eventStartDate = LocalDate.ofInstant(Instant.ofEpochMilli(selection), ZoneOffset.UTC);
+                binding.textDateStart.setText(underlineString(eventStartDate.format(dateFormatter)));
                 updateConfirmButton();
             }
         });
         setupDatePicker(binding.textDateFinish, new MaterialPickerOnPositiveButtonClickListener<Long>() {
             @Override
             public void onPositiveButtonClick(Long selection) {
-                endDate = LocalDate.ofInstant(Instant.ofEpochMilli(selection), ZoneOffset.UTC);
-                binding.textDateFinish.setText(underlineString(endDate.format(dateFormatter)));
+                eventEndDate = LocalDate.ofInstant(Instant.ofEpochMilli(selection), ZoneOffset.UTC);
+                binding.textDateFinish.setText(underlineString(eventEndDate.format(dateFormatter)));
                 updateConfirmButton();
             }
         });
@@ -223,16 +223,16 @@ public class CreateFragment extends Fragment {
         setupTimePicker(binding.textTimeStart, new MaterialTimePickerCallback() {
             @Override
             public void onPositiveButtonClick(MaterialTimePicker picker) {
-                startTime = LocalTime.of(picker.getHour(), picker.getMinute());
-                binding.textTimeStart.setText(underlineString(startTime.format(timeFormatter)));
+                eventStartTime = LocalTime.of(picker.getHour(), picker.getMinute());
+                binding.textTimeStart.setText(underlineString(eventStartTime.format(timeFormatter)));
                 updateConfirmButton();
             }
         });
         setupTimePicker(binding.textTimeFinish, new MaterialTimePickerCallback() {
             @Override
             public void onPositiveButtonClick(MaterialTimePicker picker) {
-                endTime = LocalTime.of(picker.getHour(), picker.getMinute());
-                binding.textTimeFinish.setText(underlineString(endTime.format(timeFormatter)));
+                eventEndTime = LocalTime.of(picker.getHour(), picker.getMinute());
+                binding.textTimeFinish.setText(underlineString(eventEndTime.format(timeFormatter)));
                 updateConfirmButton();
             }
         });
@@ -420,17 +420,17 @@ public class CreateFragment extends Fragment {
         }
 
         // Schedule must be set
-        if (startTime == null || endTime == null || startDate == null || (isRecurring && endDate == null)) {
+        if (eventStartTime == null || eventEndTime == null || eventStartDate == null || (isRecurring && eventEndDate == null)) {
             return false;
         }
 
         // Start date can't happen after the end date
-        if (isRecurring && startDate.isAfter(endDate)) {
+        if (isRecurring && eventStartDate.isAfter(eventEndDate)) {
             return false;
         }
 
         // Event can't be scheduled in the past
-        LocalDateTime eventStart = LocalDateTime.of(startDate, startTime);
+        LocalDateTime eventStart = LocalDateTime.of(eventStartDate, eventStartTime);
         if (eventStart.isBefore(LocalDateTime.now())) {
             return false;
         }
@@ -445,13 +445,13 @@ public class CreateFragment extends Fragment {
             return false;
         }
 
-        // Registration start date can't happen after registration end date
-        if (regStartDate.isAfter(regEndDate)) {
-            return false;
-        }
-
         LocalDateTime regStart = LocalDateTime.of(regStartDate, regStartTime);
         LocalDateTime regEnd = LocalDateTime.of(regEndDate, regEndTime);
+
+        // Registration start can't happen after registration end
+        if (regStart.isAfter(regEnd)) {
+            return false;
+        }
 
         // Registration start and end date must happen before event start date
         if (regEnd.isAfter(eventStart)) {
@@ -506,15 +506,7 @@ public class CreateFragment extends Fragment {
                 binding.editLotteryCriteria.getText().toString(),
                 categories);
 
-        LocalDateTime start = LocalDateTime.of(startDate, startTime);
-        LocalDate endDate = this.endDate;
-
-        if (!isRecurring) {
-            // Starts and ends on the same day
-            endDate = startDate;
-        }
-
-        LocalDateTime end = LocalDateTime.of(endDate, endTime);
+        LocalDate endDate = isRecurring ? this.eventEndDate : eventStartDate;
 
         // Build the boolean array from the selected days
         Boolean[] eventDays = null;
@@ -527,7 +519,12 @@ public class CreateFragment extends Fragment {
                 eventDays[dayList.indexOf(day)] = true;
             }
         }
-        EventSchedule eventSchedule = new EventSchedule(start, end, eventDays);
+
+        LocalDateTime eventStart = LocalDateTime.of(eventStartDate, eventStartTime);
+        LocalDateTime eventEnd = LocalDateTime.of(endDate, eventEndTime);
+        LocalDateTime regStart = LocalDateTime.of(regStartDate, regStartTime);
+        LocalDateTime regEnd = LocalDateTime.of(regStartDate, regEndTime);
+        EventSchedule eventSchedule = new EventSchedule(eventStart, eventEnd, regStart, regEnd, eventDays);
 
         // Get the list limits
         int attendeeLimit = Integer.parseInt(binding.editAttendeeLimit.getText().toString());

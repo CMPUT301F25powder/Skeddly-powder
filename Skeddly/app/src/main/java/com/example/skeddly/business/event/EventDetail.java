@@ -43,6 +43,14 @@ public class EventDetail {
         this.description = description;
     }
 
+    public String getEntryCriteria() {
+        return entryCriteria;
+    }
+
+    public void setEntryCriteria(String entryCriteria) {
+        this.entryCriteria = entryCriteria;
+    }
+
     public ArrayList<String> getCategories() {
         return categories;
     }
