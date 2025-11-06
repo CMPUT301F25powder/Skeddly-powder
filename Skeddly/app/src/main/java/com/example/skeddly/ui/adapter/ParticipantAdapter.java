@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.skeddly.R;
-import com.example.skeddly.business.Event;
+import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.Ticket;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.database.SingleListenUpdate;

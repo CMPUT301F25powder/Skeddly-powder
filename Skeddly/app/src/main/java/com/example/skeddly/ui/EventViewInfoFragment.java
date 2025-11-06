@@ -17,6 +17,7 @@ import androidx.navigation.Navigation;
 
 import com.bumptech.glide.Glide;
 import com.example.skeddly.MainActivity;
+import com.example.skeddly.R;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.event.EventDetail;
@@ -98,6 +99,14 @@ public class EventViewInfoFragment extends Fragment {
             }
         });
 
+        // Set up Participant button
+        binding.buttonParticipants.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putString("eventId", eventId);
+            NavController navController = Navigation.findNavController(v);
+            navController.navigate(R.id.action_event_view_info_to_participant_list, bundle);
+        });
+
         // Set up the back button to navigate up
         binding.buttonBack.setOnClickListener(v -> {
             NavController navController = Navigation.findNavController(v);
@@ -177,8 +186,8 @@ public class EventViewInfoFragment extends Fragment {
 
         // Calculate and display Attendee Count
         int currentAttendees = 0;
-        if (event.getParticipantList() != null && event.getParticipantList().getUserList() != null) {
-            currentAttendees = event.getParticipantList().getUserList().size();
+        if (event.getParticipantList() != null && event.getParticipantList().getTicketIds() != null) {
+            currentAttendees = event.getParticipantList().getTicketIds().size();
         }
         binding.valueAttendeeLimit.setText(String.format(Locale.getDefault(), "%d / %d", currentAttendees, event.getParticipantList().getMaxAttend()));
 

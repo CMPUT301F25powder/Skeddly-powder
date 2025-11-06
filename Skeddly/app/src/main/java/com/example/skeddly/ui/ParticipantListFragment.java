@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.skeddly.business.Event;
+import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.Ticket;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.database.DatabaseObject;
@@ -46,16 +46,6 @@ public class ParticipantListFragment extends Fragment {
             getEventFromId(eventId);
         }
 
-        // Get tickets for waiting list
-        for (String ticketId : event.getApplicants().getTicketIds()) {
-            getTicketsFromId(ticketId, waitingTicketList);
-        }
-
-        // Get tickets for final list
-        for (String ticketId : event.getAttendees().getTicketIds()) {
-            getTicketsFromId(ticketId, finalTicketList);
-        }
-
         // Set up adapter
         participantAdapter = new ParticipantAdapter(getContext(), waitingTicketList, false, dbhandler);
         binding.listViewEntrants.setAdapter(participantAdapter);
@@ -83,8 +73,18 @@ public class ParticipantListFragment extends Fragment {
         dbhandler.singleListen(dbhandler.getEventsPath().child(eventId),
                 Event.class,
                 (SingleListenUpdate<Event>) newValue -> {
-                    event = newValue;
-                    event.setId(eventId);
+                    this.event = newValue;
+                    this.event.setId(eventId);
+
+                    // Get tickets for waiting list
+                    for (String ticketId : event.getWaitingList().getTicketIds()) {
+                        getTicketsFromId(ticketId, waitingTicketList);
+                    }
+
+                    // Get tickets for final list
+                    for (String ticketId : event.getParticipantList().getTicketIds()) {
+                        getTicketsFromId(ticketId, finalTicketList);
+                    }
                 }
         );
     }
