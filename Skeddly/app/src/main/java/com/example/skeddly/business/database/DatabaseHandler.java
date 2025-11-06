@@ -18,6 +18,7 @@ import java.util.ArrayList;
  * Handles edits and realtime updates to the realtime DB in Firebase
  */
 public class DatabaseHandler {
+    final String INTERNAL = "_internal";
     private DatabaseReference database;
 
     public DatabaseHandler() {
@@ -25,33 +26,40 @@ public class DatabaseHandler {
     }
 
     private String serializeGetterName(String name) {
-        String replaced = name.replaceFirst("customGet", "");
+        String replaced = name.replaceFirst("get", "");
         String firstLetter = replaced.substring(0, 1).toLowerCase();
+        String fullIdentifier = firstLetter.concat(replaced.substring(1));
 
-        return firstLetter.concat(replaced.substring(1));
+        return fullIdentifier.concat(INTERNAL);
     }
 
     private String unserializeGetterName(String name) {
         String firstLetter = name.substring(0, 1).toUpperCase();
         String replaced = firstLetter.concat(name.substring(1));
 
-        return "customSet".concat(replaced);
+        return String.format("set%s", replaced).replace(INTERNAL, "");
+    }
+
+    private String getBaseName(String name) {
+        return name.replace(INTERNAL, "");
     }
     public void customSerializer(DatabaseReference ref, Object object) {
         Method [] methods =  object.getClass().getDeclaredMethods();
 
         for (Method method : methods) {
             if (method.getReturnType() == DatabaseObjects.class) {
-                String rawName = this.serializeGetterName(method.getName());
+                String internalName = this.serializeGetterName(method.getName());
+                String baseName = this.getBaseName(internalName);
                 try {
                     DatabaseObjects values = (DatabaseObjects) method.invoke(object);
+
+                    this.database.child(baseName).setValue(values);
 
                     for (int i = 0; i < values.size(); i++) {
                         DatabaseObject value = (DatabaseObject) values.get(i);
                         String valueId = value.getId();
 
-                        ref.child(rawName).child(String.valueOf(i)).setValue(valueId);
-                        ref.getRoot().child(rawName).setValue(value);
+                        ref.child(internalName).child(String.valueOf(i)).setValue(valueId);
                     }
 
                 } catch (IllegalAccessException e) {
@@ -68,8 +76,9 @@ public class DatabaseHandler {
 
         for (Method method : methods) {
             if (method.getReturnType() == DatabaseObjects.class) {
-                String rawName = this.serializeGetterName(method.getName());
-                String setterName = this.unserializeGetterName(rawName);
+                String internalName = this.serializeGetterName(method.getName());
+                String setterName = this.unserializeGetterName(internalName);
+                String baseName = this.getBaseName(internalName);
 
                 try {
                     DatabaseObjects<?> value = (DatabaseObjects<?>) method.invoke(object);
@@ -80,9 +89,9 @@ public class DatabaseHandler {
                         };
                         Method setter = object.getClass().getMethod(setterName, getterParams);
 
-                        ArrayList<String> ownerIds = getNodeChildren(ref.child(rawName));
+                        ArrayList<String> ownerIds = getNodeChildren(ref.child(internalName));
 
-                        DatabaseObjects<?> allObjects = getNodeChildren(ref.getRoot().child(rawName), parameter);
+                        DatabaseObjects<?> allObjects = getNodeChildren(this.database.child(baseName), parameter);
 
                         DatabaseObjects<DatabaseObject> unserializedObjects = new DatabaseObjects(parameter);
 
@@ -91,8 +100,6 @@ public class DatabaseHandler {
                                 unserializedObjects.add(someObject);
                             }
                         }
-
-                        Log.w("dbobjects", unserializedObjects.toString());
 
                         setter.invoke(object, unserializedObjects);
                     }

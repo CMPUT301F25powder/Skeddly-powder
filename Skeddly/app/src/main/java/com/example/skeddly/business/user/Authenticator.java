@@ -77,7 +77,7 @@ public class Authenticator {
                     currentUserPath.setValue(user);
                 } else {
                     user = dataSnapshot.getValue(User.class);
-//                    databaseHandler.customUnserializer(databaseHandler.getUsersPath(), user);
+                    databaseHandler.customUnserializer(databaseHandler.getUsersPath(), user);
                 }
 
                 user.setId(currentUser.getUid());

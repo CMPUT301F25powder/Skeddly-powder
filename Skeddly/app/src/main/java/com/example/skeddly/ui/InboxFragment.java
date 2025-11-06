@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment;
 
 import com.example.skeddly.MainActivity;
 import com.example.skeddly.business.Notification;
-import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.database.DatabaseObjects;
 import com.example.skeddly.business.user.User;
 import com.example.skeddly.databinding.InboxFragmentBinding;
@@ -34,14 +33,14 @@ public class InboxFragment extends Fragment {
         User user = activity.getUser();
 
         // Notif list
-        inbox = user.customGetNotifications();
+        inbox = user.getNotifications();
 
         Notification testNotif = new Notification();
         testNotif.setTitle("Test!");
         testNotif.setMessage("This is a fake notification.");
         inbox.add(testNotif);
 
-        user.customSetNotifications(inbox);
+        user.setNotifications(inbox);
 
         activity.notifyUserChanged();
 

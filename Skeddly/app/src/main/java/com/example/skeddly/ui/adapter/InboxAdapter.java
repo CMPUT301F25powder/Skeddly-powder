@@ -13,11 +13,7 @@ import androidx.annotation.Nullable;
 import com.example.skeddly.R;
 import com.example.skeddly.business.Notification;
 import com.example.skeddly.business.database.DatabaseHandler;
-import com.example.skeddly.business.database.DatabaseObjects;
-import com.example.skeddly.business.database.SingleListenUpdate;
 import com.example.skeddly.business.user.User;
-
-import java.util.ArrayList;
 
 public class InboxAdapter extends ArrayAdapter<Notification> {
     private User user;
@@ -29,7 +25,7 @@ public class InboxAdapter extends ArrayAdapter<Notification> {
         this.context = context;
         this.databaseHandler = new DatabaseHandler();
 
-        this.addAll(user.customGetNotifications());
+        this.addAll(user.getNotifications());
     }
 
     @NonNull

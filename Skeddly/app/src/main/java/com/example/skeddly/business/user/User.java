@@ -71,11 +71,12 @@ public class User extends DatabaseObject {
         this.joinedEvents = joinedEvents;
     }
 
-    public DatabaseObjects<Notification> customGetNotifications() {
+    @Exclude // Exclude so we can handle ourselves
+    public DatabaseObjects<Notification> getNotifications() {
         return notifications;
     }
 
-    public void customSetNotifications(DatabaseObjects<Notification> notifications) {
+    public void setNotifications(DatabaseObjects<Notification> notifications) {
         this.notifications = notifications;
     }
 }
