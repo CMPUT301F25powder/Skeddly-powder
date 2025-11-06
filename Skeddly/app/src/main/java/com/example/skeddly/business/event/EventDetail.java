@@ -14,6 +14,10 @@ public class EventDetail {
     public EventDetail(String name, String description, ArrayList<String> categories) {
         this.name = name;
         this.description = description;
+
+        if (categories == null) {
+            categories = new ArrayList<String>();
+        }
         this.categories = categories;
     }
 
