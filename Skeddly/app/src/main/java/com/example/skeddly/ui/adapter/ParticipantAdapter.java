@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.skeddly.R;
+import com.example.skeddly.business.TicketStatus;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.Ticket;
 import com.example.skeddly.business.database.DatabaseHandler;
@@ -31,12 +32,13 @@ public class ParticipantAdapter extends ArrayAdapter<Ticket> {
     private DatabaseHandler dbHandler;
     private String fullname;
     private String joinDate;
+    private Event event;
 
-
-    public ParticipantAdapter(Context context, ArrayList<Ticket> tickets, boolean isWaitingList, DatabaseHandler dbHandler) {
+    public ParticipantAdapter(Context context, ArrayList<Ticket> tickets, boolean isWaitingList, DatabaseHandler dbHandler, Event event) {
         super(context, 0, tickets);
         this.isWaitingList = isWaitingList;
         this.dbHandler = dbHandler;
+        this.event = event;
     }
 
     @NonNull
@@ -65,32 +67,34 @@ public class ParticipantAdapter extends ArrayAdapter<Ticket> {
             dateText.setText(this.joinDate);
 
             // Set status
-            if (ticket.getCancelled()) {
+            if (ticket.getCancelled() == TicketStatus.CANCELLED) {
                 statusTextView.setBackgroundResource(R.drawable.status_chip_cancelled);
-            } else {
-                // Set the green background
+            }
+            else if (ticket.getCancelled() == TicketStatus.INVITED){
+                statusTextView.setBackgroundResource(R.drawable.status_chip_invited);
+            }
+            else {
                 statusTextView.setBackgroundResource(R.drawable.status_chip_active);
             }
 
 
             // remove status for the finalized list and long press to delete
             if (!isWaitingList) {
-                statusTextView.setVisibility(View.INVISIBLE);
-                // long press to delete
-                convertView.setOnLongClickListener(v -> {
-                    if (dbHandler != null) {
-                        dbHandler.getTicketsPath().child(ticket.getId()).removeValue();
-                        remove(ticket);
-                        dbHandler.getEventsPath().child(ticket.getId()).removeValue();
-                        notifyDataSetChanged();
-                    }
-                    return true;
-                });
-            }
-            else {
-                // no delete feature
                 statusTextView.setVisibility(View.VISIBLE);
             }
+            else {
+                statusTextView.setVisibility(View.INVISIBLE);
+            }
+
+            // Delete from either list when long pressed
+            convertView.setOnLongClickListener(v -> {
+                if (dbHandler != null) {
+                    event.leave(dbHandler, ticket.getId());
+                    remove(ticket);
+                    notifyDataSetChanged();
+                }
+                return true;
+            });
 
         }
         return convertView;

@@ -147,12 +147,6 @@ public class EventViewInfoFragment extends Fragment {
         dbHandler.getEventsPath().child(eventId).addValueEventListener(this.valueEventListener);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        dbHandler.getEventsPath().child(eventId).removeEventListener(valueEventListener);
-    }
-
     /**
      * Populates the UI elements with data from the fetched Event object.
      */
@@ -211,6 +205,7 @@ public class EventViewInfoFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        dbHandler.getEventsPath().child(eventId).removeEventListener(valueEventListener);
         binding = null;
     }
 }
