@@ -49,8 +49,7 @@ public class ParticipantAdapter extends ArrayAdapter<Ticket> {
         // Get components
         TextView nameText = convertView.findViewById(R.id.text_view_full_name);
         TextView dateText = convertView.findViewById(R.id.text_view_join_date);
-        TextView statusText = convertView.findViewById(R.id.text_view_status);
-
+        TextView statusTextView = convertView.findViewById(R.id.text_view_status);
         Ticket ticket = getItem(position);
         if (ticket != null) {
             // Set user name
@@ -62,19 +61,24 @@ public class ParticipantAdapter extends ArrayAdapter<Ticket> {
             // Set date
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
             LocalDateTime joinDate = LocalDateTime.ofInstant(Instant.ofEpochSecond(ticket.getTicketTime()), ZoneId.systemDefault());
-            this.joinDate = "Joined on" + dateTimeFormatter.format(joinDate);
+            this.joinDate = "Joined on " + dateTimeFormatter.format(joinDate);
             dateText.setText(this.joinDate);
 
             // Set status
-            boolean cancelled = ticket.getCancelled();
-            if (cancelled) {
-                statusText.setText("Cancelled");
-                statusText.setBackgroundResource(R.drawable.status_chip_cancelled);
+            if (ticket.getCancelled()) {
+                statusTextView.setBackgroundResource(R.drawable.status_chip_cancelled);
+            } else {
+                // Set the green background
+                statusTextView.setBackgroundResource(R.drawable.status_chip_active);
             }
+
 
             // remove status for the finalized list
             if (!isWaitingList) {
-                statusText.setVisibility(View.INVISIBLE);
+                statusTextView.setVisibility(View.INVISIBLE);
+            }
+            else {
+                statusTextView.setVisibility(View.VISIBLE);
             }
 
         }
@@ -97,6 +101,14 @@ public class ParticipantAdapter extends ArrayAdapter<Ticket> {
                 throw error.toException();
             }
         });
+    }
+
+    public void setWaitingList(boolean isWaitingList) {
+        this.isWaitingList = isWaitingList;
+    }
+
+    public boolean getWaitingList() {
+        return isWaitingList;
     }
 
 

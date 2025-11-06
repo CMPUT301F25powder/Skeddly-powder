@@ -74,7 +74,7 @@ public class ParticipantListFragment extends Fragment {
                     this.event.setId(eventId);
 
                     // Create the adapter with an empty list
-                    participantAdapter = new ParticipantAdapter(getContext(), new ArrayList<>(), false, dbhandler);
+                    participantAdapter = new ParticipantAdapter(getContext(), new ArrayList<>(), true, dbhandler);
                     binding.listViewEntrants.setAdapter(participantAdapter);
 
                     // Extract the ticket IDs from the event object
@@ -87,9 +87,11 @@ public class ParticipantListFragment extends Fragment {
 
                     // Set the button listeners to clear the adapter and fetch the correct data.
                     binding.buttonFinalList.setOnClickListener(v -> {
+                        participantAdapter.setWaitingList(false);
                         fetchAndDisplayTickets(finalTicketIds);
                     });
                     binding.buttonWaitingList.setOnClickListener(v -> {
+                        participantAdapter.setWaitingList(true);
                         fetchAndDisplayTickets(waitingTicketIds);
                     });
 
@@ -119,7 +121,7 @@ public class ParticipantListFragment extends Fragment {
                     (SingleListenUpdate<Ticket>) ticket -> {
                         if (ticket != null) {
                             ticket.setId(ticketId);
-                            participantAdapter.add(ticket); // Use the adapter's own add method
+                            participantAdapter.add(ticket);
                             participantAdapter.notifyDataSetChanged(); // Refresh after each add
                         }
                     });
