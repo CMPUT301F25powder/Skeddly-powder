@@ -98,10 +98,10 @@ public class DatabaseHandler {
      */
     public <T extends DatabaseObject> void iterableListen(DatabaseReference ref, Class<T> classType, IterableListenUpdate callback) {
         ref.addValueEventListener(new ValueEventListener() {
-            DatabaseObjects result = new DatabaseObjects();
 
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                DatabaseObjects result = new DatabaseObjects();
                 Iterable<DataSnapshot> subSnapshot = snapshot.getChildren();
 
                 for (DataSnapshot item : subSnapshot) {

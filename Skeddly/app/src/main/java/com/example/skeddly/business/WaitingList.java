@@ -1,7 +1,6 @@
 package com.example.skeddly.business;
 
 import com.example.skeddly.business.database.DatabaseObject;
-import com.example.skeddly.business.database.DatabaseObjects;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -15,20 +14,22 @@ public class WaitingList extends DatabaseObject {
     private Random randomGen;
 
     /**
-     * Constructor for unbounded waiting list
-     */
-    public WaitingList() {
-        maxWait = Integer.MAX_VALUE;
-        randomGen = new Random();
-    }
-
-    /**
      * Constructor for bounded waiting list
      * @param maxWait Maximum number of applicants
      */
     public WaitingList(int maxWait) {
+        if (maxWait <= 0) {
+            maxWait = Integer.MAX_VALUE;
+        }
         this.maxWait = maxWait;
         randomGen = new Random();
+    }
+
+    /**
+     * Constructor for unbounded waiting list
+     */
+    public WaitingList() {
+        this(0);
     }
 
     /**
@@ -45,16 +46,8 @@ public class WaitingList extends DatabaseObject {
     }
 
     /**
-     * Remove a user from the waiting list
-     * @param u User to remove
-     */
-//    public void remove(User u) {
-//        ticketList.removeIf(t -> t.getUser().equals(u));
-//    }
-
-    /**
      * Remove a ticket from the waiting list
-     * @param t Ticket to remove
+     * @param ticketId ID of the ticket to remove
      */
     public void remove(String ticketId) {
         ticketIds.remove(ticketId);
@@ -87,11 +80,11 @@ public class WaitingList extends DatabaseObject {
         this.maxWait = maxWait;
     }
 
-    public ArrayList<String> getTicketList() {
+    public ArrayList<String> getTicketIds() {
         return ticketIds;
     }
 
-    public void setTicketList(ArrayList<String> ticketList) {
+    public void setTicketIds(ArrayList<String> ticketIds) {
         this.ticketIds = ticketIds;
     }
 }

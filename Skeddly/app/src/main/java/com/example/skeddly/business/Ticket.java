@@ -25,6 +25,7 @@ public class Ticket extends DatabaseObject {
     @Nullable
     private CustomLocation location;
 
+    public Ticket() {}
     public Ticket(@NonNull String userId, @Nullable CustomLocation location) {
         this.userId = userId;
         this.location = location;
@@ -51,7 +52,7 @@ public class Ticket extends DatabaseObject {
         return ticketTime;
     }
 
-    public void setTicketTime(@NonNull long ticketTime) {
+    public void setTicketTime(long ticketTime) {
         this.ticketTime = ticketTime;
     }
 

@@ -93,7 +93,7 @@
 
             <!-- Event Time -->
             <TextView
-                android:id="@+id/text_event_time"
+                android:id="@+id/text_day_of_week"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -114,8 +114,8 @@
                 android:textColor="@color/primary_navy"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@id/text_event_time"
-                app:layout_constraintTop_toBottomOf="@id/text_event_time" />
+                app:layout_constraintStart_toStartOf="@id/text_day_of_week"
+                app:layout_constraintTop_toBottomOf="@id/text_day_of_week" />
 
             <TextView
                 android:id="@+id/label_event_title"
@@ -263,7 +263,7 @@
 
             <!-- Join Button -->
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/button_join"
+                android:id="@+id/button_event_join"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:background="@color/primary_purple"
