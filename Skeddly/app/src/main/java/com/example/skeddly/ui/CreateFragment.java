@@ -265,6 +265,7 @@ public class CreateFragment extends Fragment {
 
         binding.valueEventTitle.addTextChangedListener(textWatcher);
         binding.valueDescription.addTextChangedListener(textWatcher);
+        binding.editWaitlistLimit.addTextChangedListener(textWatcher);
         binding.editAttendeeLimit.addTextChangedListener(textWatcher);
 
         return root;
@@ -411,6 +412,19 @@ public class CreateFragment extends Fragment {
 
         // Attendee Limit
         if (binding.editAttendeeLimit.length() <= 0) {
+            return false;
+        }
+
+        // Waitlist Limit can't be less than Attendee Limit (if there is a Waitlist Limit)
+        int waitlistLimitContent = 0;
+        int attendeeLimitContent = 0;
+
+        if (binding.editWaitlistLimit.length() > 0 && binding.editAttendeeLimit.length() > 0) {
+            waitlistLimitContent = Integer.parseInt(binding.editWaitlistLimit.getText().toString());
+            attendeeLimitContent = Integer.parseInt(binding.editAttendeeLimit.getText().toString());
+        }
+
+        if (binding.editWaitlistLimit.length() >= 0 && waitlistLimitContent < attendeeLimitContent) {
             return false;
         }
 
