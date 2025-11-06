@@ -63,7 +63,7 @@ public class MainActivity extends CustomActivity {
             qr = Objects.requireNonNull(extras).getParcelable("QR");
         }
 
-        DatabaseHandler database = new DatabaseHandler(this);
+        DatabaseHandler database = new DatabaseHandler();
         authenticator = new Authenticator(this, database, user);
         authenticator.addListenerForUserLoaded(new UserLoaded() {
             @Override

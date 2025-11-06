@@ -1,15 +1,11 @@
 package com.example.skeddly.business;
 
-import android.location.Location;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.skeddly.business.database.DatabaseObject;
 import com.example.skeddly.business.location.CustomLocation;
-import com.example.skeddly.business.user.User;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
@@ -25,10 +21,13 @@ public class Ticket extends DatabaseObject {
     @Nullable
     private CustomLocation location;
 
+    private TicketStatus status;
+
     public Ticket() {}
     public Ticket(@NonNull String userId, @Nullable CustomLocation location) {
         this.userId = userId;
         this.location = location;
+        this.status = TicketStatus.INVITED;
 
         ZoneId zoneId = ZoneId.systemDefault();
         this.ticketTime = LocalDateTime.now().atZone(zoneId).toEpochSecond();
@@ -64,4 +63,8 @@ public class Ticket extends DatabaseObject {
     public void setLocation(@Nullable CustomLocation location) {
         this.location = location;
     }
+
+    public TicketStatus getStatus() {return status;}
+
+    public void setStatus(TicketStatus status) {this.status = status;}
 }

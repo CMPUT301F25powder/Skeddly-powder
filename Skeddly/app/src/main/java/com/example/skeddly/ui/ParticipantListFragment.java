@@ -1,0 +1,130 @@
+package com.example.skeddly.ui;
+
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import com.example.skeddly.business.event.Event;
+import com.example.skeddly.business.Ticket;
+import com.example.skeddly.business.database.DatabaseHandler;
+import com.example.skeddly.business.database.SingleListenUpdate;
+import com.example.skeddly.databinding.EntrantListViewBinding;
+import com.example.skeddly.ui.adapter.ParticipantAdapter;
+
+import java.util.ArrayList;
+
+public class ParticipantListFragment extends Fragment {
+
+    private EntrantListViewBinding binding;
+    private Event event;
+    private DatabaseHandler dbhandler;
+    private ArrayList<String> finalTicketIds;
+    private ArrayList<String> waitingTicketIds;
+    private ParticipantAdapter participantAdapter;
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        binding = EntrantListViewBinding.inflate(inflater, container, false);
+        View root = binding.getRoot();
+        // Initialize the ID lists
+        finalTicketIds = new ArrayList<>();
+        waitingTicketIds = new ArrayList<>();
+        dbhandler = new DatabaseHandler();
+
+        if (getArguments() != null) {
+            String eventId = getArguments().getString("eventId");
+            loadEventAndSetupUI(eventId);
+        }
+
+        // Set up back button
+        binding.buttonBack.setOnClickListener(v -> {
+            if (getActivity() != null) {
+                getActivity().onBackPressed();
+            }
+        });
+
+        return root;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
+
+    /**
+     * Loads the core event, sets up the UI, and populates the default list.
+     */
+    private void loadEventAndSetupUI(String eventId) {
+        dbhandler.singleListen(dbhandler.getEventsPath().child(eventId),
+                Event.class,
+                (SingleListenUpdate<Event>) receivedEvent -> {
+                    if (receivedEvent == null) {
+                        return;
+                    }
+                    // Set event
+                    this.event = receivedEvent;
+                    this.event.setId(eventId);
+
+                    // Create the adapter with an empty list
+                    participantAdapter = new ParticipantAdapter(getContext(), new ArrayList<>(), true, dbhandler, event);
+                    binding.listViewEntrants.setAdapter(participantAdapter);
+
+                    // Extract the ticket IDs from the event object
+                    if (event.getWaitingList() != null && event.getWaitingList().getTicketIds() != null) {
+                        waitingTicketIds.addAll(event.getWaitingList().getTicketIds());
+                    }
+                    if (event.getParticipantList() != null && event.getParticipantList().getTicketIds() != null) {
+                        finalTicketIds.addAll(event.getParticipantList().getTicketIds());
+                    }
+
+                    // Set the button listeners to clear the adapter and fetch the correct data.
+                    binding.buttonFinalList.setOnClickListener(v -> {
+                        participantAdapter.setWaitingList(false);
+                        fetchAndDisplayTickets(finalTicketIds);
+                    });
+                    binding.buttonWaitingList.setOnClickListener(v -> {
+                        participantAdapter.setWaitingList(true);
+                        fetchAndDisplayTickets(waitingTicketIds);
+                    });
+
+                    // Load the default list (waiting list)
+                    fetchAndDisplayTickets(waitingTicketIds);
+                }
+        );
+    }
+
+    /**
+     * Clears the adapter and then fetches and displays all tickets for the given list of IDs.
+     * @param ticketIds The list of ticket IDs to fetch.
+     */
+    private void fetchAndDisplayTickets(ArrayList<String> ticketIds) {
+        if (participantAdapter == null) return;
+
+        // Clear the adapter to show a fresh list
+        participantAdapter.clear();
+        participantAdapter.notifyDataSetChanged(); // Show the empty state immediately
+
+        if (ticketIds == null) return;
+
+        // Loop through the IDs and fetch each ticket one by one.
+        for (String ticketId : ticketIds) {
+            dbhandler.singleListen(dbhandler.getTicketsPath().child(ticketId),
+                    Ticket.class,
+                    (SingleListenUpdate<Ticket>) ticket -> {
+                        if (ticket != null) {
+                            ticket.setId(ticketId);
+                            participantAdapter.add(ticket);
+                            participantAdapter.notifyDataSetChanged(); // Refresh after each add
+                        }
+                    });
+        }
+    }
+}

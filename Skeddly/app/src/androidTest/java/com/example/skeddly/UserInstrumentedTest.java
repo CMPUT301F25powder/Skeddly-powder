@@ -26,7 +26,7 @@ public class UserInstrumentedTest {
     public void testLoginUser() {
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        DatabaseHandler database = new DatabaseHandler(appContext);
+        DatabaseHandler database = new DatabaseHandler();
         Authenticator authenticator = new Authenticator(appContext, database);
         authenticator.addListenerForUserLoaded(new UserLoaded() {
             @Override
@@ -46,7 +46,7 @@ public class UserInstrumentedTest {
     public void testEventOwnership() {
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        DatabaseHandler database = new DatabaseHandler(appContext);
+        DatabaseHandler database = new DatabaseHandler();
         Authenticator authenticator = new Authenticator(appContext, database);
         authenticator.addListenerForUserLoaded(new UserLoaded() {
             @Override
@@ -64,7 +64,7 @@ public class UserInstrumentedTest {
     public void testUserEditSecurity() {
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        DatabaseHandler database = new DatabaseHandler(appContext);
+        DatabaseHandler database = new DatabaseHandler();
         Authenticator authenticator = new Authenticator(appContext, database);
         authenticator.addListenerForUserLoaded(new UserLoaded() {
             @Override
@@ -80,7 +80,7 @@ public class UserInstrumentedTest {
     public void testDeleteUser() {
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        DatabaseHandler database = new DatabaseHandler(appContext);
+        DatabaseHandler database = new DatabaseHandler();
         Authenticator authenticator = new Authenticator(appContext, database);
         authenticator.addListenerForUserLoaded(new UserLoaded() {
             @Override

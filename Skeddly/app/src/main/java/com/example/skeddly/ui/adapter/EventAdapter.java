@@ -60,7 +60,7 @@ public class EventAdapter extends ArrayAdapter<Event> {
         if (event != null) {
             Glide.with(getContext()).load(Base64.getDecoder().decode(event.getImageb64())).into(imageView);
             textEventName.setText(event.getEventDetails().getName());
-            DatabaseHandler dbHandler = new DatabaseHandler(getContext());
+            DatabaseHandler dbHandler = new DatabaseHandler();
 
             // Handle privilege assignment for editing
             if (userId.equals(event.getOrganizer())) {

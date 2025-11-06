@@ -38,7 +38,7 @@ public class HomeFragment extends Fragment {
         View root = binding.getRoot();
 
         // Initialize DatabaseHandler and list of events
-        databaseHandler = new DatabaseHandler(getContext());
+        databaseHandler = new DatabaseHandler();
         eventList = new ArrayList<>();
 
         // Initialize event adapter
