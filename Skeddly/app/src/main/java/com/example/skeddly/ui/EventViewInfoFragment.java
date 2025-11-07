@@ -240,6 +240,10 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
         } else {
             binding.valueWaitlistLimit.setText(String.format(Locale.getDefault(), "%d / %d", currentWaitlist, maxWaitlist));
         }
+
+        if (!event.isJoinable()) {
+            binding.buttonJoin.setVisibility(View.GONE);
+        }
     }
 
     @SuppressLint("MissingPermission")

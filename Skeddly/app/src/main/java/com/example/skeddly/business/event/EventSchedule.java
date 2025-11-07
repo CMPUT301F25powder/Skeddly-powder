@@ -72,6 +72,13 @@ public class EventSchedule {
         this.regEnd = regEnd;
     }
 
+    public boolean isRegistrationOver() {
+        ZoneId zoneId = ZoneId.systemDefault();
+        long curTime = LocalDateTime.now().atZone(zoneId).toEpochSecond();
+
+        return curTime > regEnd;
+    }
+
     public List<Boolean> getDaysOfWeek() {
         return daysOfWeek;
     }

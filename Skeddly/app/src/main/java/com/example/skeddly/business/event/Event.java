@@ -114,6 +114,10 @@ public class Event extends DatabaseObject {
         this.imageb64 = imageb64;
     }
 
+    public boolean isJoinable() {
+        return !waitingList.isFull() && !eventSchedule.isRegistrationOver();
+    }
+
     /**
      * Handles the logic for a user joining the event's waitlist.
      * @param dbHandler The database handler to interact with Firebase.
