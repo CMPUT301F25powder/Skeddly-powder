@@ -9,10 +9,10 @@
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="91dp"
-        android:background="@color/secondary_dark_purple"
-        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/profile_header_background"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <SearchView
             android:id="@+id/search_events"
@@ -20,6 +20,10 @@
             android:layout_height="43dp"
             android:background="@drawable/search_round_style"
             android:backgroundTint="@color/neutral_lighter_off_white"
+            android:focusableInTouchMode="true"
+            android:iconifiedByDefault="false"
+            android:inputType="text|textAutoComplete"
+            android:paddingEnd="15dp"
             android:queryHint="@string/search_hint"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -33,10 +37,11 @@
             android:layout_width="26dp"
             android:layout_height="26dp"
             android:layout_marginEnd="10dp"
+            android:background="@color/neutral_lighter_off_white"
             app:layout_constraintBottom_toBottomOf="@+id/search_events"
             app:layout_constraintEnd_toEndOf="@+id/search_events"
             app:layout_constraintTop_toTopOf="@+id/search_events"
-            app:srcCompat="@drawable/m3_split_button_chevron_avd" />
+            app:srcCompat="@drawable/tools" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
