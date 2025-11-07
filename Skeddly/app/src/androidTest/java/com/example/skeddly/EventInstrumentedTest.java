@@ -41,6 +41,9 @@ public class EventInstrumentedTest extends BaseTest {
         onView(withId(R.id.main_content_card)).check(matches(isDisplayed()));
     }
 
+    /**
+     * Tests if the QR code popup properly appears.
+     */
     @Test
     public void testViewEventQRCode() {
         testViewEvent();
