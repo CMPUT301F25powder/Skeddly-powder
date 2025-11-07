@@ -24,7 +24,9 @@ import com.example.skeddly.business.user.User;
 import com.example.skeddly.business.user.UserLoaded;
 import com.example.skeddly.databinding.SignUpPageBinding;
 
-
+/**
+ * Signup activity for the application.
+ */
 public class SignupActivity extends CustomActivity {
     private SignUpPageBinding binding;
     private User user;
@@ -122,6 +124,9 @@ public class SignupActivity extends CustomActivity {
         });
     }
 
+    /**
+     * Toggles the submit button based on the text fields.
+     */
     private void toggleSubmitButton() {
         boolean fullNameFilled = fullNameEditText.getText().length() > 0;
         boolean emailFilled = emailEditText.getText().length() > 0;
@@ -135,6 +140,9 @@ public class SignupActivity extends CustomActivity {
         }
     }
 
+    /**
+     * Switches to the main activity, providing the necessary information in the intent.
+     */
     private void switchToMain() {
         Intent mainActivity = new Intent(getBaseContext(), MainActivity.class);
         mainActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -144,6 +152,11 @@ public class SignupActivity extends CustomActivity {
         finish();
     }
 
+    /**
+     * Gets the launch link if there is one. The launch link is usually provided from scanning
+     * a QR code to open the app straight to an event.
+     * @return The launch link, or null if there isn't one.
+     */
     @Nullable
     private Uri getLaunchLink() {
         Intent intent = getIntent();

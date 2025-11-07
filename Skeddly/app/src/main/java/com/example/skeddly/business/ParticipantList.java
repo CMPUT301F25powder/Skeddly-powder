@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * Class for list of participants in an event.
  */
 public class ParticipantList extends DatabaseObject {
-    private ArrayList<String> userIdList = new ArrayList<>();
+    private ArrayList<String> ticketIdList = new ArrayList<>();
     private int maxAttend;
 
     /**
@@ -30,12 +30,12 @@ public class ParticipantList extends DatabaseObject {
 
     /**
      * Add a user to the participant list
-     * @param userId User to add to the list
+     * @param ticketId User to add to the list
      * @throws IllegalArgumentException If the list is already full
      */
-    public void addUser(String userId) {
-        if (userIdList.size() < maxAttend) {
-            userIdList.add(userId);
+    public void addTicket(String ticketId) {
+        if (ticketIdList.size() < maxAttend) {
+            ticketIdList.add(ticketId);
         } else {
             throw new IllegalArgumentException();
         }
@@ -43,10 +43,10 @@ public class ParticipantList extends DatabaseObject {
 
     /**
      * Remove a user from the list
-     * @param userId User to remove from the list
+     * @param ticketId User to remove from the list
      */
-    public void remove(String userId) {
-        userIdList.remove(userId);
+    public void remove(String ticketId) {
+        ticketIdList.remove(ticketId);
     }
 
     /**
@@ -67,14 +67,18 @@ public class ParticipantList extends DatabaseObject {
 
     /**
      * Return the {@link ArrayList} of users
-     * @return The user list
+     * @return The ticketId list
      */
-    public ArrayList<String> getUserList() {
-        return userIdList;
+    public ArrayList<String> getTicketIds() {
+        return ticketIdList;
     }
 
-    public void setUserList(ArrayList<String> userIdList) {
-        this.userIdList = userIdList;
+    /**
+     * Update the {@link ArrayList} of users
+     * @param ticketIdList The new ticketId list
+     */
+    public void setTicketIds(ArrayList<String> ticketIdList) {
+        this.ticketIdList = ticketIdList;
     }
 
 }

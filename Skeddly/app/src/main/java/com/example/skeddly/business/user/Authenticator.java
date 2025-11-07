@@ -20,6 +20,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
+/**
+ * Handles the authentication of a user
+ */
 public class Authenticator {
     private String androidId;
     private User user;
@@ -28,6 +31,11 @@ public class Authenticator {
     private boolean showSignUp;
     UserLoaded callback;
 
+    /**
+     * Constructor for the Authenticator
+     * @param context The app context
+     * @param databaseHandler The database handler
+     */
     public Authenticator(Context context, DatabaseHandler databaseHandler) {
         this.databaseHandler = databaseHandler;
         this.mAuth = FirebaseAuth.getInstance();
@@ -105,10 +113,18 @@ public class Authenticator {
         });
     }
 
+    /**
+     * Sets the callback for when the user is loaded
+     * @param callback The callback to set
+     */
     public void addListenerForUserLoaded(UserLoaded callback) {
         this.callback = callback;
     }
 
+    /**
+     * Deletes the user from the database
+     * @see User
+     */
     public void deleteUser() {
         databaseHandler.getUsersPath().child(user.getId()).removeValue();
         mAuth.getCurrentUser().delete();
@@ -122,10 +138,19 @@ public class Authenticator {
         return this.user;
     }
 
+    /**
+     * Gets if the user needs to sign up
+     * @see User
+     * @return
+     */
     public boolean isShowSignUp() {
         return showSignUp;
     }
 
+    /**
+     * Commits the user changes to the database
+     * @see User
+     */
     public void commitUserChanges() {
         DatabaseReference userPath = databaseHandler.getUsersPath().child(user.getId());
 

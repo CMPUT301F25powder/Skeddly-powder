@@ -28,6 +28,13 @@ public class DatabaseHandler {
         this.database = FirebaseDatabase.getInstance().getReference();
     }
 
+    /**
+     * Serializes the getter for a field in DB
+     * @param name The name of the getter to serialize
+     * @return The serialized getter
+     * @see DatabaseReference
+     * @see DatabaseObject
+     */
     private String serializeGetterName(String name) {
         String replaced = name.replaceFirst("get", "");
         String firstLetter = replaced.substring(0, 1).toLowerCase();
@@ -47,6 +54,13 @@ public class DatabaseHandler {
         return name.replace(INTERNAL, "");
     }
 
+    /**
+     * Serializes a {@link DatabaseObject} into the DB
+     * @param ref The {@link DatabaseReference} to serialize to
+     * @param object The {@link DatabaseObject} to serialize
+     * @see DatabaseReference
+     * @see DatabaseObject
+     */
     public void customSerializer(DatabaseReference ref, DatabaseObject object) {
         Method [] methods = object.fetchDatabaseObjectRelatedMethods();
 

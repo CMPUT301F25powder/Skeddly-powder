@@ -11,7 +11,9 @@ import androidx.fragment.app.Fragment;
 
 import com.example.skeddly.databinding.EventHistoryFragmentBinding;
 
-
+/**
+ * Fragment for the event history screen
+ */
 public class EventHistoryFragment extends Fragment {
     private EventHistoryFragmentBinding binding;
 

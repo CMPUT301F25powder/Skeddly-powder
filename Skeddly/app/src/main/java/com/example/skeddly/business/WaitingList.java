@@ -80,10 +80,26 @@ public class WaitingList extends DatabaseObject {
         this.maxWait = maxWait;
     }
 
+    /**
+     * Gets whether the waiting list is full or not.
+     * @return True if the waiting list is full. False otherwise.
+     */
+    public boolean isFull() {
+        return getLimit() <= ticketIds.size();
+    }
+
+    /**
+     * Return the {@link ArrayList} of tickets
+     * @return The ticketId list
+     */
     public ArrayList<String> getTicketIds() {
         return ticketIds;
     }
 
+    /**
+     * Update the {@link ArrayList} of tickets
+     * @param ticketIds The new ticketId list
+     */
     public void setTicketIds(ArrayList<String> ticketIds) {
         this.ticketIds = ticketIds;
     }

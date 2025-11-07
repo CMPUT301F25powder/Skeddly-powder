@@ -23,7 +23,9 @@ import com.example.skeddly.ui.adapter.InboxAdapter;
 
 import java.util.ArrayList;
 
-
+/**
+ * Fragment for the inbox screen
+ */
 public class InboxFragment extends Fragment implements View.OnClickListener {
     private InboxFragmentBinding binding;
     private DatabaseObjects<Notification> inbox;

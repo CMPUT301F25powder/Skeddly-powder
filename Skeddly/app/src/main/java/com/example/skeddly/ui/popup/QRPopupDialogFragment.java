@@ -41,7 +41,7 @@ import java.io.IOException;
 
 
 /**
- *
+ * Dialog fragment for the QR popup
  */
 public class QRPopupDialogFragment extends DialogFragment {
     private String link = "link";
@@ -49,9 +49,9 @@ public class QRPopupDialogFragment extends DialogFragment {
     private Bitmap qrBitmap;
 
     /**
-     *
-     * @param link
-     * @return
+     * Create a new instance of the QRPopupDialogFragment
+     * @param link The link that should be shown in the QR code.
+     * @return A new QRPopupDialogFragment with the link set.
      */
     public static QRPopupDialogFragment newInstance(String link) {
         Bundle arg = new Bundle();
@@ -140,9 +140,9 @@ public class QRPopupDialogFragment extends DialogFragment {
     }
 
     /**
-     *
-     * @param link
-     * @return
+     * Create a QR code from the given link.
+     * @param link The link to create a QR code from
+     * @return A bitmap of the QR code
      */
     private Bitmap createQR(String link) {
         try {
@@ -163,6 +163,9 @@ public class QRPopupDialogFragment extends DialogFragment {
         return null;
     }
 
+    /**
+     * Let the user pick a location to create the new qr code image file at
+     */
     private void createFile() {
         Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -172,6 +175,11 @@ public class QRPopupDialogFragment extends DialogFragment {
         filePickerActivityResultLauncher.launch(intent);
     }
 
+    /**
+     * Export a bitmap to the given URI as a png file.
+     * @param uri The uri of the document to alter
+     * @param bitmap The bitmap to write to it as a png
+     */
     private void alterDocument(Uri uri, Bitmap bitmap) {
         try {
             ParcelFileDescriptor pfd = requireActivity().getContentResolver().openFileDescriptor(uri, "w");

@@ -34,6 +34,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
+/**
+ * Main activity for the application.
+ */
 public class MainActivity extends CustomActivity {
     private Authenticator authenticator;
     private ActivityMainBinding binding;
@@ -61,10 +64,9 @@ public class MainActivity extends CustomActivity {
         Bundle extras = getIntent().getExtras();
         Uri qr = null;
 
-//        if (extras != null) {
-//            user = (User) Objects.requireNonNull(extras.getSerializable("USER"));
-//            qr = Objects.requireNonNull(extras).getParcelable("QR");
-//        }
+        if (extras != null) {
+            qr = Objects.requireNonNull(extras).getParcelable("QR");
+        }
 
         DatabaseHandler database = new DatabaseHandler();
         authenticator = new Authenticator(this, database);
@@ -106,6 +108,9 @@ public class MainActivity extends CustomActivity {
         }
     }
 
+    /**
+     * Sets up the navigation bar based on the user's privilege level.
+     */
     private void setupNavBar() {
         // Setup the nav bar
         BottomNavigationView navView = binding.navView;
@@ -140,18 +145,32 @@ public class MainActivity extends CustomActivity {
         NavigationUI.setupWithNavController(binding.navView, navController);
     }
 
+    /**
+     * Getter for the user object.
+     * @return The user object.
+     */
     public User getUser() {
         return authenticator.getUser();
     }
 
+    /**
+     * Getter for the authenticator object.
+     * @return The Authenticator of the user
+     */
     public Authenticator getAuthenticator() {
         return authenticator;
     }
 
+    /**
+     * Notifies the authenticator that the user has changed.
+     */
     public void notifyUserChanged() {
         authenticator.commitUserChanges();
     }
 
+    /**
+     * Switches to the signup activity.
+     */
     public void switchToSignup() {
         Intent signupActivity = new Intent(getBaseContext(), SignupActivity.class);
         signupActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -159,6 +178,10 @@ public class MainActivity extends CustomActivity {
         finish();
     }
 
+    /**
+     * Navigates to the event view. Used if the app was opened with a QR code pointing to an event.
+     * @param event The event to navigate to.
+     */
     private void navigateToEvent(Event event) {
         Bundle bundle = new Bundle();
         bundle.putString("eventId", event.getId());

@@ -35,6 +35,10 @@
         android:id="@+id/event_view_info"
         android:name="com.example.skeddly.ui.EventViewInfoFragment"
         android:label="@string/nav_event_info">
+        <action
+            android:id="@+id/action_event_view_info_to_participant_list"
+            app:destination="@id/participant_list" />
+
         <argument
             android:name="eventId"
             app:argType="string" />
@@ -44,6 +48,12 @@
         android:id="@+id/navigation_profile"
         android:name="com.example.skeddly.ui.ProfileFragment"
         android:label="@string/nav_profile"
+        />
+
+    <fragment
+        android:id="@+id/participant_list"
+        android:name="com.example.skeddly.ui.ParticipantListFragment"
+        android:label="Participation List"
         />
 
 </navigation>
