@@ -40,7 +40,7 @@ public class CustomLocation {
      * Sets the longitude of the location.
      * @param longitude The new longitude that should be set.
      */
-    public void setLongitude(long longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 
@@ -56,7 +56,7 @@ public class CustomLocation {
      * Sets the latitude of the location.
      * @param latitude The new latitude that should be set.
      */
-    public void setLatitude(long latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
