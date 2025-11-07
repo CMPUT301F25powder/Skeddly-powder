@@ -4,7 +4,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,32 +37,19 @@ public class InboxFragment extends Fragment {
 
         // Notif list
         inbox = user.getNotifications();
-
-        Notification testNotif1 = new Notification();
-        testNotif1.setTitle("Test1!");
-        testNotif1.setMessage("This is a fake notification.");
-        testNotif1.setType(Notification.notification_type.MESSAGES);
-        inbox.add(testNotif1);
-        Notification testNotif2 = new Notification();
-        testNotif2.setTitle("Test2!");
-        testNotif2.setMessage("This is a fake notification.");
-        testNotif2.setType(Notification.notification_type.REGISTRATION);
-        inbox.add(testNotif2);
-        Notification testNotif3 = new Notification();
-        testNotif3.setTitle("Test3!");
-        testNotif3.setMessage("This is a fake notification.");
-        testNotif3.setType(Notification.notification_type.SYSTEM);
-        inbox.add(testNotif3);
-
         user.setNotifications(inbox);
 
         activity.notifyUserChanged();
 
         // Inbox Adapter
-        inboxAdapter = new InboxAdapter(getContext(), user);
+        inboxAdapter = new InboxAdapter(getContext(), user, inbox);
 
+        ListView inboxList = binding.listNotifications;
         // Set event adapter to list view
-        binding.listNotifications.setAdapter(inboxAdapter);
+        inboxList.setAdapter(inboxAdapter);
+
+        Notification testNotif = new Notification("Hello", "This is a test.");
+        inbox.add(testNotif);
 
         Button showAllButton = binding.inboxHeader.buttonAll;
         showAllButton.setOnClickListener((v) -> {
@@ -80,6 +69,15 @@ public class InboxFragment extends Fragment {
         Button showSystemButton = binding.inboxHeader.buttonSystem;;
         showSystemButton.setOnClickListener((v) -> {
             inboxAdapter.setDisplayMode(Notification.notification_type.SYSTEM);
+        });
+
+        inboxList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                inbox.remove(position);
+                inboxAdapter.notifyDataSetChanged();
+                return true;
+            }
         });
 
         return root;

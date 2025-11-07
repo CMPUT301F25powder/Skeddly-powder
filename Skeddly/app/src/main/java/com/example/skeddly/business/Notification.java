@@ -49,6 +49,12 @@ public class Notification extends DatabaseObject {
         this.type = notification_type.MESSAGES;
     }
 
+    public Notification(String title, String message) {
+        this();
+        this.setTitle(title);
+        this.setMessage(message);
+    }
+
     /**
      * Gets the title of the notification.
      * @return A string containing the title.

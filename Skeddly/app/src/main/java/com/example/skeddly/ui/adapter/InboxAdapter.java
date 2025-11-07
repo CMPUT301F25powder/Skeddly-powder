@@ -15,20 +15,20 @@ import com.example.skeddly.business.Notification;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.user.User;
 
+import java.util.ArrayList;
+
 public class InboxAdapter extends ArrayAdapter<Notification> {
     private User user;
     Context context;
     DatabaseHandler databaseHandler;
     private int displayMode;
-    public InboxAdapter(Context context, User user) {
-        super(context, 0);
+    public InboxAdapter(Context context, User user, ArrayList<Notification> notifs) {
+        super(context, 0, notifs);
         this.user = user;
         this.context = context;
         this.databaseHandler = new DatabaseHandler();
 
-        this.addAll(user.getNotifications());
-
-        displayMode = 3;
+        this.setDisplayMode(3);
     }
 
     @NonNull
