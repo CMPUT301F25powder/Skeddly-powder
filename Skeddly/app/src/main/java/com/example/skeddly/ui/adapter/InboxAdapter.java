@@ -19,6 +19,7 @@ public class InboxAdapter extends ArrayAdapter<Notification> {
     private User user;
     Context context;
     DatabaseHandler databaseHandler;
+    private int displayMode;
     public InboxAdapter(Context context, User user) {
         super(context, 0);
         this.user = user;
@@ -26,6 +27,8 @@ public class InboxAdapter extends ArrayAdapter<Notification> {
         this.databaseHandler = new DatabaseHandler();
 
         this.addAll(user.getNotifications());
+
+        displayMode = 3;
     }
 
     @NonNull
@@ -44,6 +47,23 @@ public class InboxAdapter extends ArrayAdapter<Notification> {
         description.setText(notif.getMessage());
 
         return view;
+    }
+
+    public void setDisplayMode(int displayMode) {
+        this.displayMode = displayMode;
+        this.clear();
+        if (this.displayMode == 3) {
+            this.addAll(user.getNotifications());
+        } else {
+            for (Notification n : this.user.getNotifications()) {
+                if (n.getType() != null && n.getType().ordinal() == this.displayMode) {
+                    this.add(n);
+                }
+            }
+        }
+    }
+    public void setDisplayMode(Notification.notification_type displayMode) {
+        this.setDisplayMode(displayMode.ordinal());
     }
 
 }

@@ -15,10 +15,9 @@ public class Notification extends DatabaseObject {
      * Defines the different categories a notification can belong to.
      */
     public enum notification_type {
-        LOTTERY_STATUS,
-        EVENT_STATUS,
-        ADMINSTRATIVE,
-        INVITATION
+        MESSAGES,
+        REGISTRATION,
+        SYSTEM
     }
 
     /**
@@ -47,7 +46,7 @@ public class Notification extends DatabaseObject {
 //        this.timestamp = LocalDateTime.now();
         this.isRead = false;
         this.status = invitation_status.PENDING;
-
+        this.type = notification_type.MESSAGES;
     }
 
     /**
