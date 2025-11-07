@@ -89,22 +89,42 @@ public class EventSchedule {
         this.endTime = endTime;
     }
 
+    /**
+     * Gets the start of the registration period.
+     * @return A unix epoch representing the start of the registration period.
+     */
     public long getRegStart() {
         return regStart;
     }
 
+    /**
+     * Sets the start of the registration period.
+     * @param regStart A unix epoch representing the start of the registration period.
+     */
     public void setRegStart(long regStart) {
         this.regStart = regStart;
     }
 
+    /**
+     * Gets the end of the registration period.
+     * @return A unix epoch representing the end of the registration period.
+     */
     public long getRegEnd() {
         return regEnd;
     }
 
+    /**
+     * Sets the end of the registration period.
+     * @param regEnd A unix epoch representing the end of the registration period.
+     */
     public void setRegEnd(long regEnd) {
         this.regEnd = regEnd;
     }
 
+    /**
+     * Gets whether the event registration period has ended or not.
+     * @return True if it has ended. False otherwise.
+     */
     public boolean isRegistrationOver() {
         ZoneId zoneId = ZoneId.systemDefault();
         long curTime = LocalDateTime.now().atZone(zoneId).toEpochSecond();

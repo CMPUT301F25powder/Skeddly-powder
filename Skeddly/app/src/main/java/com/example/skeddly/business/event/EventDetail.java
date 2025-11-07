@@ -75,10 +75,18 @@ public class EventDetail {
         this.description = description;
     }
 
+    /**
+     * Gets the entry criteria for the event.
+     * @return A string containing the entry criteria.
+     */
     public String getEntryCriteria() {
         return entryCriteria;
     }
 
+    /**
+     * Sets the entry criteria for the event.
+     * @param entryCriteria A string containing the entry criteria.
+     */
     public void setEntryCriteria(String entryCriteria) {
         this.entryCriteria = entryCriteria;
     }

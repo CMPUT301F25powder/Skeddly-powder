@@ -105,21 +105,37 @@ public class User extends DatabaseObject {
         ownedEvents.add(event.getId());
     }
 
+    /**
+     * Getss the list of events the user has joined.
+     * @return An array list of event ids.
+     */
     @Exclude // Exclude so we can handle ourselves
     public ArrayList<String> getJoinedEvents() {
         return joinedEvents;
     }
 
+    /**
+     * Sets which events the user has joined.
+     * @param joinedEvents An array list of event ids
+     */
     @Exclude // Exclude so we can handle ourselves
     public void setJoinedEvents(ArrayList<String> joinedEvents) {
         this.joinedEvents = joinedEvents;
     }
 
+    /**
+     * Gets the list of notifications that the user has
+     * @return DatabaseObjects list of notifications.
+     */
     @Exclude // Exclude so we can handle ourselves
     public DatabaseObjects<Notification> getNotifications() {
         return notifications;
     }
 
+    /**
+     * Sets the list of notifications
+     * @param notifications DatabaseObjects list of notifications.
+     */
     @Exclude // Exclude so we can handle ourselves
     public void setNotifications(DatabaseObjects<Notification> notifications) {
         this.notifications = notifications;

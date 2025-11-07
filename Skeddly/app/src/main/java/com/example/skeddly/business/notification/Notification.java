@@ -20,7 +20,7 @@ public class Notification extends DatabaseObject {
 
     /**
      * Default constructor for creating a new Notification.
-     * Initializes the timestamp to the current time and sets its read status to false.
+     * Sets its read status to false and status to pending.
      */
     public Notification() {
 //        this.timestamp = LocalDateTime.now();
@@ -29,6 +29,11 @@ public class Notification extends DatabaseObject {
         this.type = NotificationType.MESSAGES;
     }
 
+    /**
+     * Construct a notification with the given title and message.
+     * @param title The title to set on the notification.
+     * @param message The message that it should contain.
+     */
     public Notification(String title, String message) {
         this();
         this.setTitle(title);
