@@ -41,6 +41,10 @@ public class DatabaseObject implements Serializable {
         this.id = id;
     }
 
+    /**
+     * Gets the related methods for a database object.
+     * @return An array of all the methods
+     */
     public Method[] fetchDatabaseObjectRelatedMethods() {
         Stream<Method> stream = Arrays.stream(this.getClass().getDeclaredMethods()).filter(method -> method.getReturnType() == DatabaseObjects.class);
 

@@ -303,15 +303,4 @@ public class Event extends DatabaseObject {
         callback.onResult(null); // Didn't find it
     }
 
-    public void notifyWaiting(Notification notif, DatabaseHandler dbHandler) {
-        SingleListenUpdate<Ticket> getUserFromTicket = (ticket) -> {
-           String userId = ticket.getUser();
-
-
-        };
-        for (String ticketId : this.getWaitingList().getTicketIds()) {
-            dbHandler.singleListen(dbHandler.getTicketsPath().child(ticketId), Ticket.class, getUserFromTicket);
-        }
-    }
-
 }

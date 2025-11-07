@@ -31,7 +31,7 @@ public class DatabaseHandler {
     /**
      * Serializes the getter for a field in DB
      * @param name The name of the getter to serialize
-     * @return The serialized getter
+     * @return The serialized getter string
      * @see DatabaseReference
      * @see DatabaseObject
      */
@@ -43,6 +43,11 @@ public class DatabaseHandler {
         return fullIdentifier.concat(INTERNAL);
     }
 
+    /**
+     * Unserialize a getter for a field in DB
+     * @param name The name of the getter to unserialize
+     * @return The unserialized getter string
+     */
     private String unserializeGetterName(String name) {
         String firstLetter = name.substring(0, 1).toUpperCase();
         String replaced = firstLetter.concat(name.substring(1));
@@ -50,6 +55,11 @@ public class DatabaseHandler {
         return String.format("set%s", replaced).replace(INTERNAL, "");
     }
 
+    /**
+     * Gets the base name of a field in the DB. Just strips off the INTERNAL string.
+     * @param name The field name.
+     * @return The base name.
+     */
     private String getBaseName(String name) {
         return name.replace(INTERNAL, "");
     }
@@ -93,6 +103,13 @@ public class DatabaseHandler {
         }
     }
 
+    /**
+     * Unserializes a {@link DatabaseObject} from the DB
+     * @param ref The {@link DatabaseReference} to unserialize
+     * @param object The {@link DatabaseObject} to unserialize
+     * @see DatabaseReference
+     * @see DatabaseObject
+     */
     public void customUnserializer(DatabaseReference ref, DatabaseObject object) throws InvocationTargetException, IllegalAccessException {
         Method [] methods = object.fetchDatabaseObjectRelatedMethods();
 
@@ -154,6 +171,11 @@ public class DatabaseHandler {
         }
     }
 
+    /**
+     * Gets the children of a node in the database.
+     * @param ref The database reference of the node
+     * @return An asynchronous task that gets an arraylist of strings
+     */
     public Task<ArrayList<String>> getNodeChildren(DatabaseReference ref) {
         return ref.get().continueWith(task -> {
             ArrayList<String> result = new ArrayList<>();
@@ -171,6 +193,11 @@ public class DatabaseHandler {
         });
     }
 
+    /**
+     * Gets the children of a node in the database.
+     * @param ref The database reference of the node
+     * @return An asynchronous task that gets an arraylist of database objects
+     */
     public <T extends DatabaseObject> Task<DatabaseObjects<T>> getNodeChildren(DatabaseReference ref, Class<T> classType) {
         return ref.get().continueWith(task -> {
             DatabaseObjects<T> result = new DatabaseObjects<>(classType);
@@ -281,6 +308,11 @@ public class DatabaseHandler {
         return database.child("tickets");
     }
 
+    /**
+     * Returns a {@link DatabaseReference} pointing to notifications
+     * @return A {@link DatabaseReference} pointing to notifications
+     * @see DatabaseReference
+     */
     public DatabaseReference getNotificationsPath() {
         return database.child("notifications");
     }

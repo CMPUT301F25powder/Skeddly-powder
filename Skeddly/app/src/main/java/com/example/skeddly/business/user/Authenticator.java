@@ -141,7 +141,7 @@ public class Authenticator {
     /**
      * Gets if the user needs to sign up
      * @see User
-     * @return
+     * @return True if the signup page needs to be shown. False otherwise.
      */
     public boolean isShowSignUp() {
         return showSignUp;

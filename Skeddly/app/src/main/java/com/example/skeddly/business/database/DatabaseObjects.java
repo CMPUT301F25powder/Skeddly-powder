@@ -18,6 +18,10 @@ public class DatabaseObjects<T extends DatabaseObject> extends ArrayList<T> {
         parameter = (Class<T>) DatabaseObject.class;
     }
 
+    /**
+     * Constructor for DatabaseObjects
+     * @param parameter The class stored in the list
+     */
     public DatabaseObjects(Class<T> parameter) {
         this.parameter = parameter;
     }
