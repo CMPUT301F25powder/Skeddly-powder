@@ -26,6 +26,9 @@ import com.example.skeddly.ui.popup.TimePickerDialogFragment;
 import com.google.android.gms.maps.model.LatLng;
 
 
+/**
+ * Fragment for the test screen
+ */
 public class TestFragment extends Fragment {
     private FragmentTestBinding binding;
     private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;

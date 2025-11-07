@@ -73,6 +73,10 @@ public class ParticipantList extends DatabaseObject {
         return ticketIdList;
     }
 
+    /**
+     * Update the {@link ArrayList} of users
+     * @param ticketIdList The new ticketId list
+     */
     public void setTicketIds(ArrayList<String> ticketIdList) {
         this.ticketIdList = ticketIdList;
     }

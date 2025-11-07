@@ -46,6 +46,9 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ * Dialog fragment for the map popup
+ */
 public class MapPopupDialogFragment extends DialogFragment implements OnMapReadyCallback {
     // MAP STUFF
     private GoogleMap googleMap;

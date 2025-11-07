@@ -23,7 +23,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.ArrayList;
 import java.util.Objects;
 
-
+/**
+ * Fragment for the home screen
+ */
 public class HomeFragment extends Fragment {
     private HomeFragmentBinding binding;
     private ArrayList<Event> eventList;
@@ -54,6 +56,9 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
+    /**
+     * Fetches events from Firebase and updates the event adapter.
+     */
     private void fetchEvents() {
         // Fetch events from firebase
         databaseHandler.iterableListen(databaseHandler.getEventsPath(),

@@ -12,7 +12,7 @@ import androidx.fragment.app.DialogFragment;
 import java.time.LocalDateTime;
 
 /**
- *
+ * Dialog fragment for the time picker
  */
 public class TimePickerDialogFragment extends DialogFragment
         implements TimePickerDialog.OnTimeSetListener {
@@ -52,6 +52,12 @@ public class TimePickerDialogFragment extends DialogFragment
                 localDateTime.getMinute(), DateFormat.is24HourFormat(getActivity()));
     }
 
+    /**
+     * Called when the user has selected a time.
+     * @param view the view associated with this listener
+     * @param hourOfDay the hour that was set
+     * @param minute the minute that was set
+     */
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         Bundle bundle = new Bundle();
         bundle.putInt("hourOfDay", hourOfDay);

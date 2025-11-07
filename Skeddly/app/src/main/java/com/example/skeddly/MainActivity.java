@@ -30,6 +30,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
+/**
+ * Main activity for the application.
+ */
 public class MainActivity extends CustomActivity {
     private User user;
     private Authenticator authenticator;
@@ -116,6 +119,9 @@ public class MainActivity extends CustomActivity {
         }
     }
 
+    /**
+     * Sets up the navigation bar based on the user's privilege level.
+     */
     private void setupNavBar() {
         // Setup the nav bar
         BottomNavigationView navView = binding.navView;
@@ -150,22 +156,40 @@ public class MainActivity extends CustomActivity {
         NavigationUI.setupWithNavController(binding.navView, navController);
     }
 
+    /**
+     * Getter for the user object.
+     * @return The user object.
+     */
     public User getUser() {
         return user;
     }
 
+    /**
+     * Setter for the user object.
+     * @param user The user object to set.
+     */
     public void setUser(User user) {
         this.user = user;
     }
 
+    /**
+     * Getter for the authenticator object.
+     * @return
+     */
     public Authenticator getAuthenticator() {
         return authenticator;
     }
 
+    /**
+     * Notifies the authenticator that the user has changed.
+     */
     public void notifyUserChanged() {
         authenticator.commitUserChanges();
     }
 
+    /**
+     * Switches to the signup activity.
+     */
     public void switchToSignup() {
         Intent signupActivity = new Intent(getBaseContext(), SignupActivity.class);
         signupActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -173,6 +197,10 @@ public class MainActivity extends CustomActivity {
         finish();
     }
 
+    /**
+     * Navigates to the event view.
+     * @param event The event to navigate to.
+     */
     private void navigateToEvent(Event event) {
         Bundle bundle = new Bundle();
         bundle.putString("eventId", event.getId());

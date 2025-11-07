@@ -11,7 +11,9 @@ import androidx.fragment.app.Fragment;
 
 import com.example.skeddly.databinding.PersonalInformationEditFragmentBinding;
 
-
+/**
+ * Fragment for the personal information edit screen
+ */
 public class PersonalInformationEditFragment extends Fragment {
     private PersonalInformationEditFragmentBinding binding;
 

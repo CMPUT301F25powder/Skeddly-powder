@@ -12,6 +12,9 @@ import androidx.fragment.app.Fragment;
 import com.example.skeddly.databinding.InboxFragmentBinding;
 
 
+/**
+ * Fragment for the inbox screen
+ */
 public class InboxFragment extends Fragment {
     private InboxFragmentBinding binding;
 

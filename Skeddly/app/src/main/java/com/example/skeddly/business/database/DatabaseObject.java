@@ -13,14 +13,27 @@ import java.util.UUID;
 public class DatabaseObject implements Serializable {
     private String id;
 
+    /**
+     * Constructor for the DatabaseObject
+     */
     public DatabaseObject() {
         this.id = String.valueOf(UUID.randomUUID());
     }
+
+    /**
+     * Returns the ID of the object
+     * @return
+     */
     @Exclude
     public String getId() {
         return id;
     }
 
+    /**
+     * Sets the ID of the object
+     * @param id The new ID
+     */
+    @Exclude
     public void setId(String id) {
         this.id = id;
     }

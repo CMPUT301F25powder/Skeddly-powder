@@ -27,6 +27,9 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+/**
+ * Adapter for the participant list view
+ */
 public class ParticipantAdapter extends ArrayAdapter<Ticket> {
     private boolean isWaitingList;
     private DatabaseHandler dbHandler;
@@ -34,6 +37,14 @@ public class ParticipantAdapter extends ArrayAdapter<Ticket> {
     private String joinDate;
     private Event event;
 
+    /**
+     * Constructor for the ParticipantAdapter
+     * @param context The context of the app
+     * @param tickets The tickets to display
+     * @param isWaitingList Whether the tickets are for the waiting list
+     * @param dbHandler The database handler
+     * @param event The event to get the users from
+     */
     public ParticipantAdapter(Context context, ArrayList<Ticket> tickets, boolean isWaitingList, DatabaseHandler dbHandler, Event event) {
         super(context, 0, tickets);
         this.isWaitingList = isWaitingList;
@@ -100,7 +111,11 @@ public class ParticipantAdapter extends ArrayAdapter<Ticket> {
         return convertView;
     }
 
-
+    /**
+     * Gets the user from the database based on their ID
+     * @param userId The ID of the user to get
+     * @param callback The callback to run when the user is retrieved
+     */
     private void getUserFromId(String userId, SingleListenUpdate<User> callback) {
         dbHandler.getUsersPath().child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -118,10 +133,18 @@ public class ParticipantAdapter extends ArrayAdapter<Ticket> {
         });
     }
 
+    /**
+     * Sets the waiting list flag
+     * @param isWaitingList The waiting list flag
+     */
     public void setWaitingList(boolean isWaitingList) {
         this.isWaitingList = isWaitingList;
     }
 
+    /**
+     * Gets the waiting list flag
+     * @return
+     */
     public boolean getWaitingList() {
         return isWaitingList;
     }

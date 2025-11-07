@@ -39,7 +39,9 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Locale;
 
-
+/**
+ * Fragment for the event view screen
+ */
 public class EventViewInfoFragment extends Fragment {
     private EventViewAdminBinding binding;
     private DatabaseHandler dbHandler;

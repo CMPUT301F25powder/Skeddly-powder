@@ -31,9 +31,18 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Objects;
 
+/**
+ * Adapter for the event list view
+ */
 public class EventAdapter extends ArrayAdapter<Event> {
     private String userId;
 
+    /**
+     * Constructor for the EventAdapter
+     * @param context The context of the app
+     * @param events The events to display
+     * @param userId The user ID of the current user
+     */
     public EventAdapter(Context context, ArrayList<Event> events, String userId) {
         super(context, 0, events);
         this.userId = userId;
@@ -93,7 +102,13 @@ public class EventAdapter extends ArrayAdapter<Event> {
         return convertView;
     }
 
-    // Encapsulates the logic for setting the join/leave button
+    /**
+     * Updates the state of the join button based on the user's ticket status.
+     * @param buttonJoin The button to update
+     * @param event The event to check
+     * @param userId The user ID
+     * @param dbHandler The database handler
+     */
     public void updateJoinButtonState(Button buttonJoin, Event event, String userId, DatabaseHandler dbHandler) {
         buttonJoin.setEnabled(false); // Disable button while we check
         event.findUserTicketId(userId, dbHandler, ticketId -> {

@@ -19,6 +19,9 @@ import com.example.skeddly.ui.adapter.ParticipantAdapter;
 
 import java.util.ArrayList;
 
+/**
+ * Fragment for the participant list screen
+ */
 public class ParticipantListFragment extends Fragment {
 
     private EntrantListViewBinding binding;
@@ -61,6 +64,7 @@ public class ParticipantListFragment extends Fragment {
 
     /**
      * Loads the core event, sets up the UI, and populates the default list.
+     * @param eventId The ID of the event to load.
      */
     private void loadEventAndSetupUI(String eventId) {
         dbhandler.singleListen(dbhandler.getEventsPath().child(eventId),

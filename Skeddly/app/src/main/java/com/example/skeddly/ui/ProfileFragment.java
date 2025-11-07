@@ -19,7 +19,9 @@ import com.example.skeddly.business.user.User;
 import com.example.skeddly.databinding.ProfileFragmentBinding;
 import com.example.skeddly.ui.popup.StandardPopupDialogFragment;
 
-
+/**
+ * Fragment for the profile screen
+ */
 public class ProfileFragment extends Fragment {
     private ProfileFragmentBinding binding;
 

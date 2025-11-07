@@ -11,7 +11,7 @@ import androidx.fragment.app.DialogFragment;
 import java.util.Calendar;
 
 /**
- *
+ * Dialog fragment for the date picker
  */
 public class DatePickerDialogFragment extends DialogFragment
         implements DatePickerDialog.OnDateSetListener {
@@ -53,6 +53,13 @@ public class DatePickerDialogFragment extends DialogFragment
         return new DatePickerDialog(requireContext(), this, year, month, day);
     }
 
+    /**
+     * Called when the user has selected a date.
+     * @param view the picker associated with the dialog
+     * @param year the selected year
+     * @param month the selected month
+     * @param day the selected day of the month
+     */
     public void onDateSet(DatePicker view, int year, int month, int day) {
         Bundle bundle = new Bundle();
         bundle.putInt("year", year);
