@@ -33,6 +33,7 @@ public class SignupActivity extends CustomActivity {
     private EditText fullNameEditText;
     private EditText emailEditText;
     private Button submitButton;
+    private boolean loaded = false;
 
     private Uri qrOpenUri;
 
@@ -150,6 +151,9 @@ public class SignupActivity extends CustomActivity {
         mainActivity.putExtra("QR", qrOpenUri);
         startActivity(mainActivity);
         finish();
+
+        loaded = true;
+
     }
 
     /**
@@ -161,5 +165,9 @@ public class SignupActivity extends CustomActivity {
     private Uri getLaunchLink() {
         Intent intent = getIntent();
         return intent.getData();
+    }
+
+    public boolean getLoaded() {
+        return this.loaded;
     }
 }
