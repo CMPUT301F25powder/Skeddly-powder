@@ -57,7 +57,7 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * Fragment for the event view screen
+ * Fragment for the event view info screen
  */
 public class EventViewInfoFragment extends Fragment implements RetrieveLocation {
     private EventViewAdminBinding binding;
@@ -266,7 +266,11 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
         }
     }
 
-
+    /**
+     * Check whether we have the required permissions to get the device's location. Request
+     * permission if needed.
+     * @return True if we have permission. False otherwise.
+     */
     public boolean checkPermissions() {
         // We need to get the required permissions
         ArrayList<String> needed_permissions = new ArrayList<>();

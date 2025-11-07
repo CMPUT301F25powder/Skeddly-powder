@@ -134,16 +134,16 @@ public class ParticipantAdapter extends ArrayAdapter<Ticket> {
     }
 
     /**
-     * Sets the waiting list flag
-     * @param isWaitingList The waiting list flag
+     * Sets whether we are showing the waiting list or not.
+     * @param isWaitingList True if we're showing the waiting list. False otherwise
      */
     public void setWaitingList(boolean isWaitingList) {
         this.isWaitingList = isWaitingList;
     }
 
     /**
-     * Gets the waiting list flag
-     * @return
+     * Gets whether we are showing the waiting list or not.
+     * @return True if we're showing the waiting list. False otherwise
      */
     public boolean getWaitingList() {
         return isWaitingList;

@@ -59,6 +59,10 @@ import java.util.Locale;
 import java.util.Objects;
 
 
+/**
+ * Callback function for the MaterialTimePicker used to pick the time. Includes a reference to the
+ * original picker in the callback.
+ */
 interface MaterialTimePickerCallback {
     public void onPositiveButtonClick(MaterialTimePicker picker);
 }
@@ -573,6 +577,11 @@ public class CreateFragment extends Fragment {
         updateConfirmButton();
     }
 
+    /**
+     * Underline the given string and return it as a SpannableString
+     * @param string The string to underline
+     * @return The given string, but underlined as a SpannableString
+     */
     private SpannableString underlineString(String string) {
         SpannableString spannedString = new SpannableString(string);
         spannedString.setSpan(underlineSpan, 0, spannedString.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);

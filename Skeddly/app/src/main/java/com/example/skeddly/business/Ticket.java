@@ -14,24 +14,21 @@ import java.time.ZoneId;
  * entered the event. when they did, and where they did all in one object.
  */
 public class Ticket extends DatabaseObject {
-    @NonNull
     private String userId;
-    @NonNull
     private long ticketTime;
     @Nullable
     private CustomLocation location;
-
     private TicketStatus status;
 
     /**
-     * No arg constructor for a Ticket.
+     * No arg constructor for a Ticket. Required by Firebase.
      */
     public Ticket() {}
 
     /**
      * Constructor for a Ticket.
-     * @param userId
-     * @param location
+     * @param userId The id of the user that this ticket is associated with
+     * @param location The location that the user is casting the ticket from, or NULL if not given.
      */
     public Ticket(@NonNull String userId, @Nullable CustomLocation location) {
         this.userId = userId;
@@ -44,10 +41,10 @@ public class Ticket extends DatabaseObject {
 
     /**
      * Constructor for a Ticket without location.
-     * @param entrantId
+     * @param userId The id of the user that this ticket is associated with
      */
-    public Ticket(@NonNull String entrantId) {
-        this(entrantId, null);
+    public Ticket(@NonNull String userId) {
+        this(userId, null);
     }
 
     /**
@@ -61,7 +58,7 @@ public class Ticket extends DatabaseObject {
 
     /**
      * Sets the user who entered the event.
-     * @param userId
+     * @param userId The new id of the user that this ticket is associated with
      */
     public void setUser(String userId) {
         this.userId = userId;
@@ -69,16 +66,15 @@ public class Ticket extends DatabaseObject {
 
     /**
      * Gets the time the user entered the event.
-     * @return The time the user entered the event
+     * @return The time the user entered the event as a unix epoch
      */
-    @NonNull
     public long getTicketTime() {
         return ticketTime;
     }
 
     /**
      * Sets the time the user entered the event.
-     * @param ticketTime The time the user entered the event
+     * @param ticketTime The time the user entered the event as a unix epoch
      */
     public void setTicketTime(long ticketTime) {
         this.ticketTime = ticketTime;
@@ -86,7 +82,7 @@ public class Ticket extends DatabaseObject {
 
     /**
      * Gets the location the user entered the event.
-     * @return The location the user entered the event
+     * @return The location the user entered the event or NULL if not stored.
      */
     @Nullable
     public CustomLocation getLocation() {

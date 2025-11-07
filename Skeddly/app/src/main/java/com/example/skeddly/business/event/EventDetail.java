@@ -3,7 +3,7 @@ package com.example.skeddly.business.event;
 import java.util.ArrayList;
 
 /**
- * An event detail that can be serialized into the DB
+ * This class represents specific details about an event.
  */
 public class EventDetail {
     private String name;
@@ -12,7 +12,7 @@ public class EventDetail {
     private ArrayList<String> categories;
 
     /**
-     * No arg Constructor for the EventDetail
+     * No arg Constructor for EventDetails. Required by Firebase.
      */
     public EventDetail() {
 

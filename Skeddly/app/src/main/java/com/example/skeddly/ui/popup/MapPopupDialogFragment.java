@@ -63,9 +63,9 @@ public class MapPopupDialogFragment extends DialogFragment implements OnMapReady
     private PopupMapBinding binding;
 
     /**
-     * Instantiate the popup with the provided title and content fields.
+     * Create a new instance of the MapPopupDialogFragment.
      * @param requestKey The requestKey that should be used when returning the result
-     * @return A new MapPopupDialogFragment with the arguments passed to it to display.
+     * @return A new MapPopupDialogFragment with the given requestKey set.
      */
     public static MapPopupDialogFragment newInstance(String requestKey) {
         Bundle args = new Bundle();

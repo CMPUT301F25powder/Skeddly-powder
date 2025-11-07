@@ -21,8 +21,8 @@ public class DatabaseObject implements Serializable {
     }
 
     /**
-     * Returns the ID of the object
-     * @return
+     * Gets the ID of the object
+     * @return A string of the id of the object
      */
     @Exclude
     public String getId() {

@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * An event schedule that can be serialized into the DB
+ * This class represents the schedule of an event with a start and end time + reg start/end times
  */
 public class EventSchedule {
     private long startTime;

@@ -49,9 +49,9 @@ public class QRPopupDialogFragment extends DialogFragment {
     private Bitmap qrBitmap;
 
     /**
-     * Instantiate the popup with the provided link.
-     * @param link
-     * @return
+     * Create a new instance of the QRPopupDialogFragment
+     * @param link The link that should be shown in the QR code.
+     * @return A new QRPopupDialogFragment with the link set.
      */
     public static QRPopupDialogFragment newInstance(String link) {
         Bundle arg = new Bundle();
@@ -164,7 +164,7 @@ public class QRPopupDialogFragment extends DialogFragment {
     }
 
     /**
-     * Create a file picker intent and launch it
+     * Let the user pick a location to create the new qr code image file at
      */
     private void createFile() {
         Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
@@ -176,9 +176,9 @@ public class QRPopupDialogFragment extends DialogFragment {
     }
 
     /**
-     * Alter the document at the given uri with the given bitmap
+     * Export a bitmap to the given URI as a png file.
      * @param uri The uri of the document to alter
-     * @param bitmap The bitmap to alter the document with
+     * @param bitmap The bitmap to write to it as a png
      */
     private void alterDocument(Uri uri, Bitmap bitmap) {
         try {

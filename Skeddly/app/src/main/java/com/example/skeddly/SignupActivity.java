@@ -141,7 +141,7 @@ public class SignupActivity extends CustomActivity {
     }
 
     /**
-     * Switches to the main activity.
+     * Switches to the main activity, providing the necessary information in the intent.
      */
     private void switchToMain() {
         Intent mainActivity = new Intent(getBaseContext(), MainActivity.class);
@@ -153,7 +153,8 @@ public class SignupActivity extends CustomActivity {
     }
 
     /**
-     * Gets the launch link if there is one.
+     * Gets the launch link if there is one. The launch link is usually provided from scanning
+     * a QR code to open the app straight to an event.
      * @return The launch link, or null if there isn't one.
      */
     @Nullable

@@ -122,6 +122,11 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
         binding = null;
     }
 
+    /**
+     * Gets the location from the device and return it in the provided callback.
+     * Requests permission if needed.
+     * @param callback Who to callback when we got the location.
+     */
     @SuppressLint("MissingPermission")
     @Override
     public void getLocation(SingleListenUpdate<CustomLocation> callback) {
@@ -140,7 +145,11 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
         }
     }
 
-
+    /**
+     * Check whether we have the required permissions to get the device's location. Request
+     * permission if needed.
+     * @return True if we have permission. False otherwise.
+     */
     public boolean checkPermissions() {
         // We need to get the required permissions
         ArrayList<String> needed_permissions = new ArrayList<>();

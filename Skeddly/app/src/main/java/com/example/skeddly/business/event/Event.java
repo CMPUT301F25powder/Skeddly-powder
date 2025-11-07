@@ -19,7 +19,7 @@ import java.util.Base64;
 import java.util.List;
 
 /**
- * An event that can be serialized into the DB
+ * This class represents an event.
  */
 public class Event extends DatabaseObject {
     private EventDetail eventDetails;
@@ -32,7 +32,7 @@ public class Event extends DatabaseObject {
     private String imageb64;
 
     /**
-     * No arg Constructor for the Event.
+     * No arg Constructor for the Event. Required by Firebase.
      */
     public Event() {
 
@@ -43,9 +43,10 @@ public class Event extends DatabaseObject {
      * @param eventDetails The details of the event
      * @param eventSchedule The schedule of the event
      * @param location The location of the event
-     * @param organizer The organizer of the event
+     * @param organizer The ID of the organizer of the event
      * @param waitingListLimit The limit of the waiting list
      * @param participantListLimit The limit of the participant list
+     * @param logLocation Whether your location is required to be logged when joining the waiting list.
      * @param image The image of the event as base64
      */
     public Event(EventDetail eventDetails, EventSchedule eventSchedule, LatLng location,
@@ -68,6 +69,7 @@ public class Event extends DatabaseObject {
      * @param location The location of the event
      * @param organizer The organizer of the event
      * @param participantListLimit The limit of the participant list
+     * @param logLocation Whether your location is required to be logged when joining the waiting list.
      * @param image The image of the event as base64
      */
     public Event(EventDetail eventDetails, EventSchedule eventSchedule, LatLng location,
@@ -124,16 +126,16 @@ public class Event extends DatabaseObject {
     }
 
     /**
-     * Gets the organizer of the event
-     * @return The organizer of the event
+     * Gets the organizer id of the event
+     * @return The organizer id of the event
      */
     public String getOrganizer() {
         return organizer;
     }
 
     /**
-     * Sets the organizer of the event
-     * @param organizer The organizer of the event
+     * Sets the organizer of the event by their ID
+     * @param organizer The organizer id to set it to
      */
     public void setOrganizer(String organizer) {
         this.organizer = organizer;
@@ -172,17 +174,25 @@ public class Event extends DatabaseObject {
         this.participantList = participantList;
     }
 
+    /**
+     * Gets whether location logging is required to join the waiting list
+     * @return True if it is required. False otherwise.
+     */
     public boolean getLogLocation() {
         return logLocation;
     }
 
+    /**
+     * Sets the location logging requirement for the event.
+     * @param logLocation The new boolean value for the requirement.
+     */
     public void setLogLocation(boolean logLocation) {
         this.logLocation = logLocation;
     }
 
     /**
-     * Gets the image of the event
-     * @return The image of the event
+     * Gets the image of the event as a base64 string
+     * @return The image of the event as base64
      */
     public String getImageb64() {
         return imageb64;
@@ -196,6 +206,11 @@ public class Event extends DatabaseObject {
         this.imageb64 = imageb64;
     }
 
+    /**
+     * Queries whether the event is joinable or not. An event is joinable if the waiting list
+     * is not full and the registration period has not ended yet.
+     * @return True if the event can be joined. False otherwise.
+     */
     public boolean isJoinable() {
         return !waitingList.isFull() && !eventSchedule.isRegistrationOver();
     }

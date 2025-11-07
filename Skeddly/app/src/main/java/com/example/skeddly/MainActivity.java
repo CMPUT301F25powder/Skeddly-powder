@@ -174,7 +174,7 @@ public class MainActivity extends CustomActivity {
 
     /**
      * Getter for the authenticator object.
-     * @return
+     * @return The Authenticator of the user
      */
     public Authenticator getAuthenticator() {
         return authenticator;
@@ -198,7 +198,7 @@ public class MainActivity extends CustomActivity {
     }
 
     /**
-     * Navigates to the event view.
+     * Navigates to the event view. Used if the app was opened with a QR code pointing to an event.
      * @param event The event to navigate to.
      */
     private void navigateToEvent(Event event) {

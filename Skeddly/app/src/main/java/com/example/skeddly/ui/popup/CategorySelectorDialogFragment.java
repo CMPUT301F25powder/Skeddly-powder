@@ -20,11 +20,11 @@ public class CategorySelectorDialogFragment extends DialogFragment {
     private String requestKey;
 
     /**
-     * Constructor for the CategorySelectorDialogFragment
+     * Create a new instance of the CategorySelector.
      * @param title The title of the dialog
      * @param categories The categories to choose from
-     * @param requestKey The key to use for the result
-     * @return
+     * @param requestKey The requestKey to use for the result
+     * @return The newly constructed CategorySelectorDialogFragment
      */
     public static CategorySelectorDialogFragment newInstance(String title, String[] categories, String requestKey) {
         Bundle args = new Bundle();
@@ -88,7 +88,7 @@ public class CategorySelectorDialogFragment extends DialogFragment {
     }
 
     /**
-     * Sets the result of the dialog
+     * Sets the result of the dialog that needs to be returned to the parent fragment.
      */
     private void setResult() {
         Bundle bundle = new Bundle();

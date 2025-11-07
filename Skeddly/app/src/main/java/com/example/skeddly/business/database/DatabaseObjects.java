@@ -5,10 +5,13 @@ import androidx.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * DatabaseObjects are an ArrayList of DatabaseObjects
+ */
 public class DatabaseObjects extends ArrayList<DatabaseObject> {
 
     /**
-     * Constructor for the DatabaseObjects
+     * No-Arg Constructor for DatabaseObjects
      */
     public DatabaseObjects() {
     }
