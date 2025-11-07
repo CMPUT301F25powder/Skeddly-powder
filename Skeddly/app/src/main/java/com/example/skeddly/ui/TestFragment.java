@@ -18,11 +18,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
 
 import com.example.skeddly.databinding.FragmentTestBinding;
-import com.example.skeddly.ui.popup.DatePickerDialogFragment;
 import com.example.skeddly.ui.popup.MapPopupDialogFragment;
 import com.example.skeddly.ui.popup.QRPopupDialogFragment;
 import com.example.skeddly.ui.popup.StandardPopupDialogFragment;
-import com.example.skeddly.ui.popup.TimePickerDialogFragment;
 import com.google.android.gms.maps.model.LatLng;
 
 
@@ -61,45 +59,45 @@ public class TestFragment extends Fragment {
         });
 
         // === Time picker button stuff ===
-        Button timePickerButton = binding.timePickerButton;
-        timePickerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                TimePickerDialogFragment tpf = new TimePickerDialogFragment();
-                tpf.show(getChildFragmentManager(), "timePicker");
-            }
-        });
-
-        getChildFragmentManager().setFragmentResultListener("timePicker", this, new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-                int hourOfDay = result.getInt("hourOfDay");
-                int minute = result.getInt("minute");
-
-                returnText.setText(String.format("%2d:%2d", hourOfDay, minute));
-            }
-        });
+//        Button timePickerButton = binding.timePickerButton;
+//        timePickerButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                TimePickerDialogFragment tpf = new TimePickerDialogFragment();
+//                tpf.show(getChildFragmentManager(), "timePicker");
+//            }
+//        });
+//
+//        getChildFragmentManager().setFragmentResultListener("timePicker", this, new FragmentResultListener() {
+//            @Override
+//            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+//                int hourOfDay = result.getInt("hourOfDay");
+//                int minute = result.getInt("minute");
+//
+//                returnText.setText(String.format("%2d:%2d", hourOfDay, minute));
+//            }
+//        });
 
         // === Date Picker Button Stuff ===
-        Button datePickerButton = binding.datePickerButton;
-        datePickerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DatePickerDialogFragment dpf = new DatePickerDialogFragment();
-                dpf.show(getChildFragmentManager(), "datePicker");
-            }
-        });
-
-        getChildFragmentManager().setFragmentResultListener("datePicker", this, new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-                int year = result.getInt("year");
-                int month = result.getInt("month");
-                int day = result.getInt("day");
-
-                returnText.setText(String.format("%d:%d:%d", year, month, day));
-            }
-        });
+//        Button datePickerButton = binding.datePickerButton;
+//        datePickerButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                DatePickerDialogFragment dpf = new DatePickerDialogFragment();
+//                dpf.show(getChildFragmentManager(), "datePicker");
+//            }
+//        });
+//
+//        getChildFragmentManager().setFragmentResultListener("datePicker", this, new FragmentResultListener() {
+//            @Override
+//            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+//                int year = result.getInt("year");
+//                int month = result.getInt("month");
+//                int day = result.getInt("day");
+//
+//                returnText.setText(String.format("%d:%d:%d", year, month, day));
+//            }
+//        });
 
         // === Location Picker Stuff ===
         Button locationPickerButton = binding.locationPickerButton;

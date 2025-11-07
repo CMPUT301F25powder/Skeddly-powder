@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class EventDetail {
     private String name;
     private String description;
+    private String entryCriteria;
     private ArrayList<String> categories;
 
     /**
@@ -23,12 +24,13 @@ public class EventDetail {
      * @param description The description of the event
      * @param categories The categories of the event
      */
-    public EventDetail(String name, String description, ArrayList<String> categories) {
+    public EventDetail(String name, String description, String entryCriteria, ArrayList<String> categories) {
         this.name = name;
         this.description = description;
+        this.entryCriteria = entryCriteria;
 
         if (categories == null) {
-            categories = new ArrayList<String>();
+            categories = new ArrayList<>();
         }
         this.categories = categories;
     }
@@ -38,8 +40,8 @@ public class EventDetail {
      * @param name The name of the event
      * @param description The description of the event
      */
-    public EventDetail(String name, String description) {
-        this(name, description, new ArrayList<>());
+    public EventDetail(String name, String description, String entryCriteria) {
+        this(name, description, entryCriteria, null);
     }
 
     /**
@@ -71,6 +73,14 @@ public class EventDetail {
      */
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getEntryCriteria() {
+        return entryCriteria;
+    }
+
+    public void setEntryCriteria(String entryCriteria) {
+        this.entryCriteria = entryCriteria;
     }
 
     /**

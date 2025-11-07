@@ -67,7 +67,7 @@ public class SignupActivity extends CustomActivity {
         // See if we were opened by a QR code or special link
         qrOpenUri = getLaunchLink();
 
-        DatabaseHandler database = new DatabaseHandler(this);
+        DatabaseHandler database = new DatabaseHandler();
         Authenticator authenticator = new Authenticator(this, database);
         authenticator.addListenerForUserLoaded(new UserLoaded() {
             @Override

@@ -23,7 +23,6 @@ import java.util.logging.Logger;
  */
 public class DatabaseHandler {
     private User user;
-    private Context context;
     private DatabaseReference database;
 
     /**
@@ -74,10 +73,8 @@ public class DatabaseHandler {
 
     /**
      * Constructor for the DatabaseHandler.
-     * @param context The app context
      */
-    public DatabaseHandler(Context context) {
-        this.context = context;
+    public DatabaseHandler() {
         this.database = FirebaseDatabase.getInstance().getReference();
     }
 
@@ -170,5 +167,14 @@ public class DatabaseHandler {
      */
     public DatabaseReference getTicketsPath() {
         return database.child("tickets");
+    }
+
+    /**
+     * Returns a {@link DatabaseReference} pointing to the specified path
+     * @return A {@link DatabaseReference} pointing to the specified path
+     * @see DatabaseReference
+     */
+    public DatabaseReference getPath(String path) {
+        return database.child(path);
     }
 }

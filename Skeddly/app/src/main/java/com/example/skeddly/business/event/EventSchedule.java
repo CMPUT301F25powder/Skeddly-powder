@@ -11,6 +11,8 @@ import java.util.List;
 public class EventSchedule {
     private long startTime;
     private long endTime;
+    private long regStart;
+    private long regEnd;
 
     // [SUN, MON, ..., FRI, SAT]
     private List<Boolean> daysOfWeek;
@@ -29,12 +31,16 @@ public class EventSchedule {
      * @param end The end time of the event
      * @param daysOfWeek The days of the week the event occurs on
      */
-    public EventSchedule(LocalDateTime start, LocalDateTime end, Boolean[] daysOfWeek) {
+    public EventSchedule(LocalDateTime start, LocalDateTime end,
+                         LocalDateTime regStart, LocalDateTime regEnd,
+                         Boolean[] daysOfWeek) {
         isRecurring = daysOfWeek != null;
 
         ZoneId zoneId = ZoneId.systemDefault();
         this.startTime = start.atZone(zoneId).toEpochSecond();
         this.endTime = end.atZone(zoneId).toEpochSecond();
+        this.regStart = regStart.atZone(zoneId).toEpochSecond();
+        this.regEnd = regEnd.atZone(zoneId).toEpochSecond();
 
         if (daysOfWeek != null) {
             this.daysOfWeek = Arrays.asList(daysOfWeek);
@@ -46,8 +52,9 @@ public class EventSchedule {
      * @param start The start time of the event
      * @param end The end time of the event
      */
-    public EventSchedule(LocalDateTime start, LocalDateTime end) {
-        this(start, end, null);
+    public EventSchedule(LocalDateTime start, LocalDateTime end,
+                         LocalDateTime regStart, LocalDateTime regEnd) {
+        this(start, end, regStart, regEnd, null);
     }
 
     /**
@@ -80,6 +87,29 @@ public class EventSchedule {
      */
     public void setEndTime(long endTime) {
         this.endTime = endTime;
+    }
+
+    public long getRegStart() {
+        return regStart;
+    }
+
+    public void setRegStart(long regStart) {
+        this.regStart = regStart;
+    }
+
+    public long getRegEnd() {
+        return regEnd;
+    }
+
+    public void setRegEnd(long regEnd) {
+        this.regEnd = regEnd;
+    }
+
+    public boolean isRegistrationOver() {
+        ZoneId zoneId = ZoneId.systemDefault();
+        long curTime = LocalDateTime.now().atZone(zoneId).toEpochSecond();
+
+        return curTime > regEnd;
     }
 
     /**

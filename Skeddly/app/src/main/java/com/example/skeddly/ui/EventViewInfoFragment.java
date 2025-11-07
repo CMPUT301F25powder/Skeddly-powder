@@ -1,16 +1,26 @@
 package com.example.skeddly.ui;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -18,17 +28,23 @@ import androidx.navigation.Navigation;
 import com.bumptech.glide.Glide;
 import com.example.skeddly.MainActivity;
 import com.example.skeddly.R;
+import com.example.skeddly.business.database.SingleListenUpdate;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.event.EventDetail;
 import com.example.skeddly.business.event.EventSchedule;
-import com.example.skeddly.business.user.Authenticator;
+import com.example.skeddly.business.location.CustomLocation;
 import com.example.skeddly.business.user.User;
 import com.example.skeddly.business.user.UserLevel;
 import com.example.skeddly.databinding.EventViewAdminBinding;
-import com.example.skeddly.databinding.EventViewFragmentBinding;
 import com.example.skeddly.ui.adapter.EventAdapter;
+import com.example.skeddly.ui.adapter.RetrieveLocation;
 import com.example.skeddly.ui.popup.QRPopupDialogFragment;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
+import com.google.android.gms.tasks.CancellationTokenSource;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ValueEventListener;
 
 import java.time.Instant;
@@ -38,11 +54,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Fragment for the event view screen
  */
-public class EventViewInfoFragment extends Fragment {
+public class EventViewInfoFragment extends Fragment implements RetrieveLocation {
     private EventViewAdminBinding binding;
     private DatabaseHandler dbHandler;
     private String eventId;
@@ -51,6 +68,11 @@ public class EventViewInfoFragment extends Fragment {
     private EventAdapter eventAdapter;
     private ValueEventListener valueEventListener;
 
+    // Location Stuff
+    private FusedLocationProviderClient fusedLocationClient;
+    private ActivityResultLauncher<String[]> requestPermissionLauncher;
+    private final String[] needed_permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -58,10 +80,28 @@ public class EventViewInfoFragment extends Fragment {
         View root = binding.getRoot();
 
         // Initialize database handler
-        dbHandler = new DatabaseHandler(getContext());
+        dbHandler = new DatabaseHandler();
 
         // Initialize eventAdapter
-        eventAdapter = new EventAdapter(getContext(), new ArrayList<>(), userId);
+        eventAdapter = new EventAdapter(getContext(), new ArrayList<>(), userId, this);
+
+        // For getting our current location
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext());
+
+        // GET PERMISSION THING
+        requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), new ActivityResultCallback<Map<String, Boolean>>() {
+            @Override
+            public void onActivityResult(Map<String, Boolean> result) {
+                // its mad at me
+                boolean fine_granted = result.getOrDefault(needed_permissions[0], false);
+                boolean coarse_granted = result.getOrDefault(needed_permissions[1], false);
+
+                if (fine_granted && coarse_granted) {
+                    Toast.makeText(getContext(), "Location granted. Please try again.", Toast.LENGTH_SHORT);
+                }
+            }
+        });
+
 
         // Get the eventId passed from the HomeFragment
         if (getArguments() != null) {
@@ -202,12 +242,51 @@ public class EventViewInfoFragment extends Fragment {
         } else {
             binding.valueWaitlistLimit.setText(String.format(Locale.getDefault(), "%d / %d", currentWaitlist, maxWaitlist));
         }
+
+        if (!event.isJoinable()) {
+            binding.buttonJoin.setVisibility(View.GONE);
+        }
     }
 
+    @SuppressLint("MissingPermission")
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        dbHandler.getEventsPath().child(eventId).removeEventListener(valueEventListener);
-        binding = null;
+    public void getLocation(SingleListenUpdate<CustomLocation> callback) {
+        if (checkPermissions()) {
+            CancellationTokenSource cts = new CancellationTokenSource();
+            fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, cts.getToken()).addOnSuccessListener(new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    if (location != null) {
+                        callback.onUpdate(new CustomLocation(location.getLongitude(), location.getLatitude()));
+                    }
+                }
+            });
+        } else {
+            Toast.makeText(getContext(), "Please grant location permission.", Toast.LENGTH_SHORT);
+        }
+    }
+
+
+    public boolean checkPermissions() {
+        // We need to get the required permissions
+        ArrayList<String> needed_permissions = new ArrayList<>();
+        boolean granted = false;
+
+        for (String permission : this.needed_permissions) {
+            // If we don't have it, add it to the list
+            if (ContextCompat.checkSelfPermission(requireContext(), permission) != PackageManager.PERMISSION_GRANTED) {
+                needed_permissions.add(permission);
+            }
+        }
+
+        // Request perms if needed
+        if (!needed_permissions.isEmpty()) {
+            String[] perms = new String[2];
+            Toast.makeText(getContext(), "Please grant location permission.", Toast.LENGTH_SHORT);
+            requestPermissionLauncher.launch(needed_permissions.toArray(perms));
+            return false;
+        }
+
+        return true;
     }
 }

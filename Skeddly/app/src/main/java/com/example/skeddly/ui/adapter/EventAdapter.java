@@ -14,28 +14,24 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.bumptech.glide.Glide;
 import com.example.skeddly.R;
+import com.example.skeddly.business.database.SingleListenUpdate;
 import com.example.skeddly.business.event.Event;
-import com.example.skeddly.business.Ticket;
 import com.example.skeddly.business.database.DatabaseHandler;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
+import com.example.skeddly.business.location.CustomLocation;
 
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Objects;
 
 /**
  * Adapter for the event list view
  */
 public class EventAdapter extends ArrayAdapter<Event> {
     private String userId;
+    private RetrieveLocation locationGetter;
 
     /**
      * Constructor for the EventAdapter
@@ -43,9 +39,10 @@ public class EventAdapter extends ArrayAdapter<Event> {
      * @param events The events to display
      * @param userId The user ID of the current user
      */
-    public EventAdapter(Context context, ArrayList<Event> events, String userId) {
+    public EventAdapter(Context context, ArrayList<Event> events, String userId, RetrieveLocation locationGetter) {
         super(context, 0, events);
         this.userId = userId;
+        this.locationGetter = locationGetter;
     }
 
     @NonNull
@@ -69,7 +66,7 @@ public class EventAdapter extends ArrayAdapter<Event> {
         if (event != null) {
             Glide.with(getContext()).load(Base64.getDecoder().decode(event.getImageb64())).into(imageView);
             textEventName.setText(event.getEventDetails().getName());
-            DatabaseHandler dbHandler = new DatabaseHandler(getContext());
+            DatabaseHandler dbHandler = new DatabaseHandler();
 
             // Handle privilege assignment for editing
             if (userId.equals(event.getOrganizer())) {
@@ -77,6 +74,12 @@ public class EventAdapter extends ArrayAdapter<Event> {
                 buttonJoin.setVisibility(View.INVISIBLE);
             } else {
                 buttonEdit.setVisibility(View.INVISIBLE);
+
+                if (!event.isJoinable()) {
+                    buttonJoin.setVisibility(View.INVISIBLE);
+                } else {
+                    buttonJoin.setVisibility(View.VISIBLE);
+                }
             }
 
             // Set button state, and button's on click listener
@@ -124,12 +127,21 @@ public class EventAdapter extends ArrayAdapter<Event> {
                 // User is not on the waitlist
                 buttonJoin.setText("Join");
                 buttonJoin.setOnClickListener(v -> {
-                    event.join(dbHandler, userId);
                     Toast.makeText(getContext(), "Joining " + event.getEventDetails().getName(), Toast.LENGTH_SHORT).show();
+
+                    if (event.getLogLocation()) {
+                        locationGetter.getLocation(new SingleListenUpdate<CustomLocation>() {
+                            @Override
+                            public void onUpdate(CustomLocation newValue) {
+                                event.join(dbHandler, userId, newValue);
+                            }
+                        });
+                    } else {
+                        event.join(dbHandler, userId, null);
+                    }
                 });
             }
             buttonJoin.setEnabled(true); // Re-enable the button
         });
     }
-
 }
