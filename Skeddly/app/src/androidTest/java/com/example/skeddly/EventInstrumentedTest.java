@@ -14,6 +14,7 @@ import static org.hamcrest.Matchers.is;
 import androidx.test.filters.LargeTest;
 
 import com.example.skeddly.business.event.Event;
+import com.example.skeddly.utilities.BaseTest;
 
 import org.junit.Test;
 

@@ -1,9 +1,11 @@
-package com.example.skeddly;
+package com.example.skeddly.utilities;
 
 import androidx.test.espresso.IdlingRegistry;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
+
+import com.example.skeddly.SignupActivity;
 
 import org.junit.After;
 import org.junit.Before;

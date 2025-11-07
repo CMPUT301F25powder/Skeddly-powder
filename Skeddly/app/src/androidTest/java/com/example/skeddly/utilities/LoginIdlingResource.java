@@ -1,6 +1,8 @@
-package com.example.skeddly;
+package com.example.skeddly.utilities;
 
 import androidx.test.espresso.IdlingResource;
+
+import com.example.skeddly.SignupActivity;
 
 public class LoginIdlingResource implements IdlingResource {
     private IdlingResource.ResourceCallback resourceCallback = null;
