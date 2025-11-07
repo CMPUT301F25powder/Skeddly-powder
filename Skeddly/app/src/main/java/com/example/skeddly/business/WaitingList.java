@@ -56,8 +56,13 @@ public class WaitingList extends DatabaseObject {
     /**
      * Randomly select and remove a ticket from the waiting list
      * @return The selected ticket
+     * @throws IllegalStateException if the list is empty.
      */
     public String draw() {
+        if (ticketIds.isEmpty()) {
+            throw new IllegalStateException();
+        }
+
         String t = ticketIds.get(randomGen.nextInt(ticketIds.size()));
         this.remove(t);
 
@@ -86,6 +91,22 @@ public class WaitingList extends DatabaseObject {
      */
     public boolean isFull() {
         return getLimit() <= ticketIds.size();
+    }
+
+    /**
+     * Gets whether the waiting list is empty or not.
+     * @return True if the waiting list is empty. False otherwise.
+     */
+    public boolean isEmpty() {
+        return ticketIds.isEmpty();
+    }
+
+    /**
+     * Gets how many tickets are stored in the waiting list.
+     * @return The number of tickets in the waiting list.
+     */
+    public int size() {
+        return ticketIds.size();
     }
 
     /**
