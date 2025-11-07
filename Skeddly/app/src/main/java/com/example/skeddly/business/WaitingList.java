@@ -80,6 +80,10 @@ public class WaitingList extends DatabaseObject {
         this.maxWait = maxWait;
     }
 
+    public boolean isFull() {
+        return getLimit() <= ticketIds.size();
+    }
+
     public ArrayList<String> getTicketIds() {
         return ticketIds;
     }

@@ -81,10 +81,16 @@ public class CreateFragment extends Fragment {
     private byte[] imageBytes;
 
     // Scheduling
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private LocalTime startTime;
-    private LocalTime endTime;
+    private LocalDate eventStartDate;
+    private LocalDate eventEndDate;
+    private LocalTime eventStartTime;
+    private LocalTime eventEndTime;
+
+    // Registration
+    private LocalDate regStartDate;
+    private LocalDate regEndDate;
+    private LocalTime regStartTime;
+    private LocalTime regEndTime;
 
     private LatLng eventLocation;
 
@@ -184,16 +190,32 @@ public class CreateFragment extends Fragment {
         setupDatePicker(binding.textDateStart, new MaterialPickerOnPositiveButtonClickListener<Long>() {
             @Override
             public void onPositiveButtonClick(Long selection) {
-                startDate = LocalDate.ofInstant(Instant.ofEpochMilli(selection), ZoneOffset.UTC);
-                binding.textDateStart.setText(underlineString(startDate.format(dateFormatter)));
+                eventStartDate = LocalDate.ofInstant(Instant.ofEpochMilli(selection), ZoneOffset.UTC);
+                binding.textDateStart.setText(underlineString(eventStartDate.format(dateFormatter)));
                 updateConfirmButton();
             }
         });
         setupDatePicker(binding.textDateFinish, new MaterialPickerOnPositiveButtonClickListener<Long>() {
             @Override
             public void onPositiveButtonClick(Long selection) {
-                endDate = LocalDate.ofInstant(Instant.ofEpochMilli(selection), ZoneOffset.UTC);
-                binding.textDateFinish.setText(underlineString(endDate.format(dateFormatter)));
+                eventEndDate = LocalDate.ofInstant(Instant.ofEpochMilli(selection), ZoneOffset.UTC);
+                binding.textDateFinish.setText(underlineString(eventEndDate.format(dateFormatter)));
+                updateConfirmButton();
+            }
+        });
+        setupDatePicker(binding.textRegDateStart, new MaterialPickerOnPositiveButtonClickListener<Long>() {
+            @Override
+            public void onPositiveButtonClick(Long selection) {
+                regStartDate = LocalDate.ofInstant(Instant.ofEpochMilli(selection), ZoneOffset.UTC);
+                binding.textRegDateStart.setText(underlineString(regStartDate.format(dateFormatter)));
+                updateConfirmButton();
+            }
+        });
+        setupDatePicker(binding.textRegDateFinish, new MaterialPickerOnPositiveButtonClickListener<Long>() {
+            @Override
+            public void onPositiveButtonClick(Long selection) {
+                regEndDate = LocalDate.ofInstant(Instant.ofEpochMilli(selection), ZoneOffset.UTC);
+                binding.textRegDateFinish.setText(underlineString(regEndDate.format(dateFormatter)));
                 updateConfirmButton();
             }
         });
@@ -201,16 +223,32 @@ public class CreateFragment extends Fragment {
         setupTimePicker(binding.textTimeStart, new MaterialTimePickerCallback() {
             @Override
             public void onPositiveButtonClick(MaterialTimePicker picker) {
-                startTime = LocalTime.of(picker.getHour(), picker.getMinute());
-                binding.textTimeStart.setText(underlineString(startTime.format(timeFormatter)));
+                eventStartTime = LocalTime.of(picker.getHour(), picker.getMinute());
+                binding.textTimeStart.setText(underlineString(eventStartTime.format(timeFormatter)));
                 updateConfirmButton();
             }
         });
         setupTimePicker(binding.textTimeFinish, new MaterialTimePickerCallback() {
             @Override
             public void onPositiveButtonClick(MaterialTimePicker picker) {
-                endTime = LocalTime.of(picker.getHour(), picker.getMinute());
-                binding.textTimeFinish.setText(underlineString(endTime.format(timeFormatter)));
+                eventEndTime = LocalTime.of(picker.getHour(), picker.getMinute());
+                binding.textTimeFinish.setText(underlineString(eventEndTime.format(timeFormatter)));
+                updateConfirmButton();
+            }
+        });
+        setupTimePicker(binding.textRegTimeStart, new MaterialTimePickerCallback() {
+            @Override
+            public void onPositiveButtonClick(MaterialTimePicker picker) {
+                regStartTime = LocalTime.of(picker.getHour(), picker.getMinute());
+                binding.textRegTimeStart.setText(underlineString(regStartTime.format(timeFormatter)));
+                updateConfirmButton();
+            }
+        });
+        setupTimePicker(binding.textRegTimeFinish, new MaterialTimePickerCallback() {
+            @Override
+            public void onPositiveButtonClick(MaterialTimePicker picker) {
+                regEndTime = LocalTime.of(picker.getHour(), picker.getMinute());
+                binding.textRegTimeFinish.setText(underlineString(regEndTime.format(timeFormatter)));
                 updateConfirmButton();
             }
         });
@@ -250,6 +288,7 @@ public class CreateFragment extends Fragment {
 
         binding.valueEventTitle.addTextChangedListener(textWatcher);
         binding.valueDescription.addTextChangedListener(textWatcher);
+        binding.editLotteryCriteria.addTextChangedListener(textWatcher);
         binding.editWaitlistLimit.addTextChangedListener(textWatcher);
         binding.editAttendeeLimit.addTextChangedListener(textWatcher);
 
@@ -287,12 +326,14 @@ public class CreateFragment extends Fragment {
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
                 ArrayList<String> selected = result.getStringArrayList("selectedItems");
 
-                selectedItems.clear();
-                selectedItems.addAll(selected);
-                String selectedString = String.join(", ", selectedItems);
+                if (selected != null) {
+                    selectedItems.clear();
+                    selectedItems.addAll(selected);
+                    String selectedString = String.join(", ", selectedItems);
 
-                textView.setText(selectedString);
-                updateConfirmButton();
+                    textView.setText(selectedString);
+                    updateConfirmButton();
+                }
             }
         });
     }
@@ -373,28 +414,52 @@ public class CreateFragment extends Fragment {
      * @return True if the form has been fully filled. False otherwise.
      */
     private boolean isFilledIn() {
-        if (binding.valueEventTitle.length() <= 0 || binding.valueDescription.length() <= 0) {
+        if (binding.valueEventTitle.length() <= 0 || binding.valueDescription.length() <= 0 ||
+                binding.editLotteryCriteria.length() <= 0) {
             return false;
         }
 
         // Schedule must be set
-        if (startTime == null || endTime == null || startDate == null || (isRecurring && endDate == null)) {
+        if (eventStartTime == null || eventEndTime == null || eventStartDate == null || (isRecurring && eventEndDate == null)) {
             return false;
         }
 
         // Start date can't happen after the end date
-        if (isRecurring && startDate.isAfter(endDate)) {
+        if (isRecurring && eventStartDate.isAfter(eventEndDate)) {
             return false;
         }
 
         // Event can't be scheduled in the past
-        LocalDateTime start = LocalDateTime.of(startDate, startTime);
-        if (start.isBefore(LocalDateTime.now())) {
+        LocalDateTime eventStart = LocalDateTime.of(eventStartDate, eventStartTime);
+        if (eventStart.isBefore(LocalDateTime.now())) {
             return false;
         }
 
         // If it's recurring, we need at least one day of the week
         if (isRecurring && daysOfWeek.isEmpty()) {
+            return false;
+        }
+
+        // Registration period must be set
+        if (regStartTime == null || regEndTime == null || regStartDate == null || regEndDate == null) {
+            return false;
+        }
+
+        LocalDateTime regStart = LocalDateTime.of(regStartDate, regStartTime);
+        LocalDateTime regEnd = LocalDateTime.of(regEndDate, regEndTime);
+
+        // Registration start can't happen after registration end
+        if (regStart.isAfter(regEnd)) {
+            return false;
+        }
+
+        // Registration start and end date must happen before event start date
+        if (regEnd.isAfter(eventStart)) {
+            return false;
+        }
+
+        // Registration start and end date can't happen in the past
+        if (regStart.isBefore(LocalDateTime.now())) {
             return false;
         }
 
@@ -435,18 +500,13 @@ public class CreateFragment extends Fragment {
      * @return The event constructed from the form data.
      */
     private Event createEvent() {
-        EventDetail eventDetails = new EventDetail(binding.valueEventTitle.getText().toString(),
-                binding.valueDescription.getText().toString(), categories);
+        EventDetail eventDetails = new EventDetail(
+                binding.valueEventTitle.getText().toString(),
+                binding.valueDescription.getText().toString(),
+                binding.editLotteryCriteria.getText().toString(),
+                categories);
 
-        LocalDateTime start = LocalDateTime.of(startDate, startTime);
-        LocalDate endDate = this.endDate;
-
-        if (!isRecurring) {
-            // Starts and ends on the same day
-            endDate = startDate;
-        }
-
-        LocalDateTime end = LocalDateTime.of(endDate, endTime);
+        LocalDate endDate = isRecurring ? this.eventEndDate : eventStartDate;
 
         // Build the boolean array from the selected days
         Boolean[] eventDays = null;
@@ -459,7 +519,12 @@ public class CreateFragment extends Fragment {
                 eventDays[dayList.indexOf(day)] = true;
             }
         }
-        EventSchedule eventSchedule = new EventSchedule(start, end, eventDays);
+
+        LocalDateTime eventStart = LocalDateTime.of(eventStartDate, eventStartTime);
+        LocalDateTime eventEnd = LocalDateTime.of(endDate, eventEndTime);
+        LocalDateTime regStart = LocalDateTime.of(regStartDate, regStartTime);
+        LocalDateTime regEnd = LocalDateTime.of(regStartDate, regEndTime);
+        EventSchedule eventSchedule = new EventSchedule(eventStart, eventEnd, regStart, regEnd, eventDays);
 
         // Get the list limits
         int attendeeLimit = Integer.parseInt(binding.editAttendeeLimit.getText().toString());
@@ -469,11 +534,9 @@ public class CreateFragment extends Fragment {
             waitListLimit = Integer.parseInt(binding.editWaitlistLimit.getText().toString());
         }
 
-        MainActivity mainActivity = (MainActivity) requireActivity();
-
         return new Event(eventDetails, eventSchedule, eventLocation,
                 Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid(),
-                waitListLimit, attendeeLimit, imageBytes);
+                waitListLimit, attendeeLimit, binding.checkboxGeoLocationReq.isChecked(), imageBytes);
     }
 
     /**
@@ -498,6 +561,11 @@ public class CreateFragment extends Fragment {
         binding.valueEventTitle.setText("");
         binding.valueDescription.setText("");
         binding.textCategorySelector.setText("");
+        binding.textRegDateStart.setText(R.string.text_date);
+        binding.textRegDateFinish.setText(R.string.text_date);
+        binding.textRegTimeStart.setText(R.string.text_time);
+        binding.textRegTimeFinish.setText(R.string.text_time);
+        binding.editLotteryCriteria.setText("");
         binding.editWaitlistLimit.setText("");
         binding.editAttendeeLimit.setText("");
         updateConfirmButton();

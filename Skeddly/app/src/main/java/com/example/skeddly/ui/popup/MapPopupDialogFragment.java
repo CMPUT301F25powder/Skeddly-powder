@@ -228,7 +228,6 @@ public class MapPopupDialogFragment extends DialogFragment implements OnMapReady
      * @return A LatLng object that contains the latitude and longitude of our address
      */
     public LatLng getLocationFromAddress(String strAddress) {
-
         Geocoder coder = new Geocoder(requireContext());
         List<Address> address;
         LatLng p1 = null;

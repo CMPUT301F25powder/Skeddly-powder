@@ -25,7 +25,7 @@ public class Event extends DatabaseObject {
     private String organizer;
     private WaitingList waitingList;
     private ParticipantList participantList;
-
+    private boolean logLocation;
     private String imageb64;
 
     public Event() {
@@ -33,7 +33,7 @@ public class Event extends DatabaseObject {
     }
 
     public Event(EventDetail eventDetails, EventSchedule eventSchedule, LatLng location,
-                 String organizer, int waitingListLimit, int participantListLimit, byte[] image) {
+                 String organizer, int waitingListLimit, int participantListLimit, boolean logLocation, byte[] image) {
         this.eventDetails = eventDetails;
         this.eventSchedule = eventSchedule;
         this.location = new CustomLocation(location.longitude, location.latitude);
@@ -41,12 +41,13 @@ public class Event extends DatabaseObject {
         this.waitingList = new WaitingList(waitingListLimit);
         this.participantList = new ParticipantList(participantListLimit);
 
+        this.logLocation = logLocation;
         this.imageb64 = Base64.getEncoder().encodeToString(image);
     }
 
     public Event(EventDetail eventDetails, EventSchedule eventSchedule, LatLng location,
-                 String organizer, int participantListLimit, byte[] image) {
-        this(eventDetails, eventSchedule, location, organizer, 0, participantListLimit, image);
+                 String organizer, int participantListLimit, boolean logLocation, byte[] image) {
+        this(eventDetails, eventSchedule, location, organizer, 0, participantListLimit, logLocation, image);
     }
 
     public EventDetail getEventDetails() {
@@ -97,6 +98,14 @@ public class Event extends DatabaseObject {
         this.participantList = participantList;
     }
 
+    public boolean getLogLocation() {
+        return logLocation;
+    }
+
+    public void setLogLocation(boolean logLocation) {
+        this.logLocation = logLocation;
+    }
+
     public String getImageb64() {
         return imageb64;
     }
@@ -105,14 +114,16 @@ public class Event extends DatabaseObject {
         this.imageb64 = imageb64;
     }
 
+    public boolean isJoinable() {
+        return !waitingList.isFull() && !eventSchedule.isRegistrationOver();
+    }
+
     /**
      * Handles the logic for a user joining the event's waitlist.
      * @param dbHandler The database handler to interact with Firebase.
      * @param userId The ID of the user who is joining.
      */
-    public void join(DatabaseHandler dbHandler, String userId) {
-        CustomLocation location = null; // Location is not implemented yet
-
+    public void join(DatabaseHandler dbHandler, String userId, CustomLocation location) {
         // Ensure applicants object and list exist to prevent NullPointerException
         if (this.getWaitingList() == null) {
             this.setWaitingList(new WaitingList());
