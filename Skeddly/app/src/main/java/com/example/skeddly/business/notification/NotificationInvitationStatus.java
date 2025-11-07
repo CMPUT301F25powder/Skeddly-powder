@@ -1,4 +1,4 @@
-package com.example.skeddly.business;
+package com.example.skeddly.business.notification;
 
 /**
  * Defines the possible states of an invitation notification.

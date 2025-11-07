@@ -13,8 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.skeddly.R;
-import com.example.skeddly.business.Notification;
-import com.example.skeddly.business.user.User;
+import com.example.skeddly.business.notification.Notification;
 
 import java.util.ArrayList;
 import java.util.List;

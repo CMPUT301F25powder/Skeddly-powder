@@ -13,12 +13,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.example.skeddly.business.Notification;
+import com.example.skeddly.business.notification.Notification;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
-import java.util.List;
 
 /**
  * This class represents an event.

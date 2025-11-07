@@ -1,4 +1,4 @@
-package com.example.skeddly.business;
+package com.example.skeddly.business.notification;
 
 import com.example.skeddly.business.database.DatabaseObject;
 

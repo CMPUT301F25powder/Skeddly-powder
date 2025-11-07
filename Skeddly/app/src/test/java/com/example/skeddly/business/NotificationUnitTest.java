@@ -4,6 +4,10 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import com.example.skeddly.business.notification.Notification;
+import com.example.skeddly.business.notification.NotificationInvitationStatus;
+import com.example.skeddly.business.notification.NotificationType;
+
 import java.util.UUID;
 
 /**

@@ -15,9 +15,9 @@ import androidx.fragment.app.Fragment;
 
 import com.example.skeddly.MainActivity;
 import com.example.skeddly.R;
-import com.example.skeddly.business.Notification;
+import com.example.skeddly.business.notification.Notification;
 import com.example.skeddly.business.database.DatabaseObjects;
-import com.example.skeddly.business.NotificationType;
+import com.example.skeddly.business.notification.NotificationType;
 import com.example.skeddly.business.user.User;
 import com.example.skeddly.databinding.InboxFragmentBinding;
 import com.example.skeddly.ui.adapter.InboxAdapter;

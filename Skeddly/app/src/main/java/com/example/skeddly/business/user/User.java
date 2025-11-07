@@ -2,7 +2,7 @@ package com.example.skeddly.business.user;
 
 import android.annotation.SuppressLint;
 
-import com.example.skeddly.business.Notification;
+import com.example.skeddly.business.notification.Notification;
 import com.example.skeddly.business.database.DatabaseObject;
 import com.example.skeddly.business.database.DatabaseObjects;
 import com.example.skeddly.business.event.Event;
