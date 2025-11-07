@@ -18,18 +18,31 @@ import com.example.skeddly.business.notification.Notification;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * InboxAdapter is an ArrayAdapter of notifications that shows the inbox.
+ */
 public class InboxAdapter extends ArrayAdapter<Notification> implements Filterable {
     private List<Notification> originalNotifications;
     private List<Notification> filteredNotifications;
     private NotificationFilter filter;
     private Context context;
 
+    /**
+     * Constructor for the InboxAdapter.
+     * @param context The context of the app.
+     * @param notifs The notifications that the adapter should show.
+     */
     public InboxAdapter(Context context, ArrayList<Notification> notifs) {
         super(context, 0, notifs);
         this.context = context;
         this.originalNotifications = new ArrayList<>(notifs);
         this.filteredNotifications = new ArrayList<>(notifs);
     }
+
+    /**
+     * Remove a single notification from the adapter.
+     * @param notification The notification to remove from the adapter.
+     */
     public void removeNotification(Notification notification) {
         if (notification == null) {
             return;
@@ -85,6 +98,9 @@ public class InboxAdapter extends ArrayAdapter<Notification> implements Filterab
         return filter;
     }
 
+    /**
+     * Filter notifications using this class.
+     */
     private class NotificationFilter extends Filter {
 
         @Override
