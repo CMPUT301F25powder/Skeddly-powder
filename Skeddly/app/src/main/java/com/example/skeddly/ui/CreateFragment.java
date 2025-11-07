@@ -536,7 +536,7 @@ public class CreateFragment extends Fragment {
 
         return new Event(eventDetails, eventSchedule, eventLocation,
                 Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid(),
-                waitListLimit, attendeeLimit, imageBytes);
+                waitListLimit, attendeeLimit, binding.checkboxGeoLocationReq.isChecked(), imageBytes);
     }
 
     /**

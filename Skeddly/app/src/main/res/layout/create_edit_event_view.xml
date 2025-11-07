@@ -365,6 +365,24 @@
                         app:layout_constraintStart_toStartOf="@+id/text_lottery_criteria"
                         app:layout_constraintTop_toBottomOf="@+id/text_lottery_criteria" />
 
+                    <CheckBox
+                        android:id="@+id/checkbox_geo_location_req"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="@id/edit_lottery_criteria"
+                        app:layout_constraintTop_toBottomOf="@id/edit_lottery_criteria"
+                        />
+
+                    <TextView
+                        android:id="@+id/text_geo_location_req"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/text_geo_location_req"
+                        app:layout_constraintStart_toEndOf="@id/checkbox_geo_location_req"
+                        app:layout_constraintTop_toTopOf="@id/checkbox_geo_location_req"
+                        app:layout_constraintBottom_toBottomOf="@id/checkbox_geo_location_req"
+                        />
+
                     <TextView
                         android:id="@+id/label_waitlist_limit"
                         android:layout_width="wrap_content"
