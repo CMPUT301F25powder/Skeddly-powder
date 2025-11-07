@@ -92,8 +92,7 @@ public class InboxFragment extends Fragment implements View.OnClickListener {
         // When any button is clicked, update the selection state
         updateButtonSelection(v);
 
-        // 6. Trigger the filter based on which button was clicked
-        // IMPORTANT: Replace with your actual enum types
+        // Trigger the filter based on which button was clicked
         int viewId = v.getId();
         if (viewId == R.id.button_all) {
             inboxAdapter.getFilter().filter("3"); // "3" for all, as in your adapter
