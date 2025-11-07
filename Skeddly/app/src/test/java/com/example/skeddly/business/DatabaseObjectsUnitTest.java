@@ -10,7 +10,13 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * Tests {@link DatabaseObjects} and its functionality.
+ */
 public class DatabaseObjectsUnitTest {
+    /**
+     * Tests if {@link DatabaseObjects#getIds()} produces an accurate {@link java.util.ArrayList} of ids that are {@link String}s.
+     */
     @Test
     public void testDatabaseObjectsIds() {
         DatabaseObjects databaseObjects = new DatabaseObjects();

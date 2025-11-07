@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * Unit tests for the Event, EventDetail, and EventSchedule classes.
+ * Unit tests for the {@link Event}, {@link EventDetail}, and {@link EventSchedule} classes.
  */
 public class EventUnitTest {
 
@@ -25,6 +25,9 @@ public class EventUnitTest {
     private String organizerId = "organizer123";
     private byte[] imageBytes = new byte[]{1, 2, 3};
 
+    /**
+     * Sets up various objects for testing.
+     */
     @Before
     public void setUp() {
         // Setup EventDetail
@@ -55,6 +58,9 @@ public class EventUnitTest {
         assertFalse(futureSchedule.isRegistrationOver());
     }
 
+    /**
+     * Tests the restriction on an event and if a user can join it depending on its status.
+     */
     @Test
     public void testEvent_isJoinable() {
         // Test when joinable
