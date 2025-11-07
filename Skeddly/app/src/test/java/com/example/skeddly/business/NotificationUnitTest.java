@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
@@ -44,7 +43,7 @@ public class NotificationUnitTest {
         // 2. Verify default boolean and enum values
         assertFalse("Notification should be unread by default", notification.isRead());
         assertEquals("Default status should be PENDING",
-                Notification.invitation_status.PENDING, notification.getStatus());
+                NotificationInvitationStatus.PENDING, notification.getStatus());
     }
 
     /**
@@ -70,11 +69,11 @@ public class NotificationUnitTest {
     }
 
     /**
-     * Verifies that the getter and setter for the notification_type enum work as expected.
+     * Verifies that the getter and setter for the NotificationType enum work as expected.
      */
     @Test
     public void notification_GetAndSetType() {
-        Notification.notification_type testType = Notification.notification_type.MESSAGES;
+        NotificationType testType = NotificationType.MESSAGES;
         notification.setType(testType);
         assertEquals("Getter for Type should return the same enum value set by the setter",
                 testType, notification.getType());
@@ -104,11 +103,11 @@ public class NotificationUnitTest {
     }
 
     /**
-     * Verifies that the getter and setter for the invitation_status enum work as expected.
+     * Verifies that the getter and setter for the NotificationInvitationStatus enum work as expected.
      */
     @Test
     public void notification_GetAndSetStatus() {
-        Notification.invitation_status testStatus = Notification.invitation_status.ACCEPTED;
+        NotificationInvitationStatus testStatus = NotificationInvitationStatus.ACCEPTED;
         notification.setStatus(testStatus);
         assertEquals("Getter for Status should return the same enum value set by the setter",
                 testStatus, notification.getStatus());

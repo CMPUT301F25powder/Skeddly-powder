@@ -2,41 +2,21 @@ package com.example.skeddly.business;
 
 import com.example.skeddly.business.database.DatabaseObject;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 /**
  * Represents a single notification item within the application.
  * This class holds all relevant data for a notification, such as its type, content, and status.
  */
 public class Notification extends DatabaseObject {
-    /**
-     * Defines the different categories a notification can belong to.
-     */
-    public enum notification_type {
-        MESSAGES,
-        REGISTRATION,
-        SYSTEM
-    }
-
-    /**
-     * Defines the possible states of an invitation notification.
-     */
-    public enum invitation_status {
-        ACCEPTED,
-        PENDING,
-        REJECTED
-    }
-
     // Fields for the notification object
     private String title;
     private String message;
     private LocalDateTime timestamp;
-    private notification_type type;
+    private NotificationType type;
     private String eventId; // Used to link to a specific event
     private boolean isRead;
-    private invitation_status status; // Specific to invitation notifications
+    private NotificationInvitationStatus status; // Specific to invitation notifications
 
     /**
      * Default constructor for creating a new Notification.
@@ -45,8 +25,8 @@ public class Notification extends DatabaseObject {
     public Notification() {
 //        this.timestamp = LocalDateTime.now();
         this.isRead = false;
-        this.status = invitation_status.PENDING;
-        this.type = notification_type.MESSAGES;
+        this.status = NotificationInvitationStatus.PENDING;
+        this.type = NotificationType.MESSAGES;
     }
 
     public Notification(String title, String message) {
@@ -105,17 +85,17 @@ public class Notification extends DatabaseObject {
 
     /**
      * Gets the type of the notification.
-     * @return The notification_type enum value.
+     * @return The NotificationType enum value.
      */
-    public notification_type getType() {
+    public NotificationType getType() {
         return type;
     }
 
     /**
      * Sets the type of the notification.
-     * @param type The notification_type enum value to set.
+     * @param type The NotificationType enum value to set.
      */
-    public void setType(notification_type type) {
+    public void setType(NotificationType type) {
         this.type = type;
     }
 
@@ -153,17 +133,17 @@ public class Notification extends DatabaseObject {
 
     /**
      * Gets the status of an invitation notification.
-     * @return The invitation_status enum value.
+     * @return The NotificationInvitationStatus enum value.
      */
-    public invitation_status getStatus() {
+    public NotificationInvitationStatus getStatus() {
         return status;
     }
 
     /**
      * Sets the status for an invitation notification.
-     * @param status The invitation_status enum value to set.
+     * @param status The NotificationInvitationStatus enum value to set.
      */
-    public void setStatus(invitation_status status) {
+    public void setStatus(NotificationInvitationStatus status) {
         this.status = status;
     }
 }

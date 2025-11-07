@@ -17,6 +17,7 @@ import com.example.skeddly.MainActivity;
 import com.example.skeddly.R;
 import com.example.skeddly.business.Notification;
 import com.example.skeddly.business.database.DatabaseObjects;
+import com.example.skeddly.business.NotificationType;
 import com.example.skeddly.business.user.User;
 import com.example.skeddly.databinding.InboxFragmentBinding;
 import com.example.skeddly.ui.adapter.InboxAdapter;
@@ -98,11 +99,11 @@ public class InboxFragment extends Fragment implements View.OnClickListener {
             inboxAdapter.getFilter().filter("3"); // "3" for all, as in your adapter
         } else if (viewId == R.id.button_messages) {
             // Use the ordinal value of your Notification enum
-            inboxAdapter.getFilter().filter(String.valueOf(Notification.notification_type.MESSAGES.ordinal()));
+            inboxAdapter.getFilter().filter(String.valueOf(NotificationType.MESSAGES.ordinal()));
         } else if (viewId == R.id.button_registration) {
-            inboxAdapter.getFilter().filter(String.valueOf(Notification.notification_type.REGISTRATION.ordinal()));
+            inboxAdapter.getFilter().filter(String.valueOf(NotificationType.REGISTRATION.ordinal()));
         } else if (viewId == R.id.button_system) {
-            inboxAdapter.getFilter().filter(String.valueOf(Notification.notification_type.SYSTEM.ordinal()));
+            inboxAdapter.getFilter().filter(String.valueOf(NotificationType.SYSTEM.ordinal()));
         }
     }
 
