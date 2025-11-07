@@ -6,9 +6,9 @@ import java.io.Serializable;
  * A user's notification settings that can be serialized into the DB
  */
 public class NotificationSettings implements Serializable {
-private boolean lotteryStatus;
-private boolean eventUpdate;
-private boolean administrative;
+    private boolean lotteryStatus;
+    private boolean eventUpdate;
+    private boolean administrative;
 
     /**
      * No arg Constructor for the NotificationSettings
@@ -20,48 +20,48 @@ private boolean administrative;
     }
 
     /**
-     * Gets the lottery status
-     * @return The lottery status
+     * Gets whether the user has lottery status notification enabled
+     * @return True if the notifications are enabled. False otherwise.
      */
     public boolean getLotteryStatus() {
         return lotteryStatus;
     }
 
     /**
-     * Sets the lottery status
-     * @param lotteryStatus The lottery status
+     * Sets whether the user has lottery status notification enabled
+     * @param lotteryStatus True if the notifications are enabled. False otherwise.
      */
     public void setLotteryStatus(boolean lotteryStatus) {
         this.lotteryStatus = lotteryStatus;
     }
 
     /**
-     * Gets the event update
-     * @return The event update
+     * Gets whether the user has event update notification enabled
+     * @return True if the notifications are enabled. False otherwise.
      */
     public boolean getEventUpdate() {
         return eventUpdate;
     }
 
     /**
-     * Sets the event update
-     * @param eventUpdate The event update
+     * Sets whether the user has event update notification enabled
+     * @param eventUpdate True if the notifications are enabled. False otherwise.
      */
     public void setEventUpdate(boolean eventUpdate) {
         this.eventUpdate = eventUpdate;
     }
 
     /**
-     * Gets if the user is an administrator
-     * @return The administrative flag
+     * Gets whether the user has administrative notification enabled
+     * @return True if the notifications are enabled. False otherwise.
      */
     public boolean getAdministrative() {
         return administrative;
     }
 
     /**
-     * Sets if the user is an administrator
-     * @param administrative The administrative flag
+     * Sets whether the user has administrative notification enabled
+     * @param administrative True if the notifications are enabled. False otherwise.
      */
     public void setAdministrative(boolean administrative) {
         this.administrative = administrative;
