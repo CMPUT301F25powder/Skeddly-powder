@@ -106,6 +106,10 @@ public class InboxFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    /**
+     * Updates the selected button appearance based on the one that was pressed.
+     * @param selectedButton The button that was pressed.
+     */
     private void updateButtonSelection(View selectedButton) {
         // Loop through all buttons in our list
         for (Button button : filterButtons) {
