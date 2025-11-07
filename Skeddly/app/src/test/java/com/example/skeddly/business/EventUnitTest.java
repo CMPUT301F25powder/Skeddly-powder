@@ -17,7 +17,6 @@ import java.util.Arrays;
  * Unit tests for the {@link Event}, {@link EventDetail}, and {@link EventSchedule} classes.
  */
 public class EventUnitTest {
-
     private Event event;
     private EventDetail eventDetail;
     private EventSchedule eventSchedule;
@@ -47,12 +46,29 @@ public class EventUnitTest {
         event = new Event(eventDetail, eventSchedule, new LatLng(location.getLatitude(), location.getLongitude()), organizerId, 100, 25, true, imageBytes);
     }
 
+    /**
+     * Tests if detection for if registration is over is working
+     * Explicitly tests a scenario where registration should be over
+     * <p>
+     * - {@link EventSchedule#isRegistrationOver()} must be true
+     * @see EventSchedule
+     */
     @Test
-    public void testEventSchedule_RegistrationOver() {
+    public void testEventSchedule_isRegistrationOver() {
         LocalDateTime past = LocalDateTime.now().minusDays(1);
         EventSchedule pastSchedule = new EventSchedule(past, past, past.minusDays(2), past.minusDays(1));
         assertTrue(pastSchedule.isRegistrationOver());
+    }
 
+    /**
+     * Tests if detection for if registration is over is working
+     * Explicitly tests a scenario where registration should NOT be over yet
+     * <p>
+     * - {@link EventSchedule#isRegistrationOver()} must be false
+     * @see EventSchedule
+     */
+    @Test
+    public void testEventSchedule_isRegistrationNotOver() {
         LocalDateTime future = LocalDateTime.now().plusDays(1);
         EventSchedule futureSchedule = new EventSchedule(future, future, future.minusDays(1), future);
         assertFalse(futureSchedule.isRegistrationOver());
