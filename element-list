@@ -1,0 +1,11 @@
+com.example.skeddly
+com.example.skeddly.business
+com.example.skeddly.business.database
+com.example.skeddly.business.event
+com.example.skeddly.business.location
+com.example.skeddly.business.notification
+com.example.skeddly.business.user
+com.example.skeddly.ui
+com.example.skeddly.ui.adapter
+com.example.skeddly.ui.popup
+com.example.skeddly.utilities
