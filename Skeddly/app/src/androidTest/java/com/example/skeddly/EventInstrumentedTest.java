@@ -40,4 +40,13 @@ public class EventInstrumentedTest extends BaseTest {
 
         onView(withId(R.id.main_content_card)).check(matches(isDisplayed()));
     }
+
+    @Test
+    public void testViewEventQRCode() {
+        testViewEvent();
+
+        onView(withId(R.id.button_qr_code)).check(matches(isDisplayed())).perform(click());
+
+        onView(withId(R.id.qr_popup)).check(matches(isDisplayed()));
+    }
 }
