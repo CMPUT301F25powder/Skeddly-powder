@@ -18,8 +18,14 @@ import com.example.skeddly.utilities.BaseTest;
 
 import org.junit.Test;
 
+/**
+ * Tests {@link Event} related UI elements.
+ */
 @LargeTest
 public class EventInstrumentedTest extends BaseTest {
+    /**
+     * Tests if the content card with information about an {@link Event} is properly displayed.
+     */
     @Test
     public void testViewEvent() {
         onView(withId(R.id.main)).check(matches(isDisplayed()));

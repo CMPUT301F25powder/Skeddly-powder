@@ -88,6 +88,9 @@ public class UserInstrumentedTest extends BaseTest {
         });
     }
 
+    /**
+     * Tests if the {@link User} is properly deleted.
+     */
     @Test
     public void testDeleteUser() {
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
@@ -102,6 +105,9 @@ public class UserInstrumentedTest extends BaseTest {
         });
     }
 
+    /**
+     * Tests if the user page appears when clicking on the navbar.
+     */
     @Test
     public void testViewUserPage() {
         onView(withId(R.id.main)).check(matches(isDisplayed()));
