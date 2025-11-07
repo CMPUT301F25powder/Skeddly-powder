@@ -41,6 +41,7 @@ public class HomeFragment extends Fragment {
     private DatabaseHandler databaseHandler;
     private EventAdapter eventAdapter;
     private SimpleCursorAdapter simpleCursorAdapter;
+    private final String EVENT_NAME_SUGGESTION_ID = "eventName";
 
     @Nullable
     @Override
@@ -61,11 +62,17 @@ public class HomeFragment extends Fragment {
         // Fetch events from firebase
         fetchEvents();
 
-        final String[] from = new String[] {"eventName"};
+        initializeSearchBar(root.getContext());
+
+        return root;
+    }
+
+    private void initializeSearchBar(Context context) {
+        final String[] from = new String[] {EVENT_NAME_SUGGESTION_ID};
         final int[] to = new int[] {android.R.id.text1};
 
         SearchView searchBar = binding.searchEvents;
-        simpleCursorAdapter = new SimpleCursorAdapter(root.getContext(), android.R.layout.simple_list_item_1, null, from, to, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+        simpleCursorAdapter = new SimpleCursorAdapter(context, android.R.layout.simple_list_item_1, null, from, to, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 
         searchBar.setSuggestionsAdapter(simpleCursorAdapter);
 
@@ -87,9 +94,7 @@ public class HomeFragment extends Fragment {
         searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextChange(String newText) {
-                Log.w("NEW TEXT", newText);
-
-                if (Objects.equals(newText, "")) {
+                if (newText.isBlank()) {
                     fetchEvents();
                 } else {
                     populateAdapter(newText);
@@ -107,8 +112,6 @@ public class HomeFragment extends Fragment {
                 return true;
             }
         });
-
-        return root;
     }
 
     private boolean checkNameSuggestionMatch(String name, String query) {
@@ -124,7 +127,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void populateAdapter(String query) {
-        final MatrixCursor c = new MatrixCursor(new String[]{ BaseColumns._ID, "eventName" });
+        final MatrixCursor c = new MatrixCursor(new String[]{ BaseColumns._ID, EVENT_NAME_SUGGESTION_ID });
         for (int i = 0; i < eventList.size(); i++) {
             Event event = eventList.get(i);
             String eventName = event.getEventDetails().getName();
