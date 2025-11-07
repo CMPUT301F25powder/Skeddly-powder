@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.skeddly.R;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.Ticket;
 import com.example.skeddly.business.database.DatabaseHandler;
@@ -92,10 +93,14 @@ public class ParticipantListFragment extends Fragment {
                     // Set the button listeners to clear the adapter and fetch the correct data.
                     binding.buttonFinalList.setOnClickListener(v -> {
                         participantAdapter.setWaitingList(false);
+                        binding.buttonFinalList.setBackgroundResource(R.drawable.button_select);
+                        binding.buttonWaitingList.setBackgroundResource(R.drawable.button_unselect);
                         fetchAndDisplayTickets(finalTicketIds);
                     });
                     binding.buttonWaitingList.setOnClickListener(v -> {
                         participantAdapter.setWaitingList(true);
+                        binding.buttonWaitingList.setBackgroundResource(R.drawable.button_select);
+                        binding.buttonFinalList.setBackgroundResource(R.drawable.button_unselect);
                         fetchAndDisplayTickets(waitingTicketIds);
                     });
 
