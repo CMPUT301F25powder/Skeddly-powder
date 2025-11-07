@@ -33,8 +33,8 @@
     <string name="ended">Ended</string>
     <string name="event_history">Event History</string>
     <string name="messages">Messages</string>
-    <string name="registration">Registration\n</string>
-    <string name="system">System\n</string>
+    <string name="registration">Registration</string>
+    <string name="system">System</string>
     <string name="event_title_location">Event Title | Location</string>
     <string name="monday_wednesday_9_30_10_00">Monday, Wednesday 9:30-10:00</string>
     <string name="information">Information:</string>

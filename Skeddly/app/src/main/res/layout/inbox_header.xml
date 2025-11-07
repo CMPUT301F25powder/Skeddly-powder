@@ -21,12 +21,11 @@
 
     <LinearLayout
         android:id="@+id/button_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:baselineAligned="false"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
         android:orientation="horizontal"
-        android:padding="0dp"
-        android:textAlignment="center"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,83 +33,58 @@
 
         <Button
             android:id="@+id/button_all"
-            android:layout_width="49dp"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:padding="0dp"
             android:background="@drawable/navy_blue_gradient"
             android:fontFamily="@font/inter_medium"
-            android:gravity="center|center_horizontal|center_vertical|fill_vertical"
-            android:includeFontPadding="false"
-            android:paddingLeft="0dp"
-            android:paddingTop="0dp"
-            android:paddingRight="0dp"
-            android:paddingBottom="0dp"
             android:text="@string/all"
-            android:textAlignment="center"
             android:textAllCaps="false"
             android:textColor="@color/neutral_lighter_off_white"
-            android:textSize="14sp" />
+            android:textSize="13sp" />
 
         <Button
             android:id="@+id/button_messages"
-            android:layout_width="93dp"
-            android:layout_height="33dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_marginStart="7dp"
             android:layout_weight="1"
+            android:padding="0dp"
             android:background="@drawable/button_unselect"
             android:fontFamily="@font/inter_medium"
-            android:gravity="center|center_horizontal|center_vertical|fill_vertical"
-            android:includeFontPadding="false"
-            android:paddingLeft="0dp"
-            android:paddingTop="0dp"
-            android:paddingRight="0dp"
-            android:paddingBottom="0dp"
             android:text="@string/messages"
-            android:textAlignment="center"
             android:textAllCaps="false"
             android:textColor="@color/primary_light_blue"
-            android:textSize="14sp" />
+            android:textSize="13sp" />
 
         <Button
             android:id="@+id/button_registration"
-            android:layout_width="105dp"
-            android:layout_height="33dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_marginStart="7dp"
             android:layout_weight="1"
+            android:padding="0dp"
             android:background="@drawable/button_unselect"
             android:fontFamily="@font/inter_medium"
-            android:gravity="center|center_horizontal|center_vertical|fill_vertical"
-            android:includeFontPadding="false"
-            android:paddingLeft="0dp"
-            android:paddingTop="0dp"
-            android:paddingRight="0dp"
-            android:paddingBottom="0dp"
             android:text="@string/registration"
-            android:textAlignment="center"
             android:textAllCaps="false"
             android:textColor="@color/primary_light_blue"
-            android:textSize="14sp" />
+            android:textSize="13sp" />
 
         <Button
             android:id="@+id/button_system"
-            android:layout_width="75dp"
-            android:layout_height="33dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_marginStart="7dp"
             android:layout_weight="1"
+            android:padding="0dp"
             android:background="@drawable/button_unselect"
             android:fontFamily="@font/inter_medium"
-            android:gravity="center|center_horizontal|center_vertical|fill_vertical"
-            android:includeFontPadding="false"
-            android:paddingLeft="0dp"
-            android:paddingTop="0dp"
-            android:paddingRight="0dp"
-            android:paddingBottom="0dp"
             android:text="@string/system"
-            android:textAlignment="center"
             android:textAllCaps="false"
             android:textColor="@color/primary_light_blue"
-            android:textSize="14sp" />
+            android:textSize="13sp" />
 
     </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
