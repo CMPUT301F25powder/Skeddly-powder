@@ -16,19 +16,19 @@ import com.example.skeddly.MainActivity;
 import com.example.skeddly.business.user.Authenticator;
 import com.example.skeddly.business.user.PersonalInformation;
 import com.example.skeddly.business.user.User;
-import com.example.skeddly.databinding.ProfileFragmentBinding;
+import com.example.skeddly.databinding.FragmentProfileBinding;
 import com.example.skeddly.ui.popup.StandardPopupDialogFragment;
 
 /**
  * Fragment for the profile screen
  */
 public class ProfileFragment extends Fragment {
-    private ProfileFragmentBinding binding;
+    private FragmentProfileBinding binding;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = ProfileFragmentBinding.inflate(inflater, container, false);
+        binding = FragmentProfileBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         MainActivity activity = (MainActivity) requireActivity();

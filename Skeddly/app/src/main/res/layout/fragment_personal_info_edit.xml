@@ -8,7 +8,7 @@
 
     <include
         android:id="@+id/profile_header"
-        layout="@layout/profile_header_fragment"
+        layout="@layout/header_profile"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginBottom="7dp"
-            android:text="@string/full_name"
+            android:text="@string/fragment_personal_info_edit_full_name_prompt"
             android:textColor="@color/neutral_black"
             android:textSize="16sp" />
 
@@ -43,8 +43,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:background="@drawable/form_field_background"
-            android:hint="@string/name"
+            android:background="@drawable/bg_form_field"
+            android:hint="@string/fragment_profile_name"
             android:inputType="textPersonName"
             android:paddingHorizontal="16dp"
             android:paddingVertical="17dp"
@@ -57,7 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginBottom="10dp"
-            android:text="@string/phone_number_text"
+            android:text="@string/fragment_personal_info_edit_phone_number_prompt"
             android:textColor="@color/neutral_black"
             android:textSize="16sp" />
 
@@ -67,8 +67,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:background="@drawable/form_field_background"
-            android:hint="@string/phone_number"
+            android:background="@drawable/bg_form_field"
+            android:hint="@string/fragment_profile_phone_number"
             android:inputType="phone"
             android:paddingHorizontal="16dp"
             android:paddingVertical="17dp"
@@ -81,7 +81,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="3dp"
             android:layout_marginBottom="10dp"
-            android:text="@string/email_text"
+            android:text="@string/fragment_personal_info_edit_email_prompt"
             android:textColor="@color/neutral_black"
             android:textSize="16sp" />
 
@@ -91,8 +91,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:background="@drawable/form_field_background"
-            android:hint="@string/email"
+            android:background="@drawable/bg_form_field"
+            android:hint="@string/fragment_profile_email"
             android:inputType="textEmailAddress"
             android:paddingHorizontal="16dp"
             android:paddingVertical="17dp"
@@ -104,7 +104,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            layout="@layout/confirm_button" />
+            layout="@layout/button_confirm" />
 
 
     </LinearLayout>

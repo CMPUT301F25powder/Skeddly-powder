@@ -13,18 +13,18 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.example.skeddly.R;
-import com.example.skeddly.databinding.ToolsFragmentBinding;
+import com.example.skeddly.databinding.FragmentToolsBinding;
 
 /**
  * Fragment for the tools screen
  */
 public class ToolsFragment extends Fragment {
-    private ToolsFragmentBinding binding;
+    private FragmentToolsBinding binding;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = ToolsFragmentBinding.inflate(inflater, container, false);
+        binding = FragmentToolsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         ConstraintLayout testFragmentButton = binding.testFragmentButton;
@@ -33,7 +33,7 @@ public class ToolsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 NavController navController = Navigation.findNavController(view);
-                navController.navigate(R.id.navigation_tools_to_test);
+                navController.navigate(R.id.action_navigation_tools_to_test);
             }
         });
 

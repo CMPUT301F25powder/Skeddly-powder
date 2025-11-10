@@ -16,7 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.skeddly.R;
-import com.example.skeddly.databinding.PopupGenericBinding;
+import com.example.skeddly.databinding.DialogGenericBinding;
 
 
 /**
@@ -52,8 +52,8 @@ public class StandardPopupDialogFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout to use as a dialog or embedded fragment.
-        View view = inflater.inflate(R.layout.popup_generic, container, false);
-        PopupGenericBinding binding = PopupGenericBinding.bind(view);
+        View view = inflater.inflate(R.layout.dialog_generic, container, false);
+        DialogGenericBinding binding = DialogGenericBinding.bind(view);
 
         TextView textTitle = binding.textPopupTitle;
         TextView textContent = binding.textPopupContents;

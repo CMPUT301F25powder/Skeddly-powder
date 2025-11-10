@@ -9,18 +9,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.skeddly.databinding.EventHistoryFragmentBinding;
+import com.example.skeddly.databinding.FragmentEventHistoryBinding;
 
 /**
  * Fragment for the event history screen
  */
 public class EventHistoryFragment extends Fragment {
-    private EventHistoryFragmentBinding binding;
+    private FragmentEventHistoryBinding binding;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = EventHistoryFragmentBinding.inflate(inflater, container, false);
+        binding = FragmentEventHistoryBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         return root;

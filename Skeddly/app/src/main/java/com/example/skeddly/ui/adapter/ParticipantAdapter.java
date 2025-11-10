@@ -56,7 +56,7 @@ public class ParticipantAdapter extends ArrayAdapter<Ticket> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.single_entrant_item, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_entrant, parent, false);
         }
 
         // Get components
@@ -79,13 +79,13 @@ public class ParticipantAdapter extends ArrayAdapter<Ticket> {
 
             // Set status
             if (ticket.getStatus() == TicketStatus.CANCELLED) {
-                statusTextView.setBackgroundResource(R.drawable.status_chip_cancelled);
+                statusTextView.setBackgroundResource(R.drawable.chip_status_cancelled);
             }
             else if (ticket.getStatus() == TicketStatus.INVITED){
-                statusTextView.setBackgroundResource(R.drawable.status_chip_invited);
+                statusTextView.setBackgroundResource(R.drawable.chip_status_invited);
             }
             else {
-                statusTextView.setBackgroundResource(R.drawable.status_chip_active);
+                statusTextView.setBackgroundResource(R.drawable.chip_status_accepted);
             }
 
 

@@ -2,7 +2,6 @@ package com.example.skeddly.ui.adapter;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,7 +48,7 @@ public class EventAdapter extends ArrayAdapter<Event> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.single_event_item, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_event, parent, false);
         }
 
         // Get the event at the current position

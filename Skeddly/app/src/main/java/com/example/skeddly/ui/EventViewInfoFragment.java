@@ -2,8 +2,6 @@ package com.example.skeddly.ui;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -14,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -36,7 +33,7 @@ import com.example.skeddly.business.event.EventSchedule;
 import com.example.skeddly.business.location.CustomLocation;
 import com.example.skeddly.business.user.User;
 import com.example.skeddly.business.user.UserLevel;
-import com.example.skeddly.databinding.EventViewAdminBinding;
+import com.example.skeddly.databinding.FragmentEventInfoBinding;
 import com.example.skeddly.ui.adapter.EventAdapter;
 import com.example.skeddly.ui.adapter.RetrieveLocation;
 import com.example.skeddly.ui.popup.QRPopupDialogFragment;
@@ -60,7 +57,7 @@ import java.util.Map;
  * Fragment for the event view info screen
  */
 public class EventViewInfoFragment extends Fragment implements RetrieveLocation {
-    private EventViewAdminBinding binding;
+    private FragmentEventInfoBinding binding;
     private DatabaseHandler dbHandler;
     private String eventId;
     private String userId;
@@ -76,7 +73,7 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = EventViewAdminBinding.inflate(inflater, container, false);
+        binding = FragmentEventInfoBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         // Initialize database handler

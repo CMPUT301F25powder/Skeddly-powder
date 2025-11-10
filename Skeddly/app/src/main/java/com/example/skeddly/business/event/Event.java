@@ -7,13 +7,11 @@ import com.example.skeddly.business.Ticket;
 import com.example.skeddly.business.WaitingList;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.database.DatabaseObject;
-import com.example.skeddly.business.database.SingleListenUpdate;
 import com.example.skeddly.business.location.CustomLocation;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.example.skeddly.business.notification.Notification;
 
 import java.util.ArrayList;
 import java.util.Base64;

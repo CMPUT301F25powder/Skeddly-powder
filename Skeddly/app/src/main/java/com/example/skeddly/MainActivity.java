@@ -14,19 +14,14 @@ import androidx.navigation.NavGraph;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
-import com.example.skeddly.business.database.DatabaseObjects;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
 import com.example.skeddly.business.user.Authenticator;
 import com.example.skeddly.business.database.DatabaseHandler;
-import com.example.skeddly.business.database.SingleListenUpdate;
 import com.example.skeddly.business.user.User;
 import com.example.skeddly.business.user.UserLoaded;
 import com.google.firebase.auth.FirebaseAuth;
@@ -128,15 +123,15 @@ public class MainActivity extends CustomActivity {
         switch (authenticator.getUser().getPrivilegeLevel()) {
             case ENTRANT:
                 navView.inflateMenu(R.menu.bottom_nav_entrant);
-                navGraph = navController.getNavInflater().inflate(R.navigation.entrant_navigation);
+                navGraph = navController.getNavInflater().inflate(R.navigation.navigation_entrant);
                 break;
             case ORGANIZER:
                 navView.inflateMenu(R.menu.bottom_nav_organizer);
-                navGraph = navController.getNavInflater().inflate(R.navigation.organizer_navigation);
+                navGraph = navController.getNavInflater().inflate(R.navigation.navigation_organizer);
                 break;
             case ADMIN:
                 navView.inflateMenu(R.menu.botton_nav_admin);
-                navGraph = navController.getNavInflater().inflate(R.navigation.admin_navigation);
+                navGraph = navController.getNavInflater().inflate(R.navigation.navigation_admin);
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + authenticator.getUser().getPrivilegeLevel());

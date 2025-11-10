@@ -1,7 +1,6 @@
 package com.example.skeddly.ui;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,7 @@ import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.Ticket;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.database.SingleListenUpdate;
-import com.example.skeddly.databinding.EntrantListViewBinding;
+import com.example.skeddly.databinding.FragmentParticipantListBinding;
 import com.example.skeddly.ui.adapter.ParticipantAdapter;
 
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ import java.util.ArrayList;
  */
 public class ParticipantListFragment extends Fragment {
 
-    private EntrantListViewBinding binding;
+    private FragmentParticipantListBinding binding;
     private Event event;
     private DatabaseHandler dbhandler;
     private ArrayList<String> finalTicketIds;
@@ -35,7 +34,7 @@ public class ParticipantListFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = EntrantListViewBinding.inflate(inflater, container, false);
+        binding = FragmentParticipantListBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         // Initialize the ID lists
         finalTicketIds = new ArrayList<>();
@@ -93,14 +92,14 @@ public class ParticipantListFragment extends Fragment {
                     // Set the button listeners to clear the adapter and fetch the correct data.
                     binding.buttonFinalList.setOnClickListener(v -> {
                         participantAdapter.setWaitingList(false);
-                        binding.buttonFinalList.setBackgroundResource(R.drawable.button_select);
-                        binding.buttonWaitingList.setBackgroundResource(R.drawable.button_unselect);
+                        binding.buttonFinalList.setBackgroundResource(R.drawable.btn_select);
+                        binding.buttonWaitingList.setBackgroundResource(R.drawable.btn_unselect);
                         fetchAndDisplayTickets(finalTicketIds);
                     });
                     binding.buttonWaitingList.setOnClickListener(v -> {
                         participantAdapter.setWaitingList(true);
-                        binding.buttonWaitingList.setBackgroundResource(R.drawable.button_select);
-                        binding.buttonFinalList.setBackgroundResource(R.drawable.button_unselect);
+                        binding.buttonWaitingList.setBackgroundResource(R.drawable.btn_select);
+                        binding.buttonFinalList.setBackgroundResource(R.drawable.btn_unselect);
                         fetchAndDisplayTickets(waitingTicketIds);
                     });
 

@@ -32,7 +32,7 @@ import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.event.EventDetail;
 import com.example.skeddly.business.event.EventSchedule;
-import com.example.skeddly.databinding.CreateEditEventViewBinding;
+import com.example.skeddly.databinding.FragmentCreateEditBinding;
 import com.example.skeddly.ui.popup.CategorySelectorDialogFragment;
 import com.example.skeddly.ui.popup.MapPopupDialogFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -71,7 +71,7 @@ interface MaterialTimePickerCallback {
  * Fragment for creating an event
  */
 public class CreateFragment extends Fragment {
-    private CreateEditEventViewBinding binding;
+    private FragmentCreateEditBinding binding;
     private CalendarConstraints calendarConstraints;
     private UnderlineSpan underlineSpan;
 
@@ -111,7 +111,7 @@ public class CreateFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = CreateEditEventViewBinding.inflate(inflater, container, false);
+        binding = FragmentCreateEditBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         // Initialize Variables
@@ -559,18 +559,18 @@ public class CreateFragment extends Fragment {
         binding.eventImage.setImageDrawable(null);
         binding.textEventTitleOverlay.setText(R.string.event_title_location);
         binding.switchRecurrence.setChecked(false);
-        binding.textDateStart.setText(R.string.text_date);
-        binding.textDateFinish.setText(R.string.text_date);
+        binding.textDateStart.setText(R.string.fragment_create_edit_date);
+        binding.textDateFinish.setText(R.string.fragment_create_edit_date);
         binding.textDayOfWeek.setText("");
-        binding.textTimeStart.setText(R.string.text_time);
-        binding.textTimeFinish.setText(R.string.text_time);
+        binding.textTimeStart.setText(R.string.fragment_create_edit_time);
+        binding.textTimeFinish.setText(R.string.fragment_create_edit_time);
         binding.valueEventTitle.setText("");
         binding.valueDescription.setText("");
         binding.textCategorySelector.setText("");
-        binding.textRegDateStart.setText(R.string.text_date);
-        binding.textRegDateFinish.setText(R.string.text_date);
-        binding.textRegTimeStart.setText(R.string.text_time);
-        binding.textRegTimeFinish.setText(R.string.text_time);
+        binding.textRegDateStart.setText(R.string.fragment_create_edit_date);
+        binding.textRegDateFinish.setText(R.string.fragment_create_edit_date);
+        binding.textRegTimeStart.setText(R.string.fragment_create_edit_time);
+        binding.textRegTimeFinish.setText(R.string.fragment_create_edit_time);
         binding.editLotteryCriteria.setText("");
         binding.editWaitlistLimit.setText("");
         binding.editAttendeeLimit.setText("");

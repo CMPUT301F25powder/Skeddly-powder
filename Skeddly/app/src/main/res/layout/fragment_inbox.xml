@@ -7,7 +7,7 @@
 
     <include
         android:id="@+id/inbox_header"
-        layout="@layout/inbox_header" />
+        layout="@layout/header_inbox" />
     <ListView
         android:id="@+id/list_notifications"
         android:layout_width="match_parent"

@@ -3,7 +3,7 @@
     <item>
         <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
             <item
-                android:drawable="@drawable/my_events"
+                android:drawable="@drawable/ic_my_events"
                 android:width="48dp"
                 android:height="48dp"
                 android:top="10dp">

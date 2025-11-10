@@ -21,7 +21,7 @@
             android:layout_height="40dp"
             android:layout_marginStart="24dp"
             android:layout_marginTop="24dp"
-            android:background="@drawable/image_round_style"
+            android:background="@drawable/img_style_round"
             android:src="@drawable/ic_arrow_back"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -63,7 +63,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="32dp"
-            android:background="@drawable/search_round_style"
+            android:background="@drawable/search_style_round"
             android:queryHint="Search for a user"
             android:backgroundTint="@color/neutral_lighter_off_white"
             android:iconifiedByDefault="false"
@@ -88,7 +88,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:background="@drawable/button_select"
+                android:background="@drawable/btn_select"
                 android:text="Waiting List"
                 android:textAllCaps="false"
                 android:textColor="@color/neutral_off_white" />
@@ -98,7 +98,7 @@
                 style="?android:attr/borderlessButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/button_unselect"
+                android:background="@drawable/btn_unselect"
                 android:text="Final List"
                 android:textAllCaps="false"
                 android:textColor="@color/neutral_off_white" />
@@ -115,6 +115,6 @@
         android:divider="@android:color/transparent"
         android:dividerHeight="12dp"
         android:padding="24dp"
-        tools:listitem="@layout/single_entrant_item" />
+        tools:listitem="@layout/item_entrant" />
 
 </LinearLayout>

@@ -55,7 +55,7 @@
             android:id="@+id/text_view_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/status_chip_active"
+            android:background="@drawable/chip_status_accepted"
             android:paddingHorizontal="8dp"
             android:paddingVertical="2dp"
             android:textColor="@color/neutral_lighter_off_white"

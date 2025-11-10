@@ -22,13 +22,13 @@ import com.example.skeddly.business.user.Authenticator;
 import com.example.skeddly.business.user.PersonalInformation;
 import com.example.skeddly.business.user.User;
 import com.example.skeddly.business.user.UserLoaded;
-import com.example.skeddly.databinding.SignUpPageBinding;
+import com.example.skeddly.databinding.ActivitySignupBinding;
 
 /**
  * Signup activity for the application.
  */
 public class SignupActivity extends CustomActivity {
-    private SignUpPageBinding binding;
+    private ActivitySignupBinding binding;
     private User user;
     private EditText fullNameEditText;
     private EditText emailEditText;
@@ -44,7 +44,7 @@ public class SignupActivity extends CustomActivity {
         EdgeToEdge.enable(this);
 
         // Inflate the layout
-        binding = SignUpPageBinding.inflate(getLayoutInflater());
+        binding = ActivitySignupBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         ConstraintLayout mainLayout = binding.signUpPage;
