@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/img_event"
             android:layout_width="match_parent"
             android:layout_height="97dp"
             android:background="@color/neutral_cream_warm"
@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="104dp"
             android:background="@color/neutral_lighter_off_white"
-            app:layout_constraintTop_toBottomOf="@+id/imageView">
+            app:layout_constraintTop_toBottomOf="@+id/img_event">
 
             <TextView
                 android:id="@+id/text_event_name"
@@ -51,7 +51,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/button_view_info"
+                android:id="@+id/btn_view_info"
                 android:layout_width="114dp"
                 android:layout_height="33dp"
                 android:layout_marginStart="15dp"
@@ -62,12 +62,12 @@
                 android:text="@string/event_btn_view_info"
                 android:textAllCaps="false"
                 android:textColor="@color/secondary_dark_purple"
-                app:layout_constraintBottom_toBottomOf="@+id/button_join"
+                app:layout_constraintBottom_toBottomOf="@+id/btn_join"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/button_join" />
+                app:layout_constraintTop_toTopOf="@+id/btn_join" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/button_join"
+                android:id="@+id/btn_join"
                 android:layout_width="78dp"
                 android:layout_height="33dp"
                 android:layout_marginEnd="15dp"
@@ -83,7 +83,7 @@
                 app:layout_constraintEnd_toEndOf="parent" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/button_edit"
+                android:id="@+id/btn_edit"
                 android:layout_width="78dp"
                 android:layout_height="33dp"
                 android:layout_marginEnd="15dp"
@@ -96,7 +96,7 @@
                 android:textAllCaps="false"
                 android:textColor="@color/neutral_lighter_off_white"
                 android:textSize="14sp"
-                app:layout_constraintBottom_toTopOf="@+id/button_join"
+                app:layout_constraintBottom_toTopOf="@+id/btn_join"
                 app:layout_constraintEnd_toEndOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

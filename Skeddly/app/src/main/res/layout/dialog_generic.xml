@@ -8,7 +8,7 @@
     >
 
     <TextView
-        android:id="@+id/text_popup_title"
+        android:id="@+id/text_dialog_title"
         android:background="@drawable/dialog_style_round_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
         android:id="@+id/text_popup_contents"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/text_popup_title"
+        app:layout_constraintTop_toBottomOf="@id/text_dialog_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:text="@string/dialog_contents"
@@ -45,21 +45,21 @@
         android:layout_marginTop="20dp">
 
         <Button
-            android:id="@+id/button_cancel"
+            android:id="@+id/btn_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/button_confirm"
+            app:layout_constraintEnd_toStartOf="@id/btn_confirm"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:text="@string/btn_cancel"
             android:layout_margin="20dp"/>
 
         <Button
-            android:id="@+id/button_confirm"
+            android:id="@+id/btn_confirm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/button_cancel"
+            app:layout_constraintStart_toEndOf="@id/btn_cancel"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

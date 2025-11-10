@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <include
-        android:id="@+id/include"
+        android:id="@+id/header_tools"
         layout="@layout/header_tools"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -18,7 +18,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include">
+        app:layout_constraintTop_toBottomOf="@+id/header_tools">
 
         <View
             android:id="@+id/profile_info_divider2"
@@ -28,10 +28,10 @@
             android:background="@color/primary_light_blue"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/button" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_event_history" />
 
         <android.widget.Button
-            android:id="@+id/button"
+            android:id="@+id/btn_event_history"
             android:layout_width="0dp"
             android:layout_height="97dp"
             android:background="@drawable/btn_event_history"
@@ -54,13 +54,13 @@
             app:layout_constraintTop_toBottomOf="@+id/profile_info_divider2">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/user_search_button"
+                android:id="@+id/btn_search_user"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/image_gallery_button">
+                app:layout_constraintTop_toBottomOf="@+id/btn_img_gallery">
 
                 <ImageView
                     android:id="@+id/arrow1"
@@ -94,7 +94,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/my_events_button"
+                android:id="@+id/btn_my_events"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -133,13 +133,13 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/image_gallery_button"
+                android:id="@+id/btn_img_gallery"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/my_events_button">
+                app:layout_constraintTop_toBottomOf="@+id/btn_my_events">
 
                 <ImageView
                     android:id="@+id/arrow3"
@@ -172,13 +172,13 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/notification_logs_button"
+                android:id="@+id/btn_log_notification"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/user_search_button">
+                app:layout_constraintTop_toBottomOf="@+id/btn_search_user">
 
                 <ImageView
                     android:id="@+id/arrow4"
@@ -211,13 +211,13 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/test_fragment_button"
+                android:id="@+id/btn_fragment_test"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/notification_logs_button">
+                app:layout_constraintTop_toBottomOf="@+id/btn_log_notification">
 
                 <ImageView
                     android:id="@+id/arrow5"

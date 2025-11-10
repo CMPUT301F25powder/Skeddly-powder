@@ -35,11 +35,11 @@ public class ProfileFragment extends Fragment {
         Authenticator authenticator = activity.getAuthenticator();
         User user = activity.getUser();
 
-        TextView profileName = binding.include.profileName;
-        TextView profileEmail = binding.include.profileEmail;
-        TextView profilePhone = binding.include.profilePhone;
+        TextView profileName = binding.headerProfile.profileName;
+        TextView profileEmail = binding.headerProfile.profileEmail;
+        TextView profilePhone = binding.headerProfile.profilePhone;
 
-        ConstraintLayout deleteAccountButton = binding.deleteAccountButton;
+        ConstraintLayout deleteAccountButton = binding.btnDeleteAccount;
 
         PersonalInformation userInformation = user.getPersonalInformation();
 

@@ -16,7 +16,7 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <ImageButton
-            android:id="@+id/button_back"
+            android:id="@+id/btn_back"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginStart="16dp"
@@ -36,10 +36,10 @@
             android:textColor="@color/neutral_lighter_off_white"
             android:textSize="24sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/button_back"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_back"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/button_back" />
+            app:layout_constraintTop_toTopOf="@+id/btn_back" />
 
         <LinearLayout
             android:id="@+id/filter_bar"
@@ -47,12 +47,12 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@id/button_back"
+            app:layout_constraintTop_toBottomOf="@id/btn_back"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
             <Button
-                android:id="@+id/button_all"
+                android:id="@+id/btn_all"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="wrap_content"
                 android:layout_height="38dp"
@@ -63,7 +63,7 @@
                 android:textSize="14sp" />
 
             <Button
-                android:id="@+id/button_ongoing"
+                android:id="@+id/btn_ongoing"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="wrap_content"
                 android:layout_height="38dp"
@@ -75,7 +75,7 @@
                 android:textSize="14sp" />
 
             <Button
-                android:id="@+id/button_closed"
+                android:id="@+id/btn_closed"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="wrap_content"
                 android:layout_height="38dp"
@@ -87,7 +87,7 @@
                 android:textSize="14sp" />
 
             <Button
-                android:id="@+id/button_ended"
+                android:id="@+id/btn_ended"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="wrap_content"
                 android:layout_height="38dp"

@@ -58,11 +58,11 @@ public class SignupActivity extends CustomActivity {
             return insets;
         });
 
-        fullNameEditText = binding.fullNameSignUpText;
-        emailEditText = binding.emailSignUpText;
-        EditText phoneNumberEditText = binding.phoneNumberSignUpText;
+        fullNameEditText = binding.textSignUpFullName;
+        emailEditText = binding.textSignUpEmail;
+        EditText phoneNumberEditText = binding.textSignUpPhoneNumber;
 
-        submitButton = binding.createAccountButton;
+        submitButton = binding.btnAccountCreate;
         toggleSubmitButton();
 
         // See if we were opened by a QR code or special link

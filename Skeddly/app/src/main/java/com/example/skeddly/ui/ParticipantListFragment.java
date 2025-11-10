@@ -47,7 +47,7 @@ public class ParticipantListFragment extends Fragment {
         }
 
         // Set up back button
-        binding.buttonBack.setOnClickListener(v -> {
+        binding.btnBack.setOnClickListener(v -> {
             if (getActivity() != null) {
                 getActivity().onBackPressed();
             }

@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="61dp"
-        android:text="Tools"
+        android:text="@string/nav_tools"
         android:textColor="@color/neutral_lighter_off_white"
         android:textSize="28sp"
         android:textStyle="bold"

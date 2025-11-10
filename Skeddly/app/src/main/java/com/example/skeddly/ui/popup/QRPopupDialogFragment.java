@@ -73,9 +73,9 @@ public class QRPopupDialogFragment extends DialogFragment {
             link = arg.getString("link");
         }
 
-        Button buttonExport = binding.buttonExport;
-        Button buttonClose = binding.buttonClose;
-        ImageView imageQrCode = binding.imageQrCode;
+        Button buttonExport = binding.btnExport;
+        Button buttonClose = binding.btnClose;
+        ImageView imageQrCode = binding.imgQrCode;
 
         // Create QR Code image and set image of imageView
         Log.d("Link", "Given link: " + link);

@@ -119,8 +119,8 @@ public class CreateFragment extends Fragment {
         calendarConstraints = new CalendarConstraints.Builder().setValidator(DateValidatorPointForward.now()).build();
 
         // Hide them because we don't want them here
-        binding.buttonBack.setVisibility(View.INVISIBLE);
-        binding.buttonQrCode.setVisibility(View.INVISIBLE);
+        binding.btnBack.setVisibility(View.INVISIBLE);
+        binding.btnQrCode.setVisibility(View.INVISIBLE);
 
         // Registers a photo picker activity launcher in single-select mode.
         this.pickMedia = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
@@ -145,7 +145,7 @@ public class CreateFragment extends Fragment {
             }
         });
 
-        binding.eventImage.setOnClickListener(new View.OnClickListener() {
+        binding.imgEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Launch the photo picker and let the user choose only images.
@@ -190,8 +190,8 @@ public class CreateFragment extends Fragment {
             }
         });
 
-        setupSelector(binding.textDayOfWeek, dayTitle, dayArray, daysOfWeek);
-        setupSelector(binding.textCategorySelector, categoryTitle, catArray, categories);
+        setupSelector(binding.textDaySelect, dayTitle, dayArray, daysOfWeek);
+        setupSelector(binding.textCategorySelect, categoryTitle, catArray, categories);
 
         setupDatePicker(binding.textDateStart, new MaterialPickerOnPositiveButtonClickListener<Long>() {
             @Override
@@ -259,7 +259,7 @@ public class CreateFragment extends Fragment {
             }
         });
 
-        binding.confirmButton.setOnClickListener(new View.OnClickListener() {
+        binding.btnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Event event = createEvent();
@@ -292,8 +292,8 @@ public class CreateFragment extends Fragment {
             }
         };
 
-        binding.valueEventTitle.addTextChangedListener(textWatcher);
-        binding.valueDescription.addTextChangedListener(textWatcher);
+        binding.editEventTitle.addTextChangedListener(textWatcher);
+        binding.editEventDescription.addTextChangedListener(textWatcher);
         binding.editLotteryCriteria.addTextChangedListener(textWatcher);
         binding.editWaitlistLimit.addTextChangedListener(textWatcher);
         binding.editAttendeeLimit.addTextChangedListener(textWatcher);
@@ -392,11 +392,11 @@ public class CreateFragment extends Fragment {
         if (isRecurring) {
             binding.textDateDash.setVisibility(View.VISIBLE);
             binding.textDateFinish.setVisibility(View.VISIBLE);
-            binding.textDayOfWeek.setVisibility(View.VISIBLE);
+            binding.textDaySelect.setVisibility(View.VISIBLE);
         } else {
             binding.textDateDash.setVisibility(View.INVISIBLE);
             binding.textDateFinish.setVisibility(View.INVISIBLE);
-            binding.textDayOfWeek.setVisibility(View.GONE);
+            binding.textDaySelect.setVisibility(View.GONE);
         }
     }
 
@@ -404,7 +404,7 @@ public class CreateFragment extends Fragment {
      * Updates whether the confirm button is enabled or not based on if the form is fully filled.
      */
     private void updateConfirmButton() {
-        Button confirmButton = binding.confirmButton;
+        Button confirmButton = binding.btnConfirm;
 
         if (!isFilledIn()) {
             confirmButton.setAlpha(.5f);
@@ -420,7 +420,7 @@ public class CreateFragment extends Fragment {
      * @return True if the form has been fully filled. False otherwise.
      */
     private boolean isFilledIn() {
-        if (binding.valueEventTitle.length() <= 0 || binding.valueDescription.length() <= 0 ||
+        if (binding.editEventTitle.length() <= 0 || binding.editEventDescription.length() <= 0 ||
                 binding.editLotteryCriteria.length() <= 0) {
             return false;
         }
@@ -507,8 +507,8 @@ public class CreateFragment extends Fragment {
      */
     private Event createEvent() {
         EventDetail eventDetails = new EventDetail(
-                binding.valueEventTitle.getText().toString(),
-                binding.valueDescription.getText().toString(),
+                binding.editEventTitle.getText().toString(),
+                binding.editEventDescription.getText().toString(),
                 binding.editLotteryCriteria.getText().toString(),
                 categories);
 
@@ -549,24 +549,24 @@ public class CreateFragment extends Fragment {
      * Renders the image stored in the byte array as the event image.
      */
     private void updateEventImage() {
-        Glide.with(this).load(imageBytes).into(binding.eventImage);
+        Glide.with(this).load(imageBytes).into(binding.imgEvent);
     }
 
     /**
      * Resets the create event screen after creating an event.
      */
     private void resetCreateScreen() {
-        binding.eventImage.setImageDrawable(null);
+        binding.imgEvent.setImageDrawable(null);
         binding.textEventTitleOverlay.setText(R.string.event_title_location);
         binding.switchRecurrence.setChecked(false);
         binding.textDateStart.setText(R.string.fragment_create_edit_date);
         binding.textDateFinish.setText(R.string.fragment_create_edit_date);
-        binding.textDayOfWeek.setText("");
+        binding.textDaySelect.setText("");
         binding.textTimeStart.setText(R.string.fragment_create_edit_time);
         binding.textTimeFinish.setText(R.string.fragment_create_edit_time);
-        binding.valueEventTitle.setText("");
-        binding.valueDescription.setText("");
-        binding.textCategorySelector.setText("");
+        binding.editEventTitle.setText("");
+        binding.editEventDescription.setText("");
+        binding.textCategorySelect.setText("");
         binding.textRegDateStart.setText(R.string.fragment_create_edit_date);
         binding.textRegDateFinish.setText(R.string.fragment_create_edit_date);
         binding.textRegTimeStart.setText(R.string.fragment_create_edit_time);

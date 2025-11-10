@@ -27,7 +27,7 @@ public class ToolsFragment extends Fragment {
         binding = FragmentToolsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        ConstraintLayout testFragmentButton = binding.testFragmentButton;
+        ConstraintLayout testFragmentButton = binding.btnFragmentTest;
 
         testFragmentButton.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <include
-        android:id="@+id/include"
+        android:id="@+id/header_profile"
         layout="@layout/header_profile"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -18,7 +18,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include">
+        app:layout_constraintTop_toBottomOf="@+id/header_profile">
 
         <View
             android:id="@+id/profile_info_divider2"
@@ -28,10 +28,10 @@
             android:background="@color/primary_light_blue"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/button" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_event_history" />
 
         <android.widget.Button
-            android:id="@+id/button"
+            android:id="@+id/btn_event_history"
             android:layout_width="0dp"
             android:layout_height="97dp"
             android:background="@drawable/btn_event_history"
@@ -54,7 +54,7 @@
             app:layout_constraintTop_toBottomOf="@+id/profile_info_divider2">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/delete_account_button"
+                android:id="@+id/btn_delete_account"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"

@@ -55,11 +55,11 @@ public class EventAdapter extends ArrayAdapter<Event> {
         Event event = getItem(position);
 
         // Find the views in the layout
-        ImageView imageView = convertView.findViewById(R.id.imageView);
+        ImageView imageView = convertView.findViewById(R.id.img_event);
         TextView textEventName = convertView.findViewById(R.id.text_event_name);
-        Button buttonViewInfo = convertView.findViewById(R.id.button_view_info);
-        Button buttonJoin = convertView.findViewById(R.id.button_join);
-        Button buttonEdit = convertView.findViewById(R.id.button_edit);
+        Button buttonViewInfo = convertView.findViewById(R.id.btn_view_info);
+        Button buttonJoin = convertView.findViewById(R.id.btn_join);
+        Button buttonEdit = convertView.findViewById(R.id.btn_edit);
 
         // Populate data
         if (event != null) {

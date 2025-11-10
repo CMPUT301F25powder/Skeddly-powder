@@ -2,10 +2,18 @@
     <string name="app_name">Skeddly</string>
     <string name="app_name_lower">skeddly</string>
 
+    <string name="activity_signup_btn_account_create">Create account</string>
+    <string name="activity_signup_hint_email">Email</string>
+    <string name="activity_signup_hint_full_name">Full name</string>
+    <string name="activity_signup_hint_phone_number">Phone Number</string>
+
     <string name="btn_cancel">Cancel</string>
     <string name="btn_confirm">Confirm</string>
 
     <string name="dialog_contents">Description</string>
+    <string name="dialog_qr_btn_close">Close</string>
+    <string name="dialog_qr_btn_export">Export</string>
+    <string name="dialog_qr_title">QR Code</string>
     <string name="dialog_title">Title</string>
 
     <string name="event_attendee_limit">0/25</string>
@@ -58,6 +66,10 @@
     <string name="fragment_inbox_btn_registration">Registration</string>
     <string name="fragment_inbox_btn_system">System</string>
 
+    <string name="fragment_participant_list_btn_final_list">Final List</string>
+    <string name="fragment_participant_list_btn_waiting_list">Waiting List</string>
+    <string name="fragment_participant_list_title">Participants</string>
+
     <string name="fragment_personal_info_edit_email_prompt">Email:</string>
     <string name="fragment_personal_info_edit_full_name_prompt">Full name:</string>
     <string name="fragment_personal_info_edit_password_confirm_hint">Confirm new password</string>
@@ -82,8 +94,4 @@
 
     <string name="notification_content">Notification information, here is information about the notification yuppers</string>
     <string name="notification_title">Notification</string>
-    <string name="activity_signup_hint_full_name">Full name</string>
-    <string name="activity_signup_hint_email">Email</string>
-    <string name="activity_signup_hint_phone_number">Phone Number</string>
-    <string name="activity_signup_btn_account_create">Create account</string>
 </resources>

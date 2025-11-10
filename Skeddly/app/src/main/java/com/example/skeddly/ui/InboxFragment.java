@@ -56,10 +56,10 @@ public class InboxFragment extends Fragment implements View.OnClickListener {
         // Set event adapter to list view
         inboxList.setAdapter(inboxAdapter);
 
-        Button buttonAll = binding.inboxHeader.buttonAll;
-        Button buttonMessages = binding.inboxHeader.buttonMessages;
-        Button buttonRegistration = binding.inboxHeader.buttonRegistration;
-        Button buttonSystem = binding.inboxHeader.buttonSystem;;
+        Button buttonAll = binding.headerInbox.btnAll;
+        Button buttonMessages = binding.headerInbox.btnMessages;
+        Button buttonRegistration = binding.headerInbox.btnRegistration;
+        Button buttonSystem = binding.headerInbox.btnSystem;;
 
         filterButtons = new ArrayList<>();
         filterButtons.add(buttonAll);
@@ -94,14 +94,14 @@ public class InboxFragment extends Fragment implements View.OnClickListener {
 
         // Trigger the filter based on which button was clicked
         int viewId = v.getId();
-        if (viewId == R.id.button_all) {
+        if (viewId == R.id.btn_all) {
             inboxAdapter.getFilter().filter("3"); // "3" for all, as in your adapter
-        } else if (viewId == R.id.button_messages) {
+        } else if (viewId == R.id.btn_messages) {
             // Use the ordinal value of your Notification enum
             inboxAdapter.getFilter().filter(String.valueOf(NotificationType.MESSAGES.ordinal()));
-        } else if (viewId == R.id.button_registration) {
+        } else if (viewId == R.id.btn_registration) {
             inboxAdapter.getFilter().filter(String.valueOf(NotificationType.REGISTRATION.ordinal()));
-        } else if (viewId == R.id.button_system) {
+        } else if (viewId == R.id.btn_system) {
             inboxAdapter.getFilter().filter(String.valueOf(NotificationType.SYSTEM.ordinal()));
         }
     }

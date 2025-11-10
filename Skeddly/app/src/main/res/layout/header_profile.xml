@@ -10,7 +10,7 @@
 
     <!--  "Profile" Title Text  -->
     <TextView
-        android:id="@+id/profile_title"
+        android:id="@+id/title_profile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
@@ -31,7 +31,7 @@
         android:layout_marginTop="24dp"
         android:background="@drawable/img_style_round_white"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/profile_title" />
+        app:layout_constraintTop_toBottomOf="@id/title_profile" />
 
     <!--  Vector Image for the profile photo  -->
     <ImageView

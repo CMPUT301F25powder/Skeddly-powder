@@ -112,12 +112,12 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
         User currentUser = ((MainActivity) requireActivity()).getUser();
         if (currentUser != null && (isOrganizer || currentUser.getPrivilegeLevel() == UserLevel.ADMIN)) {
             // USER IS ADMIN/ORGANIZER: Show admin buttons, hide join button.
-            binding.adminButtonGroup.setVisibility(View.VISIBLE);
-            binding.buttonJoin.setVisibility(View.GONE);
+            binding.btnGroupAdmin.setVisibility(View.VISIBLE);
+            binding.btnJoin.setVisibility(View.GONE);
         } else {
             // USER IS ENTRANT: Hide admin buttons, show join button.
-            binding.adminButtonGroup.setVisibility(View.GONE);
-            binding.buttonJoin.setVisibility(View.VISIBLE);
+            binding.btnGroupAdmin.setVisibility(View.GONE);
+            binding.btnJoin.setVisibility(View.VISIBLE);
         }
 
         // Fetch data from Firebase if we have a valid ID
@@ -129,7 +129,7 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
         }
 
         // === QR Code shenanigans ===
-        ImageButton buttonQrCode = binding.buttonQrCode;
+        ImageButton buttonQrCode = binding.btnQrCode;
         buttonQrCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -139,7 +139,7 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
         });
 
         // Set up Participant button
-        binding.buttonParticipants.setOnClickListener(v -> {
+        binding.btnParticipants.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
             bundle.putString("eventId", eventId);
             NavController navController = Navigation.findNavController(v);
@@ -147,7 +147,7 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
         });
 
         // Set up the back button to navigate up
-        binding.buttonBack.setOnClickListener(v -> {
+        binding.btnBack.setOnClickListener(v -> {
             NavController navController = Navigation.findNavController(v);
             navController.navigateUp();
         });
@@ -169,7 +169,7 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
                     event.setId(snapshot.getKey());
 
                     // Set button state and on click listener
-                    eventAdapter.updateJoinButtonState(binding.buttonJoin, event, userId, dbHandler);
+                    eventAdapter.updateJoinButtonState(binding.btnJoin, event, userId, dbHandler);
 
                     // Once data is loaded or updated, populate the screen
                     populateUI(event);
@@ -190,7 +190,7 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
      * Populates the UI elements with data from the fetched Event object.
      */
     private void populateUI(Event event) {
-        Glide.with(this).load(Base64.getDecoder().decode(event.getImageb64())).into(binding.eventImage);
+        Glide.with(this).load(Base64.getDecoder().decode(event.getImageb64())).into(binding.imgEvent);
         EventDetail eventDetails = event.getEventDetails();
         EventSchedule eventSchedule = event.getEventSchedule();
 
@@ -205,11 +205,11 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, MMM d, HH:mm");
         LocalDateTime startTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(eventSchedule.getStartTime()), ZoneId.systemDefault());
         LocalDateTime endTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(eventSchedule.getEndTime()), ZoneId.systemDefault());
-        binding.textDayOfWeek.setText(String.format("%s - %s", startTime.format(formatter), endTime.toLocalTime().toString()));
+        binding.textDaySelect.setText(String.format("%s - %s", startTime.format(formatter), endTime.toLocalTime().toString()));
 
         // Set Information Fields
         binding.valueEventTitle.setText(eventDetails.getName());
-        binding.valueDescription.setText(eventDetails.getDescription());
+        binding.valueEventDescription.setText(eventDetails.getDescription());
 
         if (eventDetails.getCategories() != null) {
             binding.valueCategory.setText(String.join(", ", eventDetails.getCategories()));
@@ -241,7 +241,7 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
         }
 
         if (!event.isJoinable()) {
-            binding.buttonJoin.setVisibility(View.GONE);
+            binding.btnJoin.setVisibility(View.GONE);
         }
     }
 

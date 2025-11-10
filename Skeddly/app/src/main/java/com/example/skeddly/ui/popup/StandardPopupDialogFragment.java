@@ -55,7 +55,7 @@ public class StandardPopupDialogFragment extends DialogFragment {
         View view = inflater.inflate(R.layout.dialog_generic, container, false);
         DialogGenericBinding binding = DialogGenericBinding.bind(view);
 
-        TextView textTitle = binding.textPopupTitle;
+        TextView textTitle = binding.textDialogTitle;
         TextView textContent = binding.textPopupContents;
 
         Bundle args = getArguments();
@@ -66,8 +66,8 @@ public class StandardPopupDialogFragment extends DialogFragment {
             requestKey = args.getString("requestKey");
         }
 
-        Button buttonCancel = binding.buttonCancel;
-        Button buttonConfirm = binding.buttonConfirm;
+        Button buttonCancel = binding.btnCancel;
+        Button buttonConfirm = binding.btnConfirm;
 
         // Default return is false
         result = false;

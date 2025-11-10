@@ -7,7 +7,7 @@
     android:background="@drawable/bg_header_profile">
 
     <TextView
-        android:id="@+id/inbox_title"
+        android:id="@+id/title_inbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="64dp"
@@ -29,10 +29,10 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inbox_title">
+        app:layout_constraintTop_toBottomOf="@+id/title_inbox">
 
         <Button
-            android:id="@+id/button_all"
+            android:id="@+id/btn_all"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -45,7 +45,7 @@
             android:textSize="13sp" />
 
         <Button
-            android:id="@+id/button_messages"
+            android:id="@+id/btn_messages"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginStart="7dp"
@@ -59,7 +59,7 @@
             android:textSize="13sp" />
 
         <Button
-            android:id="@+id/button_registration"
+            android:id="@+id/btn_registration"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginStart="7dp"
@@ -73,7 +73,7 @@
             android:textSize="13sp" />
 
         <Button
-            android:id="@+id/button_system"
+            android:id="@+id/btn_system"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginStart="7dp"

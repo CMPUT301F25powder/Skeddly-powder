@@ -125,7 +125,7 @@ public class MapPopupDialogFragment extends DialogFragment implements OnMapReady
         });
 
         // When confirm, return the LatLng to the fragment
-        Button confirmButton = binding.buttonConfirm;
+        Button confirmButton = binding.btnConfirm;
         confirmButton.setEnabled(false);
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -219,7 +219,7 @@ public class MapPopupDialogFragment extends DialogFragment implements OnMapReady
             // Move the camera to the position
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 18));
 
-            binding.buttonConfirm.setEnabled(true);
+            binding.btnConfirm.setEnabled(true);
         }
 
         result = location;

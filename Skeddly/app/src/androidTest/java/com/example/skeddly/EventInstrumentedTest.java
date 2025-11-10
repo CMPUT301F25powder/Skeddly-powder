@@ -34,7 +34,7 @@ public class EventInstrumentedTest extends BaseTest {
                 .inAdapterView(withId(R.id.list_events))
                 .atPosition(0)
                 .onChildView(withId(R.id.single_event_item))
-                .onChildView(withId(R.id.button_view_info))
+                .onChildView(withId(R.id.btn_view_info))
                 .check(matches(isDisplayed()))
                 .perform(click());
 
@@ -48,7 +48,7 @@ public class EventInstrumentedTest extends BaseTest {
     public void testViewEventQRCode() {
         testViewEvent();
 
-        onView(withId(R.id.button_qr_code)).check(matches(isDisplayed())).perform(click());
+        onView(withId(R.id.btn_qr_code)).check(matches(isDisplayed())).perform(click());
 
         onView(withId(R.id.qr_popup)).check(matches(isDisplayed()));
     }
