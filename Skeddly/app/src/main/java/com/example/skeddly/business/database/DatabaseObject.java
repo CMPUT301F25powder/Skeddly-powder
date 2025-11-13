@@ -1,6 +1,6 @@
 package com.example.skeddly.business.database;
 
-import com.google.firebase.database.Exclude;
+import com.google.firebase.firestore.DocumentId;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -14,6 +14,7 @@ import java.util.stream.Stream;
  * @see DatabaseHandler
  */
 public class DatabaseObject implements Serializable {
+    @DocumentId
     private String id;
 
     /**
@@ -27,17 +28,14 @@ public class DatabaseObject implements Serializable {
      * Gets the ID of the object
      * @return A string of the id of the object
      */
-    @Exclude
     public String getId() {
         return id;
     }
 
     /**
      * Sets the ID of the object
-     * @param id The new ID
      */
-    @Exclude
-    public void setId(String id) {
+    protected void setId(String id) {
         this.id = id;
     }
 

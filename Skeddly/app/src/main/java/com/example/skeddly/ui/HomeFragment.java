@@ -58,7 +58,7 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
         View root = binding.getRoot();
 
         // Initialize DatabaseHandler and list of events
-        databaseHandler = new DatabaseHandler();
+        databaseHandler = DatabaseHandler.getInstance();
         eventList = new ArrayList<>();
 
         // Initialize event adapter

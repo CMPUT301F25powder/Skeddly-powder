@@ -18,6 +18,7 @@ import com.example.skeddly.business.user.PersonalInformation;
 import com.example.skeddly.business.user.User;
 import com.example.skeddly.databinding.FragmentProfileBinding;
 import com.example.skeddly.ui.popup.StandardPopupDialogFragment;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 /**
  * Fragment for the profile screen
@@ -67,9 +68,13 @@ public class ProfileFragment extends Fragment {
                 boolean confirmation = result.getBoolean("buttonChoice");
 
                 if (confirmation) {
-                    authenticator.deleteUser();
-                    MainActivity mainActivity = (MainActivity) requireActivity();
-                    mainActivity.switchToSignup();
+                    authenticator.deleteUser().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            MainActivity mainActivity = (MainActivity) requireActivity();
+                            mainActivity.switchToSignup();
+                        }
+                    });
                 }
             }
         });

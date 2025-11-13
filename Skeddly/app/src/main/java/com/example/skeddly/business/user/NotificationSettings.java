@@ -1,11 +1,9 @@
 package com.example.skeddly.business.user;
 
-import java.io.Serializable;
-
 /**
  * A user's notification settings that can be serialized into the DB
  */
-public class NotificationSettings implements Serializable {
+public class NotificationSettings {
     private boolean lotteryStatus;
     private boolean eventUpdate;
     private boolean administrative;
@@ -14,9 +12,9 @@ public class NotificationSettings implements Serializable {
      * No arg Constructor for the NotificationSettings
      */
     public NotificationSettings() {
-        this.lotteryStatus = false;
-        this.eventUpdate = false;
-        this.administrative = false;
+        this.lotteryStatus = true;
+        this.eventUpdate = true;
+        this.administrative = true;
     }
 
     /**

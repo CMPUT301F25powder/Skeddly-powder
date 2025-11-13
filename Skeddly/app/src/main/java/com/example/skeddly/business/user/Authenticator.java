@@ -1,132 +1,104 @@
 package com.example.skeddly.business.user;
 
-import android.content.Context;
-import android.provider.Settings;
-
 import androidx.annotation.NonNull;
 
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.UUID;
 
 /**
- * Handles the authentication of a user
+ * Handles the authentication of a user. Singleton
  */
 public class Authenticator {
-    private String androidId;
+    private static Authenticator instance;
     private User user;
-    private FirebaseAuth mAuth;
-    private DatabaseHandler databaseHandler;
-    private boolean showSignUp;
-    UserLoaded callback;
+    private final FirebaseAuth mAuth;
+    private final DatabaseHandler databaseHandler;
 
     /**
      * Constructor for the Authenticator
-     * @param context The app context
-     * @param databaseHandler The database handler
      */
-    public Authenticator(Context context, DatabaseHandler databaseHandler) {
-        this.databaseHandler = databaseHandler;
+    protected Authenticator() {
+        this.databaseHandler = DatabaseHandler.getInstance();
         this.mAuth = FirebaseAuth.getInstance();
-        this.androidId = Settings.Secure.getString(context.getContentResolver(),Settings.Secure.ANDROID_ID);
-        this.showSignUp = true;
+    }
 
-        String emailUUID = String.valueOf(UUID.nameUUIDFromBytes(androidId.getBytes()));
-        String emailGen = emailUUID + "@skeddly.com";
+    public static Authenticator getInstance() {
+        if (instance == null) {
+            instance = new Authenticator();
+        }
 
-        mAuth.signInWithEmailAndPassword(emailGen, androidId).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (!task.isSuccessful()) {
-                    showSignUp = true;
-                    // Try to sign up user - associated with device ID
-                    mAuth.createUserWithEmailAndPassword(emailGen, androidId).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            // If sign up fails, usually because there is already a user made, then sign in
-                            if (task.isSuccessful()) {
-                                createAndTieUser();
-                            }
-                        }
-                    });
-                } else {
-                    showSignUp = false;
-                    createAndTieUser();
-                }
-            }
-        });
+        return instance;
     }
 
     /**
      * Creates a user object based on what is in the DB and waits for it to load
      */
-    private void createAndTieUser() {
+    private void createAndTieUser(UserLoaded callback) {
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        this.databaseHandler.getUsersPath().child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+        if (currentUser == null) {
+            throw new RuntimeException();
+        }
+
+        databaseHandler.getUsersPath().document(currentUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                // Create a blank user if there is no user in DB
-                // Use DB user if there is a user in DB
-                if (!dataSnapshot.exists()) {
-                    user = new User();
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot result = task.getResult();
+                    DocumentReference userPath = databaseHandler.getUsersPath().document(currentUser.getUid());
 
-                    DatabaseReference currentUserPath = databaseHandler.getUsersPath().child(currentUser.getUid());
+                    if (!result.exists()) {
+                        user = new User(currentUser.getUid());
+                        userPath.set(user);
+                    } else {
+                        user = result.toObject(User.class);
 
-                    currentUserPath.setValue(user);
-                } else {
-                    DatabaseReference userPath = databaseHandler.getUsersPath().child(currentUser.getUid());
-
-                    user = dataSnapshot.getValue(User.class);
-                    try {
-                        databaseHandler.customUnserializer(userPath, user);
-                    } catch (InvocationTargetException | IllegalAccessException e) {
-                        throw new RuntimeException(e);
+                        try {
+                            databaseHandler.customUnserializer(userPath, user);
+                        } catch (InvocationTargetException | IllegalAccessException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
-                }
 
-                user.setId(currentUser.getUid());
-
-                if (!user.getPersonalInformation().isFullyFilled()) {
-                    showSignUp = true;
+                    if (callback != null) {
+                        callback.onUserLoaded(Authenticator.this);
+                    }
+                } else {
+                    throw new RuntimeException();
                 }
-
-                if (callback != null) {
-                    callback.onUserLoaded(user, isShowSignUp());
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                throw databaseError.toException();
             }
         });
     }
 
-    /**
-     * Sets the callback for when the user is loaded
-     * @param callback The callback to set
-     */
-    public void addListenerForUserLoaded(UserLoaded callback) {
-        this.callback = callback;
+    public void signIn(UserLoaded callback) {
+        mAuth.signInAnonymously().addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                throw new RuntimeException();
+            } else {
+                createAndTieUser(callback);
+            }
+        });
     }
 
     /**
      * Deletes the user from the database
      * @see User
      */
-    public void deleteUser() {
-        databaseHandler.getUsersPath().child(user.getId()).removeValue();
-        mAuth.getCurrentUser().delete();
+    public Task<Void> deleteUser() {
+        Task<Void> dbDelTask = databaseHandler.getUsersPath().document(user.getId()).delete();
+        Task<Void> deleteAuthTask = mAuth.getCurrentUser().delete();
+
+        user = null;
+
+        return Tasks.whenAll(dbDelTask, deleteAuthTask);
     }
 
     /**
@@ -134,16 +106,7 @@ public class Authenticator {
      * @return User
      */
     public User getUser() {
-        return this.user;
-    }
-
-    /**
-     * Gets if the user needs to sign up
-     * @see User
-     * @return True if the signup page needs to be shown. False otherwise.
-     */
-    public boolean isShowSignUp() {
-        return showSignUp;
+        return user;
     }
 
     /**
@@ -151,9 +114,7 @@ public class Authenticator {
      * @see User
      */
     public void commitUserChanges() {
-        DatabaseReference userPath = databaseHandler.getUsersPath().child(user.getId());
-
-        userPath.setValue(user);
-        databaseHandler.customSerializer(userPath, user);
+        databaseHandler.getUsersPath().document(user.getId()).set(user);
+        databaseHandler.customSerializer(databaseHandler.getUsersPath().document(user.getId()), user);
     }
 }

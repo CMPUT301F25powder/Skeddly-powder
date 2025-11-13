@@ -26,7 +26,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
 
 import com.bumptech.glide.Glide;
-import com.example.skeddly.MainActivity;
 import com.example.skeddly.R;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.event.Event;
@@ -266,13 +265,8 @@ public class CreateFragment extends Fragment {
                 Toast.makeText(requireContext(), "Event created!", Toast.LENGTH_SHORT).show();
 
                 // Put event in db
-                DatabaseHandler dbHandler = new DatabaseHandler();
-                dbHandler.getEventsPath().child(event.getId()).setValue(event);
-
-                // User owns the event
-                MainActivity mainActivity = (MainActivity) requireActivity();
-                mainActivity.getUser().addOwnedEvent(event);
-                mainActivity.notifyUserChanged();
+                DatabaseHandler dbHandler = DatabaseHandler.getInstance();
+                dbHandler.getEventsPath().document(event.getId()).set(event);
 
                 // Reset the create event screen
                 resetCreateScreen();
