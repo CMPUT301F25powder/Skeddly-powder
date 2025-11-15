@@ -19,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
@@ -36,6 +37,8 @@ import com.example.skeddly.business.user.UserLevel;
 import com.example.skeddly.databinding.FragmentEventInfoBinding;
 import com.example.skeddly.ui.adapter.EventAdapter;
 import com.example.skeddly.ui.adapter.RetrieveLocation;
+import com.example.skeddly.ui.popup.DrawParticipantsDialogFragment;
+import com.example.skeddly.ui.popup.MapPopupDialogFragment;
 import com.example.skeddly.ui.popup.QRPopupDialogFragment;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -148,6 +151,19 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
             bundle.putString("eventId", eventId);
             NavController navController = Navigation.findNavController(v);
             navController.navigate(R.id.action_event_view_info_to_participant_list, bundle);
+        });
+
+        // Setup draw button
+        binding.btnDraw.setOnClickListener(v -> {
+            DrawParticipantsDialogFragment dpdf = DrawParticipantsDialogFragment.newInstance("drawParticipants");
+            dpdf.show(getChildFragmentManager(), "drawParticipants");
+        });
+
+        getChildFragmentManager().setFragmentResultListener("drawParticipants", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                // TODO
+            }
         });
 
         // Set up the back button to navigate up
