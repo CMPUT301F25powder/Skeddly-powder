@@ -1,19 +1,19 @@
 package com.example.skeddly.business.database;
 
-import com.google.firebase.database.Exclude;
+import com.google.firebase.firestore.DocumentId;
 
-import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.UUID;
 import java.util.stream.Stream;
 
 /**
- * An object that can be serialized into the DB
+ * An object that is stored as a document in the DB.
  * Any values in its fields will be turned into DB keys by the {@link DatabaseHandler}
  * @see DatabaseHandler
  */
-public class DatabaseObject implements Serializable {
+public class DatabaseObject {
+    @DocumentId
     private String id;
 
     /**
@@ -27,7 +27,6 @@ public class DatabaseObject implements Serializable {
      * Gets the ID of the object
      * @return A string of the id of the object
      */
-    @Exclude
     public String getId() {
         return id;
     }
@@ -36,7 +35,6 @@ public class DatabaseObject implements Serializable {
      * Sets the ID of the object
      * @param id The new ID
      */
-    @Exclude
     public void setId(String id) {
         this.id = id;
     }

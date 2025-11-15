@@ -67,7 +67,7 @@ public class ParticipantListFragment extends Fragment {
      * @param eventId The ID of the event to load.
      */
     private void loadEventAndSetupUI(String eventId) {
-        dbhandler.singleListen(dbhandler.getEventsPath().child(eventId),
+        dbhandler.singleListen(dbhandler.getEventsPath().document(eventId),
                 Event.class,
                 (SingleListenUpdate<Event>) receivedEvent -> {
                     if (receivedEvent == null) {
@@ -75,7 +75,6 @@ public class ParticipantListFragment extends Fragment {
                     }
                     // Set event
                     this.event = receivedEvent;
-                    this.event.setId(eventId);
 
                     // Create the adapter with an empty list
                     participantAdapter = new ParticipantAdapter(getContext(), new ArrayList<>(), true, dbhandler, event);
@@ -124,11 +123,10 @@ public class ParticipantListFragment extends Fragment {
 
         // Loop through the IDs and fetch each ticket one by one.
         for (String ticketId : ticketIds) {
-            dbhandler.singleListen(dbhandler.getTicketsPath().child(ticketId),
+            dbhandler.singleListen(dbhandler.getTicketsPath().document(ticketId),
                     Ticket.class,
                     (SingleListenUpdate<Ticket>) ticket -> {
                         if (ticket != null) {
-                            ticket.setId(ticketId);
                             participantAdapter.add(ticket);
                             participantAdapter.notifyDataSetChanged(); // Refresh after each add
                         }

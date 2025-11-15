@@ -1,12 +1,10 @@
 package com.example.skeddly.business.user;
 
-import android.annotation.SuppressLint;
-
-import com.example.skeddly.business.notification.Notification;
 import com.example.skeddly.business.database.DatabaseObject;
 import com.example.skeddly.business.database.DatabaseObjects;
 import com.example.skeddly.business.event.Event;
-import com.google.firebase.database.Exclude;
+import com.example.skeddly.business.notification.Notification;
+import com.google.firebase.firestore.Exclude;
 
 import java.util.ArrayList;
 
@@ -24,7 +22,6 @@ public class User extends DatabaseObject {
     /**
      * Constructor for the User
      */
-    @SuppressLint("HardwareIds")
     public User() {
         this.ownedEvents = new ArrayList<>();
         this.personalInformation = new PersonalInformation();

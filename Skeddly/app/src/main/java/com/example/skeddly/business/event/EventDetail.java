@@ -12,7 +12,7 @@ public class EventDetail {
     private ArrayList<String> categories;
 
     /**
-     * No arg Constructor for EventDetails. Required by Firebase.
+     * No arg Constructor for EventDetails. Required by Firestore.
      */
     public EventDetail() {
 
@@ -54,7 +54,7 @@ public class EventDetail {
 
     /**
      * Sets the name of the event
-     * @param name
+     * @param name The name of the event
      */
     public void setName(String name) {
         this.name = name;

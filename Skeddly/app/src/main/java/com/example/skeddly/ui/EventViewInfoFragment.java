@@ -42,7 +42,10 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 import com.google.android.gms.tasks.CancellationTokenSource;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -63,7 +66,7 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
     private String userId;
     private String organizerId;
     private EventAdapter eventAdapter;
-    private ValueEventListener valueEventListener;
+    private ListenerRegistration eventSnapshotListenerReg;
 
     // Location Stuff
     private FusedLocationProviderClient fusedLocationClient;
@@ -78,6 +81,7 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
 
         // Initialize database handler
         dbHandler = new DatabaseHandler();
+        eventSnapshotListenerReg = null;
 
         // Initialize eventAdapter
         eventAdapter = new EventAdapter(getContext(), new ArrayList<>(), userId, this);
@@ -159,31 +163,23 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
      * Fetches the details for an event from Firebase using its ID.
      */
     private void fetchEventDetails() {
-        // Use addValueEventListener to continuously listen for changes to the event data.
-        this.valueEventListener = new com.google.firebase.database.ValueEventListener() {
+        // Use addSnapshotListener to continuously listen for changes to the event data.
+        eventSnapshotListenerReg = dbHandler.getEventsPath().document(eventId).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
-            public void onDataChange(@NonNull com.google.firebase.database.DataSnapshot snapshot) {
-                Event event = snapshot.getValue(Event.class);
-                if (event != null) {
-                    // Set the ID manually since it's the key of the snapshot
-                    event.setId(snapshot.getKey());
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (error == null && value != null && value.exists()) {
+                    Event event = value.toObject(Event.class);
 
-                    // Set button state and on click listener
-                    eventAdapter.updateJoinButtonState(binding.btnJoin, event, userId, dbHandler);
+                    if (event != null) {
+                        // Set button state and on click listener
+                        eventAdapter.updateJoinButtonState(binding.btnJoin, event, userId, dbHandler);
 
-                    // Once data is loaded or updated, populate the screen
-                    populateUI(event);
-                } else {
-                    Log.e("EventViewInfoFragment", "Event data is null for ID: " + eventId);
+                        // Once data is loaded or updated, populate the screen
+                        populateUI(event);
+                    }
                 }
             }
-
-            @Override
-            public void onCancelled(@NonNull com.google.firebase.database.DatabaseError error) {
-                Log.e("EventViewInfoFragment", "Database error: " + error.getMessage());
-            }
-        };
-        dbHandler.getEventsPath().child(eventId).addValueEventListener(this.valueEventListener);
+        });
     }
 
     /**
@@ -289,5 +285,14 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
         }
 
         return true;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        if (eventSnapshotListenerReg != null) {
+            eventSnapshotListenerReg.remove();
+        }
     }
 }

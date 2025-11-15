@@ -11,13 +11,13 @@ import android.widget.EditText;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.skeddly.business.database.DatabaseHandler;
-import com.example.skeddly.business.database.SingleListenUpdate;
 import com.example.skeddly.business.user.Authenticator;
 import com.example.skeddly.business.user.PersonalInformation;
 import com.example.skeddly.business.user.User;
@@ -27,9 +27,8 @@ import com.example.skeddly.databinding.ActivitySignupBinding;
 /**
  * Signup activity for the application.
  */
-public class SignupActivity extends CustomActivity {
+public class SignupActivity extends AppCompatActivity {
     private ActivitySignupBinding binding;
-    private User user;
     private EditText fullNameEditText;
     private EditText emailEditText;
     private Button submitButton;
@@ -73,21 +72,11 @@ public class SignupActivity extends CustomActivity {
         authenticator.addListenerForUserLoaded(new UserLoaded() {
             @Override
             public void onUserLoaded(User loadedUser, boolean shouldShowSignup) {
-                user = loadedUser;
-
                 if (!shouldShowSignup) {
                     switchToMain();
                 } else {
                     mainLayout.setVisibility(View.VISIBLE);
                 }
-
-                // Listen for any changes to the user itself
-                database.singleListen(database.getUsersPath().child(user.getId()), User.class, new SingleListenUpdate<User>() {
-                    @Override
-                    public void onUpdate(User newValue) {
-                        setUser(newValue);
-                    }
-                });
             }
         });
 
@@ -116,8 +105,7 @@ public class SignupActivity extends CustomActivity {
                 newUserInformation.setEmail(String.valueOf(emailEditText.getText()));
                 newUserInformation.setPhoneNumber(String.valueOf(phoneNumberEditText.getText()));
 
-                user.setPersonalInformation(newUserInformation);
-
+                authenticator.getUser().setPersonalInformation(newUserInformation);
                 authenticator.commitUserChanges();
 
                 switchToMain();
@@ -147,7 +135,6 @@ public class SignupActivity extends CustomActivity {
     private void switchToMain() {
         Intent mainActivity = new Intent(getBaseContext(), MainActivity.class);
         mainActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        mainActivity.putExtra("USER", user);
         mainActivity.putExtra("QR", qrOpenUri);
         startActivity(mainActivity);
         finish();
