@@ -182,6 +182,6 @@ public class MainActivity extends CustomActivity {
         bundle.putString("eventId", event.getId());
         bundle.putString("userId", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
         bundle.putString("organizerId", event.getOrganizer());
-        navController.navigate(R.id.event_view_info, bundle);
+        navController.navigate(R.id.navigation_event_view_info, bundle);
     }
 }
