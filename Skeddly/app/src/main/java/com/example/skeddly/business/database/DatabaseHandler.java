@@ -2,37 +2,43 @@ package com.example.skeddly.business.database;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldPath;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Handles edits and realtime updates to the realtime DB in Firebase
  */
 public class DatabaseHandler {
     final String INTERNAL = "_internal";
-    private DatabaseReference database;
+    private FirebaseFirestore database;
 
     public DatabaseHandler() {
-        this.database = FirebaseDatabase.getInstance().getReference();
+        this.database = FirebaseFirestore.getInstance();
     }
 
     /**
      * Serializes the getter for a field in DB
      * @param name The name of the getter to serialize
      * @return The serialized getter string
-     * @see DatabaseReference
      * @see DatabaseObject
      */
     private String serializeGetterName(String name) {
@@ -66,12 +72,12 @@ public class DatabaseHandler {
 
     /**
      * Serializes a {@link DatabaseObject} into the DB
-     * @param ref The {@link DatabaseReference} to serialize to
+     * @param ref The {@link DocumentReference} to serialize to
      * @param object The {@link DatabaseObject} to serialize
-     * @see DatabaseReference
+     * @see DocumentReference
      * @see DatabaseObject
      */
-    public void customSerializer(DatabaseReference ref, DatabaseObject object) {
+    public void customSerializer(DocumentReference ref, DatabaseObject object) {
         Method [] methods = object.fetchDatabaseObjectRelatedMethods();
 
         for (Method method : methods) {
@@ -86,15 +92,17 @@ public class DatabaseHandler {
             try {
                 DatabaseObjects values = (DatabaseObjects) method.invoke(object);
 
+                ref.update(internalName, null);
+
                 // Handle all values in the DatabaseObjects to serialize
                 for (int i = 0; i < values.size(); i++) {
                     DatabaseObject value = (DatabaseObject) values.get(i);
                     String valueId = value.getId();
 
-                    ref.child(internalName).child(String.valueOf(i)).setValue(valueId);
+                    ref.update(FieldPath.of(internalName, String.valueOf(i)), valueId);
 
                     // Save to the higher level line in the DB
-                    this.database.child(baseName).child(valueId).setValue(value);
+                    this.database.collection(baseName).document(valueId).set(value);
                 }
 
             } catch (IllegalAccessException | InvocationTargetException e) {
@@ -105,12 +113,12 @@ public class DatabaseHandler {
 
     /**
      * Unserializes a {@link DatabaseObject} from the DB
-     * @param ref The {@link DatabaseReference} to unserialize
+     * @param ref The {@link DocumentReference} to unserialize
      * @param object The {@link DatabaseObject} to unserialize
-     * @see DatabaseReference
+     * @see DocumentReference
      * @see DatabaseObject
      */
-    public void customUnserializer(DatabaseReference ref, DatabaseObject object) throws InvocationTargetException, IllegalAccessException {
+    public void customUnserializer(DocumentReference ref, DatabaseObject object) throws InvocationTargetException, IllegalAccessException {
         Method [] methods = object.fetchDatabaseObjectRelatedMethods();
 
         for (Method method : methods) {
@@ -134,11 +142,11 @@ public class DatabaseHandler {
                 };
 
                 // All of the ids that are in the _internal field
-                Task<ArrayList<String>> ownerIdsTask = getNodeChildren(ref.child(internalName));
+                Task<ArrayList<String>> ownerIdsTask = getNodeChildren(ref, internalName);
 
                 // All of the objects related to this DatabaseObject
                 // For example, this would be all Notification objects (that the user is allowed to read)
-                Task<DatabaseObjects<DatabaseObject>> allObjectsTask = getNodeChildren(this.database.child(baseName), (Class<DatabaseObject>) parameter);
+                Task<DatabaseObjects<DatabaseObject>> allObjectsTask = getNodeChildren(this.database.collection(baseName), (Class<DatabaseObject>) parameter);
 
                 Task<List<Object>> allTasks = Tasks.whenAllSuccess(ownerIdsTask, allObjectsTask);
 
@@ -173,19 +181,21 @@ public class DatabaseHandler {
 
     /**
      * Gets the children of a node in the database.
-     * @param ref The database reference of the node
+     * @param ref The {@link DocumentReference} reference of the node
+     * @param internalName The field in the document where all the IDs are stored.
      * @return An asynchronous task that gets an arraylist of strings
+     * @see CollectionReference
      */
-    public Task<ArrayList<String>> getNodeChildren(DatabaseReference ref) {
+    public Task<ArrayList<String>> getNodeChildren(DocumentReference ref, String internalName) {
         return ref.get().continueWith(task -> {
             ArrayList<String> result = new ArrayList<>();
 
             if (task.isSuccessful()) {
-                DataSnapshot dataSnapshot = task.getResult();
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                        result.add(childSnapshot.getValue(String.class));
-                    }
+                DocumentSnapshot documentSnapshot = task.getResult();
+
+                if (documentSnapshot.exists()) {
+                    Map<String, String> ids = (Map<String, String>) documentSnapshot.get(internalName);
+                    result.addAll(Objects.requireNonNull(ids).values());
                 }
             }
 
@@ -195,18 +205,17 @@ public class DatabaseHandler {
 
     /**
      * Gets the children of a node in the database.
-     * @param ref The database reference of the node
+     * @param ref The {@link CollectionReference} of the node that contains the children.
      * @return An asynchronous task that gets an arraylist of database objects
      */
-    public <T extends DatabaseObject> Task<DatabaseObjects<T>> getNodeChildren(DatabaseReference ref, Class<T> classType) {
+    public <T extends DatabaseObject> Task<DatabaseObjects<T>> getNodeChildren(CollectionReference ref, Class<T> classType) {
         return ref.get().continueWith(task -> {
             DatabaseObjects<T> result = new DatabaseObjects<>(classType);
             if (task.isSuccessful()) {
-                DataSnapshot dataSnapshot = task.getResult();
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                        T loadedResult = childSnapshot.getValue(classType);
-                        loadedResult.setId(childSnapshot.getKey());
+                QuerySnapshot querySnapshot = task.getResult();
+                if (!querySnapshot.isEmpty()) {
+                    for (QueryDocumentSnapshot childSnapshot : querySnapshot) {
+                        T loadedResult = childSnapshot.toObject(classType);
 
                         result.add(loadedResult);
                     }
@@ -219,110 +228,102 @@ public class DatabaseHandler {
 
     /**
      * Listens to if a single value is updated in a specific part of the DB
-     * @param ref The {@link DatabaseReference} for the path to watch
+     * @param ref The {@link DocumentReference} for the path to watch
      * @param classType The {@link DatabaseObject} to serialize to (generic)
      * @param callback The SingleListenUpdate to use as a callback for when data is changed
      * @param <T> The {@link DatabaseObject} to serialize to (generic)
-     * @see DatabaseReference
+     * @see DocumentReference
      * @see DatabaseObject
      */
-    public <T extends DatabaseObject> void singleListen(DatabaseReference ref, Class<T> classType, SingleListenUpdate callback) {
-        ref.addValueEventListener(new ValueEventListener() {
+    public <T extends DatabaseObject> ListenerRegistration singleListen(DocumentReference ref, Class<T> classType, SingleListenUpdate<T> callback) {
+        return ref.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                T value = snapshot.getValue(classType);
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    Log.e("DATABASE:SINGLE_LISTEN", error.toString());
+                } else if (value != null && value.exists()) {
+                    T object = value.toObject(classType);
 
-                if (value != null) {
-                    callback.onUpdate(value);
+                    if (object != null) {
+                        callback.onUpdate(object);
+                    }
                 }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("DATABASE:SINGLE_LISTEN", error.toString());
             }
         });
     }
 
     /**
      * Listens to if a group of values are updated in a specific part of the DB
-     * @param ref The {@link DatabaseReference} for the path to watch
+     * @param ref The {@link DocumentReference} for the path to watch
      * @param classType The {@link DatabaseObject} to serialize to (generic)
      * @param callback The SingleListenUpdate to use as a callback for when data is changed
      * @param <T> The {@link DatabaseObject} to serialize to (generic)
-     * @see DatabaseReference
+     * @see DocumentReference
      * @see DatabaseObject
      */
-    public <T extends DatabaseObject> void iterableListen(DatabaseReference ref, Class<T> classType, IterableListenUpdate callback) {
-        ref.addValueEventListener(new ValueEventListener() {
-
+    public <T extends DatabaseObject> ListenerRegistration iterableListen(CollectionReference ref, Class<T> classType, IterableListenUpdate callback) {
+        return ref.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                DatabaseObjects<T> result = new DatabaseObjects<>((Class<T>) DatabaseObject.class);
-                Iterable<DataSnapshot> subSnapshot = snapshot.getChildren();
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    Log.e("DATABASE:ITERABLE_LISTEN", error.toString());
+                } else if (value != null) {
+                    DatabaseObjects<T> result = new DatabaseObjects<>((Class<T>) DatabaseObject.class);
 
-                for (DataSnapshot item : subSnapshot) {
-                    T value = item.getValue(classType);
+                    for (QueryDocumentSnapshot item : value) {
+                        T object = item.toObject(classType);
 
-                    if (value != null) {
-                        value.setId(item.getKey());
-
-                        result.add(value);
+                        result.add(object);
                     }
+
+                    callback.onUpdate(result);
                 }
-
-                callback.onUpdate(result);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("DATABASE:ITERABLE_LISTEN", error.toString());
             }
         });
     }
 
     /**
-     * Returns a {@link DatabaseReference} pointing to users
-     * @return A {@link DatabaseReference} pointing to users
-     * @see DatabaseReference
+     * Returns a {@link CollectionReference} pointing to users
+     * @return A {@link CollectionReference} pointing to users
+     * @see CollectionReference
      */
-    public DatabaseReference getUsersPath() {
-        return database.child("users");
+    public CollectionReference getUsersPath() {
+        return database.collection("users");
     }
 
     /**
-     * Returns a {@link DatabaseReference} pointing to events
-     * @return A {@link DatabaseReference} pointing to events
-     * @see DatabaseReference
+     * Returns a {@link CollectionReference} pointing to events
+     * @return A {@link CollectionReference} pointing to events
+     * @see CollectionReference
      */
-    public DatabaseReference getEventsPath() {
-        return database.child("events");
+    public CollectionReference getEventsPath() {
+        return database.collection("events");
     }
 
     /**
-     * Returns a {@link DatabaseReference} pointing to tickets
-     * @return A {@link DatabaseReference} pointing to tickets
-     * @see DatabaseReference
+     * Returns a {@link CollectionReference} pointing to tickets
+     * @return A {@link CollectionReference} pointing to tickets
+     * @see CollectionReference
      */
-    public DatabaseReference getTicketsPath() {
-        return database.child("tickets");
+    public CollectionReference getTicketsPath() {
+        return database.collection("tickets");
     }
 
     /**
-     * Returns a {@link DatabaseReference} pointing to notifications
-     * @return A {@link DatabaseReference} pointing to notifications
-     * @see DatabaseReference
+     * Returns a {@link CollectionReference} pointing to notifications
+     * @return A {@link CollectionReference} pointing to notifications
+     * @see CollectionReference
      */
-    public DatabaseReference getNotificationsPath() {
-        return database.child("notifications");
+    public CollectionReference getNotificationsPath() {
+        return database.collection("notifications");
     }
 
     /**
-     * Returns a {@link DatabaseReference} pointing to the specified path
-     * @return A {@link DatabaseReference} pointing to the specified path
-     * @see DatabaseReference
+     * Returns a {@link CollectionReference} pointing to the specified path
+     * @return A {@link CollectionReference} pointing to the specified path
+     * @see CollectionReference
      */
-    public DatabaseReference getPath(String path) {
-        return database.child(path);
+    public CollectionReference getPath(String path) {
+        return database.collection(path);
     }
 }

@@ -19,7 +19,7 @@ public class EventSchedule {
     private boolean isRecurring;
 
     /**
-     * No arg Constructor for the EventSchedule
+     * No arg Constructor for the EventSchedule. Required by Firestore.
      */
     public EventSchedule() {
 
