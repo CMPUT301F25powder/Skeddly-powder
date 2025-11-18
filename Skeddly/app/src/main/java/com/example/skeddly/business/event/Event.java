@@ -276,7 +276,7 @@ public class Event extends DatabaseObject {
             return;
         }
 
-        dbHandler.getTicketsPath().whereEqualTo("userId", userId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        dbHandler.getTicketsPath().whereEqualTo("user", userId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful() && !task.getResult().isEmpty()) {

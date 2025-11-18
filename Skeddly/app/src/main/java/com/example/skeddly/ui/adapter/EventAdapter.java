@@ -13,6 +13,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.navigation.Navigation;
 
 import com.bumptech.glide.Glide;
@@ -21,6 +24,7 @@ import com.example.skeddly.business.database.SingleListenUpdate;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.location.CustomLocation;
+import com.example.skeddly.ui.popup.StandardPopupDialogFragment;
 
 import java.util.ArrayList;
 import java.util.Base64;
@@ -126,6 +130,27 @@ public class EventAdapter extends ArrayAdapter<Event> {
                 // User is not on the waitlist
                 buttonJoin.setText("Join");
                 buttonJoin.setOnClickListener(v -> {
+                    // Show pop up to confirm join
+                    showJoinConfirmationPopup(event, dbHandler);
+                });
+            }
+            buttonJoin.setEnabled(true); // Re-enable the button
+        });
+    }
+
+    /**
+     * Shows a confirmation popup before joining an event.
+     * @param event The event to join.
+     * @param dbHandler The database handler.
+     */
+    private void showJoinConfirmationPopup(Event event, DatabaseHandler dbHandler) {
+        if (getContext() instanceof FragmentActivity) {
+            FragmentManager fm = ((FragmentActivity) getContext()).getSupportFragmentManager();
+            String requestKey = "joinConfirm-" + event.getId();
+
+            fm.setFragmentResultListener(requestKey, (LifecycleOwner) getContext(), (reqKey, bundle) -> {
+                boolean result = bundle.getBoolean("buttonChoice");
+                if (result) {
                     Toast.makeText(getContext(), "Joining " + event.getEventDetails().getName(), Toast.LENGTH_SHORT).show();
 
                     if (event.getLogLocation()) {
@@ -138,9 +163,10 @@ public class EventAdapter extends ArrayAdapter<Event> {
                     } else {
                         event.join(dbHandler, userId, null);
                     }
-                });
-            }
-            buttonJoin.setEnabled(true); // Re-enable the button
-        });
+                }
+            });
+
+            StandardPopupDialogFragment.newInstance("Entry Criteria", event.getEventDetails().getEntryCriteria(), requestKey).show(fm, "dialog_join_confirm");
+        }
     }
 }
