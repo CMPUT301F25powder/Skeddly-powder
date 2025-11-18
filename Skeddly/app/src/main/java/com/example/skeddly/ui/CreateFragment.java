@@ -267,7 +267,7 @@ public class CreateFragment extends Fragment {
 
                 // Put event in db
                 DatabaseHandler dbHandler = new DatabaseHandler();
-                dbHandler.getEventsPath().child(event.getId()).setValue(event);
+                dbHandler.getEventsPath().document(event.getId()).set(event);
 
                 // User owns the event
                 MainActivity mainActivity = (MainActivity) requireActivity();

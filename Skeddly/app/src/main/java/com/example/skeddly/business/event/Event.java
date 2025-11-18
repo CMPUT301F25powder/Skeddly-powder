@@ -9,9 +9,9 @@ import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.database.DatabaseObject;
 import com.example.skeddly.business.location.CustomLocation;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Base64;
@@ -30,7 +30,7 @@ public class Event extends DatabaseObject {
     private String imageb64;
 
     /**
-     * No arg Constructor for the Event. Required by Firebase.
+     * No arg Constructor for an Event. Required by Firestore.
      */
     public Event() {
 
@@ -234,10 +234,10 @@ public class Event extends DatabaseObject {
         this.getWaitingList().addTicket(ticket.getId());
 
         // Save the updated applicants object back to this event in Firebase
-        dbHandler.getEventsPath().child(this.getId()).child("waitingList").setValue(this.getWaitingList());
+        dbHandler.getEventsPath().document(this.getId()).update("waitingList", this.getWaitingList());
 
         // Save the full ticket object
-        dbHandler.getTicketsPath().child(ticket.getId()).setValue(ticket);
+        dbHandler.getTicketsPath().document(ticket.getId()).set(ticket);
     }
 
     /**
@@ -251,9 +251,9 @@ public class Event extends DatabaseObject {
             // remove ticket id from event waiting list
             this.getWaitingList().remove(ticketId);
             // save updated list to DB
-            dbHandler.getEventsPath().child(this.getId()).child("waitingList").setValue(this.getWaitingList());
+            dbHandler.getEventsPath().document(this.getId()).update("waitingList", this.getWaitingList());
             // remove ticket object from DB
-            dbHandler.getTicketsPath().child(ticketId).removeValue();
+            dbHandler.getTicketsPath().document(ticketId).delete();
         }
     }
 
@@ -276,29 +276,15 @@ public class Event extends DatabaseObject {
             return;
         }
 
-        final boolean[] found = {false};
-        ArrayList<String> ticketIds = new ArrayList<>(this.getWaitingList().getTicketIds());
-
-        for (String ticketId : ticketIds) {
-            dbHandler.getTicketsPath().child(ticketId).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (found[0]) return; // Stop if we already found the ticket
-
-                    Ticket ticket = snapshot.getValue(Ticket.class);
-                    if (ticket != null && userId.equals(ticket.getUser())) {
-                        found[0] = true;
-                        callback.onResult(snapshot.getKey()); // Found it!
-                    }
+        dbHandler.getTicketsPath().whereEqualTo("userId", userId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                    callback.onResult(task.getResult().getDocuments().get(0).getId());  // Found it!
+                } else {
+                    callback.onResult(null); // Didn't find it
                 }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    throw error.toException();
-                }
-            });
-        }
-        callback.onResult(null); // Didn't find it
+            }
+        });
     }
-
 }

@@ -1,11 +1,9 @@
 package com.example.skeddly.business.user;
 
-import java.io.Serializable;
-
 /**
- * A user's notification settings that can be serialized into the DB
+ * Represent's a user's notification settings
  */
-public class NotificationSettings implements Serializable {
+public class NotificationSettings {
     private boolean lotteryStatus;
     private boolean eventUpdate;
     private boolean administrative;
