@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
 
 import com.example.skeddly.MainActivity;
-import com.example.skeddly.R;
 import com.example.skeddly.business.user.Authenticator;
 import com.example.skeddly.databinding.FragmentProfileButtonsBinding;
 import com.example.skeddly.ui.popup.StandardPopupDialogFragment;
@@ -76,8 +75,8 @@ public class ProfileButtonsFragment extends Fragment {
     }
 
     /**
-     *
-     * @param onClickListener
+     * Sets the callback for when one presses the personal info edit button.
+     * @param onClickListener The callback to add to the button.
      */
     public void setPersonalInfoBtnOnClickListener(View.OnClickListener onClickListener) {
         this.personalInfoOnClickListener = onClickListener;
