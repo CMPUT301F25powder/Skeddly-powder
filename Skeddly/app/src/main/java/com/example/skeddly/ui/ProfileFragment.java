@@ -35,15 +35,11 @@ public class ProfileFragment extends Fragment {
         View root = binding.getRoot();
 
         MainActivity activity = (MainActivity) requireActivity();
-        Authenticator authenticator = activity.getAuthenticator();
         User user = activity.getUser();
 
         TextView profileName = binding.headerProfile.profileName;
         TextView profileEmail = binding.headerProfile.profileEmail;
         TextView profilePhone = binding.headerProfile.profilePhone;
-
-        ConstraintLayout deleteAccountButton = binding.btnDeleteAccount;
-        ConstraintLayout profileInfoButton = binding.btnPersonalInfo;
 
         PersonalInformation userInformation = user.getPersonalInformation();
 
@@ -51,40 +47,8 @@ public class ProfileFragment extends Fragment {
         profileEmail.setText(userInformation.getEmail());
         profilePhone.setText(userInformation.getPhoneNumber());
 
-        profileInfoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                NavController navController = Navigation.findNavController(view);
-                navController.navigate(R.id.action_profile_to_personal_info_edit);
-            }
-        });
-
-        String deletePopupTitle = "Delete Account";
-        String deletePopupContent = "Are you sure you want to delete your account?";
-        String deletePopupRequestKey = "confirmationDialog";
-
-        deleteAccountButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                StandardPopupDialogFragment spf = StandardPopupDialogFragment
-                        .newInstance(deletePopupTitle, deletePopupContent, deletePopupRequestKey);
-                spf.show(getChildFragmentManager(), deletePopupRequestKey);
-            }
-        });
-
-        getChildFragmentManager().setFragmentResultListener(deletePopupRequestKey,
-                this, new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-                boolean confirmation = result.getBoolean("buttonChoice");
-
-                if (confirmation) {
-                    authenticator.deleteUser();
-                    MainActivity mainActivity = (MainActivity) requireActivity();
-                    mainActivity.switchToSignup();
-                }
-            }
-        });
+        ProfileButtonsFragment pbf = new ProfileButtonsFragment();
+        getChildFragmentManager().beginTransaction().add(binding.fragment.getId(), pbf).commit();
 
         return root;
     }
