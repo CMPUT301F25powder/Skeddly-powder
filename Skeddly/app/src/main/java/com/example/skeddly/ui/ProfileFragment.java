@@ -11,8 +11,11 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.example.skeddly.MainActivity;
+import com.example.skeddly.R;
 import com.example.skeddly.business.user.Authenticator;
 import com.example.skeddly.business.user.PersonalInformation;
 import com.example.skeddly.business.user.User;
@@ -40,12 +43,21 @@ public class ProfileFragment extends Fragment {
         TextView profilePhone = binding.headerProfile.profilePhone;
 
         ConstraintLayout deleteAccountButton = binding.btnDeleteAccount;
+        ConstraintLayout profileInfoButton = binding.btnPersonalInfo;
 
         PersonalInformation userInformation = user.getPersonalInformation();
 
         profileName.setText(userInformation.getName());
         profileEmail.setText(userInformation.getEmail());
         profilePhone.setText(userInformation.getPhoneNumber());
+
+        profileInfoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NavController navController = Navigation.findNavController(view);
+                navController.navigate(R.id.action_profile_to_personal_info_edit);
+            }
+        });
 
         String deletePopupTitle = "Delete Account";
         String deletePopupContent = "Are you sure you want to delete your account?";
