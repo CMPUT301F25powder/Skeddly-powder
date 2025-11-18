@@ -10,8 +10,6 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 
 import com.example.skeddly.MainActivity;
 import com.example.skeddly.R;
@@ -24,6 +22,7 @@ import com.example.skeddly.ui.popup.StandardPopupDialogFragment;
  */
 public class ProfileButtonsFragment extends Fragment {
     private FragmentProfileButtonsBinding binding;
+    private View.OnClickListener personalInfoOnClickListener = null;
 
     @Nullable
     @Override
@@ -35,15 +34,10 @@ public class ProfileButtonsFragment extends Fragment {
         Authenticator authenticator = activity.getAuthenticator();
 
         ConstraintLayout deleteAccountButton = binding.btnDeleteAccount;
-        ConstraintLayout profileInfoButton = binding.btnPersonalInfo;
 
-        profileInfoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                NavController navController = Navigation.findNavController(view);
-                navController.navigate(R.id.action_profile_to_personal_info_edit);
-            }
-        });
+        if (personalInfoOnClickListener != null) {
+            binding.btnPersonalInfo.setOnClickListener(personalInfoOnClickListener);
+        }
 
         String deletePopupTitle = "Delete Account";
         String deletePopupContent = "Are you sure you want to delete your account?";
@@ -79,5 +73,17 @@ public class ProfileButtonsFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    /**
+     *
+     * @param onClickListener
+     */
+    public void setPersonalInfoBtnOnClickListener(View.OnClickListener onClickListener) {
+        this.personalInfoOnClickListener = onClickListener;
+
+        if (binding != null) {
+            binding.btnPersonalInfo.setOnClickListener(personalInfoOnClickListener);
+        }
     }
 }

@@ -91,7 +91,6 @@
     <string name="nav_my_events">My Events</string>
     <string name="nav_profile">Profile</string>
     <string name="nav_tools">Tools</string>
-    <string name="nav_personal_info_edit">Personal Information Edit</string>
 
     <string name="notification_content">Notification information, here is information about the notification yuppers</string>
     <string name="notification_title">Notification</string>

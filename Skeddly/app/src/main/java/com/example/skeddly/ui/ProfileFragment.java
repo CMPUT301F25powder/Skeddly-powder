@@ -48,7 +48,15 @@ public class ProfileFragment extends Fragment {
         profilePhone.setText(userInformation.getPhoneNumber());
 
         ProfileButtonsFragment pbf = new ProfileButtonsFragment();
-        getChildFragmentManager().beginTransaction().add(binding.fragment.getId(), pbf).commit();
+        getChildFragmentManager().beginTransaction().replace(binding.fragment.getId(), pbf).commit();
+
+        pbf.setPersonalInfoBtnOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PersonalInformationEditFragment pief = new PersonalInformationEditFragment();
+                getChildFragmentManager().beginTransaction().replace(binding.fragment.getId(), pief).commit();
+            }
+        });
 
         return root;
     }
