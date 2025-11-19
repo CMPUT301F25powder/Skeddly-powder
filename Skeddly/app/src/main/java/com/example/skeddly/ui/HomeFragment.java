@@ -33,6 +33,8 @@ import androidx.fragment.app.Fragment;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.database.SingleListenUpdate;
 import com.example.skeddly.business.location.CustomLocation;
+import com.example.skeddly.business.search.EventSearch;
+import com.example.skeddly.business.search.SearchFinishedListener;
 import com.example.skeddly.databinding.HomeFragmentBinding;
 import com.example.skeddly.ui.adapter.EventAdapter;
 import com.example.skeddly.business.event.Event;
@@ -61,8 +63,9 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
     private ArrayList<Event> eventList = new ArrayList<>();
     private DatabaseHandler databaseHandler;
     private EventAdapter eventAdapter;
-    private SimpleCursorAdapter simpleCursorAdapter;
-    private final String EVENT_NAME_SUGGESTION_ID = "eventName";
+
+    // Search
+    private EventSearch eventSearch;
 
     // Location Stuff
     private FusedLocationProviderClient fusedLocationClient;
@@ -77,6 +80,8 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
 
         // Initialize DatabaseHandler and list of events
         databaseHandler = new DatabaseHandler();
+
+        eventSearch = new EventSearch(getContext(), binding.searchEvents, eventList);
 
         // Initialize event adapter
         eventAdapter = new EventAdapter(getContext(),
@@ -107,84 +112,19 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
         // Fetch events from firebase
         fetchEvents();
 
-        initializeSearchBar(root.getContext());
+        eventSearch.setOnSearchFinishedListener(new SearchFinishedListener() {
+            @Override
+            public void onSearchFinished() {
+                fetchEvents();
+            }
+
+            @Override
+            public void onSearchFinished(String query) {
+                fetchEvents(query);
+            }
+        });
 
         return root;
-    }
-
-    private void initializeSearchBar(Context context) {
-        final String[] from = new String[] {EVENT_NAME_SUGGESTION_ID};
-        final int[] to = new int[] {android.R.id.text1};
-
-        SearchView searchBar = binding.searchEvents;
-        simpleCursorAdapter = new SimpleCursorAdapter(context, android.R.layout.simple_list_item_1, null, from, to, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
-
-        searchBar.setSuggestionsAdapter(simpleCursorAdapter);
-
-        searchBar.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
-            @Override
-            public boolean onSuggestionClick(int position) {
-                Cursor cursor = (Cursor) simpleCursorAdapter.getItem(position);
-                String txt = cursor.getString(cursor.getColumnIndexOrThrow("eventName"));
-                searchBar.setQuery(txt, true);
-                return true;
-            }
-
-            @Override
-            public boolean onSuggestionSelect(int position) {
-                return true;
-            }
-        });
-
-        searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                if (newText.isBlank()) {
-                    fetchEvents();
-                } else {
-                    populateAdapter(newText);
-                }
-
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                fetchEvents(query);
-                populateAdapter(query);
-                searchBar.clearFocus();
-
-                return true;
-            }
-        });
-    }
-
-    private boolean checkNameSuggestionMatch(String name, String query) {
-        if (query.isBlank()) {
-            return true;
-        }
-
-        LevenshteinDistance levenshteinDistance = LevenshteinDistance.getDefaultInstance();
-
-        int distance = levenshteinDistance.apply(name.toLowerCase(), query.toLowerCase());
-
-        return distance <= 2;
-    }
-
-    private void populateAdapter(String query) {
-        final MatrixCursor c = new MatrixCursor(new String[]{ BaseColumns._ID, EVENT_NAME_SUGGESTION_ID });
-        for (int i = 0; i < eventList.size(); i++) {
-            Event event = eventList.get(i);
-            String eventName = event.getEventDetails().getName();
-
-            int clampedEndNameIndex = Math.min(query.length(), eventName.length());
-            String queryLengthName = eventName.substring(0, clampedEndNameIndex);
-
-            if (checkNameSuggestionMatch(queryLengthName, query))
-                c.addRow(new Object[] {i, eventName});
-        }
-
-        simpleCursorAdapter.changeCursor(c);
     }
 
     /**
@@ -203,7 +143,7 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
                         Event event = (Event) dbObjects.get(i);
                         String eventName = event.getEventDetails().getName();
 
-                        if (checkNameSuggestionMatch(eventName, query)) {
+                        if (eventSearch.checkNameSuggestionMatch(eventName, query)) {
                             eventList.add(event);
                         }
                     }
