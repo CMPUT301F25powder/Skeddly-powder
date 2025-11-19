@@ -7,12 +7,12 @@
     android:background="@color/primary_light_blue">
 
     <ImageButton
-        android:id="@+id/button_back"
+        android:id="@+id/btn_back"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:background="@drawable/image_round_style"
+        android:background="@drawable/img_style_round"
         android:src="@drawable/ic_arrow_back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -33,7 +33,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button_back">
+        app:layout_constraintTop_toBottomOf="@id/btn_back">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -41,10 +41,10 @@
             android:paddingBottom="24dp">
 
             <ImageView
-                android:id="@+id/event_image"
+                android:id="@+id/img_event"
                 android:layout_width="0dp"
                 android:layout_height="180dp"
-                android:background="@drawable/card_background"
+                android:background="@drawable/bg_card"
                 android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -57,7 +57,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginBottom="16dp"
-                android:background="@drawable/event_title_background"
+                android:background="@drawable/event_bg_title"
                 android:drawablePadding="8dp"
                 android:elevation="5dp"
                 android:paddingStart="12dp"
@@ -67,16 +67,16 @@
                 android:text="@string/event_title_location"
                 android:textColor="@color/neutral_lighter_off_white"
                 android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@id/event_image"
+                app:layout_constraintBottom_toBottomOf="@id/img_event"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <ImageButton
-                android:id="@+id/button_qr_code"
+                android:id="@+id/btn_qr_code"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:background="@drawable/qr_code_circle_background"
+                android:background="@drawable/bg_qr_code_circle"
                 android:elevation="5dp"
                 android:padding="12dp"
                 android:scaleType="fitCenter"
@@ -87,38 +87,38 @@
                 tools:ignore="ContentDescription" />
 
             <TextView
-                android:id="@+id/text_day_of_week"
+                android:id="@+id/text_day_select"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:text="@string/monday_wednesday_9_30_10_00"
+                android:text="@string/event_date_time"
                 android:textColor="@color/primary_navy"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/event_image" />
+                app:layout_constraintTop_toBottomOf="@id/img_event" />
 
             <TextView
-                android:id="@+id/label_information"
+                android:id="@+id/label_event_information"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/information"
+                android:text="@string/event_label_information"
                 android:textColor="@color/primary_navy"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@id/text_day_of_week"
-                app:layout_constraintTop_toBottomOf="@id/text_day_of_week" />
+                app:layout_constraintStart_toStartOf="@id/text_day_select"
+                app:layout_constraintTop_toBottomOf="@id/text_day_select" />
 
             <TextView
                 android:id="@+id/label_event_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="@string/event_title"
+                android:text="@string/event_label_title"
                 android:textColor="@color/primary_navy"
-                app:layout_constraintStart_toStartOf="@id/label_information"
-                app:layout_constraintTop_toBottomOf="@id/label_information" />
+                app:layout_constraintStart_toStartOf="@id/label_event_information"
+                app:layout_constraintTop_toBottomOf="@id/label_event_information" />
 
             <TextView
                 android:id="@+id/value_event_title"
@@ -126,50 +126,50 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="16dp"
-                android:text="@string/community_meetup"
+                android:text="@string/event_title"
                 android:textColor="@color/neutral_brown_light"
                 app:layout_constraintBaseline_toBaselineOf="@+id/label_event_title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/label_event_title" />
 
             <TextView
-                android:id="@+id/label_description"
+                android:id="@+id/label_event_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="@string/description"
+                android:text="@string/event_label_description"
                 android:textColor="@color/primary_navy"
                 app:layout_constraintStart_toStartOf="@id/label_event_title"
                 app:layout_constraintTop_toBottomOf="@id/label_event_title" />
 
             <TextView
-                android:id="@+id/value_description"
+                android:id="@+id/value_event_description"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="16dp"
-                android:text="@string/a_casual_get_together_for_all_members"
+                android:text="@string/event_description"
                 android:textColor="@color/neutral_brown_light"
-                app:layout_constraintBaseline_toBaselineOf="@+id/label_description"
+                app:layout_constraintBaseline_toBaselineOf="@+id/label_event_description"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/label_description" />
+                app:layout_constraintStart_toEndOf="@+id/label_event_description" />
 
             <TextView
                 android:id="@+id/label_category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="@string/category"
+                android:text="@string/event_label_category"
                 android:textColor="@color/primary_navy"
-                app:layout_constraintStart_toStartOf="@id/label_description"
-                app:layout_constraintTop_toBottomOf="@id/label_description" />
+                app:layout_constraintStart_toStartOf="@id/label_event_description"
+                app:layout_constraintTop_toBottomOf="@id/label_event_description" />
 
             <TextView
                 android:id="@+id/value_category"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="@string/social"
+                android:text="@string/event_category"
                 android:textColor="@color/neutral_brown_light"
                 app:layout_constraintBaseline_toBaselineOf="@+id/label_category"
                 app:layout_constraintStart_toEndOf="@+id/label_category" />
@@ -179,7 +179,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
-                android:text="@string/wait_list_limit"
+                android:text="@string/event_label_wait_list_limit"
                 android:textColor="@color/primary_navy"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/label_category" />
@@ -188,7 +188,7 @@
                 android:id="@+id/value_waitlist_limit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/_37_100"
+                android:text="@string/event_wait_list_limit"
                 android:textColor="@color/neutral_brown_light"
                 app:layout_constraintEnd_toEndOf="@id/label_waitlist_limit"
                 app:layout_constraintTop_toBottomOf="@id/label_waitlist_limit" />
@@ -198,7 +198,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="@string/attendee_limit"
+                android:text="@string/event_label_attendee_limit"
                 android:textColor="@color/primary_navy"
                 app:layout_constraintEnd_toEndOf="@id/value_waitlist_limit"
                 app:layout_constraintTop_toBottomOf="@id/value_waitlist_limit" />
@@ -207,20 +207,20 @@
                 android:id="@+id/value_attendee_limit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/_0_25"
+                android:text="@string/event_attendee_limit"
                 android:textColor="@color/neutral_brown_light"
                 app:layout_constraintEnd_toEndOf="@id/label_attendee_limit"
                 app:layout_constraintTop_toBottomOf="@id/label_attendee_limit" />
 
             <!-- The 'Join' button, intended for regular users -->
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/button_join"
+                android:id="@+id/btn_join"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:background="@color/primary_purple"
-                android:text="@string/join"
+                android:text="@string/event_btn_join"
                 android:textAllCaps="false"
                 android:textColor="@color/neutral_lighter_off_white"
                 app:layout_constraintTop_toBottomOf="@id/value_attendee_limit"
@@ -230,51 +230,51 @@
 
             <!-- A Group to easily control visibility of all admin buttons at once -->
             <androidx.constraintlayout.widget.Group
-                android:id="@+id/admin_button_group"
+                android:id="@+id/btn_group_admin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:constraint_referenced_ids="button_draw,button_edit,button_participants" />
+                app:constraint_referenced_ids="btn_draw,btn_edit,btn_participants" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/button_draw"
+                android:id="@+id/btn_draw"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="8dp"
                 android:background="@color/primary_purple"
-                android:text="@string/draw"
+                android:text="@string/event_btn_draw"
                 android:textAllCaps="false"
                 android:textColor="@color/neutral_lighter_off_white"
-                app:layout_constraintEnd_toStartOf="@+id/button_edit"
+                app:layout_constraintEnd_toStartOf="@+id/btn_edit"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/value_attendee_limit" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/button_edit"
+                android:id="@+id/btn_edit"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="16dp"
                 android:background="@color/primary_purple"
-                android:text="@string/edit"
+                android:text="@string/event_btn_edit"
                 android:textAllCaps="false"
                 android:textColor="@color/neutral_lighter_off_white"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/button_draw"
-                app:layout_constraintTop_toTopOf="@id/button_draw" />
+                app:layout_constraintStart_toEndOf="@+id/btn_draw"
+                app:layout_constraintTop_toTopOf="@id/btn_draw" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/button_participants"
+                android:id="@+id/btn_participants"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_marginTop="12dp"
                 android:background="@color/primary_purple"
-                android:text="@string/participants"
+                android:text="@string/event_btn_participants"
                 android:textAllCaps="false"
                 android:textColor="@color/neutral_lighter_off_white"
-                app:layout_constraintEnd_toEndOf="@id/button_edit"
-                app:layout_constraintStart_toStartOf="@id/button_draw"
-                app:layout_constraintTop_toBottomOf="@id/button_draw" />
+                app:layout_constraintEnd_toEndOf="@id/btn_edit"
+                app:layout_constraintStart_toStartOf="@id/btn_draw"
+                app:layout_constraintTop_toBottomOf="@id/btn_draw" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

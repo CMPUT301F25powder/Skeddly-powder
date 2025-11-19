@@ -9,11 +9,11 @@
 
     <!-- Profile Image Placeholder -->
     <ImageView
-        android:id="@+id/profile_image_placeholder"
+        android:id="@+id/img_profile_placeholder"
         android:layout_width="144dp"
         android:layout_height="144dp"
         android:layout_marginTop="80dp"
-        android:background="@drawable/image_round_style"
+        android:background="@drawable/img_style_round"
         android:elevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,12 +21,12 @@
 
     <!-- Full name Input -->
     <EditText
-        android:id="@+id/full_name_sign_up_text"
+        android:id="@+id/text_sign_up_full_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="51dp"
-        android:background="@drawable/form_field_background"
-        android:hint="Full name"
+        android:background="@drawable/bg_form_field"
+        android:hint="@string/activity_signup_hint_full_name"
         android:inputType="textPersonName"
         android:paddingHorizontal="16dp"
         android:paddingVertical="17dp"
@@ -37,16 +37,16 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/profile_image_placeholder" />
+        app:layout_constraintTop_toBottomOf="@id/img_profile_placeholder" />
 
     <!-- Email Input -->
     <EditText
-        android:id="@+id/email_sign_up_text"
+        android:id="@+id/text_sign_up_email"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:background="@drawable/form_field_background"
-        android:hint="Email"
+        android:background="@drawable/bg_form_field"
+        android:hint="@string/activity_signup_hint_email"
         android:inputType="textEmailAddress"
         android:paddingHorizontal="16dp"
         android:paddingVertical="17dp"
@@ -55,16 +55,16 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/full_name_sign_up_text" />
+        app:layout_constraintTop_toBottomOf="@id/text_sign_up_full_name" />
 
     <!-- Username Input -->
     <EditText
-        android:id="@+id/phone_number_sign_up_text"
+        android:id="@+id/text_sign_up_phone_number"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:background="@drawable/form_field_background"
-        android:hint="Phone Number"
+        android:background="@drawable/bg_form_field"
+        android:hint="@string/activity_signup_hint_phone_number"
         android:inputType="phone"
         android:paddingHorizontal="16dp"
         android:paddingVertical="17dp"
@@ -73,22 +73,22 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/email_sign_up_text" />
+        app:layout_constraintTop_toBottomOf="@id/text_sign_up_email" />
 
     <!-- Create Account Button -->
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/create_account_button"
+        android:id="@+id/btn_account_create"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="26dp"
-        android:background="@drawable/purple_gradient"
+        android:background="@drawable/gradient_purple"
         android:paddingVertical="16dp"
-        android:text="Create account"
+        android:text="@string/activity_signup_btn_account_create"
         android:textAllCaps="false"
         android:textColor="@color/neutral_lighter_off_white"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/phone_number_sign_up_text" />
+        app:layout_constraintTop_toBottomOf="@id/text_sign_up_phone_number" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

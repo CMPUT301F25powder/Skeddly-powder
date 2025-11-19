@@ -8,12 +8,12 @@
 
     <!-- Back Button -->
     <ImageButton
-        android:id="@+id/button_back"
+        android:id="@+id/btn_back"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:background="@drawable/image_round_style"
+        android:background="@drawable/img_style_round"
         android:src="@drawable/ic_arrow_back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -28,7 +28,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_back">
+        app:layout_constraintTop_toBottomOf="@+id/btn_back">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -57,10 +57,10 @@
 
                     <!-- Event Image Banner -->
                     <ImageView
-                        android:id="@+id/event_image"
+                        android:id="@+id/img_event"
                         android:layout_width="0dp"
                         android:layout_height="180dp"
-                        android:background="@drawable/card_background"
+                        android:background="@drawable/bg_card"
                         android:scaleType="centerCrop"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -73,7 +73,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginBottom="16dp"
-                        android:background="@drawable/event_title_background"
+                        android:background="@drawable/event_bg_title"
                         android:drawablePadding="8dp"
                         android:elevation="5dp"
                         android:paddingStart="12dp"
@@ -83,17 +83,17 @@
                         android:text="@string/event_title_location"
                         android:textColor="@color/neutral_lighter_off_white"
                         android:textSize="16sp"
-                        app:layout_constraintBottom_toBottomOf="@id/event_image"
+                        app:layout_constraintBottom_toBottomOf="@id/img_event"
                         app:layout_constraintStart_toStartOf="parent" />
 
                     <!-- QR Code Style Button -->
                     <ImageButton
-                        android:id="@+id/button_qr_code"
+                        android:id="@+id/btn_qr_code"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:layout_marginTop="16dp"
                         android:layout_marginEnd="16dp"
-                        android:background="@drawable/qr_code_circle_background"
+                        android:background="@drawable/bg_qr_code_circle"
                         android:elevation="5dp"
                         android:padding="12dp"
                         android:scaleType="fitCenter"
@@ -110,17 +110,17 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
-                        android:text="@string/switch_recurrence"
+                        android:text="@string/fragment_create_edit_switch_recurring"
                         android:textSize="16sp"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/event_image" />
+                        app:layout_constraintTop_toBottomOf="@+id/img_event" />
 
                     <TextView
                         android:id="@+id/text_date_start"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="@string/text_date"
+                        android:text="@string/fragment_create_edit_date"
                         android:textSize="18sp"
                         app:layout_constraintStart_toStartOf="@+id/switch_recurrence"
                         app:layout_constraintTop_toBottomOf="@+id/switch_recurrence" />
@@ -130,7 +130,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="@string/text_dash"
+                        android:text="@string/fragment_create_edit_date_sep"
                         android:textSize="18sp"
                         app:layout_constraintBottom_toBottomOf="@+id/text_date_start"
                         app:layout_constraintStart_toEndOf="@+id/text_date_start"
@@ -141,24 +141,24 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="@string/text_date"
+                        android:text="@string/fragment_create_edit_date"
                         android:textSize="18sp"
                         app:layout_constraintBottom_toBottomOf="@+id/text_date_dash"
                         app:layout_constraintStart_toEndOf="@+id/text_date_dash"
                         app:layout_constraintTop_toTopOf="@+id/text_date_dash" />
 
                     <TextView
-                        android:id="@+id/text_day_of_week"
+                        android:id="@+id/text_day_select"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:background="@android:drawable/editbox_background"
                         android:drawablePadding="16dp"
-                        android:hint="@string/text_day_of_week"
+                        android:hint="@string/fragment_create_edit_hint_day_select"
                         android:padding="8dp"
                         android:textSize="18sp"
                         app:drawableEndCompat="@android:drawable/arrow_down_float"
-                        app:layout_constraintEnd_toEndOf="@+id/text_category_selector"
+                        app:layout_constraintEnd_toEndOf="@+id/text_category_select"
                         app:layout_constraintStart_toStartOf="@id/text_date_start"
                         app:layout_constraintTop_toBottomOf="@id/text_date_start" />
 
@@ -168,17 +168,17 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="@string/text_time"
+                        android:text="@string/fragment_create_edit_time"
                         android:textSize="18sp"
                         app:layout_constraintStart_toStartOf="@+id/switch_recurrence"
-                        app:layout_constraintTop_toBottomOf="@+id/text_day_of_week" />
+                        app:layout_constraintTop_toBottomOf="@+id/text_day_select" />
 
                     <TextView
                         android:id="@+id/text_time_dash"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="@string/text_dash"
+                        android:text="@string/fragment_create_edit_date_sep"
                         android:textSize="18sp"
                         app:layout_constraintStart_toEndOf="@+id/text_time_start"
                         app:layout_constraintTop_toTopOf="@+id/text_time_start" />
@@ -188,18 +188,18 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="@string/text_time"
+                        android:text="@string/fragment_create_edit_time"
                         android:textSize="18sp"
                         app:layout_constraintStart_toEndOf="@+id/text_time_dash"
                         app:layout_constraintTop_toTopOf="@+id/text_time_start" />
 
                     <TextView
-                        android:id="@+id/label_information"
+                        android:id="@+id/label_event_information"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
-                        android:text="@string/information"
+                        android:text="@string/event_label_information"
                         android:textColor="@color/primary_navy"
                         android:textSize="16sp"
                         android:textStyle="bold"
@@ -211,88 +211,88 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="@string/event_title"
+                        android:text="@string/event_label_title"
                         android:textColor="@color/primary_navy"
-                        app:layout_constraintStart_toStartOf="@id/label_information"
-                        app:layout_constraintTop_toBottomOf="@id/label_information" />
+                        app:layout_constraintStart_toStartOf="@id/label_event_information"
+                        app:layout_constraintTop_toBottomOf="@id/label_event_information" />
 
                     <EditText
-                        android:id="@+id/value_event_title"
+                        android:id="@+id/edit_event_title"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
-                        android:hint="@string/enter_event_title"
+                        android:hint="@string/fragment_create_edit_hint_event_title"
                         android:scrollHorizontally="true"
                         android:singleLine="true"
                         android:textColor="@color/neutral_brown_light"
                         app:layout_constraintBaseline_toBaselineOf="@+id/label_event_title"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="@+id/value_description" />
+                        app:layout_constraintStart_toStartOf="@+id/edit_event_description" />
 
                     <TextView
-                        android:id="@+id/label_description"
+                        android:id="@+id/label_event_description"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="24dp"
-                        android:text="@string/description"
+                        android:text="@string/event_label_description"
                         android:textColor="@color/primary_navy"
                         app:layout_constraintStart_toStartOf="@id/label_event_title"
                         app:layout_constraintTop_toBottomOf="@id/label_event_title" />
 
                     <EditText
-                        android:id="@+id/value_description"
+                        android:id="@+id/edit_event_description"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="16dp"
-                        android:hint="@string/enter_event_description"
+                        android:hint="@string/fragment_create_edit_hint_event_desc"
                         android:textColor="@color/neutral_brown_light"
-                        app:layout_constraintBaseline_toBaselineOf="@+id/label_description"
+                        app:layout_constraintBaseline_toBaselineOf="@+id/label_event_description"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/label_description" />
+                        app:layout_constraintStart_toEndOf="@+id/label_event_description" />
 
                     <TextView
-                        android:id="@+id/text_category_selector"
+                        android:id="@+id/text_category_select"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:background="@android:drawable/editbox_background"
                         android:drawablePadding="16dp"
-                        android:hint="@string/text_category_selector"
+                        android:hint="@string/fragment_create_edit_hint_category_select"
                         android:padding="8dp"
                         android:textSize="18sp"
                         app:drawableEndCompat="@android:drawable/arrow_down_float"
                         app:layout_constraintEnd_toEndOf="@+id/edit_lottery_criteria"
-                        app:layout_constraintStart_toStartOf="@id/label_description"
-                        app:layout_constraintTop_toBottomOf="@id/value_description" />
+                        app:layout_constraintStart_toStartOf="@id/label_event_description"
+                        app:layout_constraintTop_toBottomOf="@id/edit_event_description" />
 
                     <TextView
-                        android:id="@+id/text_registration_period"
+                        android:id="@+id/text_reg_period"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="8dp"
-                        android:text="@string/text_registration_period"
+                        android:text="@string/fragment_create_edit_label_reg_period"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/text_category_selector" />
+                        app:layout_constraintTop_toBottomOf="@+id/text_category_select" />
 
                     <TextView
                         android:id="@+id/text_reg_date_start"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="@string/text_date"
+                        android:text="@string/fragment_create_edit_date"
                         android:textSize="18sp"
-                        app:layout_constraintStart_toStartOf="@+id/text_registration_period"
-                        app:layout_constraintTop_toBottomOf="@+id/text_registration_period" />
+                        app:layout_constraintStart_toStartOf="@+id/text_reg_period"
+                        app:layout_constraintTop_toBottomOf="@+id/text_reg_period" />
 
                     <TextView
                         android:id="@+id/text_reg_date_dash"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="@string/text_dash"
+                        android:text="@string/fragment_create_edit_date_sep"
                         android:textSize="18sp"
                         app:layout_constraintBottom_toBottomOf="@+id/text_reg_date_start"
                         app:layout_constraintStart_toEndOf="@+id/text_reg_date_start"
@@ -303,7 +303,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="@string/text_date"
+                        android:text="@string/fragment_create_edit_date"
                         android:textSize="18sp"
                         app:layout_constraintBottom_toBottomOf="@+id/text_reg_date_start"
                         app:layout_constraintStart_toEndOf="@+id/text_reg_date_dash"
@@ -314,9 +314,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="@string/text_time"
+                        android:text="@string/fragment_create_edit_time"
                         android:textSize="18sp"
-                        app:layout_constraintStart_toStartOf="@+id/text_registration_period"
+                        app:layout_constraintStart_toStartOf="@+id/text_reg_period"
                         app:layout_constraintTop_toBottomOf="@+id/text_reg_date_start" />
 
                     <TextView
@@ -324,7 +324,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="@string/text_dash"
+                        android:text="@string/fragment_create_edit_date_sep"
                         android:textSize="18sp"
                         app:layout_constraintStart_toEndOf="@+id/text_reg_time_start"
                         app:layout_constraintTop_toTopOf="@+id/text_reg_time_start" />
@@ -334,19 +334,19 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="@string/text_time"
+                        android:text="@string/fragment_create_edit_time"
                         android:textSize="18sp"
                         app:layout_constraintStart_toEndOf="@+id/text_reg_time_dash"
                         app:layout_constraintTop_toTopOf="@+id/text_reg_time_start" />
 
                     <!-- Right-aligned details -->
                     <TextView
-                        android:id="@+id/text_lottery_criteria"
+                        android:id="@+id/label_lottery_criteria"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="8dp"
-                        android:text="@string/text_lottery_selection_criteria"
+                        android:text="@string/fragment_create_edit_label_lottery_selection_criteria"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="parent"
@@ -358,12 +358,12 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="24dp"
                         android:ems="10"
-                        android:hint="@string/text_enter_criteria"
+                        android:hint="@string/fragment_create_edit_hint_lottery_selection_criteria"
                         android:inputType="textMultiLine"
                         android:textColor="@color/neutral_brown_light"
                         app:layout_constraintEnd_toStartOf="@+id/edit_waitlist_limit"
-                        app:layout_constraintStart_toStartOf="@+id/text_lottery_criteria"
-                        app:layout_constraintTop_toBottomOf="@+id/text_lottery_criteria" />
+                        app:layout_constraintStart_toStartOf="@+id/label_lottery_criteria"
+                        app:layout_constraintTop_toBottomOf="@+id/label_lottery_criteria" />
 
                     <CheckBox
                         android:id="@+id/checkbox_geo_location_req"
@@ -377,7 +377,7 @@
                         android:id="@+id/text_geo_location_req"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/text_geo_location_req"
+                        android:text="@string/fragment_create_edit_checkbox_geo_location_req"
                         app:layout_constraintStart_toEndOf="@id/checkbox_geo_location_req"
                         app:layout_constraintTop_toTopOf="@id/checkbox_geo_location_req"
                         app:layout_constraintBottom_toBottomOf="@id/checkbox_geo_location_req"
@@ -388,16 +388,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
-                        android:text="@string/wait_list_limit"
+                        android:text="@string/event_label_wait_list_limit"
                         android:textColor="@color/primary_navy"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/text_lottery_criteria" />
+                        app:layout_constraintTop_toTopOf="@+id/label_lottery_criteria" />
 
                     <EditText
                         android:id="@+id/edit_waitlist_limit"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:hint="@string/edit_waitlist_limit"
+                        android:hint="@string/fragment_create_edit_hint_wait_list_limit"
                         android:inputType="number"
                         android:textAlignment="textEnd"
                         android:textSize="18sp"
@@ -409,7 +409,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="@string/attendee_limit"
+                        android:text="@string/event_label_attendee_limit"
                         android:textColor="@color/primary_navy"
                         app:layout_constraintEnd_toEndOf="@id/edit_waitlist_limit"
                         app:layout_constraintTop_toBottomOf="@id/edit_waitlist_limit" />
@@ -418,7 +418,7 @@
                         android:id="@+id/edit_attendee_limit"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:hint="@string/edit_attendee_limit"
+                        android:hint="@string/fragment_create_edit_hint_attendee_limit"
                         android:inputType="number"
                         android:textAlignment="textEnd"
                         android:textSize="18sp"
@@ -427,11 +427,11 @@
 
                     <!-- Confirm Button -->
                     <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/confirm_button"
+                        android:id="@+id/btn_confirm"
                         android:layout_width="0dp"
                         android:layout_height="40dp"
                         android:background="@color/primary_purple"
-                        android:text="@string/confirm"
+                        android:text="@string/btn_confirm"
                         android:textAllCaps="false"
                         android:textColor="@color/neutral_lighter_off_white"
                         app:layout_constraintEnd_toEndOf="@id/edit_attendee_limit"

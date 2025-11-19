@@ -1,12 +1,13 @@
 package com.example.skeddly.business.user;
 
-import java.io.Serializable;
+import com.google.firebase.firestore.Exclude;
+
 import java.util.Objects;
 
 /**
- * A user's personal information that can be serialized into the DB
+ * Represent's a user's personal information
  */
-public class PersonalInformation implements Serializable {
+public class PersonalInformation {
     private String name;
     private String email;
     private String phoneNumber;
@@ -70,9 +71,9 @@ public class PersonalInformation implements Serializable {
 
     /**
      * Checks if the personal information is fully filled
-     * @see PersonalInformation
-     * @return If the personal information is fully filled
+     * @return True if it is fully filled. False otherwise.
      */
+    @Exclude
     public boolean isFullyFilled() {
         return !Objects.equals(this.name, "") && !Objects.equals(this.email, "");
     }

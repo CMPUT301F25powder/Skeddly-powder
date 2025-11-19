@@ -6,8 +6,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <include
-        android:id="@+id/inbox_header"
-        layout="@layout/inbox_header" />
+        android:id="@+id/header_inbox"
+        layout="@layout/header_inbox" />
+
     <ListView
         android:id="@+id/list_notifications"
         android:layout_width="match_parent"

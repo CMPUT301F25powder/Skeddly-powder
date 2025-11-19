@@ -15,7 +15,7 @@
 
         <!-- User Profile Icon -->
         <ImageView
-            android:id="@+id/image_view_user_icon"
+            android:id="@+id/img_view_user"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@drawable/outline_android_24"
@@ -33,7 +33,7 @@
             android:textColor="@color/primary_navy"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@id/image_view_user_icon"
+            app:layout_constraintStart_toEndOf="@id/img_view_user"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Full name" />
 
@@ -55,7 +55,7 @@
             android:id="@+id/text_view_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/status_chip_active"
+            android:background="@drawable/chip_status_accepted"
             android:paddingHorizontal="8dp"
             android:paddingVertical="2dp"
             android:textColor="@color/neutral_lighter_off_white"

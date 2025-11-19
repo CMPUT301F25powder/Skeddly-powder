@@ -9,7 +9,7 @@
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="91dp"
-        android:background="@drawable/profile_header_background"
+        android:background="@drawable/bg_header_profile"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -18,13 +18,13 @@
             android:id="@+id/search_events"
             android:layout_width="345dp"
             android:layout_height="43dp"
-            android:background="@drawable/search_round_style"
+            android:background="@drawable/search_style_round"
             android:backgroundTint="@color/neutral_lighter_off_white"
+            android:queryHint="@string/fragment_home_search_hint"
             android:focusableInTouchMode="true"
             android:iconifiedByDefault="false"
             android:inputType="text|textAutoComplete"
             android:paddingEnd="15dp"
-            android:queryHint="@string/search_hint"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -33,7 +33,7 @@
         </SearchView>
 
         <ImageButton
-            android:id="@+id/button_filter"
+            android:id="@+id/btn_filter"
             android:layout_width="26dp"
             android:layout_height="26dp"
             android:layout_marginEnd="10dp"
@@ -41,7 +41,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/search_events"
             app:layout_constraintEnd_toEndOf="@+id/search_events"
             app:layout_constraintTop_toTopOf="@+id/search_events"
-            app:srcCompat="@drawable/tools" />
+            app:srcCompat="@drawable/m3_split_button_chevron_avd" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

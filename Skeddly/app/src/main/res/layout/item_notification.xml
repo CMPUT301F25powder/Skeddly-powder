@@ -17,7 +17,7 @@
         android:layout_width="43dp"
         android:layout_height="43dp"
         android:scaleType="center"
-        android:background="@drawable/image_round_style"
+        android:background="@drawable/img_style_round"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

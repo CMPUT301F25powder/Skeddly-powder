@@ -83,7 +83,7 @@ public class UserInstrumentedTest extends BaseTest {
             public void onUserLoaded(User loadedUser, boolean shouldShowSignup) {
                 User fakeUser = new User();
 
-                assertFalse(database.getUsersPath().child(String.valueOf(UUID.randomUUID())).setValue(fakeUser).isSuccessful());
+                assertFalse(database.getUsersPath().document(String.valueOf(UUID.randomUUID())).set(fakeUser).isSuccessful());
             }
         });
     }

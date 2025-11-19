@@ -16,12 +16,12 @@
 
         <!-- Back Button -->
         <ImageButton
-            android:id="@+id/button_back"
+            android:id="@+id/btn_back"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginStart="24dp"
             android:layout_marginTop="24dp"
-            android:background="@drawable/image_round_style"
+            android:background="@drawable/img_style_round"
             android:src="@drawable/ic_arrow_back"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -33,14 +33,14 @@
             android:id="@+id/text_participants_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Participants"
+            android:text="@string/fragment_participant_list_title"
             android:textColor="@color/neutral_lighter_off_white"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@id/button_back"
+            app:layout_constraintBottom_toBottomOf="@id/btn_back"
             app:layout_constraintEnd_toStartOf="@+id/button_download"
-            app:layout_constraintStart_toEndOf="@id/button_back"
-            app:layout_constraintTop_toTopOf="@id/button_back" />
+            app:layout_constraintStart_toEndOf="@id/btn_back"
+            app:layout_constraintTop_toTopOf="@id/btn_back" />
 
         <!-- Download Button -->
         <ImageButton
@@ -51,7 +51,7 @@
             android:background="@android:color/transparent"
             android:src="@drawable/ic_download"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/button_back"
+            app:layout_constraintTop_toTopOf="@id/btn_back"
             app:tint="@color/neutral_lighter_off_white"
             tools:ignore="ContentDescription" />
 
@@ -63,13 +63,13 @@
             android:layout_marginStart="32dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="32dp"
-            android:background="@drawable/search_round_style"
+            android:background="@drawable/search_style_round"
             android:queryHint="Search for a user"
             android:backgroundTint="@color/neutral_lighter_off_white"
             android:iconifiedByDefault="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/button_back" />
+            app:layout_constraintTop_toBottomOf="@id/btn_back" />
 
         <!-- Tab Buttons Container -->
         <LinearLayout
@@ -88,8 +88,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:background="@drawable/button_select"
-                android:text="Waiting List"
+                android:background="@drawable/btn_select"
+                android:text="@string/fragment_participant_list_btn_waiting_list"
                 android:textAllCaps="false"
                 android:textColor="@color/neutral_off_white" />
 
@@ -98,8 +98,8 @@
                 style="?android:attr/borderlessButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/button_unselect"
-                android:text="Final List"
+                android:background="@drawable/btn_unselect"
+                android:text="@string/fragment_participant_list_btn_final_list"
                 android:textAllCaps="false"
                 android:textColor="@color/neutral_off_white" />
         </LinearLayout>
@@ -115,6 +115,6 @@
         android:divider="@android:color/transparent"
         android:dividerHeight="12dp"
         android:padding="24dp"
-        tools:listitem="@layout/single_entrant_item" />
+        tools:listitem="@layout/item_entrant" />
 
 </LinearLayout>

@@ -73,7 +73,7 @@ public class InboxAdapter extends ArrayAdapter<Notification> implements Filterab
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent){
         View view = convertView;
         if (view == null){
-            view = LayoutInflater.from(context).inflate(R.layout.notification, parent, false);
+            view = LayoutInflater.from(context).inflate(R.layout.item_notification, parent, false);
         }
 
         Notification notif = getItem(position);

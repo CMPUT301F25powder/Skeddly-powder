@@ -2,8 +2,6 @@ package com.example.skeddly.ui;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -14,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -36,7 +33,7 @@ import com.example.skeddly.business.event.EventSchedule;
 import com.example.skeddly.business.location.CustomLocation;
 import com.example.skeddly.business.user.User;
 import com.example.skeddly.business.user.UserLevel;
-import com.example.skeddly.databinding.EventViewAdminBinding;
+import com.example.skeddly.databinding.FragmentEventInfoBinding;
 import com.example.skeddly.ui.adapter.EventAdapter;
 import com.example.skeddly.ui.adapter.RetrieveLocation;
 import com.example.skeddly.ui.popup.QRPopupDialogFragment;
@@ -45,7 +42,10 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 import com.google.android.gms.tasks.CancellationTokenSource;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -60,13 +60,13 @@ import java.util.Map;
  * Fragment for the event view info screen
  */
 public class EventViewInfoFragment extends Fragment implements RetrieveLocation {
-    private EventViewAdminBinding binding;
+    private FragmentEventInfoBinding binding;
     private DatabaseHandler dbHandler;
     private String eventId;
     private String userId;
     private String organizerId;
     private EventAdapter eventAdapter;
-    private ValueEventListener valueEventListener;
+    private ListenerRegistration eventSnapshotListenerReg;
 
     // Location Stuff
     private FusedLocationProviderClient fusedLocationClient;
@@ -76,11 +76,12 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = EventViewAdminBinding.inflate(inflater, container, false);
+        binding = FragmentEventInfoBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         // Initialize database handler
         dbHandler = new DatabaseHandler();
+        eventSnapshotListenerReg = null;
 
         // Initialize eventAdapter
         eventAdapter = new EventAdapter(getContext(), new ArrayList<>(), userId, this);
@@ -115,12 +116,12 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
         User currentUser = ((MainActivity) requireActivity()).getUser();
         if (currentUser != null && (isOrganizer || currentUser.getPrivilegeLevel() == UserLevel.ADMIN)) {
             // USER IS ADMIN/ORGANIZER: Show admin buttons, hide join button.
-            binding.adminButtonGroup.setVisibility(View.VISIBLE);
-            binding.buttonJoin.setVisibility(View.GONE);
+            binding.btnGroupAdmin.setVisibility(View.VISIBLE);
+            binding.btnJoin.setVisibility(View.GONE);
         } else {
             // USER IS ENTRANT: Hide admin buttons, show join button.
-            binding.adminButtonGroup.setVisibility(View.GONE);
-            binding.buttonJoin.setVisibility(View.VISIBLE);
+            binding.btnGroupAdmin.setVisibility(View.GONE);
+            binding.btnJoin.setVisibility(View.VISIBLE);
         }
 
         // Fetch data from Firebase if we have a valid ID
@@ -132,7 +133,7 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
         }
 
         // === QR Code shenanigans ===
-        ImageButton buttonQrCode = binding.buttonQrCode;
+        ImageButton buttonQrCode = binding.btnQrCode;
         buttonQrCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -142,7 +143,7 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
         });
 
         // Set up Participant button
-        binding.buttonParticipants.setOnClickListener(v -> {
+        binding.btnParticipants.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
             bundle.putString("eventId", eventId);
             NavController navController = Navigation.findNavController(v);
@@ -150,7 +151,7 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
         });
 
         // Set up the back button to navigate up
-        binding.buttonBack.setOnClickListener(v -> {
+        binding.btnBack.setOnClickListener(v -> {
             NavController navController = Navigation.findNavController(v);
             navController.navigateUp();
         });
@@ -162,38 +163,30 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
      * Fetches the details for an event from Firebase using its ID.
      */
     private void fetchEventDetails() {
-        // Use addValueEventListener to continuously listen for changes to the event data.
-        this.valueEventListener = new com.google.firebase.database.ValueEventListener() {
+        // Use addSnapshotListener to continuously listen for changes to the event data.
+        eventSnapshotListenerReg = dbHandler.getEventsPath().document(eventId).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
-            public void onDataChange(@NonNull com.google.firebase.database.DataSnapshot snapshot) {
-                Event event = snapshot.getValue(Event.class);
-                if (event != null) {
-                    // Set the ID manually since it's the key of the snapshot
-                    event.setId(snapshot.getKey());
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (error == null && value != null && value.exists()) {
+                    Event event = value.toObject(Event.class);
 
-                    // Set button state and on click listener
-                    eventAdapter.updateJoinButtonState(binding.buttonJoin, event, userId, dbHandler);
+                    if (event != null) {
+                        // Set button state and on click listener
+                        eventAdapter.updateJoinButtonState(binding.btnJoin, event, userId, dbHandler);
 
-                    // Once data is loaded or updated, populate the screen
-                    populateUI(event);
-                } else {
-                    Log.e("EventViewInfoFragment", "Event data is null for ID: " + eventId);
+                        // Once data is loaded or updated, populate the screen
+                        populateUI(event);
+                    }
                 }
             }
-
-            @Override
-            public void onCancelled(@NonNull com.google.firebase.database.DatabaseError error) {
-                Log.e("EventViewInfoFragment", "Database error: " + error.getMessage());
-            }
-        };
-        dbHandler.getEventsPath().child(eventId).addValueEventListener(this.valueEventListener);
+        });
     }
 
     /**
      * Populates the UI elements with data from the fetched Event object.
      */
     private void populateUI(Event event) {
-        Glide.with(this).load(Base64.getDecoder().decode(event.getImageb64())).into(binding.eventImage);
+        Glide.with(this).load(Base64.getDecoder().decode(event.getImageb64())).into(binding.imgEvent);
         EventDetail eventDetails = event.getEventDetails();
         EventSchedule eventSchedule = event.getEventSchedule();
 
@@ -208,11 +201,11 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, MMM d, HH:mm");
         LocalDateTime startTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(eventSchedule.getStartTime()), ZoneId.systemDefault());
         LocalDateTime endTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(eventSchedule.getEndTime()), ZoneId.systemDefault());
-        binding.textDayOfWeek.setText(String.format("%s - %s", startTime.format(formatter), endTime.toLocalTime().toString()));
+        binding.textDaySelect.setText(String.format("%s - %s", startTime.format(formatter), endTime.toLocalTime().toString()));
 
         // Set Information Fields
         binding.valueEventTitle.setText(eventDetails.getName());
-        binding.valueDescription.setText(eventDetails.getDescription());
+        binding.valueEventDescription.setText(eventDetails.getDescription());
 
         if (eventDetails.getCategories() != null) {
             binding.valueCategory.setText(String.join(", ", eventDetails.getCategories()));
@@ -244,7 +237,7 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
         }
 
         if (!event.isJoinable()) {
-            binding.buttonJoin.setVisibility(View.GONE);
+            binding.btnJoin.setVisibility(View.GONE);
         }
     }
 
@@ -292,5 +285,14 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
         }
 
         return true;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        if (eventSnapshotListenerReg != null) {
+            eventSnapshotListenerReg.remove();
+        }
     }
 }

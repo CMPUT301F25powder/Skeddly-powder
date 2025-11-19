@@ -19,7 +19,7 @@ import com.example.skeddly.business.notification.Notification;
 import com.example.skeddly.business.database.DatabaseObjects;
 import com.example.skeddly.business.notification.NotificationType;
 import com.example.skeddly.business.user.User;
-import com.example.skeddly.databinding.InboxFragmentBinding;
+import com.example.skeddly.databinding.FragmentInboxBinding;
 import com.example.skeddly.ui.adapter.InboxAdapter;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ import java.util.ArrayList;
  * Fragment for the inbox screen
  */
 public class InboxFragment extends Fragment implements View.OnClickListener {
-    private InboxFragmentBinding binding;
+    private FragmentInboxBinding binding;
     private DatabaseObjects<Notification> inbox;
     private InboxAdapter inboxAdapter;
     private ArrayList<Button> filterButtons;
@@ -36,7 +36,7 @@ public class InboxFragment extends Fragment implements View.OnClickListener {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = InboxFragmentBinding.inflate(inflater, container, false);
+        binding = FragmentInboxBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         // Get the user
@@ -56,10 +56,10 @@ public class InboxFragment extends Fragment implements View.OnClickListener {
         // Set event adapter to list view
         inboxList.setAdapter(inboxAdapter);
 
-        Button buttonAll = binding.inboxHeader.buttonAll;
-        Button buttonMessages = binding.inboxHeader.buttonMessages;
-        Button buttonRegistration = binding.inboxHeader.buttonRegistration;
-        Button buttonSystem = binding.inboxHeader.buttonSystem;;
+        Button buttonAll = binding.headerInbox.btnAll;
+        Button buttonMessages = binding.headerInbox.btnMessages;
+        Button buttonRegistration = binding.headerInbox.btnRegistration;
+        Button buttonSystem = binding.headerInbox.btnSystem;;
 
         filterButtons = new ArrayList<>();
         filterButtons.add(buttonAll);
@@ -94,14 +94,14 @@ public class InboxFragment extends Fragment implements View.OnClickListener {
 
         // Trigger the filter based on which button was clicked
         int viewId = v.getId();
-        if (viewId == R.id.button_all) {
+        if (viewId == R.id.btn_all) {
             inboxAdapter.getFilter().filter("3"); // "3" for all, as in your adapter
-        } else if (viewId == R.id.button_messages) {
+        } else if (viewId == R.id.btn_messages) {
             // Use the ordinal value of your Notification enum
             inboxAdapter.getFilter().filter(String.valueOf(NotificationType.MESSAGES.ordinal()));
-        } else if (viewId == R.id.button_registration) {
+        } else if (viewId == R.id.btn_registration) {
             inboxAdapter.getFilter().filter(String.valueOf(NotificationType.REGISTRATION.ordinal()));
-        } else if (viewId == R.id.button_system) {
+        } else if (viewId == R.id.btn_system) {
             inboxAdapter.getFilter().filter(String.valueOf(NotificationType.SYSTEM.ordinal()));
         }
     }
@@ -116,12 +116,12 @@ public class InboxFragment extends Fragment implements View.OnClickListener {
             if (button == selectedButton) {
                 // This is the selected button
                 // Set the navy blue gradient background and white text
-                button.setBackground(ContextCompat.getDrawable(this.getContext(), R.drawable.navy_blue_gradient));
+                button.setBackground(ContextCompat.getDrawable(this.getContext(), R.drawable.gradient_navy_blue));
                 button.setTextColor(ContextCompat.getColor(this.getContext(), R.color.neutral_lighter_off_white));
             } else {
                 // This is an unselected button
                 // Set the default background and blue text
-                button.setBackground(ContextCompat.getDrawable(this.getContext(), R.drawable.button_unselect));
+                button.setBackground(ContextCompat.getDrawable(this.getContext(), R.drawable.btn_unselect));
                 button.setTextColor(ContextCompat.getColor(this.getContext(), R.color.primary_light_blue));
             }
         }

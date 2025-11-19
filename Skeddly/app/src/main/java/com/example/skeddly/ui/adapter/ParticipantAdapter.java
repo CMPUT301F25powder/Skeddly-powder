@@ -17,9 +17,9 @@ import com.example.skeddly.business.Ticket;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.database.SingleListenUpdate;
 import com.example.skeddly.business.user.User;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -56,7 +56,7 @@ public class ParticipantAdapter extends ArrayAdapter<Ticket> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.single_entrant_item, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_entrant, parent, false);
         }
 
         // Get components
@@ -79,13 +79,13 @@ public class ParticipantAdapter extends ArrayAdapter<Ticket> {
 
             // Set status
             if (ticket.getStatus() == TicketStatus.CANCELLED) {
-                statusTextView.setBackgroundResource(R.drawable.status_chip_cancelled);
+                statusTextView.setBackgroundResource(R.drawable.chip_status_cancelled);
             }
             else if (ticket.getStatus() == TicketStatus.INVITED){
-                statusTextView.setBackgroundResource(R.drawable.status_chip_invited);
+                statusTextView.setBackgroundResource(R.drawable.chip_status_invited);
             }
             else {
-                statusTextView.setBackgroundResource(R.drawable.status_chip_active);
+                statusTextView.setBackgroundResource(R.drawable.chip_status_accepted);
             }
 
 
@@ -117,18 +117,14 @@ public class ParticipantAdapter extends ArrayAdapter<Ticket> {
      * @param callback The callback to run when the user is retrieved
      */
     private void getUserFromId(String userId, SingleListenUpdate<User> callback) {
-        dbHandler.getUsersPath().child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+        dbHandler.getUsersPath().document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (!snapshot.exists()) {
-                    callback.onUpdate(null);
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful() && task.getResult().exists()) {
+                    callback.onUpdate(task.getResult().toObject(User.class));
                 } else {
-                    callback.onUpdate(snapshot.getValue(User.class));
+                    callback.onUpdate(null);
                 }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                throw error.toException();
             }
         });
     }

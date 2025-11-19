@@ -7,15 +7,14 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.example.skeddly.business.database.DatabaseHandler;
+import com.example.skeddly.business.notification.Notification;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
@@ -74,29 +73,26 @@ public class Authenticator {
     private void createAndTieUser() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        this.databaseHandler.getUsersPath().child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+        this.databaseHandler.getUsersPath().document(currentUser.getUid()).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot documentSnapshot = task.getResult();
+                DocumentReference userPath = databaseHandler.getUsersPath().document(currentUser.getUid());
+
                 // Create a blank user if there is no user in DB
                 // Use DB user if there is a user in DB
-                if (!dataSnapshot.exists()) {
+                if (!documentSnapshot.exists()) {
                     user = new User();
-
-                    DatabaseReference currentUserPath = databaseHandler.getUsersPath().child(currentUser.getUid());
-
-                    currentUserPath.setValue(user);
+                    user.setId(currentUser.getUid());
+                    userPath.set(user);
                 } else {
-                    DatabaseReference userPath = databaseHandler.getUsersPath().child(currentUser.getUid());
+                    user = documentSnapshot.toObject(User.class);
 
-                    user = dataSnapshot.getValue(User.class);
                     try {
                         databaseHandler.customUnserializer(userPath, user);
                     } catch (InvocationTargetException | IllegalAccessException e) {
                         throw new RuntimeException(e);
                     }
                 }
-
-                user.setId(currentUser.getUid());
 
                 if (!user.getPersonalInformation().isFullyFilled()) {
                     showSignUp = true;
@@ -105,10 +101,8 @@ public class Authenticator {
                 if (callback != null) {
                     callback.onUserLoaded(user, isShowSignUp());
                 }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                throw databaseError.toException();
+            } else {
+                throw new RuntimeException(task.getException());
             }
         });
     }
@@ -126,7 +120,7 @@ public class Authenticator {
      * @see User
      */
     public void deleteUser() {
-        databaseHandler.getUsersPath().child(user.getId()).removeValue();
+        databaseHandler.getUsersPath().document(user.getId()).delete();
         mAuth.getCurrentUser().delete();
     }
 
@@ -152,9 +146,9 @@ public class Authenticator {
      * @see User
      */
     public void commitUserChanges() {
-        DatabaseReference userPath = databaseHandler.getUsersPath().child(user.getId());
+        DocumentReference userPath = databaseHandler.getUsersPath().document(user.getId());
 
-        userPath.setValue(user);
+        userPath.set(user);
         databaseHandler.customSerializer(userPath, user);
     }
 }

@@ -9,18 +9,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.skeddly.databinding.PersonalInformationEditFragmentBinding;
+import com.example.skeddly.databinding.FragmentPersonalInfoEditBinding;
 
 /**
  * Fragment for the personal information edit screen
  */
 public class PersonalInformationEditFragment extends Fragment {
-    private PersonalInformationEditFragmentBinding binding;
+    private FragmentPersonalInfoEditBinding binding;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = PersonalInformationEditFragmentBinding.inflate(inflater, container, false);
+        binding = FragmentPersonalInfoEditBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         return root;

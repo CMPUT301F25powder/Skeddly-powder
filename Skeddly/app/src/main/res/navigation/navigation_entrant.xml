@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/entrant_navigation"
+    android:id="@+id/navigation_main_entrant"
     app:startDestination="@+id/navigation_home">
 
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.example.skeddly.ui.HomeFragment"
-        android:label="@string/nav_home"
-        tools:layout="@layout/home_fragment" >
+        android:label="@string/nav_home">
 
         <action
             android:id="@+id/action_navigation_home_to_event_view_info"
-            app:destination="@id/event_view_info" />
+            app:destination="@id/navigation_event_view_info" />
     </fragment>
 
     <fragment
@@ -22,7 +20,7 @@
         android:label="@string/nav_inbox" />
 
     <fragment
-        android:id="@+id/event_view_info"
+        android:id="@+id/navigation_event_view_info"
         android:name="com.example.skeddly.ui.EventViewInfoFragment"
         android:label="@string/nav_event_info">
         <argument

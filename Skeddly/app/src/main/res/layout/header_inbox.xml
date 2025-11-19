@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="130dp"
-    android:background="@drawable/profile_header_background">
+    android:background="@drawable/bg_header_profile">
 
     <TextView
-        android:id="@+id/inbox_title"
+        android:id="@+id/title_inbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="64dp"
@@ -29,59 +29,59 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inbox_title">
+        app:layout_constraintTop_toBottomOf="@+id/title_inbox">
 
         <Button
-            android:id="@+id/button_all"
+            android:id="@+id/btn_all"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:padding="0dp"
-            android:background="@drawable/navy_blue_gradient"
+            android:background="@drawable/gradient_navy_blue"
             android:fontFamily="@font/inter_medium"
-            android:text="@string/all"
+            android:text="@string/fragment_inbox_btn_all"
             android:textAllCaps="false"
             android:textColor="@color/neutral_lighter_off_white"
             android:textSize="13sp" />
 
         <Button
-            android:id="@+id/button_messages"
+            android:id="@+id/btn_messages"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginStart="7dp"
             android:layout_weight="1"
             android:padding="0dp"
-            android:background="@drawable/button_unselect"
+            android:background="@drawable/btn_unselect"
             android:fontFamily="@font/inter_medium"
-            android:text="@string/messages"
+            android:text="@string/fragment_inbox_btn_messages"
             android:textAllCaps="false"
             android:textColor="@color/primary_light_blue"
             android:textSize="13sp" />
 
         <Button
-            android:id="@+id/button_registration"
+            android:id="@+id/btn_registration"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginStart="7dp"
             android:layout_weight="1"
             android:padding="0dp"
-            android:background="@drawable/button_unselect"
+            android:background="@drawable/btn_unselect"
             android:fontFamily="@font/inter_medium"
-            android:text="@string/registration"
+            android:text="@string/fragment_inbox_btn_registration"
             android:textAllCaps="false"
             android:textColor="@color/primary_light_blue"
             android:textSize="13sp" />
 
         <Button
-            android:id="@+id/button_system"
+            android:id="@+id/btn_system"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginStart="7dp"
             android:layout_weight="1"
             android:padding="0dp"
-            android:background="@drawable/button_unselect"
+            android:background="@drawable/btn_unselect"
             android:fontFamily="@font/inter_medium"
-            android:text="@string/system"
+            android:text="@string/fragment_inbox_btn_system"
             android:textAllCaps="false"
             android:textColor="@color/primary_light_blue"
             android:textSize="13sp" />

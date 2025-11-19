@@ -7,8 +7,8 @@
     android:background="@color/neutral_off_white">
 
     <include
-        android:id="@+id/profile_header"
-        layout="@layout/profile_header_fragment"
+        android:id="@+id/header_profile"
+        layout="@layout/header_profile"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -25,7 +25,7 @@
         android:paddingBottom="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/profile_header">
+        app:layout_constraintTop_toBottomOf="@id/header_profile">
 
         <!-- Full name Label -->
         <TextView
@@ -33,18 +33,18 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginBottom="7dp"
-            android:text="@string/full_name"
+            android:text="@string/fragment_personal_info_edit_full_name_prompt"
             android:textColor="@color/neutral_black"
             android:textSize="16sp" />
 
         <!-- Full name Input -->
         <EditText
-            android:id="@+id/full_name_edit_text"
+            android:id="@+id/edit_full_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:background="@drawable/form_field_background"
-            android:hint="@string/name"
+            android:background="@drawable/bg_form_field"
+            android:hint="@string/fragment_profile_name"
             android:inputType="textPersonName"
             android:paddingHorizontal="16dp"
             android:paddingVertical="17dp"
@@ -57,18 +57,18 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginBottom="10dp"
-            android:text="@string/phone_number_text"
+            android:text="@string/fragment_personal_info_edit_phone_number_prompt"
             android:textColor="@color/neutral_black"
             android:textSize="16sp" />
 
         <!-- Phone number Input -->
         <EditText
-            android:id="@+id/phoneNumberEditText"
+            android:id="@+id/edit_phone_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:background="@drawable/form_field_background"
-            android:hint="@string/phone_number"
+            android:background="@drawable/bg_form_field"
+            android:hint="@string/fragment_profile_phone_number"
             android:inputType="phone"
             android:paddingHorizontal="16dp"
             android:paddingVertical="17dp"
@@ -81,18 +81,18 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="3dp"
             android:layout_marginBottom="10dp"
-            android:text="@string/email_text"
+            android:text="@string/fragment_personal_info_edit_email_prompt"
             android:textColor="@color/neutral_black"
             android:textSize="16sp" />
 
         <!-- Email Input -->
         <EditText
-            android:id="@+id/email_edit_text"
+            android:id="@+id/edit_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:background="@drawable/form_field_background"
-            android:hint="@string/email"
+            android:background="@drawable/bg_form_field"
+            android:hint="@string/fragment_profile_email"
             android:inputType="textEmailAddress"
             android:paddingHorizontal="16dp"
             android:paddingVertical="17dp"
@@ -104,7 +104,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            layout="@layout/confirm_button" />
+            layout="@layout/button_confirm" />
 
 
     </LinearLayout>

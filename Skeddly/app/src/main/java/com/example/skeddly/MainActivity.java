@@ -5,7 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -14,30 +14,24 @@ import androidx.navigation.NavGraph;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
-import com.example.skeddly.business.database.DatabaseObjects;
+import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.event.Event;
+import com.example.skeddly.business.user.UserLoaded;
 import com.example.skeddly.databinding.ActivityMainBinding;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
 import com.example.skeddly.business.user.Authenticator;
-import com.example.skeddly.business.database.DatabaseHandler;
-import com.example.skeddly.business.database.SingleListenUpdate;
 import com.example.skeddly.business.user.User;
-import com.example.skeddly.business.user.UserLoaded;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 /**
  * Main activity for the application.
  */
-public class MainActivity extends CustomActivity {
+public class MainActivity extends AppCompatActivity {
     private Authenticator authenticator;
     private ActivityMainBinding binding;
     private NavController navController;
@@ -84,24 +78,18 @@ public class MainActivity extends CustomActivity {
             if (eventId != null && eventId.length() > 1) {
                 String choppedEventId = eventId.substring(1);
 
-                database.getEventsPath().child(eventId).addListenerForSingleValueEvent(new ValueEventListener() {
+                database.getEventsPath().document(eventId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()) {
-                            Event theEvent = snapshot.getValue(Event.class);
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            Event theEvent = documentSnapshot.toObject(Event.class);
 
                             if (theEvent == null) {
                                 return;
                             }
 
-                            theEvent.setId(choppedEventId);
                             navigateToEvent(theEvent);
                         }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        throw error.toException();
                     }
                 });
             }
@@ -128,15 +116,15 @@ public class MainActivity extends CustomActivity {
         switch (authenticator.getUser().getPrivilegeLevel()) {
             case ENTRANT:
                 navView.inflateMenu(R.menu.bottom_nav_entrant);
-                navGraph = navController.getNavInflater().inflate(R.navigation.entrant_navigation);
+                navGraph = navController.getNavInflater().inflate(R.navigation.navigation_entrant);
                 break;
             case ORGANIZER:
                 navView.inflateMenu(R.menu.bottom_nav_organizer);
-                navGraph = navController.getNavInflater().inflate(R.navigation.organizer_navigation);
+                navGraph = navController.getNavInflater().inflate(R.navigation.navigation_organizer);
                 break;
             case ADMIN:
                 navView.inflateMenu(R.menu.botton_nav_admin);
-                navGraph = navController.getNavInflater().inflate(R.navigation.admin_navigation);
+                navGraph = navController.getNavInflater().inflate(R.navigation.navigation_admin);
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + authenticator.getUser().getPrivilegeLevel());
@@ -187,6 +175,6 @@ public class MainActivity extends CustomActivity {
         bundle.putString("eventId", event.getId());
         bundle.putString("userId", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
         bundle.putString("organizerId", event.getOrganizer());
-        navController.navigate(R.id.event_view_info, bundle);
+        navController.navigate(R.id.navigation_event_view_info, bundle);
     }
 }

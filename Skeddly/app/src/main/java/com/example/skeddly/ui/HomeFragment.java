@@ -33,6 +33,7 @@ import androidx.fragment.app.Fragment;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.database.SingleListenUpdate;
 import com.example.skeddly.business.location.CustomLocation;
+import com.example.skeddly.databinding.FragmentHomeBinding;
 import com.example.skeddly.business.search.EventSearch;
 import com.example.skeddly.business.search.SearchFinishedListener;
 import com.example.skeddly.databinding.HomeFragmentBinding;
@@ -59,7 +60,7 @@ import java.util.Objects;
  * Fragment for the home screen
  */
 public class HomeFragment extends Fragment implements RetrieveLocation {
-    private HomeFragmentBinding binding;
+    private FragmentHomeBinding binding;
     private ArrayList<Event> eventList = new ArrayList<>();
     private DatabaseHandler databaseHandler;
     private EventAdapter eventAdapter;
@@ -75,7 +76,7 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = HomeFragmentBinding.inflate(inflater, container, false);
+        binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         // Initialize DatabaseHandler and list of events

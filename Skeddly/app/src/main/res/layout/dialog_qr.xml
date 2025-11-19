@@ -6,15 +6,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    android:background="@drawable/popup_header_round_style">
+    android:background="@drawable/dialog_header_style_round">
 
     <TextView
-        android:id="@+id/text_popup_title"
+        android:id="@+id/text_dialog_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/popup_title_round_style"
+        android:background="@drawable/dialog_style_round_title"
         android:padding="20dp"
-        android:text="QR Code"
+        android:text="@string/dialog_qr_title"
         android:textAlignment="center"
         android:textColor="@color/neutral_lighter_off_white"
         android:textSize="25sp"
@@ -29,10 +29,10 @@
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_popup_title">
+        app:layout_constraintTop_toBottomOf="@+id/text_dialog_title">
 
         <ImageView
-            android:id="@+id/image_qr_code"
+            android:id="@+id/img_qr_code"
             android:layout_width="300dp"
             android:layout_height="300dp"
             android:background="@color/primary_blue"
@@ -41,26 +41,26 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/button_export"
+            android:id="@+id/btn_export"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            android:text="Export"
+            android:text="@string/dialog_qr_btn_export"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/button_close"
+            app:layout_constraintEnd_toStartOf="@id/btn_close"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/image_qr_code" />
+            app:layout_constraintTop_toBottomOf="@+id/img_qr_code" />
 
         <Button
-            android:id="@+id/button_close"
+            android:id="@+id/btn_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            android:text="Close"
+            android:text="@string/dialog_qr_btn_close"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/button_export"
-            app:layout_constraintTop_toBottomOf="@+id/image_qr_code" />
+            app:layout_constraintStart_toEndOf="@id/btn_export"
+            app:layout_constraintTop_toBottomOf="@+id/img_qr_code" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

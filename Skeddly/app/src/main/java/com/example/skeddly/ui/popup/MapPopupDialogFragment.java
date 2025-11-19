@@ -27,7 +27,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.skeddly.R;
-import com.example.skeddly.databinding.PopupMapBinding;
+import com.example.skeddly.databinding.DialogMapBinding;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
@@ -60,7 +60,7 @@ public class MapPopupDialogFragment extends DialogFragment implements OnMapReady
 
     private String requestKey = "requestKey";
     private LatLng result;
-    private PopupMapBinding binding;
+    private DialogMapBinding binding;
 
     /**
      * Create a new instance of the MapPopupDialogFragment.
@@ -81,8 +81,8 @@ public class MapPopupDialogFragment extends DialogFragment implements OnMapReady
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout to use as a dialog or embedded fragment.
-        View view = inflater.inflate(R.layout.popup_map, container, false);
-        binding = PopupMapBinding.bind(view);
+        View view = inflater.inflate(R.layout.dialog_map, container, false);
+        binding = DialogMapBinding.bind(view);
 
         Bundle args = getArguments();
 
@@ -125,7 +125,7 @@ public class MapPopupDialogFragment extends DialogFragment implements OnMapReady
         });
 
         // When confirm, return the LatLng to the fragment
-        Button confirmButton = binding.buttonConfirm;
+        Button confirmButton = binding.btnConfirm;
         confirmButton.setEnabled(false);
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -219,7 +219,7 @@ public class MapPopupDialogFragment extends DialogFragment implements OnMapReady
             // Move the camera to the position
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 18));
 
-            binding.buttonConfirm.setEnabled(true);
+            binding.btnConfirm.setEnabled(true);
         }
 
         result = location;

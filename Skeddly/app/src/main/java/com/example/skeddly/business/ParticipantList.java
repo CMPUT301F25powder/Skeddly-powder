@@ -1,9 +1,7 @@
 package com.example.skeddly.business;
 
 import com.example.skeddly.business.database.DatabaseObject;
-import com.example.skeddly.business.database.DatabaseObjects;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**

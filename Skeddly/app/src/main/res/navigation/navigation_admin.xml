@@ -1,23 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/organizer_navigation"
+    android:id="@+id/navigation_main_admin"
     app:startDestination="@+id/navigation_home">
 
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.example.skeddly.ui.HomeFragment"
         android:label="@string/nav_home">
-    <action
-        android:id="@+id/action_navigation_home_to_event_view_info"
-        app:destination="@id/event_view_info" />
+
+        <action
+            android:id="@+id/action_navigation_home_to_event_view_info"
+            app:destination="@id/navigation_event_view_info" />
     </fragment>
 
     <fragment
         android:id="@+id/navigation_inbox"
         android:name="com.example.skeddly.ui.InboxFragment"
-        android:label="@string/nav_inbox"
-        />
+        android:label="@string/nav_inbox" />
+
+    <fragment
+        android:id="@+id/navigation_event_view_info"
+        android:name="com.example.skeddly.ui.EventViewInfoFragment"
+        android:label="@string/nav_event_info">
+        <action
+            android:id="@+id/action_event_view_info_to_participant_list"
+            app:destination="@id/navigation_participant_list" />
+
+        <argument
+            android:name="eventId"
+            app:argType="string" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_create"
@@ -26,22 +39,16 @@
         />
 
     <fragment
-        android:id="@+id/navigation_my_events"
-        android:name="com.example.skeddly.ui.MyEventsFragment"
-        android:label="@string/nav_my_events"
-        />
+        android:id="@+id/navigation_tools"
+        android:name="com.example.skeddly.ui.ToolsFragment"
+        android:label="@string/nav_tools">
 
-    <fragment
-        android:id="@+id/event_view_info"
-        android:name="com.example.skeddly.ui.EventViewInfoFragment"
-        android:label="@string/nav_event_info">
         <action
-            android:id="@+id/action_event_view_info_to_participant_list"
-            app:destination="@id/participant_list" />
-
-        <argument
-            android:name="eventId"
-            app:argType="string" />
+            android:id="@+id/action_navigation_tools_to_test"
+            app:destination="@id/navigation_test"
+            app:popUpTo="@id/navigation_tools"
+            app:popUpToInclusive="true"
+            />
     </fragment>
 
     <fragment
@@ -51,7 +58,13 @@
         />
 
     <fragment
-        android:id="@+id/participant_list"
+        android:id="@+id/navigation_test"
+        android:name="com.example.skeddly.ui.TestFragment"
+        android:label="Test"
+        />
+
+    <fragment
+        android:id="@+id/navigation_participant_list"
         android:name="com.example.skeddly.ui.ParticipantListFragment"
         android:label="Participation List"
         />
