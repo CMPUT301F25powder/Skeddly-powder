@@ -79,6 +79,9 @@ public class ProfileFragment extends Fragment {
         binding = null;
     }
 
+    /**
+     * Updates the header with the personal info of the user
+     */
     private void updatePersonalInfo() {
         MainActivity activity = (MainActivity) requireActivity();
         User user = activity.getUser();

@@ -73,6 +73,9 @@ public class PersonalInformationEditFragment extends Fragment {
         binding = null;
     }
 
+    /**
+     * Toggles whether the confirm button should be enabled based on if the fields are filled in
+     */
     private void toggleConfirmButton() {
         boolean fullNameFilled = binding.editFullName.length() > 0;
         boolean emailFilled = binding.editEmail.length() > 0;
@@ -86,6 +89,11 @@ public class PersonalInformationEditFragment extends Fragment {
         }
     }
 
+    /**
+     * Sets the listener for what we should do when the confirm button is pressed.
+     * Note: User details are already saved into the object automatically by this fragment.
+     * @param callback The OnClickListener that we should callback.
+     */
     public void setOnCompleteListener(View.OnClickListener callback) {
         this.onCompleteListener = callback;
     }
