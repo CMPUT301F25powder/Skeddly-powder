@@ -23,11 +23,17 @@ import java.util.Objects;
 
 public class DrawParticipantsDialogFragment extends DialogFragment {
     private String requestKey = "requestKey";
+    private int curWait;
+    private int curAttend;
+    private int maxAttend;
     private int result = 0;
 
-    public static DrawParticipantsDialogFragment newInstance(String requestKey) {
+    public static DrawParticipantsDialogFragment newInstance(String requestKey, int curWait, int curAttend, int maxAttend) {
         Bundle args = new Bundle();
         args.putString("requestKey", requestKey);
+        args.putInt("curWait", curWait);
+        args.putInt("curAttend", curAttend);
+        args.putInt("maxAttend", maxAttend);
 
         DrawParticipantsDialogFragment popup = new DrawParticipantsDialogFragment();
         popup.setArguments(args);
@@ -43,6 +49,9 @@ public class DrawParticipantsDialogFragment extends DialogFragment {
 
         // Setup request key
         setupArgs();
+
+        // Initialize text view with the info
+        binding.textPopupContents.setText(getString(R.string.dialog_draw_content, curWait, curAttend, maxAttend));
 
         // They need to type smth in
         binding.btnConfirm.setEnabled(false);
@@ -62,14 +71,16 @@ public class DrawParticipantsDialogFragment extends DialogFragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() > 0) {
-                    result = Integer.parseUnsignedInt(s.toString());
-
-                    binding.btnConfirm.setEnabled(result > 0);
+                    try {
+                        result = Integer.parseInt(s.toString());
+                    } catch (NumberFormatException e) {
+                        result = 0;
+                    }
                 } else {
                     result = 0;
-                    binding.btnConfirm.setEnabled(false);
                 }
 
+                binding.btnConfirm.setEnabled(shouldButtonBeEnabled());
             }
         });
 
@@ -110,6 +121,13 @@ public class DrawParticipantsDialogFragment extends DialogFragment {
 
         if (args != null) {
             requestKey = args.getString("requestKey");
+            curWait = args.getInt("curWait");
+            curAttend = args.getInt("curAttend");
+            maxAttend = args.getInt("maxAttend");
         }
+    }
+
+    private boolean shouldButtonBeEnabled() {
+        return result > 0 && result <= curWait && curAttend + curWait <= maxAttend;
     }
 }

@@ -16,6 +16,7 @@ import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.database.SingleListenUpdate;
 import com.example.skeddly.databinding.FragmentParticipantListBinding;
 import com.example.skeddly.ui.adapter.ParticipantAdapter;
+import com.google.firebase.firestore.ListenerRegistration;
 
 import java.util.ArrayList;
 
@@ -30,6 +31,7 @@ public class ParticipantListFragment extends Fragment {
     private ArrayList<String> finalTicketIds;
     private ArrayList<String> waitingTicketIds;
     private ParticipantAdapter participantAdapter;
+    private ListenerRegistration listener;
 
     @Nullable
     @Override
@@ -40,6 +42,7 @@ public class ParticipantListFragment extends Fragment {
         finalTicketIds = new ArrayList<>();
         waitingTicketIds = new ArrayList<>();
         dbhandler = new DatabaseHandler();
+        listener = null;
 
         if (getArguments() != null) {
             String eventId = getArguments().getString("eventId");
@@ -60,6 +63,12 @@ public class ParticipantListFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+
+        if (listener != null) {
+            listener.remove();
+            listener = null;
+        }
+
     }
 
     /**
@@ -67,7 +76,7 @@ public class ParticipantListFragment extends Fragment {
      * @param eventId The ID of the event to load.
      */
     private void loadEventAndSetupUI(String eventId) {
-        dbhandler.singleListen(dbhandler.getEventsPath().document(eventId),
+        listener = dbhandler.singleListen(dbhandler.getEventsPath().document(eventId),
                 Event.class,
                 (SingleListenUpdate<Event>) receivedEvent -> {
                     if (receivedEvent == null) {

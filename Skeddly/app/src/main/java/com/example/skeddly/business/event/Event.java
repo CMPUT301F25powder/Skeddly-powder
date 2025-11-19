@@ -213,6 +213,16 @@ public class Event extends DatabaseObject {
         return !waitingList.isFull() && !eventSchedule.isRegistrationOver();
     }
 
+    public void draw(int numToDraw) {
+        for (int i = 0; i < numToDraw; ++i) {
+            String ticketId = getWaitingList().draw();
+            getParticipantList().addTicket(ticketId);
+        }
+
+        DatabaseHandler dbHandler = new DatabaseHandler();
+        dbHandler.getEventsPath().document(this.getId()).set(this);
+    }
+
     /**
      * Handles the logic for a user joining the event's waitlist.
      * @param dbHandler The database handler to interact with Firebase.

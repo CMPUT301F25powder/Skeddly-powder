@@ -153,19 +153,6 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
             navController.navigate(R.id.action_event_view_info_to_participant_list, bundle);
         });
 
-        // Setup draw button
-        binding.btnDraw.setOnClickListener(v -> {
-            DrawParticipantsDialogFragment dpdf = DrawParticipantsDialogFragment.newInstance("drawParticipants");
-            dpdf.show(getChildFragmentManager(), "drawParticipants");
-        });
-
-        getChildFragmentManager().setFragmentResultListener("drawParticipants", this, new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-                // TODO
-            }
-        });
-
         // Set up the back button to navigate up
         binding.btnBack.setOnClickListener(v -> {
             NavController navController = Navigation.findNavController(v);
@@ -234,7 +221,7 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
         if (event.getParticipantList() != null && event.getParticipantList().getTicketIds() != null) {
             currentAttendees = event.getParticipantList().getTicketIds().size();
         }
-        binding.valueAttendeeLimit.setText(String.format(Locale.getDefault(), "%d / %d", currentAttendees, event.getParticipantList().getMaxAttend()));
+        binding.valueAttendeeLimit.setText(String.format(Locale.getDefault(), "%d / %d", currentAttendees, event.getParticipantList().getMax()));
 
         // Calculate and display Waitlist Count
         int currentWaitlist = 0;
@@ -243,7 +230,7 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
             if (event.getWaitingList().getTicketIds() != null) {
                 currentWaitlist = event.getWaitingList().getTicketIds().size();
             }
-            maxWaitlist = event.getWaitingList().getLimit();
+            maxWaitlist = event.getWaitingList().getMax();
         }
 
         if (maxWaitlist == Integer.MAX_VALUE) {
@@ -255,6 +242,22 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
         if (!event.isJoinable()) {
             binding.btnJoin.setVisibility(View.GONE);
         }
+
+        // Setup draw button
+        binding.btnDraw.setOnClickListener(v -> {
+            DrawParticipantsDialogFragment dpdf = DrawParticipantsDialogFragment.newInstance("drawParticipants", event.getWaitingList().size(), event.getParticipantList().size(), event.getParticipantList().getMax());
+            dpdf.show(getChildFragmentManager(), "drawParticipants");
+        });
+
+        getChildFragmentManager().setFragmentResultListener("drawParticipants", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                int drawAmount = result.getInt("drawAmount");
+                Log.v("EventViewInfoFragment", String.format("Drawing %d", drawAmount));
+
+                event.draw(drawAmount);
+            }
+        });
     }
 
     @SuppressLint("MissingPermission")
