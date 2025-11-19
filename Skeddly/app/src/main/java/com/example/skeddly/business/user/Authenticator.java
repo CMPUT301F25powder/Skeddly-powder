@@ -1,5 +1,9 @@
 package com.example.skeddly.business.user;
 
+import android.content.Context;
+import android.provider.Settings;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.example.skeddly.business.database.DatabaseHandler;
@@ -69,7 +73,6 @@ public class Authenticator {
                     }
 
                     if (callback != null) {
-                        System.out.println(user.getNotifications().get(0).getMessage());
                         callback.onUserLoaded(Authenticator.this);
                     }
                 } else {

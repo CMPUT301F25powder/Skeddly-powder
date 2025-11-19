@@ -30,7 +30,7 @@ public class Event extends DatabaseObject {
     private String imageb64;
 
     /**
-     * No arg Constructor for an Event. Required by Firebase.
+     * No arg Constructor for an Event. Required by Firestore.
      */
     public Event() {
 
@@ -276,7 +276,7 @@ public class Event extends DatabaseObject {
             return;
         }
 
-        dbHandler.getTicketsPath().whereEqualTo("userId", userId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        dbHandler.getTicketsPath().whereEqualTo("user", userId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful() && !task.getResult().isEmpty()) {

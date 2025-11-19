@@ -12,7 +12,7 @@ public class EventDetail {
     private ArrayList<String> categories;
 
     /**
-     * No arg Constructor for EventDetails. Required by Firebase.
+     * No arg Constructor for EventDetails. Required by Firestore.
      */
     public EventDetail() {
 

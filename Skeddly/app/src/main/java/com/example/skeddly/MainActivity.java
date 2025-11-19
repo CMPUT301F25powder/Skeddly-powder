@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -18,9 +17,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.databinding.ActivityMainBinding;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Objects;
@@ -29,7 +26,6 @@ import com.example.skeddly.business.user.Authenticator;
 import com.example.skeddly.business.user.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.ListenerRegistration;
 
 /**
  * Main activity for the application.
@@ -38,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
     private Authenticator authenticator;
     private ActivityMainBinding binding;
     private NavController navController;
-    private ListenerRegistration reg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,6 +167,6 @@ public class MainActivity extends AppCompatActivity {
         bundle.putString("eventId", event.getId());
         bundle.putString("userId", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
         bundle.putString("organizerId", event.getOrganizer());
-        navController.navigate(R.id.event_view_info, bundle);
+        navController.navigate(R.id.navigation_event_view_info, bundle);
     }
 }

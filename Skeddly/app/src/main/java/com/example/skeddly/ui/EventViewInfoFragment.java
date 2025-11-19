@@ -79,10 +79,9 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
         binding = FragmentEventInfoBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        eventSnapshotListenerReg = null;
-
         // Initialize database handler
         dbHandler = DatabaseHandler.getInstance();
+        eventSnapshotListenerReg = null;
 
         // Initialize eventAdapter
         eventAdapter = new EventAdapter(getContext(), new ArrayList<>(), userId, this);

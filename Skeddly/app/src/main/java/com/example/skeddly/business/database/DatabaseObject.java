@@ -33,8 +33,9 @@ public class DatabaseObject {
 
     /**
      * Sets the ID of the object
+     * @param id The new ID
      */
-    protected void setId(String id) {
+    public void setId(String id) {
         this.id = id;
     }
 

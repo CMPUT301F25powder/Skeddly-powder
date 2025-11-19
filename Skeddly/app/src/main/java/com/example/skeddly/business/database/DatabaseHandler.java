@@ -21,6 +21,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Handles edits and realtime updates to the realtime DB in Firebase
@@ -99,11 +101,12 @@ public class DatabaseHandler {
             try {
                 DatabaseObjects values = (DatabaseObjects) method.invoke(object);
 
+                ref.update(internalName, null);
+
                 // Handle all values in the DatabaseObjects to serialize
                 for (int i = 0; i < values.size(); i++) {
                     DatabaseObject value = (DatabaseObject) values.get(i);
                     String valueId = value.getId();
-
 
                     ref.update(FieldPath.of(internalName, String.valueOf(i)), valueId);
 
@@ -148,7 +151,7 @@ public class DatabaseHandler {
                 };
 
                 // All of the ids that are in the _internal field
-                Task<ArrayList<String>> ownerIdsTask = getNodeChildren(ref.collection(internalName));
+                Task<ArrayList<String>> ownerIdsTask = getNodeChildren(ref, internalName);
 
                 // All of the objects related to this DatabaseObject
                 // For example, this would be all Notification objects (that the user is allowed to read)
@@ -187,20 +190,21 @@ public class DatabaseHandler {
 
     /**
      * Gets the children of a node in the database.
-     * @param ref The {@link CollectionReference} reference of the node
+     * @param ref The {@link DocumentReference} reference of the node
+     * @param internalName The field in the document where all the IDs are stored.
      * @return An asynchronous task that gets an arraylist of strings
      * @see CollectionReference
      */
-    public Task<ArrayList<String>> getNodeChildren(CollectionReference ref) {
+    public Task<ArrayList<String>> getNodeChildren(DocumentReference ref, String internalName) {
         return ref.get().continueWith(task -> {
             ArrayList<String> result = new ArrayList<>();
 
             if (task.isSuccessful()) {
-                QuerySnapshot querySnapshot = task.getResult();
-                if (!querySnapshot.isEmpty()) {
-                    for (QueryDocumentSnapshot childSnapshot : querySnapshot) {
-                        result.add(childSnapshot.toObject(String.class));
-                    }
+                DocumentSnapshot documentSnapshot = task.getResult();
+
+                if (documentSnapshot.exists()) {
+                    Map<String, String> ids = (Map<String, String>) documentSnapshot.get(internalName);
+                    result.addAll(Objects.requireNonNull(ids).values());
                 }
             }
 
@@ -210,7 +214,7 @@ public class DatabaseHandler {
 
     /**
      * Gets the children of a node in the database.
-     * @param ref The collection reference of the node
+     * @param ref The {@link CollectionReference} of the node that contains the children.
      * @return An asynchronous task that gets an arraylist of database objects
      */
     public <T extends DatabaseObject> Task<DatabaseObjects<T>> getNodeChildren(CollectionReference ref, Class<T> classType) {
