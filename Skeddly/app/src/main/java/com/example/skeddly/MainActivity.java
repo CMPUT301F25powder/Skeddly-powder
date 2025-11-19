@@ -41,6 +41,7 @@ public class MainActivity extends CustomActivity {
     protected void onCreate(Bundle savedInstanceState) {
         // Boiler Plate Stuff
         super.onCreate(savedInstanceState);
+        setupFirebaseEmulator();
 
         EdgeToEdge.enable(this);
 

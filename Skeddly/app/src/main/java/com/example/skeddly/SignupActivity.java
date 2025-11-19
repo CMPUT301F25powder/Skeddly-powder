@@ -40,6 +40,7 @@ public class SignupActivity extends CustomActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setupFirebaseEmulator();
 
         EdgeToEdge.enable(this);
 

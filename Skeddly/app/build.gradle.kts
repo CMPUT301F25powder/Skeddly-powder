@@ -41,6 +41,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
+    testOptions {
+        animationsDisabled = true
+    }
 }
 
 dependencies {
@@ -65,6 +69,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:34.4.0"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-database")
+    implementation("com.google.firebase:firebase-firestore")
 
     // Maps SDK for Android
     implementation("com.google.android.gms:play-services-maps:19.2.0")
