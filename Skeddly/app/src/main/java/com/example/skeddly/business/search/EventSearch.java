@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class EventSearch {
     // Constants
     private final String EVENT_NAME_SUGGESTION_ID = "eventName"; // The key for the event name metadata is used in suggestions (you probably won't need to change this)
-    private final int LEVENSHTEIN_MINIMUM = 2; // How "picky" you want the search results to be, higher is more picky. DEFAULT: 2
+    private final double STRING_COMPARE_MINIMUM = 0.1f; // How "picky" you want the search results to be, higher is more picky. DEFAULT: 0.1f
     private final String[] from = new String[] {EVENT_NAME_SUGGESTION_ID};
     private final int[] to = new int[] {android.R.id.text1};
     // Internal
@@ -89,13 +89,8 @@ public class EventSearch {
             Event event = eventList.get(i);
             String eventName = event.getEventDetails().getName();
 
-            // Compare only the currently typed length of a query
-            // Example: I am searching "party" and the event "party city" will be only seen as "party"
-            // This improves Levenshtein distance results
-            int clampedEndNameIndex = Math.min(query.length(), eventName.length());
-            String queryLengthName = eventName.substring(0, clampedEndNameIndex);
-
-            if (checkNameSuggestionMatch(queryLengthName, query))
+            // If name matches, add it to the suggestions row UI
+            if (checkNameSuggestionMatch(eventName, query))
                 matrixCursor.addRow(new Object[] {i, eventName});
         }
 
@@ -118,6 +113,10 @@ public class EventSearch {
 
         int distance = levenshteinDistance.apply(name.toLowerCase(), query.toLowerCase());
 
-        return distance <= LEVENSHTEIN_MINIMUM;
+        // Normalize the comparison so string length doesn't matter.
+        // https://www.cse.lehigh.edu/%7Elopresti/Publications/1996/sdair96.pdf - Equation 6
+        double score = 1.0f / Math.exp((double) distance / (Math.max(name.length(), query.length()) - distance));
+
+        return score > STRING_COMPARE_MINIMUM;
     }
 }
