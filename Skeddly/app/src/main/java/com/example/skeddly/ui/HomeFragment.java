@@ -155,6 +155,9 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
         );
     }
 
+    /**
+     * Fetches events from Firebase and updates the event adapter.
+     */
     private void fetchEvents() {
         fetchEvents("");
     }
