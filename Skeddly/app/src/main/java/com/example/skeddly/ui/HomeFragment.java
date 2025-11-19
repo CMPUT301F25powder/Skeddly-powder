@@ -2,24 +2,12 @@ package com.example.skeddly.ui;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.database.MatrixCursor;
-import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.provider.BaseColumns;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CursorAdapter;
-import android.widget.ImageView;
-import android.widget.SearchView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultCallback;
@@ -36,7 +24,6 @@ import com.example.skeddly.business.location.CustomLocation;
 import com.example.skeddly.databinding.FragmentHomeBinding;
 import com.example.skeddly.business.search.EventSearch;
 import com.example.skeddly.business.search.SearchFinishedListener;
-import com.example.skeddly.databinding.HomeFragmentBinding;
 import com.example.skeddly.ui.adapter.EventAdapter;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.database.DatabaseObjects;
@@ -47,10 +34,6 @@ import com.google.android.gms.location.Priority;
 import com.google.android.gms.tasks.CancellationTokenSource;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-
-
-import org.apache.commons.text.similarity.LevenshteinDetailedDistance;
-import org.apache.commons.text.similarity.LevenshteinDistance;
 
 import java.util.ArrayList;
 import java.util.Map;
