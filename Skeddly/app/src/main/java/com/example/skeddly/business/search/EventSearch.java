@@ -112,11 +112,11 @@ public class EventSearch {
 
         LevenshteinDistance levenshteinDistance = LevenshteinDistance.getDefaultInstance();
 
-        int distance = levenshteinDistance.apply(name.toLowerCase(), query.toLowerCase());
+        double distance = levenshteinDistance.apply(name.toLowerCase(), query.toLowerCase());
 
         // Normalize the comparison so string length doesn't matter.
         // https://www.cse.lehigh.edu/%7Elopresti/Publications/1996/sdair96.pdf - Equation 6
-        double score = 1.0f / Math.exp((double) distance / (Math.max(name.length(), query.length()) - distance));
+        double score = 1.0f / Math.exp(distance / (Math.max(name.length(), query.length()) - distance));
 
         return score > STRING_COMPARE_MINIMUM;
     }
