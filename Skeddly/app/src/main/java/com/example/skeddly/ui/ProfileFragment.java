@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -37,6 +39,7 @@ public class ProfileFragment extends Fragment {
         MainActivity activity = (MainActivity) requireActivity();
         User user = activity.getUser();
 
+        ImageButton backButton = binding.headerProfile.btnBack;
         TextView profileName = binding.headerProfile.profileName;
         TextView profileEmail = binding.headerProfile.profileEmail;
         TextView profilePhone = binding.headerProfile.profilePhone;
@@ -47,14 +50,24 @@ public class ProfileFragment extends Fragment {
         profileEmail.setText(userInformation.getEmail());
         profilePhone.setText(userInformation.getPhoneNumber());
 
+        backButton.setVisibility(View.INVISIBLE);
         ProfileButtonsFragment pbf = new ProfileButtonsFragment();
         getChildFragmentManager().beginTransaction().replace(binding.fragment.getId(), pbf).commit();
 
         pbf.setPersonalInfoBtnOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                backButton.setVisibility(View.VISIBLE);
                 PersonalInformationEditFragment pief = new PersonalInformationEditFragment();
                 getChildFragmentManager().beginTransaction().replace(binding.fragment.getId(), pief).commit();
+            }
+        });
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getChildFragmentManager().beginTransaction().replace(binding.fragment.getId(), pbf).commit();
+                backButton.setVisibility(View.INVISIBLE);
             }
         });
 
