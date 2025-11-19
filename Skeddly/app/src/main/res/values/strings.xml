@@ -83,6 +83,7 @@
     <string name="fragment_profile_notification_settings">Notification Settings</string>
     <string name="fragment_profile_personal_info">Personal Information</string>
     <string name="fragment_profile_phone_number">123-456-7890</string>
+    <string name="fragment_profile_popup_delete_content">Are you sure you want to delete your account?</string>
 
     <string name="nav_create">Create</string>
     <string name="nav_event_info">Event Info</string>

@@ -31,6 +31,7 @@
     <fragment
         android:id="@+id/navigation_profile"
         android:name="com.example.skeddly.ui.ProfileFragment"
-        android:label="@string/nav_profile" />
+        android:label="@string/nav_profile"
+        />
 
 </navigation>
