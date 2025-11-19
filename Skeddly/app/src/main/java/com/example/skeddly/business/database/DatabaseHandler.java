@@ -10,6 +10,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
@@ -45,7 +46,6 @@ public class DatabaseHandler {
      * Serializes the getter for a field in DB
      * @param name The name of the getter to serialize
      * @return The serialized getter string
-     * @see DatabaseReference
      * @see DatabaseObject
      */
     private String serializeGetterName(String name) {
@@ -79,9 +79,9 @@ public class DatabaseHandler {
 
     /**
      * Serializes a {@link DatabaseObject} into the DB
-     * @param ref The {@link DatabaseReference} to serialize to
+     * @param ref The {@link DocumentReference} to serialize to
      * @param object The {@link DatabaseObject} to serialize
-     * @see DatabaseReference
+     * @see DocumentReference
      * @see DatabaseObject
      */
     public void customSerializer(DocumentReference ref, DatabaseObject object) {
@@ -104,7 +104,8 @@ public class DatabaseHandler {
                     DatabaseObject value = (DatabaseObject) values.get(i);
                     String valueId = value.getId();
 
-                    ref.collection(internalName).document(String.valueOf(i)).set(valueId);
+
+                    ref.update(FieldPath.of(internalName, String.valueOf(i)), valueId);
 
                     // Save to the higher level line in the DB
                     this.database.collection(baseName).document(valueId).set(value);
@@ -118,9 +119,9 @@ public class DatabaseHandler {
 
     /**
      * Unserializes a {@link DatabaseObject} from the DB
-     * @param ref The {@link DatabaseReference} to unserialize
+     * @param ref The {@link DocumentReference} to unserialize
      * @param object The {@link DatabaseObject} to unserialize
-     * @see DatabaseReference
+     * @see DocumentReference
      * @see DatabaseObject
      */
     public void customUnserializer(DocumentReference ref, DatabaseObject object) throws InvocationTargetException, IllegalAccessException {
@@ -186,8 +187,9 @@ public class DatabaseHandler {
 
     /**
      * Gets the children of a node in the database.
-     * @param ref The database reference of the node
+     * @param ref The {@link CollectionReference} reference of the node
      * @return An asynchronous task that gets an arraylist of strings
+     * @see CollectionReference
      */
     public Task<ArrayList<String>> getNodeChildren(CollectionReference ref) {
         return ref.get().continueWith(task -> {
@@ -208,7 +210,7 @@ public class DatabaseHandler {
 
     /**
      * Gets the children of a node in the database.
-     * @param ref The database reference of the node
+     * @param ref The collection reference of the node
      * @return An asynchronous task that gets an arraylist of database objects
      */
     public <T extends DatabaseObject> Task<DatabaseObjects<T>> getNodeChildren(CollectionReference ref, Class<T> classType) {

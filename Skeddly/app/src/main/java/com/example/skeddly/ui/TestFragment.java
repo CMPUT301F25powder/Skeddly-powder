@@ -17,11 +17,21 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
 
+import com.example.skeddly.business.database.SingleListenUpdate;
+import com.example.skeddly.business.database.repositories.EventRepository;
+import com.example.skeddly.business.database.repositories.RepositoryIterableUpdate;
+import com.example.skeddly.business.event.Event;
+import com.example.skeddly.business.notification.Notification;
+import com.example.skeddly.business.user.Authenticator;
 import com.example.skeddly.databinding.FragmentTestBinding;
 import com.example.skeddly.ui.popup.MapPopupDialogFragment;
 import com.example.skeddly.ui.popup.QRPopupDialogFragment;
 import com.example.skeddly.ui.popup.StandardPopupDialogFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+
+import java.util.List;
 
 
 /**
@@ -37,11 +47,11 @@ public class TestFragment extends Fragment {
         binding = FragmentTestBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        TextView returnText = binding.returnText;
-        ImageView photoPickerImage = binding.photoPickerImage;
+        TextView returnText = binding.textReturn;
+        ImageView photoPickerImage = binding.imgPickerPhoto;
 
         // === Generic popup stuff ===
-        Button testButton = binding.testButton;
+        Button testButton = binding.btnPopup;
         testButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -100,7 +110,7 @@ public class TestFragment extends Fragment {
 //        });
 
         // === Location Picker Stuff ===
-        Button locationPickerButton = binding.locationPickerButton;
+        Button locationPickerButton = binding.btnPickerLocation;
         locationPickerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -133,7 +143,7 @@ public class TestFragment extends Fragment {
             }
         });
 
-        Button photoPickerButton = binding.photoPickerButton;
+        Button photoPickerButton = binding.btnPickerPhoto;
         photoPickerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -155,7 +165,7 @@ public class TestFragment extends Fragment {
         });
 
         // === QR Code stuff ===
-        Button qrButton = binding.qrButton;
+        Button qrButton = binding.btnQrDialog;
         qrButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -163,6 +173,78 @@ public class TestFragment extends Fragment {
                 qpf.show(getChildFragmentManager(), null);
             }
         });
+
+        // === DB Random stuff ===
+        Button dbButton = binding.btnDb;
+        EventRepository eventRepository = new EventRepository();
+        dbButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                eventRepository.getAll(new RepositoryIterableUpdate<Event>() {
+//                    @Override
+//                    public void onUpdate(List<Event> objects) {
+//                        Log.v("TEST_DB_BTN_GET_ALL", "Callback received!");
+//                        for (Event event : objects) {
+//                            Log.v("TEST_DB_BTN_GET_ALL", event.getId());
+//                        }
+//                    }
+//                });
+//
+//                eventRepository.getCount(new SingleListenUpdate<Long>() {
+//                    @Override
+//                    public void onUpdate(Long newValue) {
+//                        Log.v("TEST_DB_BTN_COUNT", String.format("Callback received --> %d", newValue));
+//                    }
+//                });
+//
+//                eventRepository.listenById("69", new SingleListenUpdate<Event>() {
+//                    @Override
+//                    public void onUpdate(Event newValue) {
+//                        Log.v("TEST_DB_BTN_LISTEN", "Callback received!");
+//
+//                        if (newValue == null) {
+//                            Log.v("TEST_DB_BTN_LISTEN", "Got null!");
+//                        } else {
+//                            Log.v("TEST_DB_BTN_LISTEN", newValue.getId());
+//                        }
+//                    }
+//                });
+
+//                eventRepository.getById("67", new SingleListenUpdate<Event>() {
+//                    @Override
+//                    public void onUpdate(Event newValue) {
+//                        Log.v("TEST_DB_BTN_GET", "Callback received!");
+//
+//                        if (newValue == null) {
+//                            Log.v("TEST_DB_BTN_GET", "Got null!");
+//                        } else {
+//                            Log.v("TEST_DB_BTN_GET", newValue.getId());
+//                        }
+//                    }
+//                });
+
+                Task<Void> asd = eventRepository.deleteById("67");
+
+                asd.addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Log.v("TEST_DB_BTN_DELETE", "Deleting task completed!");
+
+                        if (task.isSuccessful()) {
+                            Log.v("TEST_DB_BTN_DELETE", "Deleting task was successful!");
+                        } else if (task.isCanceled()) {
+                            Log.v("TEST_DB_BTN_DELETE", "Deleting task was cancelled!");
+                        } else {
+                            Log.v("TEST_DB_BTN_DELETE", "Deleting task was not successful!");
+                        }
+                    }
+                });
+
+                Authenticator.getInstance().getUser().addNotification(new Notification("asd", "asd"));
+                Authenticator.getInstance().commitUserChanges();
+            }
+        });
+
 
         return root;
     }

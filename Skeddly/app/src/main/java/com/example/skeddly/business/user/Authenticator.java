@@ -69,6 +69,7 @@ public class Authenticator {
                     }
 
                     if (callback != null) {
+                        System.out.println(user.getNotifications().get(0).getMessage());
                         callback.onUserLoaded(Authenticator.this);
                     }
                 } else {

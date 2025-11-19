@@ -1,13 +1,11 @@
 package com.example.skeddly.business;
 
-import com.example.skeddly.business.database.DatabaseObject;
-
 import java.util.ArrayList;
 
 /**
  * Class for list of participants in an event.
  */
-public class ParticipantList extends DatabaseObject {
+public class ParticipantList {
     private ArrayList<String> ticketIdList = new ArrayList<>();
     private int maxAttend;
 

@@ -1,14 +1,12 @@
 package com.example.skeddly.business;
 
-import com.example.skeddly.business.database.DatabaseObject;
-
 import java.util.ArrayList;
 import java.util.Random;
 
 /**
  * Class for list of people who want to attend an event
  */
-public class WaitingList extends DatabaseObject {
+public class WaitingList {
     private ArrayList<String> ticketIds = new ArrayList<>();
     private int maxWait;
     private Random randomGen;

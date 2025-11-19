@@ -2,18 +2,17 @@ package com.example.skeddly.business.database;
 
 import com.google.firebase.firestore.DocumentId;
 
-import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.UUID;
 import java.util.stream.Stream;
 
 /**
- * An object that can be serialized into the DB
+ * An object that is stored as a document in the DB.
  * Any values in its fields will be turned into DB keys by the {@link DatabaseHandler}
  * @see DatabaseHandler
  */
-public class DatabaseObject implements Serializable {
+public class DatabaseObject {
     @DocumentId
     private String id;
 

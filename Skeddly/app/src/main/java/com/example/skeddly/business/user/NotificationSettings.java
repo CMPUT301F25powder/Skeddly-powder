@@ -1,7 +1,7 @@
 package com.example.skeddly.business.user;
 
 /**
- * A user's notification settings that can be serialized into the DB
+ * Represent's a user's notification settings
  */
 public class NotificationSettings {
     private boolean lotteryStatus;

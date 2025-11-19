@@ -30,7 +30,7 @@ public class Event extends DatabaseObject {
     private String imageb64;
 
     /**
-     * No arg Constructor for the Event. Required by Firebase.
+     * No arg Constructor for an Event. Required by Firebase.
      */
     public Event() {
 

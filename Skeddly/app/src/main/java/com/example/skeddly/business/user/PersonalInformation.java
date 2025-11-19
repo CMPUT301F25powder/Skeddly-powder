@@ -5,7 +5,7 @@ import com.google.firebase.firestore.Exclude;
 import java.util.Objects;
 
 /**
- * A user's personal information that can be serialized into the DB
+ * Represent's a user's personal information
  */
 public class PersonalInformation {
     private String name;

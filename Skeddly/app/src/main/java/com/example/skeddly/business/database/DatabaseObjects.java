@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * DatabaseObjects are an ArrayList of DatabaseObjects
+ * DatabaseObjects are an ArrayList of DatabaseObject
  */
 public class DatabaseObjects<T extends DatabaseObject> extends ArrayList<T> {
     final Class<T> parameter;

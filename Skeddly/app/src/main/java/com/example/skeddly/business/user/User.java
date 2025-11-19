@@ -94,4 +94,9 @@ public class User extends DatabaseObject {
     public void setNotifications(DatabaseObjects<Notification> notifications) {
         this.notifications = notifications;
     }
+
+
+    public void addNotification(Notification notification) {
+        this.notifications.add(notification);
+    }
 }
