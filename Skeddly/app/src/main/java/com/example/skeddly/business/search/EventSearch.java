@@ -18,6 +18,7 @@ public class EventSearch {
     // Constants
     private final String EVENT_NAME_SUGGESTION_ID = "eventName"; // The key for the event name metadata is used in suggestions (you probably won't need to change this)
     private final double STRING_COMPARE_MINIMUM = 0.1f; // How "picky" you want the search results to be, higher is more picky. DEFAULT: 0.1f
+    private final int MAX_SUGGESTIONS = 7; // The maximum number of suggestions that can appear.
     private final String[] from = new String[] {EVENT_NAME_SUGGESTION_ID};
     private final int[] to = new int[] {android.R.id.text1};
     // Internal
@@ -90,7 +91,7 @@ public class EventSearch {
             String eventName = event.getEventDetails().getName();
 
             // If name matches, add it to the suggestions row UI
-            if (checkNameSuggestionMatch(eventName, query))
+            if (matrixCursor.getCount() <= MAX_SUGGESTIONS && checkNameSuggestionMatch(eventName, query))
                 matrixCursor.addRow(new Object[] {i, eventName});
         }
 
