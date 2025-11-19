@@ -14,10 +14,14 @@ import androidx.navigation.NavGraph;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
+import com.example.skeddly.business.database.DatabaseObjects;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 import com.example.skeddly.business.user.Authenticator;
@@ -30,8 +34,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
+/**
+ * Main activity for the application.
+ */
 public class MainActivity extends CustomActivity {
-    private User user;
     private Authenticator authenticator;
     private ActivityMainBinding binding;
     private NavController navController;
@@ -59,32 +65,18 @@ public class MainActivity extends CustomActivity {
         Uri qr = null;
 
         if (extras != null) {
-            user = (User) Objects.requireNonNull(extras.getSerializable("USER"));
             qr = Objects.requireNonNull(extras).getParcelable("QR");
         }
 
         DatabaseHandler database = new DatabaseHandler();
-        authenticator = new Authenticator(this, database, user);
+        authenticator = new Authenticator(this, database);
         authenticator.addListenerForUserLoaded(new UserLoaded() {
             @Override
             public void onUserLoaded(User loadedUser, boolean shouldShowSignupPage) {
-                user = loadedUser;
-
-                // Listen for any changes to the user itself
-                database.singleListen(database.getUsersPath().child(user.getId()), User.class, new SingleListenUpdate<User>() {
-                    @Override
-                    public void onUpdate(User newValue) {
-                        user = newValue;
-                        setupNavBar();
-                    }
-                });
-
                 // Update navbar if user object changes (allows for realtime updates)
                 setupNavBar();
             }
         });
-
-        setupNavBar();
 
         if (qr != null) {
             String eventId = qr.getEncodedPath();
@@ -116,6 +108,9 @@ public class MainActivity extends CustomActivity {
         }
     }
 
+    /**
+     * Sets up the navigation bar based on the user's privilege level.
+     */
     private void setupNavBar() {
         // Setup the nav bar
         BottomNavigationView navView = binding.navView;
@@ -130,7 +125,7 @@ public class MainActivity extends CustomActivity {
 
         // Inflate the correct navGraph for our privilege level and set the icons properly
         NavGraph navGraph;
-        switch (user.getPrivilegeLevel()) {
+        switch (authenticator.getUser().getPrivilegeLevel()) {
             case ENTRANT:
                 navView.inflateMenu(R.menu.bottom_nav_entrant);
                 navGraph = navController.getNavInflater().inflate(R.navigation.entrant_navigation);
@@ -144,28 +139,38 @@ public class MainActivity extends CustomActivity {
                 navGraph = navController.getNavInflater().inflate(R.navigation.admin_navigation);
                 break;
             default:
-                throw new IllegalStateException("Unexpected value: " + user.getPrivilegeLevel());
+                throw new IllegalStateException("Unexpected value: " + authenticator.getUser().getPrivilegeLevel());
         }
         navController.setGraph(navGraph);
         NavigationUI.setupWithNavController(binding.navView, navController);
     }
 
+    /**
+     * Getter for the user object.
+     * @return The user object.
+     */
     public User getUser() {
-        return user;
+        return authenticator.getUser();
     }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
+    /**
+     * Getter for the authenticator object.
+     * @return The Authenticator of the user
+     */
     public Authenticator getAuthenticator() {
         return authenticator;
     }
 
+    /**
+     * Notifies the authenticator that the user has changed.
+     */
     public void notifyUserChanged() {
         authenticator.commitUserChanges();
     }
 
+    /**
+     * Switches to the signup activity.
+     */
     public void switchToSignup() {
         Intent signupActivity = new Intent(getBaseContext(), SignupActivity.class);
         signupActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -173,6 +178,10 @@ public class MainActivity extends CustomActivity {
         finish();
     }
 
+    /**
+     * Navigates to the event view. Used if the app was opened with a QR code pointing to an event.
+     * @param event The event to navigate to.
+     */
     private void navigateToEvent(Event event) {
         Bundle bundle = new Bundle();
         bundle.putString("eventId", event.getId());

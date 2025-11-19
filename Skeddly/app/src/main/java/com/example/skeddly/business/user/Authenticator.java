@@ -2,6 +2,7 @@ package com.example.skeddly.business.user;
 
 import android.content.Context;
 import android.provider.Settings;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -16,28 +17,26 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
+/**
+ * Handles the authentication of a user
+ */
 public class Authenticator {
     private String androidId;
     private User user;
     private FirebaseAuth mAuth;
-    private Context context;
     private DatabaseHandler databaseHandler;
     private boolean showSignUp;
     UserLoaded callback;
 
-    public Authenticator(Context context, DatabaseHandler databaseHandler, User user) {
-        this.context = context;
-        this.databaseHandler = databaseHandler;
-        this.mAuth = FirebaseAuth.getInstance();
-        this.androidId = Settings.Secure.getString(context.getContentResolver(),Settings.Secure.ANDROID_ID);
-        this.showSignUp = false;
-
-        createAndTieUser();
-    }
+    /**
+     * Constructor for the Authenticator
+     * @param context The app context
+     * @param databaseHandler The database handler
+     */
     public Authenticator(Context context, DatabaseHandler databaseHandler) {
-        this.context = context;
         this.databaseHandler = databaseHandler;
         this.mAuth = FirebaseAuth.getInstance();
         this.androidId = Settings.Secure.getString(context.getContentResolver(),Settings.Secure.ANDROID_ID);
@@ -87,7 +86,14 @@ public class Authenticator {
 
                     currentUserPath.setValue(user);
                 } else {
+                    DatabaseReference userPath = databaseHandler.getUsersPath().child(currentUser.getUid());
+
                     user = dataSnapshot.getValue(User.class);
+                    try {
+                        databaseHandler.customUnserializer(userPath, user);
+                    } catch (InvocationTargetException | IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
 
                 user.setId(currentUser.getUid());
@@ -107,10 +113,18 @@ public class Authenticator {
         });
     }
 
+    /**
+     * Sets the callback for when the user is loaded
+     * @param callback The callback to set
+     */
     public void addListenerForUserLoaded(UserLoaded callback) {
         this.callback = callback;
     }
 
+    /**
+     * Deletes the user from the database
+     * @see User
+     */
     public void deleteUser() {
         databaseHandler.getUsersPath().child(user.getId()).removeValue();
         mAuth.getCurrentUser().delete();
@@ -124,11 +138,23 @@ public class Authenticator {
         return this.user;
     }
 
+    /**
+     * Gets if the user needs to sign up
+     * @see User
+     * @return True if the signup page needs to be shown. False otherwise.
+     */
     public boolean isShowSignUp() {
         return showSignUp;
     }
 
+    /**
+     * Commits the user changes to the database
+     * @see User
+     */
     public void commitUserChanges() {
-        databaseHandler.getUsersPath().child(user.getId()).setValue(user);
+        DatabaseReference userPath = databaseHandler.getUsersPath().child(user.getId());
+
+        userPath.setValue(user);
+        databaseHandler.customSerializer(userPath, user);
     }
 }

@@ -15,7 +15,9 @@ import androidx.navigation.Navigation;
 import com.example.skeddly.R;
 import com.example.skeddly.databinding.ToolsFragmentBinding;
 
-
+/**
+ * Fragment for the tools screen
+ */
 public class ToolsFragment extends Fragment {
     private ToolsFragmentBinding binding;
 

@@ -24,6 +24,9 @@ import com.example.skeddly.ui.popup.StandardPopupDialogFragment;
 import com.google.android.gms.maps.model.LatLng;
 
 
+/**
+ * Fragment for the test screen
+ */
 public class TestFragment extends Fragment {
     private FragmentTestBinding binding;
     private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;

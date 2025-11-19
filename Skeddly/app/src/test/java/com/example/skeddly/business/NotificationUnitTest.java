@@ -4,7 +4,10 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import java.time.LocalDateTime;
+import com.example.skeddly.business.notification.Notification;
+import com.example.skeddly.business.notification.NotificationInvitationStatus;
+import com.example.skeddly.business.notification.NotificationType;
+
 import java.util.UUID;
 
 /**
@@ -27,7 +30,6 @@ public class NotificationUnitTest {
     /**
      * Tests the default constructor to ensure all fields are initialized correctly.
      * - ID should be a valid UUID.
-     * - Timestamp should be recent.
      * - isRead should be false.
      * - Status should be PENDING.
      */
@@ -42,16 +44,10 @@ public class NotificationUnitTest {
             fail("ID is not a valid UUID string.");
         }
 
-
-        // 2. Verify timestamp is set to a recent time
-        assertNotNull("Timestamp should not be null after creation", notification.getTimestamp());
-        assertTrue("Timestamp should be recent",
-                notification.getTimestamp().isBefore(LocalDateTime.now().plusSeconds(1)));
-
-        // 3. Verify default boolean and enum values
+        // 2. Verify default boolean and enum values
         assertFalse("Notification should be unread by default", notification.isRead());
         assertEquals("Default status should be PENDING",
-                Notification.invitation_status.PENDING, notification.getStatus());
+                NotificationInvitationStatus.PENDING, notification.getStatus());
     }
 
     /**
@@ -77,23 +73,11 @@ public class NotificationUnitTest {
     }
 
     /**
-     * Verifies that the getter and setter for the Timestamp field work as expected.
-     * Uses LocalDateTime.
-     */
-    @Test
-    public void notification_GetAndSetTimestamp() {
-        LocalDateTime pastDateTime = LocalDateTime.now().minusDays(1);
-        notification.setTimestamp(pastDateTime);
-        assertEquals("Getter for Timestamp should return the same value set by the setter",
-                pastDateTime, notification.getTimestamp());
-    }
-
-    /**
-     * Verifies that the getter and setter for the notification_type enum work as expected.
+     * Verifies that the getter and setter for the NotificationType enum work as expected.
      */
     @Test
     public void notification_GetAndSetType() {
-        Notification.notification_type testType = Notification.notification_type.LOTTERY_STATUS;
+        NotificationType testType = NotificationType.MESSAGES;
         notification.setType(testType);
         assertEquals("Getter for Type should return the same enum value set by the setter",
                 testType, notification.getType());
@@ -123,11 +107,11 @@ public class NotificationUnitTest {
     }
 
     /**
-     * Verifies that the getter and setter for the invitation_status enum work as expected.
+     * Verifies that the getter and setter for the NotificationInvitationStatus enum work as expected.
      */
     @Test
     public void notification_GetAndSetStatus() {
-        Notification.invitation_status testStatus = Notification.invitation_status.ACCEPTED;
+        NotificationInvitationStatus testStatus = NotificationInvitationStatus.ACCEPTED;
         notification.setStatus(testStatus);
         assertEquals("Getter for Status should return the same enum value set by the setter",
                 testStatus, notification.getStatus());

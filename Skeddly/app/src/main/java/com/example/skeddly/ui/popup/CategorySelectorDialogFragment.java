@@ -12,10 +12,20 @@ import androidx.fragment.app.DialogFragment;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * Dialog fragment for the category selector
+ */
 public class CategorySelectorDialogFragment extends DialogFragment {
     private ArrayList<String> selectedItems;
     private String requestKey;
 
+    /**
+     * Create a new instance of the CategorySelector.
+     * @param title The title of the dialog
+     * @param categories The categories to choose from
+     * @param requestKey The requestKey to use for the result
+     * @return The newly constructed CategorySelectorDialogFragment
+     */
     public static CategorySelectorDialogFragment newInstance(String title, String[] categories, String requestKey) {
         Bundle args = new Bundle();
         args.putString("title", title);
@@ -77,6 +87,9 @@ public class CategorySelectorDialogFragment extends DialogFragment {
         return builder.show();
     }
 
+    /**
+     * Sets the result of the dialog that needs to be returned to the parent fragment.
+     */
     private void setResult() {
         Bundle bundle = new Bundle();
         bundle.putStringArrayList("selectedItems", selectedItems);

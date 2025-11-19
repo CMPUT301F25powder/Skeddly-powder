@@ -46,6 +46,9 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ * Dialog fragment for the map popup
+ */
 public class MapPopupDialogFragment extends DialogFragment implements OnMapReadyCallback {
     // MAP STUFF
     private GoogleMap googleMap;
@@ -60,9 +63,9 @@ public class MapPopupDialogFragment extends DialogFragment implements OnMapReady
     private PopupMapBinding binding;
 
     /**
-     * Instantiate the popup with the provided title and content fields.
+     * Create a new instance of the MapPopupDialogFragment.
      * @param requestKey The requestKey that should be used when returning the result
-     * @return A new MapPopupDialogFragment with the arguments passed to it to display.
+     * @return A new MapPopupDialogFragment with the given requestKey set.
      */
     public static MapPopupDialogFragment newInstance(String requestKey) {
         Bundle args = new Bundle();
@@ -228,7 +231,6 @@ public class MapPopupDialogFragment extends DialogFragment implements OnMapReady
      * @return A LatLng object that contains the latitude and longitude of our address
      */
     public LatLng getLocationFromAddress(String strAddress) {
-
         Geocoder coder = new Geocoder(requireContext());
         List<Address> address;
         LatLng p1 = null;

@@ -1,63 +1,220 @@
 package com.example.skeddly.business.database;
 
-import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.example.skeddly.business.user.User;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.logging.Logger;
+import java.util.List;
 
 /**
  * Handles edits and realtime updates to the realtime DB in Firebase
  */
 public class DatabaseHandler {
-    private User user;
+    final String INTERNAL = "_internal";
     private DatabaseReference database;
 
+    public DatabaseHandler() {
+        this.database = FirebaseDatabase.getInstance().getReference();
+    }
+
+    /**
+     * Serializes the getter for a field in DB
+     * @param name The name of the getter to serialize
+     * @return The serialized getter string
+     * @see DatabaseReference
+     * @see DatabaseObject
+     */
     private String serializeGetterName(String name) {
         String replaced = name.replaceFirst("get", "");
         String firstLetter = replaced.substring(0, 1).toLowerCase();
+        String fullIdentifier = firstLetter.concat(replaced.substring(1));
 
-        return firstLetter.concat(replaced.substring(1));
+        return fullIdentifier.concat(INTERNAL);
     }
-    public void customSerializer(DatabaseReference ref, Object object) {
-        Method [] methods =  object.getClass().getDeclaredMethods();
+
+    /**
+     * Unserialize a getter for a field in DB
+     * @param name The name of the getter to unserialize
+     * @return The unserialized getter string
+     */
+    private String unserializeGetterName(String name) {
+        String firstLetter = name.substring(0, 1).toUpperCase();
+        String replaced = firstLetter.concat(name.substring(1));
+
+        return String.format("set%s", replaced).replace(INTERNAL, "");
+    }
+
+    /**
+     * Gets the base name of a field in the DB. Just strips off the INTERNAL string.
+     * @param name The field name.
+     * @return The base name.
+     */
+    private String getBaseName(String name) {
+        return name.replace(INTERNAL, "");
+    }
+
+    /**
+     * Serializes a {@link DatabaseObject} into the DB
+     * @param ref The {@link DatabaseReference} to serialize to
+     * @param object The {@link DatabaseObject} to serialize
+     * @see DatabaseReference
+     * @see DatabaseObject
+     */
+    public void customSerializer(DatabaseReference ref, DatabaseObject object) {
+        Method [] methods = object.fetchDatabaseObjectRelatedMethods();
 
         for (Method method : methods) {
-            if (method.getReturnType() == DatabaseObjects.class) {
-                String formattedMethodName = this.serializeGetterName(method.getName());
-                try {
-                    DatabaseObjects values = (DatabaseObjects) method.invoke(object);
+            // Formatted strings for saving to DB
+            // For example, in the user, it will be saved as field_internal so it knows where to load from next time
+            // Only ids are saved to the internalName field
+            String internalName = this.serializeGetterName(method.getName());
 
-                    for (int i = 0; i < values.size(); i++) {
-                        DatabaseObject value = values.get(i);
-                        String valueId = value.getId();
+            // The higher level place in the DB where the object itself is stored
+            String baseName = this.getBaseName(internalName);
 
-                        ref.child(formattedMethodName).child(String.valueOf(i)).setValue(valueId);
-                    }
+            try {
+                DatabaseObjects values = (DatabaseObjects) method.invoke(object);
 
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                } catch (InvocationTargetException e) {
-                    throw new RuntimeException(e);
+                // Handle all values in the DatabaseObjects to serialize
+                for (int i = 0; i < values.size(); i++) {
+                    DatabaseObject value = (DatabaseObject) values.get(i);
+                    String valueId = value.getId();
+
+                    ref.child(internalName).child(String.valueOf(i)).setValue(valueId);
+
+                    // Save to the higher level line in the DB
+                    this.database.child(baseName).child(valueId).setValue(value);
                 }
+
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                throw new RuntimeException(e);
             }
         }
     }
 
-    public DatabaseHandler() {
-        this.database = FirebaseDatabase.getInstance().getReference();
+    /**
+     * Unserializes a {@link DatabaseObject} from the DB
+     * @param ref The {@link DatabaseReference} to unserialize
+     * @param object The {@link DatabaseObject} to unserialize
+     * @see DatabaseReference
+     * @see DatabaseObject
+     */
+    public void customUnserializer(DatabaseReference ref, DatabaseObject object) throws InvocationTargetException, IllegalAccessException {
+        Method [] methods = object.fetchDatabaseObjectRelatedMethods();
+
+        for (Method method : methods) {
+            // Formatted strings for reading from DB
+            // For example, in the user, it will be saved as field_internal so it knows where to load from next time
+            // Only ids are saved to the internalName field
+            String internalName = this.serializeGetterName(method.getName());
+            String setterName = this.unserializeGetterName(internalName);
+            String baseName = this.getBaseName(internalName);
+
+            // Invoke getter to determine its type
+            DatabaseObjects<?> value = (DatabaseObjects<?>) method.invoke(object);
+
+            if (value != null) {
+                // Get type
+                Class<? extends DatabaseObject> parameter = value.getParameter();
+
+                // Prepare values to
+                Class<?>[] setterParams = new Class<?>[] {
+                        DatabaseObjects.class
+                };
+
+                // All of the ids that are in the _internal field
+                Task<ArrayList<String>> ownerIdsTask = getNodeChildren(ref.child(internalName));
+
+                // All of the objects related to this DatabaseObject
+                // For example, this would be all Notification objects (that the user is allowed to read)
+                Task<DatabaseObjects<DatabaseObject>> allObjectsTask = getNodeChildren(this.database.child(baseName), (Class<DatabaseObject>) parameter);
+
+                Task<List<Object>> allTasks = Tasks.whenAllSuccess(ownerIdsTask, allObjectsTask);
+
+                allTasks.addOnSuccessListener(results -> {
+                    ArrayList<String> ownerIds = (ArrayList<String>) results.get(0);
+                    DatabaseObjects<DatabaseObject> allObjects = (DatabaseObjects<DatabaseObject>) results.get(1);
+
+                    // Empty to fill with values to save to the DB
+                    DatabaseObjects<DatabaseObject> unserializedObjects = new DatabaseObjects(parameter);
+
+                    for (DatabaseObject someObject : allObjects) {
+                        if (ownerIds.contains(someObject.getId())) {
+                            unserializedObjects.add(someObject);
+                        }
+                    }
+
+                    try {
+                        // Get the setter
+                        Method setter = object.getClass().getMethod(setterName, setterParams);
+
+                        setter.invoke(object, unserializedObjects);
+                    } catch (IllegalAccessException | InvocationTargetException |
+                             NoSuchMethodException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    Log.d("DbHandler", String.format("Invoked %s with %d objects", setterName, unserializedObjects.size()));
+                });
+            }
+        }
+    }
+
+    /**
+     * Gets the children of a node in the database.
+     * @param ref The database reference of the node
+     * @return An asynchronous task that gets an arraylist of strings
+     */
+    public Task<ArrayList<String>> getNodeChildren(DatabaseReference ref) {
+        return ref.get().continueWith(task -> {
+            ArrayList<String> result = new ArrayList<>();
+
+            if (task.isSuccessful()) {
+                DataSnapshot dataSnapshot = task.getResult();
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                        result.add(childSnapshot.getValue(String.class));
+                    }
+                }
+            }
+
+            return result;
+        });
+    }
+
+    /**
+     * Gets the children of a node in the database.
+     * @param ref The database reference of the node
+     * @return An asynchronous task that gets an arraylist of database objects
+     */
+    public <T extends DatabaseObject> Task<DatabaseObjects<T>> getNodeChildren(DatabaseReference ref, Class<T> classType) {
+        return ref.get().continueWith(task -> {
+            DatabaseObjects<T> result = new DatabaseObjects<>(classType);
+            if (task.isSuccessful()) {
+                DataSnapshot dataSnapshot = task.getResult();
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                        T loadedResult = childSnapshot.getValue(classType);
+                        loadedResult.setId(childSnapshot.getKey());
+
+                        result.add(loadedResult);
+                    }
+                }
+            }
+
+            return result;
+        });
     }
 
     /**
@@ -101,7 +258,7 @@ public class DatabaseHandler {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                DatabaseObjects result = new DatabaseObjects();
+                DatabaseObjects<T> result = new DatabaseObjects<>((Class<T>) DatabaseObject.class);
                 Iterable<DataSnapshot> subSnapshot = snapshot.getChildren();
 
                 for (DataSnapshot item : subSnapshot) {
@@ -151,6 +308,14 @@ public class DatabaseHandler {
         return database.child("tickets");
     }
 
+    /**
+     * Returns a {@link DatabaseReference} pointing to notifications
+     * @return A {@link DatabaseReference} pointing to notifications
+     * @see DatabaseReference
+     */
+    public DatabaseReference getNotificationsPath() {
+        return database.child("notifications");
+    }
 
     /**
      * Returns a {@link DatabaseReference} pointing to the specified path

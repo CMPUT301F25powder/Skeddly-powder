@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/qr_popup"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/popup_header_round_style"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
 
-    >
+    android:background="@drawable/popup_header_round_style">
 
     <TextView
         android:id="@+id/text_popup_title"
@@ -63,7 +63,6 @@
             app:layout_constraintTop_toBottomOf="@+id/image_qr_code" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

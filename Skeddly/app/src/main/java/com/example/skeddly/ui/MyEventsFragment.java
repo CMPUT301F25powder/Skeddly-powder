@@ -11,7 +11,9 @@ import androidx.fragment.app.Fragment;
 
 import com.example.skeddly.databinding.MyEventsFragmentBinding;
 
-
+/**
+ * Fragment for the my events screen
+ */
 public class MyEventsFragment extends Fragment {
     private MyEventsFragmentBinding binding;
 

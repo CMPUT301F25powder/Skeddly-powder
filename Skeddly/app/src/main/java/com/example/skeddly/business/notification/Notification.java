@@ -1,60 +1,43 @@
-package com.example.skeddly.business;
+package com.example.skeddly.business.notification;
+
+import com.example.skeddly.business.database.DatabaseObject;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 /**
  * Represents a single notification item within the application.
  * This class holds all relevant data for a notification, such as its type, content, and status.
  */
-public class Notification {
-    /**
-     * Defines the different categories a notification can belong to.
-     */
-    public enum notification_type {
-        LOTTERY_STATUS,
-        EVENT_STATUS,
-        ADMINSTRATIVE,
-        INVITATION
-    }
-
-    /**
-     * Defines the possible states of an invitation notification.
-     */
-    public enum invitation_status {
-        ACCEPTED,
-        PENDING,
-        REJECTED
-    }
-
+public class Notification extends DatabaseObject {
     // Fields for the notification object
-    private final String id;
     private String title;
     private String message;
     private LocalDateTime timestamp;
-    private notification_type type;
+    private NotificationType type;
     private String eventId; // Used to link to a specific event
     private boolean isRead;
-    private invitation_status status; // Specific to invitation notifications
+    private NotificationInvitationStatus status; // Specific to invitation notifications
 
     /**
      * Default constructor for creating a new Notification.
-     * Initializes the timestamp to the current time and sets its read status to false.
+     * Sets its read status to false and status to pending.
      */
     public Notification() {
-        this.timestamp = LocalDateTime.now();
+//        this.timestamp = LocalDateTime.now();
         this.isRead = false;
-        this.status = invitation_status.PENDING;
-        this.id = UUID.randomUUID().toString();
-
+        this.status = NotificationInvitationStatus.PENDING;
+        this.type = NotificationType.MESSAGES;
     }
 
     /**
-     * Gets the unique identifier of the notification.
-     * @return A string representing the notification ID.
+     * Construct a notification with the given title and message.
+     * @param title The title to set on the notification.
+     * @param message The message that it should contain.
      */
-    public String getId() {
-        return id;
+    public Notification(String title, String message) {
+        this();
+        this.setTitle(title);
+        this.setMessage(message);
     }
 
     /**
@@ -93,31 +76,31 @@ public class Notification {
      * Gets the timestamp indicating when the notification was created.
      * @return A Date object representing the creation time.
      */
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
+//    public LocalDateTime getTimestamp() {
+//        return LocalDateTime.now();
+//    }
 
     /**
      * Sets the timestamp for the notification.
      * @param timestamp The Date to set.
      */
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
-    }
+//    public void setTimestamp(LocalDateTime timestamp) {
+//        this.timestamp = timestamp;
+//    }
 
     /**
      * Gets the type of the notification.
-     * @return The notification_type enum value.
+     * @return The NotificationType enum value.
      */
-    public notification_type getType() {
+    public NotificationType getType() {
         return type;
     }
 
     /**
      * Sets the type of the notification.
-     * @param type The notification_type enum value to set.
+     * @param type The NotificationType enum value to set.
      */
-    public void setType(notification_type type) {
+    public void setType(NotificationType type) {
         this.type = type;
     }
 
@@ -155,17 +138,17 @@ public class Notification {
 
     /**
      * Gets the status of an invitation notification.
-     * @return The invitation_status enum value.
+     * @return The NotificationInvitationStatus enum value.
      */
-    public invitation_status getStatus() {
+    public NotificationInvitationStatus getStatus() {
         return status;
     }
 
     /**
      * Sets the status for an invitation notification.
-     * @param status The invitation_status enum value to set.
+     * @param status The NotificationInvitationStatus enum value to set.
      */
-    public void setStatus(invitation_status status) {
+    public void setStatus(NotificationInvitationStatus status) {
         this.status = status;
     }
 }
