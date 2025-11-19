@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
 
 import com.example.skeddly.MainActivity;
+import com.example.skeddly.R;
 import com.example.skeddly.business.user.Authenticator;
 import com.example.skeddly.databinding.FragmentProfileButtonsBinding;
 import com.example.skeddly.ui.popup.StandardPopupDialogFragment;
@@ -38,15 +39,14 @@ public class ProfileButtonsFragment extends Fragment {
             binding.btnPersonalInfo.setOnClickListener(personalInfoOnClickListener);
         }
 
-        String deletePopupTitle = "Delete Account";
-        String deletePopupContent = "Are you sure you want to delete your account?";
-        String deletePopupRequestKey = "confirmationDialog";
-
+        String deletePopupRequestKey = "deletePopup";
         deleteAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 StandardPopupDialogFragment spf = StandardPopupDialogFragment
-                        .newInstance(deletePopupTitle, deletePopupContent, deletePopupRequestKey);
+                        .newInstance(getString(R.string.fragment_profile_delete_account),
+                                getString(R.string.fragment_profile_popup_delete_content),
+                                deletePopupRequestKey);
                 spf.show(getChildFragmentManager(), deletePopupRequestKey);
             }
         });
