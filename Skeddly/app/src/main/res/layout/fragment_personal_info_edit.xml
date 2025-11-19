@@ -89,6 +89,7 @@
         <!-- Confirm Button -->
         <include
             layout="@layout/button_confirm"
+            android:id="@+id/include"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp" />

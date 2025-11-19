@@ -36,40 +36,39 @@ public class ProfileFragment extends Fragment {
         binding = FragmentProfileBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        MainActivity activity = (MainActivity) requireActivity();
-        User user = activity.getUser();
+        // Fill in their details
+        updatePersonalInfo();
 
         ImageButton backButton = binding.headerProfile.btnBack;
-        TextView profileName = binding.headerProfile.profileName;
-        TextView profileEmail = binding.headerProfile.profileEmail;
-        TextView profilePhone = binding.headerProfile.profilePhone;
-
-        PersonalInformation userInformation = user.getPersonalInformation();
-
-        profileName.setText(userInformation.getName());
-        profileEmail.setText(userInformation.getEmail());
-        profilePhone.setText(userInformation.getPhoneNumber());
-
         backButton.setVisibility(View.INVISIBLE);
+
+        // Show all the buttons of things they can do
         ProfileButtonsFragment pbf = new ProfileButtonsFragment();
         getChildFragmentManager().beginTransaction().replace(binding.fragment.getId(), pbf).commit();
 
+        View.OnClickListener returnToButtons = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getChildFragmentManager().beginTransaction().replace(binding.fragment.getId(), pbf).commit();
+                backButton.setVisibility(View.INVISIBLE);
+                updatePersonalInfo();
+            }
+        };
+
+        // What to do when they press to navigate to the personal info edit fragment
         pbf.setPersonalInfoBtnOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 backButton.setVisibility(View.VISIBLE);
                 PersonalInformationEditFragment pief = new PersonalInformationEditFragment();
                 getChildFragmentManager().beginTransaction().replace(binding.fragment.getId(), pief).commit();
+
+                // If they submit, we return back to profile buttons
+                pief.setOnCompleteListener(returnToButtons);
             }
         });
 
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getChildFragmentManager().beginTransaction().replace(binding.fragment.getId(), pbf).commit();
-                backButton.setVisibility(View.INVISIBLE);
-            }
-        });
+        backButton.setOnClickListener(returnToButtons);
 
         return root;
     }
@@ -78,5 +77,19 @@ public class ProfileFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    private void updatePersonalInfo() {
+        MainActivity activity = (MainActivity) requireActivity();
+        User user = activity.getUser();
+
+        TextView profileName = binding.headerProfile.profileName;
+        TextView profileEmail = binding.headerProfile.profileEmail;
+        TextView profilePhone = binding.headerProfile.profilePhone;
+
+        PersonalInformation userInformation = user.getPersonalInformation();
+        profileName.setText(userInformation.getName());
+        profileEmail.setText(userInformation.getEmail());
+        profilePhone.setText(userInformation.getPhoneNumber());
     }
 }
