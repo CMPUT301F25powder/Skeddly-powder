@@ -77,6 +77,7 @@ public class CreateFragment extends Fragment {
     private FragmentCreateEditBinding binding;
     private CalendarConstraints calendarConstraints;
     private UnderlineSpan underlineSpan;
+    private boolean isEdit = false;
 
     // For launching the image picker built in activity
     private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
@@ -138,6 +139,7 @@ public class CreateFragment extends Fragment {
         // Get arguments
         if (getArguments() != null) {
             this.eventId = getArguments().getString("eventId");
+            isEdit = true;
             if (this.eventId != null && !this.eventId.isEmpty()) {
                 loadEventData(this.eventId);
             }
@@ -284,8 +286,9 @@ public class CreateFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Event event = createEvent();
-                Toast.makeText(requireContext(), "Event created!", Toast.LENGTH_SHORT).show();
-
+                if (isEdit) Toast.makeText(requireContext(), "Edited Event!", Toast.LENGTH_SHORT).show();
+                else Toast.makeText(requireContext(), "Created Event!", Toast.LENGTH_SHORT).show();
+                
                 // Put event in db
                 DatabaseHandler dbHandler = new DatabaseHandler();
                 if (getArguments() != null) {
@@ -299,7 +302,7 @@ public class CreateFragment extends Fragment {
                 mainActivity.notifyUserChanged();
 
                 // Reset the create event screen
-                resetCreateScreen();
+                if (!isEdit) resetCreateScreen();
             }
         });
 
