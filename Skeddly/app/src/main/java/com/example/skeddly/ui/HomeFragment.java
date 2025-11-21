@@ -34,6 +34,7 @@ import com.google.android.gms.location.Priority;
 import com.google.android.gms.tasks.CancellationTokenSource;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.ListenerRegistration;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -55,6 +56,8 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
     private FusedLocationProviderClient fusedLocationClient;
     private ActivityResultLauncher<String[]> requestPermissionLauncher;
     private final String[] needed_permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+
+    private ListenerRegistration fetchEventsRegistration = null;
 
     @Nullable
     @Override
@@ -115,8 +118,12 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
      * Fetches events from Firebase and updates the event adapter.
      */
     private void fetchEvents(String query) {
+        if (fetchEventsRegistration != null) {
+            fetchEventsRegistration.remove();
+        }
+
         // Fetch events from firebase
-        databaseHandler.iterableListen(databaseHandler.getEventsPath(),
+        fetchEventsRegistration = databaseHandler.iterableListen(databaseHandler.getEventsPath(),
                 Event.class,
                 (DatabaseObjects dbObjects) -> {
                     // Clear existing list
@@ -150,6 +157,11 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+
+        if (fetchEventsRegistration != null) {
+            fetchEventsRegistration.remove();
+            fetchEventsRegistration = null;
+        }
     }
 
     /**
