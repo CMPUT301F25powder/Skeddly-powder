@@ -9,10 +9,10 @@
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="91dp"
-        android:background="@color/secondary_dark_purple"
-        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/bg_header_profile"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <SearchView
             android:id="@+id/search_events"
@@ -21,6 +21,10 @@
             android:background="@drawable/search_style_round"
             android:backgroundTint="@color/neutral_lighter_off_white"
             android:queryHint="@string/fragment_home_search_hint"
+            android:focusableInTouchMode="true"
+            android:iconifiedByDefault="false"
+            android:inputType="text|textAutoComplete"
+            android:paddingEnd="15dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -33,6 +37,7 @@
             android:layout_width="26dp"
             android:layout_height="26dp"
             android:layout_marginEnd="10dp"
+            android:background="@color/neutral_lighter_off_white"
             app:layout_constraintBottom_toBottomOf="@+id/search_events"
             app:layout_constraintEnd_toEndOf="@+id/search_events"
             app:layout_constraintTop_toTopOf="@+id/search_events"

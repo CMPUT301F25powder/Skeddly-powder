@@ -22,6 +22,8 @@ import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.database.SingleListenUpdate;
 import com.example.skeddly.business.location.CustomLocation;
 import com.example.skeddly.databinding.FragmentHomeBinding;
+import com.example.skeddly.business.search.EventSearch;
+import com.example.skeddly.business.search.SearchFinishedListener;
 import com.example.skeddly.ui.adapter.EventAdapter;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.database.DatabaseObjects;
@@ -32,6 +34,7 @@ import com.google.android.gms.location.Priority;
 import com.google.android.gms.tasks.CancellationTokenSource;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.ListenerRegistration;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -42,14 +45,19 @@ import java.util.Objects;
  */
 public class HomeFragment extends Fragment implements RetrieveLocation {
     private FragmentHomeBinding binding;
-    private ArrayList<Event> eventList;
+    private ArrayList<Event> eventList = new ArrayList<>();
     private DatabaseHandler databaseHandler;
     private EventAdapter eventAdapter;
+
+    // Search
+    private EventSearch eventSearch;
 
     // Location Stuff
     private FusedLocationProviderClient fusedLocationClient;
     private ActivityResultLauncher<String[]> requestPermissionLauncher;
     private final String[] needed_permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+
+    private ListenerRegistration fetchEventsRegistration = null;
 
     @Nullable
     @Override
@@ -59,7 +67,8 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
 
         // Initialize DatabaseHandler and list of events
         databaseHandler = new DatabaseHandler();
-        eventList = new ArrayList<>();
+
+        eventSearch = new EventSearch(getContext(), binding.searchEvents, eventList);
 
         // Initialize event adapter
         eventAdapter = new EventAdapter(getContext(),
@@ -90,15 +99,31 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
         // Fetch events from firebase
         fetchEvents();
 
+        eventSearch.setOnSearchFinishedListener(new SearchFinishedListener() {
+            @Override
+            public void onSearchFinished() {
+                fetchEvents();
+            }
+
+            @Override
+            public void onSearchFinished(String query) {
+                fetchEvents(query);
+            }
+        });
+
         return root;
     }
 
     /**
      * Fetches events from Firebase and updates the event adapter.
      */
-    private void fetchEvents() {
+    private void fetchEvents(String query) {
+        if (fetchEventsRegistration != null) {
+            fetchEventsRegistration.remove();
+        }
+
         // Fetch events from firebase
-        databaseHandler.iterableListen(databaseHandler.getEventsPath(),
+        fetchEventsRegistration = databaseHandler.iterableListen(databaseHandler.getEventsPath(),
                 Event.class,
                 (DatabaseObjects dbObjects) -> {
                     // Clear existing list
@@ -106,7 +131,12 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
 
                     // Add new events to list
                     for (int i = 0; i < dbObjects.size(); i++) {
-                        eventList.add((Event) dbObjects.get(i));
+                        Event event = (Event) dbObjects.get(i);
+                        String eventName = event.getEventDetails().getName();
+
+                        if (eventSearch.checkNameSuggestionMatch(eventName, query)) {
+                            eventList.add(event);
+                        }
                     }
 
                     // Notify adapter of changes
@@ -116,10 +146,22 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
         );
     }
 
+    /**
+     * Fetches events from Firebase and updates the event adapter.
+     */
+    private void fetchEvents() {
+        fetchEvents("");
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+
+        if (fetchEventsRegistration != null) {
+            fetchEventsRegistration.remove();
+            fetchEventsRegistration = null;
+        }
     }
 
     /**
