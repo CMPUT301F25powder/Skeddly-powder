@@ -216,6 +216,10 @@ public class Event extends DatabaseObject {
         return !waitingList.isFull() && !eventSchedule.isRegistrationOver();
     }
 
+    /**
+     * Draws a number of participants into the Participant List.
+     * @param numToDraw The number of participants to draw.
+     */
     public void draw(int numToDraw) {
         TicketRepository ticketRepository = new TicketRepository(FirebaseFirestore.getInstance(), getId());
         for (int i = 0; i < numToDraw; ++i) {

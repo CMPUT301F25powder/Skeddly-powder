@@ -25,10 +25,20 @@ public class TicketRepository extends GenericRepository<Ticket> {
         this.eventId = eventId;
     }
 
+    /**
+     * Retrieves all the tickets related to this event that contain a certain status.
+     * @param status The status to retrieve tickets by.
+     * @return A task that when complete, contains all the requested tickets in a list.
+     */
     public Task<List<Ticket>> getAllByStatus(TicketStatus status) {
         return getAllByQuery(getQuery().whereEqualTo("status", status.toString()));
     }
 
+    /**
+     * Retrieves all the tickets related to this event that contain certain statuses.
+     * @param statuses The statuses to retrieve tickets by.
+     * @return A task that when complete, contains all the requested tickets in a list.
+     */
     public Task<List<Ticket>> getAllByStatuses(List<TicketStatus> statuses) {
         Query query = getQuery();
 
@@ -39,6 +49,12 @@ public class TicketRepository extends GenericRepository<Ticket> {
         return getAllByQuery(query);
     }
 
+    /**
+     * Updates the status of a given ticket id.
+     * @param ticketId The ticketId to update
+     * @param newStatus The new status to update it to
+     * @return A task that is completed when the update has finished on the DB side
+     */
     public Task<Void> updateStatus(String ticketId, TicketStatus newStatus) {
         return getCollectionPath().document(ticketId).update("status", newStatus);
     }
