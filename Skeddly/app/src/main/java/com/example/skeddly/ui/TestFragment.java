@@ -17,11 +17,15 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
 
+import com.example.skeddly.business.database.repository.EventRepository;
 import com.example.skeddly.databinding.FragmentTestBinding;
 import com.example.skeddly.ui.popup.MapPopupDialogFragment;
 import com.example.skeddly.ui.popup.QRPopupDialogFragment;
 import com.example.skeddly.ui.popup.StandardPopupDialogFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 
 /**
@@ -37,11 +41,11 @@ public class TestFragment extends Fragment {
         binding = FragmentTestBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        TextView returnText = binding.returnText;
-        ImageView photoPickerImage = binding.photoPickerImage;
+        TextView returnText = binding.textReturn;
+        ImageView photoPickerImage = binding.imgPickerPhoto;
 
         // === Generic popup stuff ===
-        Button testButton = binding.testButton;
+        Button testButton = binding.btnPopup;
         testButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -100,7 +104,7 @@ public class TestFragment extends Fragment {
 //        });
 
         // === Location Picker Stuff ===
-        Button locationPickerButton = binding.locationPickerButton;
+        Button locationPickerButton = binding.btnPickerLocation;
         locationPickerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -133,7 +137,7 @@ public class TestFragment extends Fragment {
             }
         });
 
-        Button photoPickerButton = binding.photoPickerButton;
+        Button photoPickerButton = binding.btnPickerPhoto;
         photoPickerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -155,7 +159,7 @@ public class TestFragment extends Fragment {
         });
 
         // === QR Code stuff ===
-        Button qrButton = binding.qrButton;
+        Button qrButton = binding.btnQrDialog;
         qrButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -163,6 +167,101 @@ public class TestFragment extends Fragment {
                 qpf.show(getChildFragmentManager(), null);
             }
         });
+
+        // === DB Random stuff ===
+        Button dbButton = binding.btnDb;
+        EventRepository eventRepository = new EventRepository(FirebaseFirestore.getInstance());
+        dbButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                eventRepository.getAll().addOnCompleteListener(new OnCompleteListener<List<Event>>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<List<Event>> task) {
+//                        Log.v("TEST_DB_BTN_GET_ALL", "Callback received!");
+//
+//                        if (!task.isSuccessful()) {
+//                            Log.v("TEST_DB_BTN_GET_ALL", "Task failed!");
+//                        } else {
+//                            for (Event event : task.getResult()) {
+//                                Log.v("TEST_DB_BTN_GET_ALL", event.getId());
+//                            }
+//                            Log.v("TEST_DB_BTN_GET_ALL", "Printed all IDs!");
+//                        }
+//
+//
+//                    }
+//                });
+
+//                eventRepository.listenAll(new SingleListenUpdate<List<Event>>() {
+//                    @Override
+//                    public void onUpdate(List<Event> newValue) {
+//                        Log.v("TEST_DB_BTN_LISTEN_ALL", "Callback received!");
+//
+//                        for (Event event : newValue) {
+//                            Log.v("TEST_DB_BTN_LISTEN_ALL", event.getId());
+//                        }
+//                    }
+//                });
+
+
+//                eventRepository.count().addOnCompleteListener(new OnCompleteListener<Long>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<Long> task) {
+//                        Log.v("TEST_DB_BTN_COUNT", "Callback received!");
+//
+//                        if (task.isSuccessful()) {
+//                            Log.v("TEST_DB_BTN_COUNT", Long.toString(task.getResult()));
+//                        } else {
+//                            Log.v("TEST_DB_BTN_COUNT", "Task failed!");
+//                        }
+//                    }
+//                });
+//
+//                eventRepository.listenById("69", new SingleListenUpdate<Event>() {
+//                    @Override
+//                    public void onUpdate(Event newValue) {
+//                        Log.v("TEST_DB_BTN_LISTEN", "Callback received!");
+//
+//                        if (newValue == null) {
+//                            Log.v("TEST_DB_BTN_LISTEN", "Got null!");
+//                        } else {
+//                            Log.v("TEST_DB_BTN_LISTEN", newValue.getId());
+//                        }
+//                    }
+//                });
+
+//                eventRepository.getById("67").addOnCompleteListener(new OnCompleteListener<Event>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<Event> task) {
+//                        Log.v("TEST_DB_BTN_GET", "Callback received!");
+//
+//                        if (!task.isSuccessful()) {
+//                            Log.v("TEST_DB_BTN_GET", "Task failed!");
+//                        } else {
+//                            Log.v("TEST_DB_BTN_GET", task.getResult().getId());
+//                        }
+//                    }
+//                });
+
+//                Task<Void> asd = eventRepository.delete("67");
+//
+//                asd.addOnCompleteListener(new OnCompleteListener<Void>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<Void> task) {
+//                        Log.v("TEST_DB_BTN_DELETE", "Deleting task completed!");
+//
+//                        if (task.isSuccessful()) {
+//                            Log.v("TEST_DB_BTN_DELETE", "Deleting task was successful!");
+//                        } else if (task.isCanceled()) {
+//                            Log.v("TEST_DB_BTN_DELETE", "Deleting task was cancelled!");
+//                        } else {
+//                            Log.v("TEST_DB_BTN_DELETE", "Deleting task was not successful!");
+//                        }
+//                    }
+//                });
+            }
+        });
+
 
         return root;
     }

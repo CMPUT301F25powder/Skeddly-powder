@@ -3,6 +3,7 @@ package com.example.skeddly.business.notification;
 import com.example.skeddly.business.database.DatabaseObject;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 /**
  * Represents a single notification item within the application.
@@ -12,21 +13,24 @@ public class Notification extends DatabaseObject {
     // Fields for the notification object
     private String title;
     private String message;
-    private LocalDateTime timestamp;
-    private NotificationType type;
+    private String recipient;
     private String eventId; // Used to link to a specific event
-    private boolean isRead;
+    private long timestamp;
+    private NotificationType type;
     private NotificationInvitationStatus status; // Specific to invitation notifications
+    private boolean read;
 
     /**
      * Default constructor for creating a new Notification.
      * Sets its read status to false and status to pending.
      */
     public Notification() {
-//        this.timestamp = LocalDateTime.now();
-        this.isRead = false;
+        this.read = false;
         this.status = NotificationInvitationStatus.PENDING;
         this.type = NotificationType.MESSAGES;
+
+        ZoneId zoneId = ZoneId.systemDefault();
+        this.timestamp = LocalDateTime.now().atZone(zoneId).toEpochSecond();
     }
 
     /**
@@ -34,10 +38,11 @@ public class Notification extends DatabaseObject {
      * @param title The title to set on the notification.
      * @param message The message that it should contain.
      */
-    public Notification(String title, String message) {
+    public Notification(String title, String message, String recipient) {
         this();
         this.setTitle(title);
         this.setMessage(message);
+
     }
 
     /**
@@ -54,6 +59,22 @@ public class Notification extends DatabaseObject {
      */
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    /**
+     * Gets the recipient of the notification.
+     * @return The user id of the recipient
+     */
+    public String getRecipient() {
+        return recipient;
+    }
+
+    /**
+     * Sets the recipient of the notification.
+     * @param recipient The user id of the recipient
+     */
+    public void setRecipient(String recipient) {
+        this.recipient = recipient;
     }
 
     /**
@@ -76,17 +97,17 @@ public class Notification extends DatabaseObject {
      * Gets the timestamp indicating when the notification was created.
      * @return A Date object representing the creation time.
      */
-//    public LocalDateTime getTimestamp() {
-//        return LocalDateTime.now();
-//    }
+    public long getTimestamp() {
+        return timestamp;
+    }
 
     /**
      * Sets the timestamp for the notification.
      * @param timestamp The Date to set.
      */
-//    public void setTimestamp(LocalDateTime timestamp) {
-//        this.timestamp = timestamp;
-//    }
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
 
     /**
      * Gets the type of the notification.
@@ -125,7 +146,7 @@ public class Notification extends DatabaseObject {
      * @return A boolean, true if read, false otherwise.
      */
     public boolean isRead() {
-        return isRead;
+        return read;
     }
 
     /**
@@ -133,7 +154,7 @@ public class Notification extends DatabaseObject {
      * @param read The boolean status to set.
      */
     public void setRead(boolean read) {
-        isRead = read;
+        this.read = read;
     }
 
     /**
