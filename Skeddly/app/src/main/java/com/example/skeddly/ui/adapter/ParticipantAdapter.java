@@ -66,7 +66,7 @@ public class ParticipantAdapter extends ArrayAdapter<Ticket> {
         Ticket ticket = getItem(position);
         if (ticket != null) {
             // Set user name
-            getUserFromId(ticket.getUser(), user -> {
+            getUserFromId(ticket.getUserId(), user -> {
                 fullname = user.getPersonalInformation().getName();
                 nameText.setText(fullname);
             });

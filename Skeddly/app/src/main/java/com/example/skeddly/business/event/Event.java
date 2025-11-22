@@ -238,7 +238,7 @@ public class Event extends DatabaseObject {
         }
 
         // Create a new ticket for the user
-        Ticket ticket = new Ticket(userId, location);
+        Ticket ticket = new Ticket(userId, getId(), location);
 
         // Add the ticket's ID to the event's applicants list
         this.getWaitingList().addTicket(ticket.getId());
