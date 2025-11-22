@@ -85,7 +85,11 @@ abstract class GenericRepository<T extends DatabaseObject> {
      * @return A task that returns all the objects in a list.
      */
     public Task<List<T>> getAll() {
-        return getQuery().get().continueWith(new Continuation<QuerySnapshot, List<T>>() {
+        return getAllByQuery(getQuery());
+    }
+
+    protected Task<List<T>> getAllByQuery(Query query) {
+        return query.get().continueWith(new Continuation<QuerySnapshot, List<T>>() {
             @Override
             public List<T> then(@NonNull Task<QuerySnapshot> task) throws Exception {
                 return task.getResult().toObjects(clazz);
