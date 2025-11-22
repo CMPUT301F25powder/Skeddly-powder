@@ -292,7 +292,7 @@ public class Event extends DatabaseObject {
      * @param callback The callback to be invoked when the search is complete.
      */
     public void findUserTicketId(String userId, DatabaseHandler dbHandler, FindTicketCallback callback) {
-        dbHandler.getTicketsPath().whereEqualTo("eventId", getId()).whereEqualTo("user", userId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        dbHandler.getTicketsPath().whereEqualTo("eventId", getId()).whereEqualTo("userId", userId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful() && !task.getResult().isEmpty()) {
