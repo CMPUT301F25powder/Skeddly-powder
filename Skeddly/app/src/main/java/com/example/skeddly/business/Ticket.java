@@ -35,7 +35,7 @@ public class Ticket extends DatabaseObject {
         this.userId = userId;
         this.eventId = eventId;
         this.location = location;
-        this.status = TicketStatus.INVITED;
+        this.status = TicketStatus.WAITING;
 
         ZoneId zoneId = ZoneId.systemDefault();
         this.ticketTime = LocalDateTime.now().atZone(zoneId).toEpochSecond();

@@ -95,4 +95,5 @@
 
     <string name="notification_content">Notification information, here is information about the notification yuppers</string>
     <string name="notification_title">Notification</string>
+    <string name="dialog_draw_content">Participants on waiting list: %d\nCurrent # of Participants: %d/%d\n\nHow many participants do you want to draw?</string>
 </resources>

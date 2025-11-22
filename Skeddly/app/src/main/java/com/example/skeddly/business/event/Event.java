@@ -4,13 +4,16 @@ import androidx.annotation.NonNull;
 
 import com.example.skeddly.business.ParticipantList;
 import com.example.skeddly.business.Ticket;
+import com.example.skeddly.business.TicketStatus;
 import com.example.skeddly.business.WaitingList;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.database.DatabaseObject;
+import com.example.skeddly.business.database.repository.TicketRepository;
 import com.example.skeddly.business.location.CustomLocation;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -214,6 +217,24 @@ public class Event extends DatabaseObject {
     }
 
     /**
+     * Draws a number of participants into the Participant List.
+     * @param numToDraw The number of participants to draw.
+     */
+    public void draw(int numToDraw) {
+        TicketRepository ticketRepository = new TicketRepository(FirebaseFirestore.getInstance(), getId());
+        for (int i = 0; i < numToDraw; ++i) {
+            String ticketId = getWaitingList().draw();
+            getParticipantList().addTicket(ticketId);
+
+            // Change the status to INVITED
+            ticketRepository.updateStatus(ticketId, TicketStatus.INVITED);
+        }
+
+        DatabaseHandler dbHandler = new DatabaseHandler();
+        dbHandler.getEventsPath().document(this.getId()).set(this);
+    }
+
+    /**
      * Handles the logic for a user joining the event's waitlist.
      * @param dbHandler The database handler to interact with Firebase.
      * @param userId The ID of the user who is joining.
@@ -271,12 +292,7 @@ public class Event extends DatabaseObject {
      * @param callback The callback to be invoked when the search is complete.
      */
     public void findUserTicketId(String userId, DatabaseHandler dbHandler, FindTicketCallback callback) {
-        if (this.getWaitingList() == null || this.getWaitingList().getTicketIds() == null || this.getWaitingList().getTicketIds().isEmpty()) {
-            callback.onResult(null); // No applicants, so user can't be joined
-            return;
-        }
-
-        dbHandler.getTicketsPath().whereEqualTo("user", userId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        dbHandler.getTicketsPath().whereEqualTo("eventId", getId()).whereEqualTo("userId", userId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful() && !task.getResult().isEmpty()) {
