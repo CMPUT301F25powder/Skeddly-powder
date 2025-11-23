@@ -74,7 +74,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:text="@string/dialog_qr_btn_close"
+            android:text="@string/btn_close"
             android:layout_margin="20dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
