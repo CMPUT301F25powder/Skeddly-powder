@@ -71,7 +71,7 @@ public class MapPopupDialogFragment extends DialogFragment implements OnMapReady
      * Create a new instance of the MapPopupDialogFragment.
      * @param requestKey The requestKey that should be used when returning the result.
      * @param mapPopupType The MapPopupType defining the type of popup/behaviour wanted.
-     * @param entrantLocations The arraylist of entrant locations to be marked on the map.
+     * @param entrantLocations The arraylist of entrant locations to be marked on the map. Can be NULL if mapPopupType is SET
      * @return A new MapPopupDialogFragment with the given arguments set.
      */
     public static MapPopupDialogFragment newInstance(String requestKey, MapPopupType mapPopupType,

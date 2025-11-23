@@ -1,9 +1,9 @@
 package com.example.skeddly.business.location;
 
 /**
- * Enum for the type of map popup
+ * Enum for the type of MapPopupDialogFragment
  */
 public enum MapPopupType {
-    SET,
-    VIEW
+    SET,  // Shows address entry and returns the selected location
+    VIEW  // Shows the given location pins on the map
 }
