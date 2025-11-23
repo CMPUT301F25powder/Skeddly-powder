@@ -104,8 +104,20 @@
             app:layout_constraintTop_toBottomOf="@id/btn_picker_date"
             />
 
-
-
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_show_locations"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            app:fabCustomSize="64dp"
+            app:fabSize="auto"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_picker_location"
+            app:maxImageSize="49dp"
+            app:srcCompat="@drawable/ic_map" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

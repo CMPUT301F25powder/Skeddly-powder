@@ -8,10 +8,10 @@
     <string name="activity_signup_hint_phone_number">Phone Number</string>
 
     <string name="btn_cancel">Cancel</string>
+    <string name="btn_close">Close</string>
     <string name="btn_confirm">Confirm</string>
 
     <string name="dialog_contents">Description</string>
-    <string name="dialog_qr_btn_close">Close</string>
     <string name="dialog_qr_btn_export">Export</string>
     <string name="dialog_qr_title">QR Code</string>
     <string name="dialog_title">Title</string>

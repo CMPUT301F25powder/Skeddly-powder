@@ -27,6 +27,8 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.skeddly.R;
+import com.example.skeddly.business.location.CustomLocation;
+import com.example.skeddly.business.location.MapPopupType;
 import com.example.skeddly.databinding.DialogMapBinding;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -36,6 +38,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.CancellationTokenSource;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -59,17 +62,24 @@ public class MapPopupDialogFragment extends DialogFragment implements OnMapReady
     private final String[] needed_permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
 
     private String requestKey = "requestKey";
+    private MapPopupType mapPopupType;
+    private ArrayList<CustomLocation> entrantLocations = null;
     private LatLng result;
     private DialogMapBinding binding;
 
     /**
      * Create a new instance of the MapPopupDialogFragment.
-     * @param requestKey The requestKey that should be used when returning the result
-     * @return A new MapPopupDialogFragment with the given requestKey set.
+     * @param requestKey The requestKey that should be used when returning the result.
+     * @param mapPopupType The MapPopupType defining the type of popup/behaviour wanted.
+     * @param entrantLocations The arraylist of entrant locations to be marked on the map. Can be NULL if mapPopupType is SET
+     * @return A new MapPopupDialogFragment with the given arguments set.
      */
-    public static MapPopupDialogFragment newInstance(String requestKey) {
+    public static MapPopupDialogFragment newInstance(String requestKey, MapPopupType mapPopupType,
+                                                     ArrayList<CustomLocation> entrantLocations) {
         Bundle args = new Bundle();
         args.putString("requestKey", requestKey);
+        args.putSerializable("mapPopupType", mapPopupType);
+        args.putParcelableArrayList("entrantLocations", entrantLocations);
 
         MapPopupDialogFragment popup = new MapPopupDialogFragment();
         popup.setArguments(args);
@@ -88,6 +98,8 @@ public class MapPopupDialogFragment extends DialogFragment implements OnMapReady
 
         if (args != null) {
             requestKey = args.getString("requestKey");
+            mapPopupType = (MapPopupType) args.getSerializable("mapPopupType");
+            entrantLocations = args.getParcelableArrayList("entrantLocations");
         }
 
         // Retrieve the map and call us back when you're done
@@ -111,31 +123,45 @@ public class MapPopupDialogFragment extends DialogFragment implements OnMapReady
             }
         });
 
-        // When the user presses enter, it pins the location on the map
-        binding.addressEntry.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    updateMapAddress(v.getText().toString());
-                    return true;
+        if (mapPopupType == MapPopupType.SET) {
+            binding.btnClose.setVisibility(View.GONE);
+
+            // When the user presses enter, it pins the location on the map
+            binding.addressEntry.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                        updateMapAddress(v.getText().toString());
+                        return true;
+                    }
+
+                    return false;
                 }
+            });
 
-                return false;
-            }
-        });
+            // When confirm, return the LatLng to the fragment
+            Button confirmButton = binding.btnConfirm;
+            confirmButton.setEnabled(false);
+            confirmButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("LatLng", result);
+                    getParentFragmentManager().setFragmentResult(requestKey, bundle);
+                    dismiss();
+                }
+            });
+        } else if (mapPopupType == MapPopupType.VIEW) {
+            binding.addressEntry.setVisibility(View.GONE);
+            binding.btnConfirm.setVisibility(View.GONE);
 
-        // When confirm, return the LatLng to the fragment
-        Button confirmButton = binding.btnConfirm;
-        confirmButton.setEnabled(false);
-        confirmButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("LatLng", result);
-                getParentFragmentManager().setFragmentResult(requestKey, bundle);
-                dismiss();
-            }
-        });
+            binding.btnClose.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dismiss();
+                }
+            });
+        }
 
         return view;
     }
@@ -160,26 +186,41 @@ public class MapPopupDialogFragment extends DialogFragment implements OnMapReady
     public void onMapReady(@NonNull GoogleMap googleMap) {
         this.googleMap = googleMap;
 
-        // We need to get the required permissions
-        ArrayList<String> needed_permissions = new ArrayList<>();
-        boolean granted = false;
+        if (mapPopupType == MapPopupType.SET || entrantLocations == null || entrantLocations.isEmpty()) {
+            // We need to get the required permissions
+            ArrayList<String> needed_permissions = new ArrayList<>();
+            boolean granted = false;
 
-        for (String permission : this.needed_permissions) {
-            // If we don't have it, add it to the list
-            if (ContextCompat.checkSelfPermission(requireContext(), permission) != PackageManager.PERMISSION_GRANTED) {
-                needed_permissions.add(permission);
+            for (String permission : this.needed_permissions) {
+                // If we don't have it, add it to the list
+                if (ContextCompat.checkSelfPermission(requireContext(), permission) != PackageManager.PERMISSION_GRANTED) {
+                    needed_permissions.add(permission);
+                }
             }
-        }
 
-        // Request perms if needed
-        if (!needed_permissions.isEmpty()) {
-            String[] perms = new String[2];
-            requestPermissionLauncher.launch(needed_permissions.toArray(perms));
-        } else {
-            // We have all the permissions, update the map
-            updateMapWithCurrentLocation();
-        }
+            // Request perms if needed
+            if (!needed_permissions.isEmpty()) {
+                String[] perms = new String[2];
+                requestPermissionLauncher.launch(needed_permissions.toArray(perms));
+            } else {
+                // We have all the permissions, update the map
+                updateMapWithCurrentLocation();
+            }
+        } else if (mapPopupType == MapPopupType.VIEW) {
+            // Add markers for each entrant location and position the map view to enclose all markers
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            int padding = 100;
 
+            for (CustomLocation entrant : entrantLocations) {
+                LatLng location = new LatLng(entrant.getLatitude(), entrant.getLongitude());
+                googleMap.addMarker(new MarkerOptions().position(location).title("Location"));
+                builder.include(location);
+            }
+
+            LatLngBounds bounds = builder.build();
+
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
+        }
     }
 
     /**

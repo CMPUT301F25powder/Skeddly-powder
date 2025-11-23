@@ -18,6 +18,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
 
 import com.example.skeddly.business.database.repository.EventRepository;
+import com.example.skeddly.business.location.CustomLocation;
+import com.example.skeddly.business.location.MapPopupType;
 import com.example.skeddly.databinding.FragmentTestBinding;
 import com.example.skeddly.ui.popup.MapPopupDialogFragment;
 import com.example.skeddly.ui.popup.QRPopupDialogFragment;
@@ -25,7 +27,11 @@ import com.example.skeddly.ui.popup.StandardPopupDialogFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 
 /**
@@ -108,7 +114,7 @@ public class TestFragment extends Fragment {
         locationPickerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MapPopupDialogFragment lpf = MapPopupDialogFragment.newInstance("locationPicker");
+                MapPopupDialogFragment lpf = MapPopupDialogFragment.newInstance("locationPicker", MapPopupType.SET, null);
                 lpf.show(getChildFragmentManager(), "LocationPicker");
             }
         });
@@ -124,6 +130,19 @@ public class TestFragment extends Fragment {
             }
         });
 
+        // === Location Showing Stuff ===
+        ArrayList<CustomLocation> entrantLocations = new ArrayList<>();
+        entrantLocations.add(new CustomLocation(-113.41984842775818, 53.62688011398386));
+        entrantLocations.add(new CustomLocation(-113.44747769828126, 53.62287224831365));
+        entrantLocations.add(new CustomLocation(144.95975087827142, -37.767827475845436));
+        FloatingActionButton showLocationsButton = binding.fabShowLocations;
+        showLocationsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MapPopupDialogFragment lpf = MapPopupDialogFragment.newInstance("locationPicker", MapPopupType.VIEW, entrantLocations);
+                lpf.show(getChildFragmentManager(), "LocationPicker");
+            }
+        });
 
         // === Photo Picker Stuff ===
         // Registers a photo picker activity launcher in single-select mode.
@@ -261,7 +280,6 @@ public class TestFragment extends Fragment {
 //                });
             }
         });
-
 
         return root;
     }
