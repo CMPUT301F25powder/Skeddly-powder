@@ -22,10 +22,10 @@ import java.util.List;
  * InboxAdapter is an ArrayAdapter of notifications that shows the inbox.
  */
 public class InboxAdapter extends ArrayAdapter<Notification> implements Filterable {
-    private List<Notification> originalNotifications;
-    private List<Notification> filteredNotifications;
+    private final List<Notification> originalNotifications;
+    private final List<Notification> filteredNotifications;
     private NotificationFilter filter;
-    private Context context;
+    private String lastFilter;
 
     /**
      * Constructor for the InboxAdapter.
@@ -34,9 +34,9 @@ public class InboxAdapter extends ArrayAdapter<Notification> implements Filterab
      */
     public InboxAdapter(Context context, ArrayList<Notification> notifs) {
         super(context, 0, notifs);
-        this.context = context;
-        this.originalNotifications = new ArrayList<>(notifs);
+        this.originalNotifications = notifs;
         this.filteredNotifications = new ArrayList<>(notifs);
+        this.lastFilter = "3";
     }
 
     /**
@@ -73,7 +73,7 @@ public class InboxAdapter extends ArrayAdapter<Notification> implements Filterab
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent){
         View view = convertView;
         if (view == null){
-            view = LayoutInflater.from(context).inflate(R.layout.item_notification, parent, false);
+            view = LayoutInflater.from(getContext()).inflate(R.layout.item_notification, parent, false);
         }
 
         Notification notif = getItem(position);
@@ -105,6 +105,7 @@ public class InboxAdapter extends ArrayAdapter<Notification> implements Filterab
 
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
+            lastFilter = constraint.toString();
             FilterResults results = new FilterResults();
             List<Notification> filteredList = new ArrayList<>();
 
@@ -137,5 +138,15 @@ public class InboxAdapter extends ArrayAdapter<Notification> implements Filterab
             }
             notifyDataSetChanged();
         }
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        getFilter().filter(lastFilter, new Filter.FilterListener() {
+            @Override
+            public void onFilterComplete(int count) {
+                InboxAdapter.super.notifyDataSetChanged();
+            }
+        });
     }
 }
