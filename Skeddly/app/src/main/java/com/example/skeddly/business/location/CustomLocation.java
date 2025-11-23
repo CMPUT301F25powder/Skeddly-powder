@@ -1,13 +1,17 @@
 package com.example.skeddly.business.location;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
 
+import java.io.Serializable;
 import java.util.Locale;
 
 /**
  * A single location on Earth, represented by its longitude and latitude.
  */
-public class CustomLocation {
+public class CustomLocation implements Parcelable {
     private double longitude;
     private double latitude;
 
@@ -26,6 +30,15 @@ public class CustomLocation {
     public CustomLocation(double longitude, double latitude) {
         this.longitude = longitude;
         this.latitude = latitude;
+    }
+
+    /**
+     * Construct a new CustomLocation from a Parcel.
+     * @param in The Parcel containing the latitude and longitude.
+     */
+    public CustomLocation(Parcel in) {
+        this.latitude = in.readDouble();
+        this.longitude = in.readDouble();
     }
 
     /**
@@ -65,4 +78,25 @@ public class CustomLocation {
     public String toString() {
         return String.format(Locale.getDefault(), "(%.2f, %.2f)", longitude, latitude);
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeDouble(this.latitude);
+        dest.writeDouble(this.longitude);
+    }
+
+    public static final Parcelable.Creator<CustomLocation> CREATOR = new Parcelable.Creator<>() {
+        public CustomLocation createFromParcel(Parcel in) {
+            return new CustomLocation(in);
+        }
+
+        public CustomLocation[] newArray(int size) {
+            return new CustomLocation[size];
+        }
+    };
 }

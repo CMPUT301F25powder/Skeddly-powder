@@ -32,6 +32,7 @@ import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.event.EventDetail;
 import com.example.skeddly.business.event.EventSchedule;
+import com.example.skeddly.business.location.MapPopupType;
 import com.example.skeddly.databinding.FragmentCreateEditBinding;
 import com.example.skeddly.ui.popup.CategorySelectorDialogFragment;
 import com.example.skeddly.ui.popup.MapPopupDialogFragment;
@@ -159,7 +160,7 @@ public class CreateFragment extends Fragment {
         binding.textEventTitleOverlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MapPopupDialogFragment lpf = MapPopupDialogFragment.newInstance("locationPicker");
+                MapPopupDialogFragment lpf = MapPopupDialogFragment.newInstance("locationPicker", MapPopupType.SET, null);
                 lpf.show(getChildFragmentManager(), "LocationPicker");
             }
         });
