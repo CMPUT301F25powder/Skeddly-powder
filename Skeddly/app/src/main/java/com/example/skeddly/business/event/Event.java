@@ -10,6 +10,7 @@ import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.database.DatabaseObject;
 import com.example.skeddly.business.database.repository.TicketRepository;
 import com.example.skeddly.business.location.CustomLocation;
+import com.example.skeddly.business.user.PersonalInformation;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -54,7 +55,7 @@ public class Event extends DatabaseObject {
                  String organizer, int waitingListLimit, int participantListLimit, boolean logLocation, byte[] image) {
         this.eventDetails = eventDetails;
         this.eventSchedule = eventSchedule;
-        this.location = new CustomLocation(location.longitude, location.latitude);
+        this.location = new CustomLocation(location.latitude, location.longitude);
         this.organizer = organizer;
         this.waitingList = new WaitingList(waitingListLimit);
         this.participantList = new ParticipantList(participantListLimit);
@@ -239,7 +240,7 @@ public class Event extends DatabaseObject {
      * @param dbHandler The database handler to interact with Firebase.
      * @param userId The ID of the user who is joining.
      */
-    public void join(DatabaseHandler dbHandler, String userId, CustomLocation location) {
+    public void join(DatabaseHandler dbHandler, PersonalInformation userPersonalInfo, String userId, CustomLocation location) {
         // Ensure applicants object and list exist to prevent NullPointerException
         if (this.getWaitingList() == null) {
             this.setWaitingList(new WaitingList());
@@ -249,7 +250,7 @@ public class Event extends DatabaseObject {
         }
 
         // Create a new ticket for the user
-        Ticket ticket = new Ticket(userId, getId(), location);
+        Ticket ticket = new Ticket(userPersonalInfo, userId, getId(), location);
 
         // Add the ticket's ID to the event's applicants list
         this.getWaitingList().addTicket(ticket.getId());

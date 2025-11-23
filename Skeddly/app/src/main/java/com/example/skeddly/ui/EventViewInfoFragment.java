@@ -87,7 +87,9 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
         eventSnapshotListenerReg = null;
 
         // Initialize eventAdapter
-        eventAdapter = new EventAdapter(getContext(), new ArrayList<>(), userId, this);
+        MainActivity activity = (MainActivity) requireActivity();
+        userId = activity.getUser().getId();
+        eventAdapter = new EventAdapter(getContext(), new ArrayList<>(), activity.getUser(), this);
 
         // For getting our current location
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext());
@@ -110,7 +112,6 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
         // Get the eventId passed from the HomeFragment
         if (getArguments() != null) {
             eventId = getArguments().getString("eventId");
-            userId = getArguments().getString("userId");
             organizerId = getArguments().getString("organizerId");
         }
 
@@ -269,7 +270,7 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
                 @Override
                 public void onSuccess(Location location) {
                     if (location != null) {
-                        callback.onUpdate(new CustomLocation(location.getLongitude(), location.getLatitude()));
+                        callback.onUpdate(new CustomLocation(location.getLatitude(), location.getLongitude()));
                     }
                 }
             });

@@ -4,16 +4,19 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import java.io.Serializable;
 import java.util.Locale;
 
 /**
  * A single location on Earth, represented by its longitude and latitude.
  */
 public class CustomLocation implements Parcelable {
-    private double longitude;
     private double latitude;
+    private double longitude;
+
+    @Nullable
+    private String tag;
 
     /**
      * No-arg constructor for CustomLocation. Required by Firebase.
@@ -24,12 +27,24 @@ public class CustomLocation implements Parcelable {
 
     /**
      * Construct a new CustomLocation, given the latitude and longitude.
-     * @param longitude The longitude of the location.
+     * Stores a tag alongside the given coordinates.
      * @param latitude The latitude of the location.
+     * @param longitude The longitude of the location.
+     * @param tag The tag to associate with the location.
      */
-    public CustomLocation(double longitude, double latitude) {
-        this.longitude = longitude;
+    public CustomLocation(double latitude, double longitude, @Nullable String tag) {
         this.latitude = latitude;
+        this.longitude = longitude;
+        this.tag = tag;
+    }
+
+    /**
+     * Construct a new CustomLocation, given the latitude and longitude.
+     * @param latitude The latitude of the location.
+     * @param longitude The longitude of the location.
+     */
+    public CustomLocation(double latitude, double longitude) {
+        this(latitude, longitude, null);
     }
 
     /**
@@ -39,22 +54,7 @@ public class CustomLocation implements Parcelable {
     public CustomLocation(Parcel in) {
         this.latitude = in.readDouble();
         this.longitude = in.readDouble();
-    }
-
-    /**
-     * Retrieve the longitude of the location.
-     * @return The longitude as a double.
-     */
-    public double getLongitude() {
-        return longitude;
-    }
-
-    /**
-     * Sets the longitude of the location.
-     * @param longitude The new longitude that should be set.
-     */
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
+        this.tag = in.readString();
     }
 
     /**
@@ -66,17 +66,26 @@ public class CustomLocation implements Parcelable {
     }
 
     /**
-     * Sets the latitude of the location.
-     * @param latitude The new latitude that should be set.
+     * Retrieve the longitude of the location.
+     * @return The longitude as a double.
      */
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
+    public double getLongitude() {
+        return longitude;
+    }
+
+    /**
+     * Retrieve the tag associated with the location.
+     * @return The tag associated with the location.
+     */
+    @Nullable
+    public String getTag() {
+        return tag;
     }
 
     @NonNull
     @Override
     public String toString() {
-        return String.format(Locale.getDefault(), "(%.2f, %.2f)", longitude, latitude);
+        return String.format(Locale.getDefault(), "(%.2f, %.2f)", latitude, longitude);
     }
 
     @Override
@@ -88,6 +97,7 @@ public class CustomLocation implements Parcelable {
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeDouble(this.latitude);
         dest.writeDouble(this.longitude);
+        dest.writeString(this.tag);
     }
 
     public static final Parcelable.Creator<CustomLocation> CREATOR = new Parcelable.Creator<>() {
