@@ -31,7 +31,7 @@ public class TicketRepository extends GenericRepository<Ticket> {
      * @return A task that when complete, contains all the requested tickets in a list.
      */
     public Task<List<Ticket>> getAllByStatus(TicketStatus status) {
-        return getAllByQuery(getQuery().whereEqualTo("status", status.toString()));
+        return getAllByQuery(getQuery().whereEqualTo("status", status));
     }
 
     /**
@@ -40,13 +40,7 @@ public class TicketRepository extends GenericRepository<Ticket> {
      * @return A task that when complete, contains all the requested tickets in a list.
      */
     public Task<List<Ticket>> getAllByStatuses(List<TicketStatus> statuses) {
-        Query query = getQuery();
-
-        for (TicketStatus status : statuses) {
-            query.whereEqualTo("status", status.toString());
-        }
-
-        return getAllByQuery(query);
+        return getAllByQuery(getQuery().whereIn("status", statuses));
     }
 
     /**
