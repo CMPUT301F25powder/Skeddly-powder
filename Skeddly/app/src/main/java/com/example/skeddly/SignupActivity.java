@@ -23,11 +23,21 @@ import com.example.skeddly.business.user.PersonalInformation;
 import com.example.skeddly.business.user.User;
 import com.example.skeddly.business.user.UserLoaded;
 import com.example.skeddly.databinding.ActivitySignupBinding;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.LocalCacheSettings;
+import com.google.firebase.firestore.MemoryCacheSettings;
+import com.google.firebase.functions.FirebaseFunctions;
+import com.google.firebase.storage.FirebaseStorage;
 
 /**
  * Signup activity for the application.
  */
 public class SignupActivity extends AppCompatActivity {
+    private boolean useFirebaseEmulator = true;
+    private String firebaseEmulatorAddress = "10.0.2.2";
+
     private ActivitySignupBinding binding;
     private EditText fullNameEditText;
     private EditText emailEditText;
@@ -39,6 +49,10 @@ public class SignupActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (useFirebaseEmulator) {
+            setupFirebaseEmulator();
+        }
 
         EdgeToEdge.enable(this);
 
@@ -156,5 +170,28 @@ public class SignupActivity extends AppCompatActivity {
 
     public boolean getLoaded() {
         return this.loaded;
+    }
+
+    private void setupFirebaseEmulator() {
+        // Authentication Emulator
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        auth.useEmulator(firebaseEmulatorAddress, 9099);
+
+        // Firestore Emulator
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        firestore.useEmulator(firebaseEmulatorAddress, 8080);
+
+        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                .setLocalCacheSettings(MemoryCacheSettings.newBuilder().build())
+                .build();
+        firestore.setFirestoreSettings(settings);
+
+        // Functions Emulator
+        FirebaseFunctions functions = FirebaseFunctions.getInstance();
+        functions.useEmulator("10.0.2.2", 5001);
+
+        // Storage Emulator
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        storage.useEmulator("10.0.2.2", 9199);
     }
 }

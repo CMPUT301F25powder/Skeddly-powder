@@ -69,6 +69,8 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-functions")
+    implementation("com.google.firebase:firebase-storage")
 
     // Maps SDK for Android
     implementation("com.google.android.gms:play-services-maps:19.2.0")
