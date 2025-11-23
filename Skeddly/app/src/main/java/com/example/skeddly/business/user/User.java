@@ -1,9 +1,7 @@
 package com.example.skeddly.business.user;
 
 import com.example.skeddly.business.database.DatabaseObject;
-import com.example.skeddly.business.database.DatabaseObjects;
 import com.example.skeddly.business.event.Event;
-import com.example.skeddly.business.notification.Notification;
 import com.google.firebase.firestore.Exclude;
 
 import java.util.ArrayList;
@@ -17,7 +15,6 @@ public class User extends DatabaseObject {
     private ArrayList<String> ownedEvents;
     private ArrayList<String> joinedEvents;
     private UserLevel privilegeLevel;
-    private DatabaseObjects<Notification> notifications;
 
     /**
      * Constructor for the User
@@ -27,7 +24,6 @@ public class User extends DatabaseObject {
         this.personalInformation = new PersonalInformation();
         this.notificationSettings = new NotificationSettings();
         this.privilegeLevel = UserLevel.ENTRANT;
-        this.notifications = new DatabaseObjects<>(Notification.class);
     }
 
     /**
@@ -103,7 +99,7 @@ public class User extends DatabaseObject {
     }
 
     /**
-     * Getss the list of events the user has joined.
+     * Gets the list of events the user has joined.
      * @return An array list of event ids.
      */
     @Exclude // Exclude so we can handle ourselves
@@ -118,23 +114,5 @@ public class User extends DatabaseObject {
     @Exclude // Exclude so we can handle ourselves
     public void setJoinedEvents(ArrayList<String> joinedEvents) {
         this.joinedEvents = joinedEvents;
-    }
-
-    /**
-     * Gets the list of notifications that the user has
-     * @return DatabaseObjects list of notifications.
-     */
-    @Exclude // Exclude so we can handle ourselves
-    public DatabaseObjects<Notification> getNotifications() {
-        return notifications;
-    }
-
-    /**
-     * Sets the list of notifications
-     * @param notifications DatabaseObjects list of notifications.
-     */
-    @Exclude // Exclude so we can handle ourselves
-    public void setNotifications(DatabaseObjects<Notification> notifications) {
-        this.notifications = notifications;
     }
 }

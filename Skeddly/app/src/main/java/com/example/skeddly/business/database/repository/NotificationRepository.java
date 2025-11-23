@@ -15,7 +15,7 @@ public class NotificationRepository extends GenericRepository<Notification> {
     private final FirebaseFirestore firestore;
     @Nullable
     private final String userId;
-    public static final String COLLECTION_PATH = "tickets";
+    public static final String COLLECTION_PATH = "notifications";
 
     /**
      * Create a new NotificationRepository. The repository is associated with a particular user,

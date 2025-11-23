@@ -27,7 +27,7 @@ import java.util.List;
  * This class should NOT be used on its own. Derived classes should be used.
  * @param <T> The class of objects that this repository shall handle.
  */
-abstract class GenericRepository<T extends DatabaseObject> {
+public abstract class GenericRepository<T extends DatabaseObject> {
     protected final Class<T> clazz;
 
     /**
