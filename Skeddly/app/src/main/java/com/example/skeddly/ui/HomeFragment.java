@@ -1,21 +1,12 @@
 package com.example.skeddly.ui;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.skeddly.business.database.DatabaseHandler;
@@ -28,17 +19,13 @@ import com.example.skeddly.ui.adapter.EventAdapter;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.database.DatabaseObjects;
 import com.example.skeddly.ui.adapter.RetrieveLocation;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.Priority;
-import com.google.android.gms.tasks.CancellationTokenSource;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.example.skeddly.ui.utility.LocationFetcherFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.ListenerRegistration;
 
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Fragment for the home screen
@@ -51,11 +38,6 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
 
     // Search
     private EventSearch eventSearch;
-
-    // Location Stuff
-    private FusedLocationProviderClient fusedLocationClient;
-    private ActivityResultLauncher<String[]> requestPermissionLauncher;
-    private final String[] needed_permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
 
     private ListenerRegistration fetchEventsRegistration = null;
 
@@ -75,23 +57,6 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
                 eventList,
                 Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid(),
                 this);
-
-        // For getting our current location
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext());
-
-        // GET PERMISSION THING
-        requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), new ActivityResultCallback<Map<String, Boolean>>() {
-            @Override
-            public void onActivityResult(Map<String, Boolean> result) {
-                // its mad at me
-                boolean fine_granted = result.getOrDefault(needed_permissions[0], false);
-                boolean coarse_granted = result.getOrDefault(needed_permissions[1], false);
-
-                if (fine_granted && coarse_granted) {
-                    Toast.makeText(getContext(), "Location granted. Please try again.", Toast.LENGTH_SHORT);
-                }
-            }
-        });
 
         // Set event adapter to list view
         binding.listEvents.setAdapter(eventAdapter);
@@ -166,52 +131,16 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
 
     /**
      * Gets the location from the device and return it in the provided callback.
-     * Requests permission if needed.
      * @param callback Who to callback when we got the location.
      */
-    @SuppressLint("MissingPermission")
     @Override
     public void getLocation(SingleListenUpdate<CustomLocation> callback) {
-        if (checkPermissions()) {
-            CancellationTokenSource cts = new CancellationTokenSource();
-            fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, cts.getToken()).addOnSuccessListener(new OnSuccessListener<Location>() {
-                @Override
-                public void onSuccess(Location location) {
-                    if (location != null) {
-                        callback.onUpdate(new CustomLocation(location.getLongitude(), location.getLatitude()));
-                    }
-                }
-            });
-        } else {
-            Toast.makeText(getContext(), "Please grant location permission.", Toast.LENGTH_SHORT);
-        }
-    }
-
-    /**
-     * Check whether we have the required permissions to get the device's location. Request
-     * permission if needed.
-     * @return True if we have permission. False otherwise.
-     */
-    public boolean checkPermissions() {
-        // We need to get the required permissions
-        ArrayList<String> needed_permissions = new ArrayList<>();
-        boolean granted = false;
-
-        for (String permission : this.needed_permissions) {
-            // If we don't have it, add it to the list
-            if (ContextCompat.checkSelfPermission(requireContext(), permission) != PackageManager.PERMISSION_GRANTED) {
-                needed_permissions.add(permission);
-            }
-        }
-
-        // Request perms if needed
-        if (!needed_permissions.isEmpty()) {
-            String[] perms = new String[2];
-            Toast.makeText(getContext(), "Please grant location permission.", Toast.LENGTH_SHORT);
-            requestPermissionLauncher.launch(needed_permissions.toArray(perms));
-            return false;
-        }
-
-        return true;
+        String generatedRequestKey = String.valueOf(UUID.randomUUID());
+        LocationFetcherFragment locationFetcherFragment = LocationFetcherFragment.newInstance(generatedRequestKey);
+        getChildFragmentManager().beginTransaction().add(locationFetcherFragment, null).commit();
+        getChildFragmentManager().setFragmentResultListener(generatedRequestKey, this, (requestKey, result) -> {
+            callback.onUpdate((CustomLocation) result.getSerializable("location"));
+            getChildFragmentManager().beginTransaction().remove(locationFetcherFragment).commit();
+        });
     }
 }

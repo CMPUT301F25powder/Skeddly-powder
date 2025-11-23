@@ -267,15 +267,15 @@ public class Event extends DatabaseObject {
      * @param ticketId The ID of the ticket to be removed.
      */
     public void leave(DatabaseHandler dbHandler, String ticketId) {
-        // Ensure applicants and ticket list exist
-        if (this.getWaitingList() != null && this.getWaitingList().getTicketIds() != null) {
-            // remove ticket id from event waiting list
-            this.getWaitingList().remove(ticketId);
-            // save updated list to DB
-            dbHandler.getEventsPath().document(this.getId()).update("waitingList", this.getWaitingList());
-            // remove ticket object from DB
-            dbHandler.getTicketsPath().document(ticketId).delete();
-        }
+        // Remove ticket id from the lists
+        getWaitingList().remove(ticketId);
+        getParticipantList().remove(ticketId);
+
+        // save updated lists to DB
+        dbHandler.getEventsPath().document(getId()).set(this);
+
+        // remove ticket object from DB
+        dbHandler.getTicketsPath().document(ticketId).delete();
     }
 
     /**

@@ -2,12 +2,13 @@ package com.example.skeddly.business.location;
 
 import androidx.annotation.NonNull;
 
+import java.io.Serializable;
 import java.util.Locale;
 
 /**
  * A single location on Earth, represented by its longitude and latitude.
  */
-public class CustomLocation {
+public class CustomLocation implements Serializable {
     private double longitude;
     private double latitude;
 
