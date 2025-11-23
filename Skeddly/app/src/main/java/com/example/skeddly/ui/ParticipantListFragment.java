@@ -160,7 +160,9 @@ public class ParticipantListFragment extends Fragment {
 
         for (Ticket entrantTicket : tickets) {
             CustomLocation ticketLocation = entrantTicket.getLocation();
-            if (ticketLocation != null) entrantLocations.add(ticketLocation);
+            if (ticketLocation != null) {
+                entrantLocations.add(new CustomLocation(ticketLocation.getLatitude(), ticketLocation.getLongitude(), entrantTicket.getUserPersonalInfo().getName()));
+            }
         }
 
         MapPopupDialogFragment lpf = MapPopupDialogFragment.newInstance("locationPicker", MapPopupType.VIEW, entrantLocations);

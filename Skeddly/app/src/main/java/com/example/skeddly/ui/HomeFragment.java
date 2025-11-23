@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.skeddly.MainActivity;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.database.SingleListenUpdate;
 import com.example.skeddly.business.location.CustomLocation;
@@ -71,9 +72,10 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
         eventSearch = new EventSearch(getContext(), binding.searchEvents, eventList);
 
         // Initialize event adapter
+        MainActivity activity = (MainActivity) requireActivity();
         eventAdapter = new EventAdapter(getContext(),
                 eventList,
-                Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid(),
+                activity.getUser(),
                 this);
 
         // For getting our current location
@@ -178,7 +180,7 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
                 @Override
                 public void onSuccess(Location location) {
                     if (location != null) {
-                        callback.onUpdate(new CustomLocation(location.getLongitude(), location.getLatitude()));
+                        callback.onUpdate(new CustomLocation(location.getLatitude(), location.getLongitude()));
                     }
                 }
             });

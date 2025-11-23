@@ -39,6 +39,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.CancellationTokenSource;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -213,7 +214,7 @@ public class MapPopupDialogFragment extends DialogFragment implements OnMapReady
 
             for (CustomLocation entrant : entrantLocations) {
                 LatLng location = new LatLng(entrant.getLatitude(), entrant.getLongitude());
-                googleMap.addMarker(new MarkerOptions().position(location).title("Location"));
+                googleMap.addMarker(new MarkerOptions().position(location).title(entrant.getTag()));
                 builder.include(location);
             }
 

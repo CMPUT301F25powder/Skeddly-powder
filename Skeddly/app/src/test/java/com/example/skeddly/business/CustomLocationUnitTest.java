@@ -16,8 +16,8 @@ public class CustomLocationUnitTest {
      */
     @Test
     public void testCustomLocationString() {
-        CustomLocation customLocation = new CustomLocation(0.234f, 0.56f);
+        CustomLocation customLocation = new CustomLocation(0.56f, 0.234f);
 
-        assertEquals("(0.23, 0.56)", customLocation.toString());
+        assertEquals("(0.56, 0.23)", customLocation.toString());
     }
 }

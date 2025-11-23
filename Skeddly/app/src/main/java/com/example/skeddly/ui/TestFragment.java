@@ -132,9 +132,9 @@ public class TestFragment extends Fragment {
 
         // === Location Showing Stuff ===
         ArrayList<CustomLocation> entrantLocations = new ArrayList<>();
-        entrantLocations.add(new CustomLocation(-113.41984842775818, 53.62688011398386));
-        entrantLocations.add(new CustomLocation(-113.44747769828126, 53.62287224831365));
-        entrantLocations.add(new CustomLocation(144.95975087827142, -37.767827475845436));
+        entrantLocations.add(new CustomLocation(36.19047214157386, -115.22265624591662));
+        entrantLocations.add(new CustomLocation(36.198852343753536, -115.16988510211905));
+        entrantLocations.add(new CustomLocation(-37.767827475845436, 144.95975087827142));
         FloatingActionButton showLocationsButton = binding.fabShowLocations;
         showLocationsButton.setOnClickListener(new View.OnClickListener() {
             @Override

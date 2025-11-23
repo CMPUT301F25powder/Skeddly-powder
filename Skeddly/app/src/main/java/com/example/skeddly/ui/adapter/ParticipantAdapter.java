@@ -63,9 +63,7 @@ public class ParticipantAdapter extends ArrayAdapter<Ticket> {
         Ticket ticket = getItem(position);
         if (ticket != null) {
             // Set user name
-            getUserFromId(ticket.getUserId(), user -> {
-                nameText.setText(user.getPersonalInformation().getName());
-            });
+            nameText.setText(ticket.getUserPersonalInfo().getName());
 
             // Set date
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -98,23 +96,5 @@ public class ParticipantAdapter extends ArrayAdapter<Ticket> {
 
         }
         return convertView;
-    }
-
-    /**
-     * Gets the user from the database based on their ID
-     * @param userId The ID of the user to get
-     * @param callback The callback to run when the user is retrieved
-     */
-    private void getUserFromId(String userId, SingleListenUpdate<User> callback) {
-        dbHandler.getUsersPath().document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful() && task.getResult().exists()) {
-                    callback.onUpdate(task.getResult().toObject(User.class));
-                } else {
-                    callback.onUpdate(null);
-                }
-            }
-        });
     }
 }

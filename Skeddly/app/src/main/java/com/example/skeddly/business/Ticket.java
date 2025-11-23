@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 
 import com.example.skeddly.business.database.DatabaseObject;
 import com.example.skeddly.business.location.CustomLocation;
+import com.example.skeddly.business.user.PersonalInformation;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -14,6 +15,7 @@ import java.time.ZoneId;
  * entered the event. when they did, and where they did all in one object.
  */
 public class Ticket extends DatabaseObject {
+    private PersonalInformation userPersonalInfo;
     private String userId;
     private String eventId;
     private long ticketTime;
@@ -31,7 +33,8 @@ public class Ticket extends DatabaseObject {
      * @param userId The id of the user that this ticket is associated with
      * @param location The location that the user is casting the ticket from, or NULL if not given.
      */
-    public Ticket(@NonNull String userId, @NonNull String eventId, @Nullable CustomLocation location) {
+    public Ticket(@NonNull PersonalInformation userPersonalInfo, @NonNull String userId, @NonNull String eventId, @Nullable CustomLocation location) {
+        this.userPersonalInfo = userPersonalInfo;
         this.userId = userId;
         this.eventId = eventId;
         this.location = location;
@@ -46,8 +49,16 @@ public class Ticket extends DatabaseObject {
      * @param userId The id of the user that this ticket is associated with
      * @param eventId The id of the event that this ticket is associated with
      */
-    public Ticket(@NonNull String userId, @NonNull String eventId) {
-        this(userId, eventId, null);
+    public Ticket(@NonNull PersonalInformation userPersonalInfo, @NonNull String userId, @NonNull String eventId) {
+        this(userPersonalInfo, userId, eventId, null);
+    }
+
+    /**
+     * Gets the personal information of the user that joined the event
+     * @return The personal information of the user.
+     */
+    public PersonalInformation getUserPersonalInfo() {
+        return userPersonalInfo;
     }
 
     /**
