@@ -16,8 +16,11 @@ import com.example.skeddly.business.database.repository.TicketRepository;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.database.SingleListenUpdate;
+import com.example.skeddly.business.location.CustomLocation;
+import com.example.skeddly.business.location.MapPopupType;
 import com.example.skeddly.databinding.FragmentParticipantListBinding;
 import com.example.skeddly.ui.adapter.ParticipantAdapter;
+import com.example.skeddly.ui.popup.MapPopupDialogFragment;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 
@@ -37,6 +40,7 @@ public class ParticipantListFragment extends Fragment {
     private ArrayList<Ticket> finalListTickets;
     private ParticipantAdapter waitingParticipantAdapter;
     private ParticipantAdapter finalParticipantAdapter;
+    private Boolean isWaitingList = true;
 
     private ListenerRegistration listener;
     private TicketRepository ticketRepository;
@@ -61,6 +65,15 @@ public class ParticipantListFragment extends Fragment {
         binding.btnBack.setOnClickListener(v -> {
             if (getActivity() != null) {
                 getActivity().onBackPressed();
+            }
+        });
+
+        // Set up map button
+        binding.fabShowLocations.setOnClickListener(v -> {
+            if (isWaitingList) {
+                fetchAndDisplayTicketLocations(waitingListTickets);
+            } else {
+                fetchAndDisplayTicketLocations(finalListTickets);
             }
         });
 
@@ -104,12 +117,16 @@ public class ParticipantListFragment extends Fragment {
                         binding.buttonWaitingList.setBackgroundResource(R.drawable.btn_unselect);
 
                         binding.listViewEntrants.setAdapter(finalParticipantAdapter);
+
+                        isWaitingList = false;
                     });
                     binding.buttonWaitingList.setOnClickListener(v -> {
                         binding.buttonWaitingList.setBackgroundResource(R.drawable.btn_select);
                         binding.buttonFinalList.setBackgroundResource(R.drawable.btn_unselect);
 
                         binding.listViewEntrants.setAdapter(waitingParticipantAdapter);
+
+                        isWaitingList = true;
                     });
 
                     // Load all the tickets
@@ -132,5 +149,21 @@ public class ParticipantListFragment extends Fragment {
             finalParticipantAdapter.addAll(tickets);
             finalParticipantAdapter.notifyDataSetChanged();
         });
+    }
+
+    /**
+     * Fetches and displays all ticket locations based on which arraylist of tickets is provided.
+     * @param tickets The arraylist of tickets.
+     */
+    private void fetchAndDisplayTicketLocations(ArrayList<Ticket> tickets) {
+        ArrayList<CustomLocation> entrantLocations = new ArrayList<>();
+
+        for (Ticket entrantTicket : tickets) {
+            CustomLocation ticketLocation = entrantTicket.getLocation();
+            if (ticketLocation != null) entrantLocations.add(ticketLocation);
+        }
+
+        MapPopupDialogFragment lpf = MapPopupDialogFragment.newInstance("locationPicker", MapPopupType.VIEW, entrantLocations);
+        lpf.show(getChildFragmentManager(), "LocationPicker");
     }
 }

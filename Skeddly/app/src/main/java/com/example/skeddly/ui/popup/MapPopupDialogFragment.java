@@ -38,6 +38,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.CancellationTokenSource;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -185,7 +186,7 @@ public class MapPopupDialogFragment extends DialogFragment implements OnMapReady
     public void onMapReady(@NonNull GoogleMap googleMap) {
         this.googleMap = googleMap;
 
-        if (mapPopupType == MapPopupType.SET) {
+        if (mapPopupType == MapPopupType.SET || entrantLocations == null || entrantLocations.isEmpty()) {
             // We need to get the required permissions
             ArrayList<String> needed_permissions = new ArrayList<>();
             boolean granted = false;
@@ -205,14 +206,20 @@ public class MapPopupDialogFragment extends DialogFragment implements OnMapReady
                 // We have all the permissions, update the map
                 updateMapWithCurrentLocation();
             }
-        } else if (mapPopupType == MapPopupType.VIEW && entrantLocations != null) {
-            // Add markers for each location
+        } else if (mapPopupType == MapPopupType.VIEW) {
+            // Add markers for each entrant location and position the map view to enclose all markers
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            int padding = 100;
+
             for (CustomLocation entrant : entrantLocations) {
                 LatLng location = new LatLng(entrant.getLatitude(), entrant.getLongitude());
-                googleMap.addMarker(new MarkerOptions().position(location));
+                googleMap.addMarker(new MarkerOptions().position(location).title("Location"));
+                builder.include(location);
             }
 
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(entrantLocations.get(0).getLatitude(), entrantLocations.get(0).getLongitude()), 15));
+            LatLngBounds bounds = builder.build();
+
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
         }
     }
 
