@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.skeddly.R;
+import com.example.skeddly.business.Ticket;
 import com.example.skeddly.business.TicketStatus;
 import com.example.skeddly.business.database.repository.TicketRepository;
 import com.example.skeddly.business.event.Event;
@@ -31,8 +32,12 @@ public class ParticipantListFragment extends Fragment {
     private FragmentParticipantListBinding binding;
     private Event event;
     private DatabaseHandler dbhandler;
+
+    private ArrayList<Ticket> waitingListTickets;
+    private ArrayList<Ticket> finalListTickets;
     private ParticipantAdapter waitingParticipantAdapter;
     private ParticipantAdapter finalParticipantAdapter;
+
     private ListenerRegistration listener;
     private TicketRepository ticketRepository;
 
@@ -42,6 +47,8 @@ public class ParticipantListFragment extends Fragment {
         binding = FragmentParticipantListBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         dbhandler = new DatabaseHandler();
+        waitingListTickets = new ArrayList<>();
+        finalListTickets = new ArrayList<>();
         listener = null;
 
         if (getArguments() != null) {
@@ -87,8 +94,8 @@ public class ParticipantListFragment extends Fragment {
                     this.event = receivedEvent;
 
                     // Create the adapter with an empty list
-                    waitingParticipantAdapter = new ParticipantAdapter(getContext(), new ArrayList<>(), dbhandler, event);
-                    finalParticipantAdapter = new ParticipantAdapter(getContext(), new ArrayList<>(), dbhandler, event);
+                    waitingParticipantAdapter = new ParticipantAdapter(getContext(), waitingListTickets, dbhandler, event);
+                    finalParticipantAdapter = new ParticipantAdapter(getContext(), finalListTickets, dbhandler, event);
                     binding.listViewEntrants.setAdapter(waitingParticipantAdapter);
 
                     // Set the button listeners to clear the adapter and fetch the correct data.
