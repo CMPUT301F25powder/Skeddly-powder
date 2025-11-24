@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.example.skeddly.R;
@@ -32,6 +33,7 @@ public class AdminImageGalleryFragment extends Fragment {
     private GalleryImageAdapter galleryImageAdapter;
     private GridView uploadedImagesView;
     private TextView selectedImagesCount;
+    private ConstraintLayout imageSelectHeader;
 
     @Nullable
     @Override
@@ -46,9 +48,34 @@ public class AdminImageGalleryFragment extends Fragment {
         uploadedImagesView = binding.uploadedImages;
         galleryImageAdapter = new GalleryImageAdapter(root.getContext(), images);
         selectedImagesCount = binding.selectedImagesCount;
+        imageSelectHeader = binding.imageSelectHeader;
+
+        imageSelectHeader.setVisibility(View.GONE);
 
         setListeners();
 
+        uploadedImagesView.setAdapter(galleryImageAdapter);
+
+        return root;
+    }
+
+    private void setSelectionMode(boolean selectionMode) {
+        galleryImageAdapter.setSelectionMode(selectionMode);
+        galleryImageAdapter.notifyDataSetChanged();
+
+        if (selectionMode) {
+            imageSelectHeader.setVisibility(View.VISIBLE);
+        } else {
+            imageSelectHeader.setVisibility(View.GONE);
+        }
+    }
+
+    private void notifyDataSetChanged() {
+        galleryImageAdapter.notifyDataSetChanged();
+        selectedImagesCount.setText(getString(R.string.selected_images_count, galleryImageAdapter.getSelectedCount()));
+    }
+
+    private void setListeners() {
         eventRepository.getAll().addOnSuccessListener(new OnSuccessListener<List<Event>>() {
             @Override
             public void onSuccess(List<Event> events) {
@@ -61,22 +88,6 @@ public class AdminImageGalleryFragment extends Fragment {
             }
         });
 
-        uploadedImagesView.setAdapter(galleryImageAdapter);
-
-        return root;
-    }
-
-    private void setSelectionMode(boolean selectionMode) {
-        galleryImageAdapter.setSelectionMode(selectionMode);
-        galleryImageAdapter.notifyDataSetChanged();
-    }
-
-    private void notifyDataSetChanged() {
-        galleryImageAdapter.notifyDataSetChanged();
-        selectedImagesCount.setText(getString(R.string.selected_images_count, galleryImageAdapter.getSelectedCount()));
-    }
-
-    private void setListeners() {
         uploadedImagesView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

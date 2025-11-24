@@ -7,7 +7,7 @@
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout4"
+        android:id="@+id/imageSelectHeader"
         android:layout_width="match_parent"
         android:layout_height="74dp"
         android:background="@color/neutral_lighter_off_white"
@@ -55,7 +55,7 @@
         android:background="@color/secondary_light_navy"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout4" />
+        app:layout_constraintTop_toBottomOf="@+id/imageSelectHeader" />
 
     <GridView
         android:id="@+id/uploadedImages"
