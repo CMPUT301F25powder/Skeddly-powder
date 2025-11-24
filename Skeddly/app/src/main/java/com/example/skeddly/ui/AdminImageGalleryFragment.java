@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -34,6 +35,8 @@ public class AdminImageGalleryFragment extends Fragment {
     private GridView uploadedImagesView;
     private TextView selectedImagesCount;
     private ConstraintLayout imageSelectHeader;
+    private ImageButton selectAll;
+    private ImageButton closeSelectionMenu;
 
     @Nullable
     @Override
@@ -49,6 +52,8 @@ public class AdminImageGalleryFragment extends Fragment {
         galleryImageAdapter = new GalleryImageAdapter(root.getContext(), images);
         selectedImagesCount = binding.selectedImagesCount;
         imageSelectHeader = binding.imageSelectHeader;
+        selectAll = binding.selectAllBtn;
+        closeSelectionMenu = binding.closeSelectionMenuBtn;
 
         imageSelectHeader.setVisibility(View.GONE);
 
@@ -82,6 +87,29 @@ public class AdminImageGalleryFragment extends Fragment {
                 for (Event event : events) {
                     GalleryImage newGalleryImage = new GalleryImage(event.getImageb64());
                     images.add(newGalleryImage);
+                }
+
+                notifyDataSetChanged();
+            }
+        });
+
+        closeSelectionMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                galleryImageAdapter.toggleSelectAll(false);
+                setSelectionMode(false);
+            }
+        });
+
+        selectAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (galleryImageAdapter.allSelected()) {
+                    galleryImageAdapter.toggleSelectAll(false);
+                    selectAll.setImageResource(R.drawable.ic_check);
+                } else {
+                    galleryImageAdapter.toggleSelectAll(true);
+                    selectAll.setImageResource(R.drawable.ic_check_filled);
                 }
 
                 notifyDataSetChanged();

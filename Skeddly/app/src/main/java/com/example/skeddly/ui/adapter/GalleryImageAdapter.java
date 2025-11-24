@@ -87,13 +87,11 @@ public class GalleryImageAdapter extends ArrayAdapter<GalleryImage> {
 
     private void showUnselectedCheck(ImageView checkButton) {
         checkButton.setImageResource(R.drawable.ic_check);
-        checkButton.setClickable(true);
         checkButton.setVisibility(ViewGroup.VISIBLE);
     }
 
     private void showSelectedCheck(ImageView checkButton) {
         checkButton.setImageResource(R.drawable.ic_check_filled);
-        checkButton.setClickable(true);
         checkButton.setVisibility(ViewGroup.VISIBLE);
     }
 
@@ -103,5 +101,19 @@ public class GalleryImageAdapter extends ArrayAdapter<GalleryImage> {
 
     public void setSelectionMode(boolean selectionMode) {
         this.selectionMode = selectionMode;
+    }
+
+    public void toggleSelectAll(boolean toggle) {
+        for (int i = 0; i < this.getCount(); i++) {
+            GalleryImage image = this.getItem(i);
+
+            if (image != null) {
+                image.setSelected(toggle);
+            }
+        }
+    }
+
+    public boolean allSelected() {
+        return getSelectedCount() == getCount();
     }
 }
