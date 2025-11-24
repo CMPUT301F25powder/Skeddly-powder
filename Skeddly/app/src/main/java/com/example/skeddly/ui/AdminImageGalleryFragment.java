@@ -6,29 +6,32 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.bumptech.glide.Glide;
+import com.example.skeddly.R;
 import com.example.skeddly.business.database.repository.EventRepository;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.databinding.FragmentAdminImageGalleryBinding;
 import com.example.skeddly.ui.adapter.GalleryImageAdapter;
 import com.example.skeddly.ui.popup.ImagePopupDialogFragment;
+import com.example.skeddly.ui.utils.GalleryImage;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 
 public class AdminImageGalleryFragment extends Fragment {
     private FragmentAdminImageGalleryBinding binding;
     private EventRepository eventRepository;
-    private ArrayList<String> base64Images;
+    private ArrayList<GalleryImage> images;
+    private GalleryImageAdapter galleryImageAdapter;
+    private GridView uploadedImagesView;
+    private TextView selectedImagesCount;
 
     @Nullable
     @Override
@@ -38,34 +41,79 @@ public class AdminImageGalleryFragment extends Fragment {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         eventRepository = new EventRepository(db);
-        base64Images = new ArrayList<>();
+        images = new ArrayList<>();
 
-        GridView uploadedImagesView = binding.uploadedImages;
-        GalleryImageAdapter galleryImageAdapter = new GalleryImageAdapter(root.getContext(), base64Images);
+        uploadedImagesView = binding.uploadedImages;
+        galleryImageAdapter = new GalleryImageAdapter(root.getContext(), images);
+        selectedImagesCount = binding.selectedImagesCount;
+
+        setListeners();
 
         eventRepository.getAll().addOnSuccessListener(new OnSuccessListener<List<Event>>() {
             @Override
             public void onSuccess(List<Event> events) {
                 for (Event event : events) {
-                    base64Images.add(event.getImageb64());
+                    GalleryImage newGalleryImage = new GalleryImage(event.getImageb64());
+                    images.add(newGalleryImage);
                 }
 
-                galleryImageAdapter.notifyDataSetChanged();
+                notifyDataSetChanged();
             }
         });
 
         uploadedImagesView.setAdapter(galleryImageAdapter);
 
+        return root;
+    }
+
+    private void setSelectionMode(boolean selectionMode) {
+        galleryImageAdapter.setSelectionMode(selectionMode);
+        galleryImageAdapter.notifyDataSetChanged();
+    }
+
+    private void notifyDataSetChanged() {
+        galleryImageAdapter.notifyDataSetChanged();
+        selectedImagesCount.setText(getString(R.string.selected_images_count, galleryImageAdapter.getSelectedCount()));
+    }
+
+    private void setListeners() {
         uploadedImagesView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String imageB64 = uploadedImagesView.getItemAtPosition(position).toString();
+                GalleryImage image = (GalleryImage) uploadedImagesView.getItemAtPosition(position);
 
-                ImagePopupDialogFragment imagePopupDialogFragment = ImagePopupDialogFragment.newInstance(imageB64);
-                imagePopupDialogFragment.show(getChildFragmentManager(), null);
+                if (galleryImageAdapter.isSelectionMode()) {
+                    image.setSelected(!image.isSelected());
+
+                    if (galleryImageAdapter.getSelectedCount() == 0) {
+                        setSelectionMode(false);
+                    }
+
+                    notifyDataSetChanged();
+                } else {
+                    String imageB64 = image.getBase64String();
+
+                    ImagePopupDialogFragment imagePopupDialogFragment = ImagePopupDialogFragment.newInstance(imageB64);
+                    imagePopupDialogFragment.show(getChildFragmentManager(), null);
+                }
             }
         });
 
-        return root;
+        uploadedImagesView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                if (!galleryImageAdapter.isSelectionMode()) {
+                    GalleryImage image = (GalleryImage) uploadedImagesView.getItemAtPosition(position);
+
+                    image.setSelected(true);
+
+                    setSelectionMode(true);
+
+                    notifyDataSetChanged();
+                }
+
+                return true;
+            }
+        });
     }
 }
