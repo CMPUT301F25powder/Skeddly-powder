@@ -423,32 +423,38 @@ public class CreateFragment extends Fragment {
     private boolean isFilledIn() {
         if (binding.editEventTitle.length() <= 0 || binding.editEventDescription.length() <= 0 ||
                 binding.editLotteryCriteria.length() <= 0) {
+            System.out.println("Title or description missing.");
             return false;
         }
 
         // Schedule must be set
         if (eventStartTime == null || eventEndTime == null || eventStartDate == null || (isRecurring && eventEndDate == null)) {
+            System.out.println("Schedule is not set.");
             return false;
         }
 
         // Start date can't happen after the end date
         if (isRecurring && eventStartDate.isAfter(eventEndDate)) {
+            System.out.println("The event of is negative length (End date < Start date).");
             return false;
         }
 
         // Event can't be scheduled in the past
         LocalDateTime eventStart = LocalDateTime.of(eventStartDate, eventStartTime);
         if (eventStart.isBefore(LocalDateTime.now())) {
+            System.out.println("The registration date is in the past.");
             return false;
         }
 
         // If it's recurring, we need at least one day of the week
         if (isRecurring && daysOfWeek.isEmpty()) {
+            System.out.println("The event is recurring, but no day of the week is set.");
             return false;
         }
 
         // Registration period must be set
         if (regStartTime == null || regEndTime == null || regStartDate == null || regEndDate == null) {
+            System.out.println("The registration period is unset.");
             return false;
         }
 
@@ -457,21 +463,25 @@ public class CreateFragment extends Fragment {
 
         // Registration start can't happen after registration end
         if (regStart.isAfter(regEnd)) {
+            System.out.println("The registration period is of negative length (Start date > End date).");
             return false;
         }
 
         // Registration start and end date must happen before event start date
         if (regEnd.isAfter(eventStart)) {
+            System.out.println("The registration period overlaps with the event.");
             return false;
         }
 
         // Registration start and end date can't happen in the past
         if (regStart.isBefore(LocalDateTime.now())) {
+            System.out.println("The registration period starts and/or ends in the past.");
             return false;
         }
 
         // Attendee Limit
         if (binding.editAttendeeLimit.length() <= 0) {
+            System.out.println("The attendee limit is less than 0.");
             return false;
         }
 
@@ -485,16 +495,19 @@ public class CreateFragment extends Fragment {
         }
 
         if (binding.editWaitlistLimit.length() >= 0 && waitlistLimitContent < attendeeLimitContent) {
+            System.out.println("The waitlist limit is less than the attendee limit.");
             return false;
         }
 
         // Location
         if (eventLocation == null) {
+            System.out.println("There is no location.");
             return false;
         }
 
         // Needs an image
         if (imageBytes == null) {
+            System.out.println("There is no image.");
             return false;
         }
 
