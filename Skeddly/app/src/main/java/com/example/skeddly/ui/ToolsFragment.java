@@ -27,13 +27,14 @@ public class ToolsFragment extends Fragment {
         binding = FragmentToolsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        ConstraintLayout testFragmentButton = binding.btnFragmentTest;
+        ToolButtonsFragment toolButtonsFragment = new ToolButtonsFragment();
+        getChildFragmentManager().beginTransaction().replace(binding.fragment.getId(), toolButtonsFragment).commit();
 
-        testFragmentButton.setOnClickListener(new View.OnClickListener() {
+        toolButtonsFragment.setImageGalleryButtonOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                NavController navController = Navigation.findNavController(view);
-                navController.navigate(R.id.action_navigation_tools_to_test);
+            public void onClick(View v) {
+                AdminImageGalleryFragment fragment = new AdminImageGalleryFragment();
+                getChildFragmentManager().beginTransaction().replace(binding.fragment.getId(), fragment).commit();
             }
         });
 

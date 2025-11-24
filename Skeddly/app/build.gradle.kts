@@ -48,6 +48,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.fragment)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
