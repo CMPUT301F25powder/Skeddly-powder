@@ -18,6 +18,8 @@ import com.example.skeddly.databinding.FragmentToolsButtonsBinding;
 public class ToolButtonsFragment extends Fragment {
     private FragmentToolsButtonsBinding binding;
     private View.OnClickListener imageGalleryOnClickListener = null;
+    private View.OnClickListener AdminInboxOnClickListener = null;
+
 
     @Nullable
     @Override
@@ -27,6 +29,8 @@ public class ToolButtonsFragment extends Fragment {
 
         ConstraintLayout testFragmentButton = binding.btnFragmentTest;
         ConstraintLayout imageGalleryButton = binding.btnImgGallery;
+        ConstraintLayout adminInboxButton = binding.btnLogNotification;
+
 
         testFragmentButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -40,6 +44,10 @@ public class ToolButtonsFragment extends Fragment {
             imageGalleryButton.setOnClickListener(this.imageGalleryOnClickListener);
         }
 
+        if (this.AdminInboxOnClickListener != null) {
+            adminInboxButton.setOnClickListener(this.AdminInboxOnClickListener);
+        }
+
         return root;
     }
 
@@ -48,6 +56,13 @@ public class ToolButtonsFragment extends Fragment {
 
         if (binding != null) {
             binding.btnImgGallery.setOnClickListener(imageGalleryOnClickListener);
+        }
+    }
+
+    public void setAdminInboxButtonOnClickListener(View.OnClickListener onClickListener) {
+        this.AdminInboxOnClickListener = onClickListener;
+        if (binding != null) {
+            binding.btnLogNotification.setOnClickListener(AdminInboxOnClickListener);
         }
     }
 }

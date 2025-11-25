@@ -45,6 +45,16 @@ public class ToolsFragment extends Fragment {
             }
         });
 
+        toolButtonsFragment.setAdminInboxButtonOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AdminInboxFragment fragment = new AdminInboxFragment();
+                getChildFragmentManager().beginTransaction().replace(binding.fragment.getId(), fragment).commit();
+
+                toolsBack.setVisibility(View.VISIBLE);
+            }
+        });
+
         toolsBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
