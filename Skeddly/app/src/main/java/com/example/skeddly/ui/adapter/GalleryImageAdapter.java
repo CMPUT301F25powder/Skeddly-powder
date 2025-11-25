@@ -44,7 +44,7 @@ public class GalleryImageAdapter extends ArrayAdapter<GalleryImage> {
 
         GalleryImage image = getItem(position);
         ImageView uploadedImageComponent = convertView.findViewById(R.id.uploadedImage);
-        Glide.with(convertView).load(Base64.getDecoder().decode(image.getBase64String())).into(uploadedImageComponent);
+        Glide.with(convertView).load(Base64.getDecoder().decode(image.getEvent().getImageb64())).into(uploadedImageComponent);
 
         ImageView checkButton = convertView.findViewById(R.id.checkBtn);
 

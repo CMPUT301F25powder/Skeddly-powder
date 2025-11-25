@@ -1,19 +1,17 @@
 package com.example.skeddly.ui.utils;
 
+import com.example.skeddly.business.event.Event;
+
 public class GalleryImage {
-    private String base64String;
+    private final Event event;
     private boolean selected;
 
-    public GalleryImage(String base64String) {
-        this.base64String = base64String;
+    public GalleryImage(Event event) {
+        this.event = event;
     }
 
-    public String getBase64String() {
-        return base64String;
-    }
-
-    public void setBase64String(String base64String) {
-        this.base64String = base64String;
+    public Event getEvent() {
+        return event;
     }
 
     public boolean isSelected() {

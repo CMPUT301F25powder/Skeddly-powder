@@ -37,6 +37,7 @@ public class AdminImageGalleryFragment extends Fragment {
     private ConstraintLayout imageSelectHeader;
     private ImageButton selectAll;
     private ImageButton closeSelectionMenu;
+    private ImageButton deleteSelectedButton;
 
     @Nullable
     @Override
@@ -54,6 +55,7 @@ public class AdminImageGalleryFragment extends Fragment {
         imageSelectHeader = binding.imageSelectHeader;
         selectAll = binding.selectAllBtn;
         closeSelectionMenu = binding.closeSelectionMenuBtn;
+        deleteSelectedButton = binding.deleteSelectedBtn;
 
         imageSelectHeader.setVisibility(View.GONE);
 
@@ -80,16 +82,36 @@ public class AdminImageGalleryFragment extends Fragment {
         selectedImagesCount.setText(getString(R.string.selected_images_count, galleryImageAdapter.getSelectedCount()));
     }
 
+    private void deleteSelected() {
+        for (int i = images.size() - 1; i >= 0; i--) {
+            GalleryImage image = images.get(i);
+
+            if (image.isSelected()) {
+                image.getEvent().setImageb64("");
+                images.remove(image);
+            }
+        }
+
+        notifyDataSetChanged();
+    }
+
     private void setListeners() {
         eventRepository.getAll().addOnSuccessListener(new OnSuccessListener<List<Event>>() {
             @Override
             public void onSuccess(List<Event> events) {
                 for (Event event : events) {
-                    GalleryImage newGalleryImage = new GalleryImage(event.getImageb64());
+                    GalleryImage newGalleryImage = new GalleryImage(event);
                     images.add(newGalleryImage);
                 }
 
                 notifyDataSetChanged();
+            }
+        });
+
+        deleteSelectedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteSelected();
             }
         });
 
@@ -130,7 +152,7 @@ public class AdminImageGalleryFragment extends Fragment {
 
                     notifyDataSetChanged();
                 } else {
-                    String imageB64 = image.getBase64String();
+                    String imageB64 = image.getEvent().getImageb64();
 
                     ImagePopupDialogFragment imagePopupDialogFragment = ImagePopupDialogFragment.newInstance(imageB64);
                     imagePopupDialogFragment.show(getChildFragmentManager(), null);
