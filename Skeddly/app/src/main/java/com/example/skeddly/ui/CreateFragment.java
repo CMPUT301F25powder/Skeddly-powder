@@ -288,7 +288,7 @@ public class CreateFragment extends Fragment {
                 Event event = createEvent();
                 if (isEdit) Toast.makeText(requireContext(), "Edited Event!", Toast.LENGTH_SHORT).show();
                 else Toast.makeText(requireContext(), "Created Event!", Toast.LENGTH_SHORT).show();
-                
+
                 // Put event in db
                 DatabaseHandler dbHandler = new DatabaseHandler();
                 if (getArguments() != null) {
