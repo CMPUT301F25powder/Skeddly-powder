@@ -24,7 +24,7 @@ import com.example.skeddly.business.notification.NotificationType;
 import com.example.skeddly.business.user.User;
 import com.example.skeddly.databinding.FragmentInboxBinding;
 import com.example.skeddly.business.database.repository.NotificationRepository;
-import com.example.skeddly.ui.adapter.Inbox2Adapter;
+import com.example.skeddly.ui.adapter.InboxAdapter;
 import com.example.skeddly.ui.popup.StandardPopupDialogFragment;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -39,7 +39,7 @@ public class InboxFragment extends Fragment implements View.OnClickListener {
     private FragmentInboxBinding binding;
     private ArrayList<Button> filterButtons;
 
-    private Inbox2Adapter inboxAdapter;
+    private InboxAdapter inboxAdapter;
     private NotificationRepository notificationRepositoryAll;
     private NotificationRepository notificationRepositoryMessages;
     private NotificationRepository notificationRepositoryRegistration;
@@ -67,7 +67,7 @@ public class InboxFragment extends Fragment implements View.OnClickListener {
         notificationRepositorySystem = new NotificationRepository(FirebaseFirestore.getInstance(), user.getId(), NotificationType.SYSTEM);
 
         List<GenericRepository<Notification>> repositories = Arrays.asList(notificationRepositoryAll, notificationRepositoryMessages, notificationRepositoryRegistration, notificationRepositorySystem);
-        inboxAdapter = new Inbox2Adapter(getContext(), new ArrayList<>());
+        inboxAdapter = new InboxAdapter(getContext(), new ArrayList<>());
         multiRepoArrayAdapter = new RepositoryToArrayAdapter<>(repositories, inboxAdapter, true);
 
         // Set event adapter to list view
@@ -159,6 +159,7 @@ public class InboxFragment extends Fragment implements View.OnClickListener {
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
                 boolean choice = result.getBoolean("buttonChoice");
 
+                // TODO: Remove the notification or archive it somehow
                 if (choice) {
                     ticketRepository.updateStatus(requestKey, TicketStatus.ACCEPTED);
                 } else {

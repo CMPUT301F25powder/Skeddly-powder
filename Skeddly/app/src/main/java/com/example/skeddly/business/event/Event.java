@@ -235,7 +235,7 @@ public class Event extends DatabaseObject {
             ticketRepository.get(ticketId).addOnSuccessListener(t -> {
                 String recipient = t.getUserId();
                 String title = this.eventDetails.getName();
-                String message = "You have been selected to participate in this event! Navigate to the event to learn more. (Not implemented yet lol)";
+                String message = "You have been selected to participate in this event!";
 
                 Notification notification = new Notification(title, message, recipient);
                 notification.setType(NotificationType.REGISTRATION);
