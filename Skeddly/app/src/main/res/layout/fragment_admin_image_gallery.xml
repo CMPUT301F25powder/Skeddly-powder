@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/adminImageGallery"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/neutral_cream_warm">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/imageSelectHeader"
+        android:layout_width="match_parent"
+        android:layout_height="74dp"
+        android:background="@color/neutral_lighter_off_white"
+        android:paddingLeft="36dp"
+        android:paddingRight="36dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/selectAllBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/neutral_lighter_off_white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_check_filled" />
+
+        <TextView
+            android:id="@+id/selectedImagesCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/selected_images_count"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/selectAllBtn"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/deleteSelectedBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:background="@color/neutral_lighter_off_white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/closeSelectionMenuBtn"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_trash_filled" />
+
+        <ImageButton
+            android:id="@+id/closeSelectionMenuBtn"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@color/neutral_lighter_off_white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <View
+        android:id="@+id/view2"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/secondary_light_navy"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageSelectHeader" />
+
+    <GridView
+        android:id="@+id/uploadedImages"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="33dp"
+        android:background="@color/neutral_cream_warm"
+        android:columnWidth="127dp"
+        android:gravity="center|center_horizontal|fill_horizontal"
+        android:horizontalSpacing="8dp"
+        android:numColumns="3"
+        android:paddingTop="8dp"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view2" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,7 +11,11 @@
 
         <action
             android:id="@+id/action_navigation_home_to_event_view_info"
-            app:destination="@id/navigation_event_view_info" />
+            app:destination="@id/navigation_event_view_info"
+            />
+        <action
+            android:id="@+id/action_navigation_home_to_edit_event"
+            app:destination="@id/navigation_create"/>
     </fragment>
 
     <fragment
@@ -27,6 +31,10 @@
             android:id="@+id/action_event_view_info_to_participant_list"
             app:destination="@id/navigation_participant_list" />
 
+        <action
+            android:id="@+id/action_navigation_event_view_info_to_edit_event"
+            app:destination="@id/navigation_create"/>
+
         <argument
             android:name="eventId"
             app:argType="string" />
@@ -35,8 +43,11 @@
     <fragment
         android:id="@+id/navigation_create"
         android:name="com.example.skeddly.ui.CreateFragment"
-        android:label="@string/nav_create"
-        />
+        android:label="@string/nav_create">
+        <action
+            android:id="@+id/action_navigation_create_to_home"
+            app:destination="@id/navigation_home" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_tools"

@@ -8,6 +8,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.UnderlineSpan;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,11 +25,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.bumptech.glide.Glide;
 import com.example.skeddly.MainActivity;
 import com.example.skeddly.R;
 import com.example.skeddly.business.database.DatabaseHandler;
+import com.example.skeddly.business.database.repository.EventRepository;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.event.EventDetail;
 import com.example.skeddly.business.event.EventSchedule;
@@ -37,12 +40,16 @@ import com.example.skeddly.databinding.FragmentCreateEditBinding;
 import com.example.skeddly.ui.popup.CategorySelectorDialogFragment;
 import com.example.skeddly.ui.popup.MapPopupDialogFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointForward;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -51,6 +58,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -65,7 +73,7 @@ import java.util.Objects;
  * original picker in the callback.
  */
 interface MaterialTimePickerCallback {
-    public void onPositiveButtonClick(MaterialTimePicker picker);
+    void onPositiveButtonClick(MaterialTimePicker picker);
 }
 
 /**
@@ -75,6 +83,8 @@ public class CreateFragment extends Fragment {
     private FragmentCreateEditBinding binding;
     private CalendarConstraints calendarConstraints;
     private UnderlineSpan underlineSpan;
+    private EventRepository eventRepository;
+    private boolean isEdit;
 
     // For launching the image picker built in activity
     private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
@@ -100,6 +110,7 @@ public class CreateFragment extends Fragment {
     private LocalTime regEndTime;
 
     private LatLng eventLocation;
+    private String eventId;
 
     // Popup Selector Constants
     private final String categoryTitle = "Select Category";
@@ -118,10 +129,32 @@ public class CreateFragment extends Fragment {
         // Initialize Variables
         underlineSpan = new UnderlineSpan();
         calendarConstraints = new CalendarConstraints.Builder().setValidator(DateValidatorPointForward.now()).build();
+        eventRepository = new EventRepository(FirebaseFirestore.getInstance());
 
         // Hide them because we don't want them here
         binding.btnBack.setVisibility(View.INVISIBLE);
         binding.btnQrCode.setVisibility(View.INVISIBLE);
+
+        binding.btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Use the NavController to navigate back to the home screen.
+                NavHostFragment.findNavController(CreateFragment.this)
+                        .navigate(R.id.navigation_home);
+            }
+        });
+
+        // Get arguments
+        isEdit = false;
+        eventId = null;
+        if (getArguments() != null) {
+            this.eventId = getArguments().getString("eventId");
+            binding.btnBack.setVisibility(View.VISIBLE);
+            isEdit = true;
+            if (this.eventId != null && !this.eventId.isEmpty()) {
+                loadEventData(this.eventId);
+            }
+        }
 
         // Registers a photo picker activity launcher in single-select mode.
         this.pickMedia = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
@@ -264,11 +297,14 @@ public class CreateFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Event event = createEvent();
-                Toast.makeText(requireContext(), "Event created!", Toast.LENGTH_SHORT).show();
 
                 // Put event in db
-                DatabaseHandler dbHandler = new DatabaseHandler();
-                dbHandler.getEventsPath().document(event.getId()).set(event);
+                if (isEdit) {
+                    event.setId(eventId);
+                    eventRepository.updateEvent(event);
+                } else {
+                    eventRepository.set(event);
+                }
 
                 // User owns the event
                 MainActivity mainActivity = (MainActivity) requireActivity();
@@ -276,7 +312,10 @@ public class CreateFragment extends Fragment {
                 mainActivity.notifyUserChanged();
 
                 // Reset the create event screen
-                resetCreateScreen();
+                if (!isEdit) resetCreateScreen();
+
+                if (isEdit) Toast.makeText(requireContext(), "Edited Event!", Toast.LENGTH_SHORT).show();
+                else Toast.makeText(requireContext(), "Created Event!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -473,12 +512,6 @@ public class CreateFragment extends Fragment {
             return false;
         }
 
-        // Registration start and end date can't happen in the past
-        if (regStart.isBefore(LocalDateTime.now())) {
-            System.out.println("The registration period starts and/or ends in the past.");
-            return false;
-        }
-
         // Attendee Limit
         if (binding.editAttendeeLimit.length() <= 0) {
             System.out.println("The attendee limit is less than 0.");
@@ -543,7 +576,7 @@ public class CreateFragment extends Fragment {
         LocalDateTime eventStart = LocalDateTime.of(eventStartDate, eventStartTime);
         LocalDateTime eventEnd = LocalDateTime.of(endDate, eventEndTime);
         LocalDateTime regStart = LocalDateTime.of(regStartDate, regStartTime);
-        LocalDateTime regEnd = LocalDateTime.of(regStartDate, regEndTime);
+        LocalDateTime regEnd = LocalDateTime.of(regEndDate, regEndTime);
         EventSchedule eventSchedule = new EventSchedule(eventStart, eventEnd, regStart, regEnd, eventDays);
 
         // Get the list limits
@@ -601,5 +634,106 @@ public class CreateFragment extends Fragment {
         spannedString.setSpan(underlineSpan, 0, spannedString.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
         return spannedString;
+    }
+
+    /**
+     * Loads event data from Firestore and populates the UI.
+     * @param eventId The ID of the event to load.
+     */
+    private void loadEventData(String eventId) {
+        eventRepository.get(eventId).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                populateUI(task.getResult());
+            } else {
+                Toast.makeText(getContext(), "Error: Event not found.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /**
+     * Populates the UI with the given event.
+     * @param event The event to populate the UI with.
+     */
+    private void populateUI(Event event) {
+        EventDetail details = event.getEventDetails();
+        EventSchedule schedule = event.getEventSchedule();
+
+        // Details
+        binding.editEventTitle.setText(details.getName());
+        binding.editEventDescription.setText(details.getDescription());
+        binding.editLotteryCriteria.setText(details.getEntryCriteria());
+        this.categories.clear();
+        this.categories.addAll(details.getCategories());
+        binding.textCategorySelect.setText(String.join(", ", categories));
+
+        // Schedule
+        isRecurring = schedule.isRecurring();
+        binding.switchRecurrence.setChecked(isRecurring);
+        updateRecurring();
+
+        if (isRecurring && schedule.getDaysOfWeek() != null) {
+            daysOfWeek.clear();
+            List<String> allDays = Arrays.asList(dayArray);
+            List<Boolean> eventDays = schedule.getDaysOfWeek();
+            for (int i = 0; i < eventDays.size(); i++) {
+                if (eventDays.get(i)) {
+                    daysOfWeek.add(allDays.get(i));
+                }
+            }
+            if (!daysOfWeek.isEmpty()) {
+                binding.textDaySelect.setText(underlineString(String.join(", ", daysOfWeek)));
+            }
+        }
+
+        // Datetime population
+        long eventStartEpoch = schedule.getStartTime();
+        long eventEndEpoch = schedule.getEndTime();
+        long regStartEpoch = schedule.getRegStart();
+        long regEndEpoch = schedule.getRegEnd();
+
+        this.eventStartDate = LocalDateTime.ofInstant(Instant.ofEpochSecond(eventStartEpoch), ZoneId.systemDefault()).toLocalDate();
+        this.eventEndDate = LocalDateTime.ofInstant(Instant.ofEpochSecond(eventEndEpoch), ZoneId.systemDefault()).toLocalDate();
+        this.eventStartTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(eventStartEpoch), ZoneId.systemDefault()).toLocalTime();
+        this.eventEndTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(eventEndEpoch), ZoneId.systemDefault()).toLocalTime();
+
+        this.regStartDate = LocalDateTime.ofInstant(Instant.ofEpochSecond(regStartEpoch), ZoneId.systemDefault()).toLocalDate();
+        this.regEndDate = LocalDateTime.ofInstant(Instant.ofEpochSecond(regEndEpoch), ZoneId.systemDefault()).toLocalDate();
+        this.regStartTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(regStartEpoch), ZoneId.systemDefault()).toLocalTime();
+        this.regEndTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(regEndEpoch), ZoneId.systemDefault()).toLocalTime();
+
+        binding.textDateStart.setText(underlineString(this.eventStartDate.format(dateFormatter)));
+        binding.textDateFinish.setText(underlineString(this.eventEndDate.format(dateFormatter)));
+        binding.textTimeStart.setText(underlineString(this.eventStartTime.format(timeFormatter)));
+        binding.textTimeFinish.setText(underlineString(this.eventEndTime.format(timeFormatter)));
+
+        binding.textRegDateStart.setText(underlineString(this.regStartDate.format(dateFormatter)));
+        binding.textRegDateFinish.setText(underlineString(this.regEndDate.format(dateFormatter)));
+        binding.textRegTimeStart.setText(underlineString(this.regStartTime.format(timeFormatter)));
+        binding.textRegTimeFinish.setText(underlineString(this.regEndTime.format(timeFormatter)));
+
+        // Limits
+        binding.editAttendeeLimit.setText(String.valueOf(event.getParticipantList().getMax()));
+        if (event.getWaitingList().getMax() != Integer.MAX_VALUE) {
+            binding.editWaitlistLimit.setText(String.valueOf(event.getWaitingList().getMax()));
+        }
+
+        // Location
+        if (event.getLocation() != null) {
+            this.eventLocation = new LatLng(event.getLocation().getLatitude(), event.getLocation().getLongitude());
+            binding.textEventTitleOverlay.setText(String.format(Locale.getDefault(), "%.2f, %.2f", this.eventLocation.latitude, this.eventLocation.longitude));
+        }
+
+        // Image
+        if (event.getImageb64() != null) {
+            this.imageBytes = Base64.decode(event.getImageb64(), Base64.DEFAULT);
+            updateEventImage();
+        }
+
+
+        // Log Location
+        binding.checkboxGeoLocationReq.setChecked(event.getLogLocation());
+
+        // Update Button
+        updateConfirmButton();
     }
 }
