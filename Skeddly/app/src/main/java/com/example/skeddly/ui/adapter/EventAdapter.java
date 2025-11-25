@@ -21,11 +21,14 @@ import androidx.navigation.Navigation;
 import com.bumptech.glide.Glide;
 import com.example.skeddly.R;
 import com.example.skeddly.business.database.SingleListenUpdate;
+import com.example.skeddly.business.database.repository.EventRepository;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.location.CustomLocation;
 import com.example.skeddly.business.user.User;
+import com.example.skeddly.business.user.UserLevel;
 import com.example.skeddly.ui.popup.StandardPopupDialogFragment;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Base64;
@@ -105,6 +108,18 @@ public class EventAdapter extends ArrayAdapter<Event> {
                 Navigation.findNavController(v).navigate(R.id.action_navigation_home_to_edit_event, bundle);
                 Toast.makeText(getContext(), "Editing " + event.getEventDetails().getName(), Toast.LENGTH_SHORT).show();
             });
+
+            // Handle long press
+            convertView.setOnLongClickListener(v -> {
+                // Check if the user is an admin
+                if (user != null && user.getPrivilegeLevel().equals(UserLevel.ADMIN)) {
+                    // Show a confirmation dialog before deleting
+                    showDeleteConfirmationPopup(event);
+                    Toast.makeText(getContext(), "Deleting " + event.getEventDetails().getName(), Toast.LENGTH_SHORT).show();
+                    return true; // Consume the long click
+                }
+                return false; // Don't consume the click if not an admin
+            });
         }
 
         return convertView;
@@ -160,7 +175,7 @@ public class EventAdapter extends ArrayAdapter<Event> {
                             @Override
                             public void onUpdate(CustomLocation newValue) {
                                 if (newValue == null) {
-                                    Toast.makeText(getContext(), "Location lookup failed!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), "Location lookup failed.", Toast.LENGTH_SHORT).show();
                                 }
                                 event.join(dbHandler, user.getPersonalInformation(), user.getId(), newValue);
                             }
@@ -174,4 +189,55 @@ public class EventAdapter extends ArrayAdapter<Event> {
             StandardPopupDialogFragment.newInstance("Entry Criteria", event.getEventDetails().getEntryCriteria(), requestKey).show(fm, "dialog_join_confirm");
         }
     }
+
+    /**
+     * Shows a confirmation popup before deleting an event.
+     * @param event The event to delete.
+     */
+    private void showDeleteConfirmationPopup(Event event) {
+        if (getContext() instanceof FragmentActivity) {
+            FragmentManager fm = ((FragmentActivity) getContext()).getSupportFragmentManager();
+            String requestKey = "deleteConfirm-" + event.getId();
+
+            // Listen for the result from the popup
+            fm.setFragmentResultListener(requestKey, (LifecycleOwner) getContext(), (reqKey, bundle) -> {
+                boolean result = bundle.getBoolean("buttonChoice");
+                if (result) {
+                    // User confirmed the deletion
+                    deleteEvent(event);
+                }
+            });
+
+            // Create and show the confirmation dialog
+            StandardPopupDialogFragment.newInstance(
+                    "Delete Event?",
+                    "Are you sure you want to permanently delete '" + event.getEventDetails().getName() + "'?",
+                    requestKey
+            ).show(fm, "dialog_delete_confirm");
+        }
+    }
+
+    /**
+     * Deletes an event from Firestore using the repository and removes it from the adapter.
+     * @param event The event to delete.
+     */
+    private void deleteEvent(Event event) {
+        // Get an instance of the repository
+        EventRepository eventRepository = new EventRepository(FirebaseFirestore.getInstance());
+
+        // Call the delete method on the repository, passing the event's ID
+        eventRepository.delete(event.getId())
+                .addOnSuccessListener(aVoid -> {
+                    // On success, remove the event from the local list and update the UI
+                    remove(event);
+                    notifyDataSetChanged();
+                    Toast.makeText(getContext(), "Event deleted", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    // On failure, notify the user
+                    Toast.makeText(getContext(), "Failed to delete event", Toast.LENGTH_SHORT).show();
+                });
+    }
 }
+
+
