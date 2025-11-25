@@ -35,7 +35,7 @@ import java.util.Base64;
  */
 public class EventAdapter extends ArrayAdapter<Event> {
     private User user;
-    private RetrieveLocation locationGetter;
+    private final RetrieveLocation locationGetter;
 
     /**
      * Constructor for the EventAdapter
@@ -157,6 +157,9 @@ public class EventAdapter extends ArrayAdapter<Event> {
                         locationGetter.getLocation(new SingleListenUpdate<CustomLocation>() {
                             @Override
                             public void onUpdate(CustomLocation newValue) {
+                                if (newValue == null) {
+                                    Toast.makeText(getContext(), "Location lookup failed!", Toast.LENGTH_SHORT).show();
+                                }
                                 event.join(dbHandler, user.getPersonalInformation(), user.getId(), newValue);
                             }
                         });
