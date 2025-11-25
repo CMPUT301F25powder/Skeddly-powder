@@ -8,10 +8,10 @@
     <string name="activity_signup_hint_phone_number">Phone Number</string>
 
     <string name="btn_cancel">Cancel</string>
+    <string name="btn_close">Close</string>
     <string name="btn_confirm">Confirm</string>
 
     <string name="dialog_contents">Description</string>
-    <string name="dialog_qr_btn_close">Close</string>
     <string name="dialog_qr_btn_export">Export</string>
     <string name="dialog_qr_title">QR Code</string>
     <string name="dialog_title">Title</string>
@@ -83,6 +83,7 @@
     <string name="fragment_profile_notification_settings">Notification Settings</string>
     <string name="fragment_profile_personal_info">Personal Information</string>
     <string name="fragment_profile_phone_number">123-456-7890</string>
+    <string name="fragment_profile_popup_delete_content">Are you sure you want to delete your account?</string>
 
     <string name="nav_create">Create</string>
     <string name="nav_event_info">Event Info</string>
@@ -94,4 +95,5 @@
 
     <string name="notification_content">Notification information, here is information about the notification yuppers</string>
     <string name="notification_title">Notification</string>
+    <string name="dialog_draw_content">Participants on waiting list: %d\nCurrent # of Participants: %d/%d\n\nHow many participants do you want to draw?</string>
 </resources>

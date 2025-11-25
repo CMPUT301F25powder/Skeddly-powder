@@ -13,12 +13,19 @@ public class PersonalInformation {
     private String phoneNumber;
 
     /**
-     * Constructor for the PersonalInformation
+     * Constructor for the user's PersonalInformation.
+     */
+    public PersonalInformation(String name, String email, String phoneNumber) {
+        this.name = name;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+    }
+
+    /**
+     * No-arg constructor for PersonalInformation. Required by Firestore.
      */
     public PersonalInformation() {
-        this.name = "";
-        this.email = "";
-        this.phoneNumber = "";
+        this("", "", "");
     }
 
     /**

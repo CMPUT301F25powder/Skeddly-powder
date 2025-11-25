@@ -8,6 +8,20 @@
     android:background="@drawable/bg_header_profile"
     android:paddingBottom="24dp">
 
+    <!--  Back Button  -->
+    <ImageButton
+        android:id="@+id/btn_back"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/img_style_round"
+        android:src="@drawable/ic_arrow_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/neutral_lighter_off_white"
+        tools:ignore="ContentDescription" />
+
     <!--  "Profile" Title Text  -->
     <TextView
         android:id="@+id/title_profile"

@@ -16,11 +16,13 @@ import androidx.fragment.app.Fragment;
 import com.example.skeddly.MainActivity;
 import com.example.skeddly.R;
 import com.example.skeddly.business.notification.Notification;
-import com.example.skeddly.business.database.DatabaseObjects;
 import com.example.skeddly.business.notification.NotificationType;
 import com.example.skeddly.business.user.User;
 import com.example.skeddly.databinding.FragmentInboxBinding;
 import com.example.skeddly.ui.adapter.InboxAdapter;
+import com.example.skeddly.business.database.repository.NotificationRepository;
+import com.example.skeddly.business.database.repository.RepositoryToArrayAdapter;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
@@ -29,9 +31,12 @@ import java.util.ArrayList;
  */
 public class InboxFragment extends Fragment implements View.OnClickListener {
     private FragmentInboxBinding binding;
-    private DatabaseObjects<Notification> inbox;
-    private InboxAdapter inboxAdapter;
     private ArrayList<Button> filterButtons;
+
+    private ArrayList<Notification> notifications;
+    private InboxAdapter inboxAdapter;
+    private NotificationRepository notificationRepository;
+    private RepositoryToArrayAdapter<Notification> repoToArrayAdapter;
 
     @Nullable
     @Override
@@ -44,13 +49,14 @@ public class InboxFragment extends Fragment implements View.OnClickListener {
         User user = activity.getUser();
 
         // Notif list
-        inbox = user.getNotifications();
-        user.setNotifications(inbox);
-
-        activity.notifyUserChanged();
+        notificationRepository = new NotificationRepository(FirebaseFirestore.getInstance(), user.getId());
 
         // Inbox Adapter
-        inboxAdapter = new InboxAdapter(getContext(), inbox);
+        notifications = new ArrayList<>();
+        inboxAdapter = new InboxAdapter(getContext(), notifications);
+
+        // Adapter adapter
+        repoToArrayAdapter = new RepositoryToArrayAdapter<>(notificationRepository, inboxAdapter, true);
 
         ListView inboxList = binding.listNotifications;
         // Set event adapter to list view
@@ -116,13 +122,13 @@ public class InboxFragment extends Fragment implements View.OnClickListener {
             if (button == selectedButton) {
                 // This is the selected button
                 // Set the navy blue gradient background and white text
-                button.setBackground(ContextCompat.getDrawable(this.getContext(), R.drawable.gradient_navy_blue));
-                button.setTextColor(ContextCompat.getColor(this.getContext(), R.color.neutral_lighter_off_white));
+                button.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.gradient_navy_blue));
+                button.setTextColor(ContextCompat.getColor(requireContext(), R.color.neutral_lighter_off_white));
             } else {
                 // This is an unselected button
                 // Set the default background and blue text
-                button.setBackground(ContextCompat.getDrawable(this.getContext(), R.drawable.btn_unselect));
-                button.setTextColor(ContextCompat.getColor(this.getContext(), R.color.primary_light_blue));
+                button.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.btn_unselect));
+                button.setTextColor(ContextCompat.getColor(requireContext(), R.color.primary_light_blue));
             }
         }
     }
@@ -132,5 +138,9 @@ public class InboxFragment extends Fragment implements View.OnClickListener {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+
+        if (repoToArrayAdapter != null) {
+            repoToArrayAdapter.removeListener();
+        }
     }
 }

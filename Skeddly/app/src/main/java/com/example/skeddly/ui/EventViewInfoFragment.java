@@ -19,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
@@ -36,6 +37,8 @@ import com.example.skeddly.business.user.UserLevel;
 import com.example.skeddly.databinding.FragmentEventInfoBinding;
 import com.example.skeddly.ui.adapter.EventAdapter;
 import com.example.skeddly.ui.adapter.RetrieveLocation;
+import com.example.skeddly.ui.popup.DrawParticipantsDialogFragment;
+import com.example.skeddly.ui.popup.MapPopupDialogFragment;
 import com.example.skeddly.ui.popup.QRPopupDialogFragment;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -84,7 +87,9 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
         eventSnapshotListenerReg = null;
 
         // Initialize eventAdapter
-        eventAdapter = new EventAdapter(getContext(), new ArrayList<>(), userId, this);
+        MainActivity activity = (MainActivity) requireActivity();
+        userId = activity.getUser().getId();
+        eventAdapter = new EventAdapter(getContext(), new ArrayList<>(), activity.getUser(), this);
 
         // For getting our current location
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext());
@@ -107,7 +112,6 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
         // Get the eventId passed from the HomeFragment
         if (getArguments() != null) {
             eventId = getArguments().getString("eventId");
-            userId = getArguments().getString("userId");
             organizerId = getArguments().getString("organizerId");
         }
 
@@ -218,7 +222,7 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
         if (event.getParticipantList() != null && event.getParticipantList().getTicketIds() != null) {
             currentAttendees = event.getParticipantList().getTicketIds().size();
         }
-        binding.valueAttendeeLimit.setText(String.format(Locale.getDefault(), "%d / %d", currentAttendees, event.getParticipantList().getMaxAttend()));
+        binding.valueAttendeeLimit.setText(String.format(Locale.getDefault(), "%d / %d", currentAttendees, event.getParticipantList().getMax()));
 
         // Calculate and display Waitlist Count
         int currentWaitlist = 0;
@@ -227,7 +231,7 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
             if (event.getWaitingList().getTicketIds() != null) {
                 currentWaitlist = event.getWaitingList().getTicketIds().size();
             }
-            maxWaitlist = event.getWaitingList().getLimit();
+            maxWaitlist = event.getWaitingList().getMax();
         }
 
         if (maxWaitlist == Integer.MAX_VALUE) {
@@ -239,6 +243,22 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
         if (!event.isJoinable()) {
             binding.btnJoin.setVisibility(View.GONE);
         }
+
+        // Setup draw button
+        binding.btnDraw.setOnClickListener(v -> {
+            DrawParticipantsDialogFragment dpdf = DrawParticipantsDialogFragment.newInstance("drawParticipants", event.getWaitingList().size(), event.getParticipantList().size(), event.getParticipantList().getMax());
+            dpdf.show(getChildFragmentManager(), "drawParticipants");
+        });
+
+        getChildFragmentManager().setFragmentResultListener("drawParticipants", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                int drawAmount = result.getInt("drawAmount");
+                Log.v("EventViewInfoFragment", String.format("Drawing %d", drawAmount));
+
+                event.draw(drawAmount);
+            }
+        });
     }
 
     @SuppressLint("MissingPermission")
@@ -250,7 +270,7 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
                 @Override
                 public void onSuccess(Location location) {
                     if (location != null) {
-                        callback.onUpdate(new CustomLocation(location.getLongitude(), location.getLatitude()));
+                        callback.onUpdate(new CustomLocation(location.getLatitude(), location.getLongitude()));
                     }
                 }
             });

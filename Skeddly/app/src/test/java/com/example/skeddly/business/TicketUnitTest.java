@@ -17,17 +17,17 @@ public class TicketUnitTest {
     @Test
     public void testTicketUserLinked() {
         User user = new User();
-        Ticket ticket = new Ticket(user.getId());
+        Ticket ticket = new Ticket(user.getPersonalInformation(), user.getId(), "");
 
-        assertSame(ticket.getUser(), user.getId());
+        assertSame(ticket.getUserId(), user.getId());
     }
 
     @Test
     public void testTicketLocation() {
         User user = new User();
         CustomLocation location = new CustomLocation(0, 0);
-        Ticket ticketLocation = new Ticket(user.getId(), location);
-        Ticket ticketNoLocation = new Ticket(user.getId());
+        Ticket ticketLocation = new Ticket(user.getPersonalInformation(), user.getId(), "", location);
+        Ticket ticketNoLocation = new Ticket(user.getPersonalInformation(), user.getId(), "");
 
         assertNotNull(ticketLocation.getLocation());
         assertNull(ticketNoLocation.getLocation());
@@ -36,7 +36,7 @@ public class TicketUnitTest {
     @Test
     public void testTicketTime() {
         User user = new User();
-        Ticket ticket = new Ticket(user.getId());
+        Ticket ticket = new Ticket(user.getPersonalInformation(), user.getId(), "");
 
         ZoneId zoneId = ZoneId.systemDefault();
         long curEpoch = LocalDateTime.now().atZone(zoneId).toEpochSecond();

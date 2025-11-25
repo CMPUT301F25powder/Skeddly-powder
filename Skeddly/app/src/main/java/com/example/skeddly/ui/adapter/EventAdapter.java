@@ -25,6 +25,7 @@ import com.example.skeddly.business.database.SingleListenUpdate;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.location.CustomLocation;
+import com.example.skeddly.business.user.User;
 import com.example.skeddly.ui.popup.StandardPopupDialogFragment;
 
 import java.util.ArrayList;
@@ -34,18 +35,18 @@ import java.util.Base64;
  * Adapter for the event list view
  */
 public class EventAdapter extends ArrayAdapter<Event> {
-    private String userId;
-    private RetrieveLocation locationGetter;
+    private User user;
+    private final RetrieveLocation locationGetter;
 
     /**
      * Constructor for the EventAdapter
      * @param context The context of the app
      * @param events The events to display
-     * @param userId The user ID of the current user
+     * @param user The current user
      */
-    public EventAdapter(Context context, ArrayList<Event> events, String userId, RetrieveLocation locationGetter) {
+    public EventAdapter(Context context, ArrayList<Event> events, User user, RetrieveLocation locationGetter) {
         super(context, 0, events);
-        this.userId = userId;
+        this.user = user;
         this.locationGetter = locationGetter;
     }
 
@@ -73,7 +74,7 @@ public class EventAdapter extends ArrayAdapter<Event> {
             DatabaseHandler dbHandler = new DatabaseHandler();
 
             // Handle privilege assignment for editing
-            if (userId.equals(event.getOrganizer())) {
+            if (user.getId().equals(event.getOrganizer())) {
                 buttonEdit.setVisibility(View.VISIBLE);
                 buttonJoin.setVisibility(View.INVISIBLE);
             } else {
@@ -87,13 +88,12 @@ public class EventAdapter extends ArrayAdapter<Event> {
             }
 
             // Set button state, and button's on click listener
-            updateJoinButtonState(buttonJoin, event, userId, dbHandler);
+            updateJoinButtonState(buttonJoin, event, user.getId(), dbHandler);
 
             // Handle view info button click
             buttonViewInfo.setOnClickListener(v -> {
                 Bundle bundle = new Bundle();
                 bundle.putString("eventId", event.getId());
-                bundle.putString("userId", userId);
                 bundle.putString("organizerId", event.getOrganizer());
                 Navigation.findNavController(v).navigate(R.id.action_navigation_home_to_event_view_info, bundle);
                 Toast.makeText(getContext(), "View info for " + event.getEventDetails().getName(), Toast.LENGTH_SHORT).show();
@@ -161,11 +161,14 @@ public class EventAdapter extends ArrayAdapter<Event> {
                         locationGetter.getLocation(new SingleListenUpdate<CustomLocation>() {
                             @Override
                             public void onUpdate(CustomLocation newValue) {
-                                event.join(dbHandler, userId, newValue);
+                                if (newValue == null) {
+                                    Toast.makeText(getContext(), "Location lookup failed!", Toast.LENGTH_SHORT).show();
+                                }
+                                event.join(dbHandler, user.getPersonalInformation(), user.getId(), newValue);
                             }
                         });
                     } else {
-                        event.join(dbHandler, userId, null);
+                        event.join(dbHandler, user.getPersonalInformation(), user.getId(), null);
                     }
                 }
             });

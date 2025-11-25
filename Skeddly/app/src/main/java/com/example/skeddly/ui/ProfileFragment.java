@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -11,8 +13,11 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.example.skeddly.MainActivity;
+import com.example.skeddly.R;
 import com.example.skeddly.business.user.Authenticator;
 import com.example.skeddly.business.user.PersonalInformation;
 import com.example.skeddly.business.user.User;
@@ -31,48 +36,39 @@ public class ProfileFragment extends Fragment {
         binding = FragmentProfileBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        MainActivity activity = (MainActivity) requireActivity();
-        Authenticator authenticator = activity.getAuthenticator();
-        User user = activity.getUser();
+        // Fill in their details
+        updatePersonalInfo();
 
-        TextView profileName = binding.headerProfile.profileName;
-        TextView profileEmail = binding.headerProfile.profileEmail;
-        TextView profilePhone = binding.headerProfile.profilePhone;
+        ImageButton backButton = binding.headerProfile.btnBack;
+        backButton.setVisibility(View.INVISIBLE);
 
-        ConstraintLayout deleteAccountButton = binding.btnDeleteAccount;
+        // Show all the buttons of things they can do
+        ProfileButtonsFragment pbf = new ProfileButtonsFragment();
+        getChildFragmentManager().beginTransaction().replace(binding.fragment.getId(), pbf).commit();
 
-        PersonalInformation userInformation = user.getPersonalInformation();
-
-        profileName.setText(userInformation.getName());
-        profileEmail.setText(userInformation.getEmail());
-        profilePhone.setText(userInformation.getPhoneNumber());
-
-        String deletePopupTitle = "Delete Account";
-        String deletePopupContent = "Are you sure you want to delete your account?";
-        String deletePopupRequestKey = "confirmationDialog";
-
-        deleteAccountButton.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener returnToButtons = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                StandardPopupDialogFragment spf = StandardPopupDialogFragment
-                        .newInstance(deletePopupTitle, deletePopupContent, deletePopupRequestKey);
-                spf.show(getChildFragmentManager(), deletePopupRequestKey);
+                getChildFragmentManager().beginTransaction().replace(binding.fragment.getId(), pbf).commit();
+                backButton.setVisibility(View.INVISIBLE);
+                updatePersonalInfo();
             }
-        });
+        };
 
-        getChildFragmentManager().setFragmentResultListener(deletePopupRequestKey,
-                this, new FragmentResultListener() {
+        // What to do when they press to navigate to the personal info edit fragment
+        pbf.setPersonalInfoBtnOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-                boolean confirmation = result.getBoolean("buttonChoice");
+            public void onClick(View v) {
+                backButton.setVisibility(View.VISIBLE);
+                PersonalInformationEditFragment pief = new PersonalInformationEditFragment();
+                getChildFragmentManager().beginTransaction().replace(binding.fragment.getId(), pief).commit();
 
-                if (confirmation) {
-                    authenticator.deleteUser();
-                    MainActivity mainActivity = (MainActivity) requireActivity();
-                    mainActivity.switchToSignup();
-                }
+                // If they submit, we return back to profile buttons
+                pief.setOnCompleteListener(returnToButtons);
             }
         });
+
+        backButton.setOnClickListener(returnToButtons);
 
         return root;
     }
@@ -81,5 +77,22 @@ public class ProfileFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    /**
+     * Updates the header with the personal info of the user
+     */
+    private void updatePersonalInfo() {
+        MainActivity activity = (MainActivity) requireActivity();
+        User user = activity.getUser();
+
+        TextView profileName = binding.headerProfile.profileName;
+        TextView profileEmail = binding.headerProfile.profileEmail;
+        TextView profilePhone = binding.headerProfile.profilePhone;
+
+        PersonalInformation userInformation = user.getPersonalInformation();
+        profileName.setText(userInformation.getName());
+        profileEmail.setText(userInformation.getEmail());
+        profilePhone.setText(userInformation.getPhoneNumber());
     }
 }

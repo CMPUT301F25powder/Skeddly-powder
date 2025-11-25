@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 
 import com.example.skeddly.business.database.DatabaseObject;
 import com.example.skeddly.business.location.CustomLocation;
+import com.example.skeddly.business.user.PersonalInformation;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -14,7 +15,9 @@ import java.time.ZoneId;
  * entered the event. when they did, and where they did all in one object.
  */
 public class Ticket extends DatabaseObject {
+    private PersonalInformation userPersonalInfo;
     private String userId;
+    private String eventId;
     private long ticketTime;
     @Nullable
     private CustomLocation location;
@@ -30,10 +33,12 @@ public class Ticket extends DatabaseObject {
      * @param userId The id of the user that this ticket is associated with
      * @param location The location that the user is casting the ticket from, or NULL if not given.
      */
-    public Ticket(@NonNull String userId, @Nullable CustomLocation location) {
+    public Ticket(@NonNull PersonalInformation userPersonalInfo, @NonNull String userId, @NonNull String eventId, @Nullable CustomLocation location) {
+        this.userPersonalInfo = userPersonalInfo;
         this.userId = userId;
+        this.eventId = eventId;
         this.location = location;
-        this.status = TicketStatus.INVITED;
+        this.status = TicketStatus.WAITING;
 
         ZoneId zoneId = ZoneId.systemDefault();
         this.ticketTime = LocalDateTime.now().atZone(zoneId).toEpochSecond();
@@ -42,26 +47,51 @@ public class Ticket extends DatabaseObject {
     /**
      * Constructor for a Ticket without location.
      * @param userId The id of the user that this ticket is associated with
+     * @param eventId The id of the event that this ticket is associated with
      */
-    public Ticket(@NonNull String userId) {
-        this(userId, null);
+    public Ticket(@NonNull PersonalInformation userPersonalInfo, @NonNull String userId, @NonNull String eventId) {
+        this(userPersonalInfo, userId, eventId, null);
     }
 
     /**
-     * Gets the user who entered the event.
+     * Gets the personal information of the user that joined the event
+     * @return The personal information of the user.
+     */
+    public PersonalInformation getUserPersonalInfo() {
+        return userPersonalInfo;
+    }
+
+    /**
+     * Gets the user id who entered the event.
      * @return The user id which entered the event
      */
     @NonNull
-    public String getUser() {
+    public String getUserId() {
         return userId;
     }
 
     /**
-     * Sets the user who entered the event.
+     * Sets the user id who entered the event.
      * @param userId The new id of the user that this ticket is associated with
      */
-    public void setUser(String userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    /**
+     * Gets the event id that this ticket is associated with.
+     * @return The event id that this ticket is associated with.
+     */
+    public String getEventId() {
+        return eventId;
+    }
+
+    /**
+     * Sets the event id that this ticket is associated with.
+     * @param eventId The new event id that this ticket is associated with.
+     */
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
     }
 
     /**

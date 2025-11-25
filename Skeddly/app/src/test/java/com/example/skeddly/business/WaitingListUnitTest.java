@@ -62,8 +62,8 @@ public class WaitingListUnitTest {
 
     @Test
     public void testWaitlistLimitWorks() {
-        assertEquals(Integer.MAX_VALUE, waitingList.getLimit());
-        assertEquals(WAITING_BOUND, boundedWaitingList.getLimit());
+        assertEquals(Integer.MAX_VALUE, waitingList.getMax());
+        assertEquals(WAITING_BOUND, boundedWaitingList.getMax());
     }
 
     @Test

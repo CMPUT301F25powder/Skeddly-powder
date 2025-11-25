@@ -24,7 +24,7 @@ public class ParticipantListUnitTest {
     @Test
     public void testDefaultConstructor_UnlimitedCapacity() {
         ParticipantList unlimitedList = new ParticipantList();
-        assertEquals(Integer.MAX_VALUE, unlimitedList.getMaxAttend());
+        assertEquals(Integer.MAX_VALUE, unlimitedList.getMax());
     }
 
     @Test
@@ -83,9 +83,9 @@ public class ParticipantListUnitTest {
 
     @Test
     public void testGetAndSetMaxAttend() {
-        assertEquals(MAX_ATTENDEES, participantList.getMaxAttend());
+        assertEquals(MAX_ATTENDEES, participantList.getMax());
         int newMax = 20;
-        participantList.setMaxAttend(newMax);
-        assertEquals(newMax, participantList.getMaxAttend());
+        participantList.setMax(newMax);
+        assertEquals(newMax, participantList.getMax());
     }
 }

@@ -17,6 +17,7 @@ import com.example.skeddly.business.Ticket;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.database.SingleListenUpdate;
 import com.example.skeddly.business.user.User;
+import com.example.skeddly.databinding.ItemEntrantBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -31,23 +32,18 @@ import java.util.ArrayList;
  * Adapter for the participant list view
  */
 public class ParticipantAdapter extends ArrayAdapter<Ticket> {
-    private boolean isWaitingList;
     private DatabaseHandler dbHandler;
-    private String fullname;
-    private String joinDate;
     private Event event;
 
     /**
      * Constructor for the ParticipantAdapter
      * @param context The context of the app
      * @param tickets The tickets to display
-     * @param isWaitingList Whether the tickets are for the waiting list
      * @param dbHandler The database handler
      * @param event The event to get the users from
      */
-    public ParticipantAdapter(Context context, ArrayList<Ticket> tickets, boolean isWaitingList, DatabaseHandler dbHandler, Event event) {
+    public ParticipantAdapter(Context context, ArrayList<Ticket> tickets, DatabaseHandler dbHandler, Event event) {
         super(context, 0, tickets);
-        this.isWaitingList = isWaitingList;
         this.dbHandler = dbHandler;
         this.event = event;
     }
@@ -58,42 +54,33 @@ public class ParticipantAdapter extends ArrayAdapter<Ticket> {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_entrant, parent, false);
         }
+        ItemEntrantBinding binding = ItemEntrantBinding.bind(convertView);
 
         // Get components
-        TextView nameText = convertView.findViewById(R.id.text_view_full_name);
-        TextView dateText = convertView.findViewById(R.id.text_view_join_date);
-        TextView statusTextView = convertView.findViewById(R.id.text_view_status);
+        TextView nameText = binding.textViewFullName;
+        TextView dateText = binding.textViewJoinDate;
+        TextView statusTextView = binding.textViewStatus;
         Ticket ticket = getItem(position);
         if (ticket != null) {
             // Set user name
-            getUserFromId(ticket.getUser(), user -> {
-                fullname = user.getPersonalInformation().getName();
-                nameText.setText(fullname);
-            });
+            nameText.setText(ticket.getUserPersonalInfo().getName());
 
             // Set date
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
             LocalDateTime joinDate = LocalDateTime.ofInstant(Instant.ofEpochSecond(ticket.getTicketTime()), ZoneId.systemDefault());
-            this.joinDate = "Joined on " + dateTimeFormatter.format(joinDate);
-            dateText.setText(this.joinDate);
+            dateText.setText("Joined on " + dateTimeFormatter.format(joinDate));
 
             // Set status
-            if (ticket.getStatus() == TicketStatus.CANCELLED) {
-                statusTextView.setBackgroundResource(R.drawable.chip_status_cancelled);
-            }
-            else if (ticket.getStatus() == TicketStatus.INVITED){
+            statusTextView.setVisibility(View.VISIBLE);
+            if (ticket.getStatus() == TicketStatus.INVITED) {
                 statusTextView.setBackgroundResource(R.drawable.chip_status_invited);
             }
-            else {
+            else if (ticket.getStatus() == TicketStatus.ACCEPTED){
                 statusTextView.setBackgroundResource(R.drawable.chip_status_accepted);
             }
-
-
-            // remove status for the finalized list and long press to delete
-            if (!isWaitingList) {
-                statusTextView.setVisibility(View.VISIBLE);
-            }
-            else {
+            else if (ticket.getStatus() == TicketStatus.CANCELLED) {
+                statusTextView.setBackgroundResource(R.drawable.chip_status_cancelled);
+            } else {
                 statusTextView.setVisibility(View.INVISIBLE);
             }
 
@@ -110,41 +97,4 @@ public class ParticipantAdapter extends ArrayAdapter<Ticket> {
         }
         return convertView;
     }
-
-    /**
-     * Gets the user from the database based on their ID
-     * @param userId The ID of the user to get
-     * @param callback The callback to run when the user is retrieved
-     */
-    private void getUserFromId(String userId, SingleListenUpdate<User> callback) {
-        dbHandler.getUsersPath().document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful() && task.getResult().exists()) {
-                    callback.onUpdate(task.getResult().toObject(User.class));
-                } else {
-                    callback.onUpdate(null);
-                }
-            }
-        });
-    }
-
-    /**
-     * Sets whether we are showing the waiting list or not.
-     * @param isWaitingList True if we're showing the waiting list. False otherwise
-     */
-    public void setWaitingList(boolean isWaitingList) {
-        this.isWaitingList = isWaitingList;
-    }
-
-    /**
-     * Gets whether we are showing the waiting list or not.
-     * @return True if we're showing the waiting list. False otherwise
-     */
-    public boolean getWaitingList() {
-        return isWaitingList;
-    }
-
-
-
 }

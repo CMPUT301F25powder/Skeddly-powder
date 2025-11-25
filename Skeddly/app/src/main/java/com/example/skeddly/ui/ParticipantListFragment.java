@@ -10,14 +10,22 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.skeddly.R;
-import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.Ticket;
+import com.example.skeddly.business.TicketStatus;
+import com.example.skeddly.business.database.repository.TicketRepository;
+import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.database.SingleListenUpdate;
+import com.example.skeddly.business.location.CustomLocation;
+import com.example.skeddly.business.location.MapPopupType;
 import com.example.skeddly.databinding.FragmentParticipantListBinding;
 import com.example.skeddly.ui.adapter.ParticipantAdapter;
+import com.example.skeddly.ui.popup.MapPopupDialogFragment;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Fragment for the participant list screen
@@ -27,22 +35,29 @@ public class ParticipantListFragment extends Fragment {
     private FragmentParticipantListBinding binding;
     private Event event;
     private DatabaseHandler dbhandler;
-    private ArrayList<String> finalTicketIds;
-    private ArrayList<String> waitingTicketIds;
-    private ParticipantAdapter participantAdapter;
+
+    private ArrayList<Ticket> waitingListTickets;
+    private ArrayList<Ticket> finalListTickets;
+    private ParticipantAdapter waitingParticipantAdapter;
+    private ParticipantAdapter finalParticipantAdapter;
+    private Boolean isWaitingList = true;
+
+    private ListenerRegistration listener;
+    private TicketRepository ticketRepository;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentParticipantListBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-        // Initialize the ID lists
-        finalTicketIds = new ArrayList<>();
-        waitingTicketIds = new ArrayList<>();
         dbhandler = new DatabaseHandler();
+        waitingListTickets = new ArrayList<>();
+        finalListTickets = new ArrayList<>();
+        listener = null;
 
         if (getArguments() != null) {
             String eventId = getArguments().getString("eventId");
+            ticketRepository = new TicketRepository(FirebaseFirestore.getInstance(), eventId);
             loadEventAndSetupUI(eventId);
         }
 
@@ -53,6 +68,15 @@ public class ParticipantListFragment extends Fragment {
             }
         });
 
+        // Set up map button
+        binding.fabShowLocations.setOnClickListener(v -> {
+            if (isWaitingList) {
+                fetchAndDisplayTicketLocations(waitingListTickets);
+            } else {
+                fetchAndDisplayTicketLocations(finalListTickets);
+            }
+        });
+
         return root;
     }
 
@@ -60,6 +84,12 @@ public class ParticipantListFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+
+        if (listener != null) {
+            listener.remove();
+            listener = null;
+        }
+
     }
 
     /**
@@ -67,7 +97,7 @@ public class ParticipantListFragment extends Fragment {
      * @param eventId The ID of the event to load.
      */
     private void loadEventAndSetupUI(String eventId) {
-        dbhandler.singleListen(dbhandler.getEventsPath().document(eventId),
+        listener = dbhandler.singleListen(dbhandler.getEventsPath().document(eventId),
                 Event.class,
                 (SingleListenUpdate<Event>) receivedEvent -> {
                     if (receivedEvent == null) {
@@ -77,60 +107,65 @@ public class ParticipantListFragment extends Fragment {
                     this.event = receivedEvent;
 
                     // Create the adapter with an empty list
-                    participantAdapter = new ParticipantAdapter(getContext(), new ArrayList<>(), true, dbhandler, event);
-                    binding.listViewEntrants.setAdapter(participantAdapter);
-
-                    // Extract the ticket IDs from the event object
-                    if (event.getWaitingList() != null && event.getWaitingList().getTicketIds() != null) {
-                        waitingTicketIds.addAll(event.getWaitingList().getTicketIds());
-                    }
-                    if (event.getParticipantList() != null && event.getParticipantList().getTicketIds() != null) {
-                        finalTicketIds.addAll(event.getParticipantList().getTicketIds());
-                    }
+                    waitingParticipantAdapter = new ParticipantAdapter(getContext(), waitingListTickets, dbhandler, event);
+                    finalParticipantAdapter = new ParticipantAdapter(getContext(), finalListTickets, dbhandler, event);
+                    binding.listViewEntrants.setAdapter(waitingParticipantAdapter);
 
                     // Set the button listeners to clear the adapter and fetch the correct data.
                     binding.buttonFinalList.setOnClickListener(v -> {
-                        participantAdapter.setWaitingList(false);
                         binding.buttonFinalList.setBackgroundResource(R.drawable.btn_select);
                         binding.buttonWaitingList.setBackgroundResource(R.drawable.btn_unselect);
-                        fetchAndDisplayTickets(finalTicketIds);
+
+                        binding.listViewEntrants.setAdapter(finalParticipantAdapter);
+
+                        isWaitingList = false;
                     });
                     binding.buttonWaitingList.setOnClickListener(v -> {
-                        participantAdapter.setWaitingList(true);
                         binding.buttonWaitingList.setBackgroundResource(R.drawable.btn_select);
                         binding.buttonFinalList.setBackgroundResource(R.drawable.btn_unselect);
-                        fetchAndDisplayTickets(waitingTicketIds);
+
+                        binding.listViewEntrants.setAdapter(waitingParticipantAdapter);
+
+                        isWaitingList = true;
                     });
 
-                    // Load the default list (waiting list)
-                    fetchAndDisplayTickets(waitingTicketIds);
+                    // Load all the tickets
+                    fetchAndDisplayTickets();
                 }
         );
     }
 
     /**
      * Clears the adapter and then fetches and displays all tickets for the given list of IDs.
-     * @param ticketIds The list of ticket IDs to fetch.
      */
-    private void fetchAndDisplayTickets(ArrayList<String> ticketIds) {
-        if (participantAdapter == null) return;
+    private void fetchAndDisplayTickets() {
+        ticketRepository.getAllByStatus(TicketStatus.WAITING).addOnSuccessListener(tickets -> {
+            waitingParticipantAdapter.addAll(tickets);
+            waitingParticipantAdapter.notifyDataSetChanged();
+        });
 
-        // Clear the adapter to show a fresh list
-        participantAdapter.clear();
-        participantAdapter.notifyDataSetChanged(); // Show the empty state immediately
+        TicketStatus[] nonWaiting = {TicketStatus.INVITED, TicketStatus.ACCEPTED, TicketStatus.CANCELLED};
+        ticketRepository.getAllByStatuses(Arrays.asList(nonWaiting)).addOnSuccessListener(tickets -> {
+            finalParticipantAdapter.addAll(tickets);
+            finalParticipantAdapter.notifyDataSetChanged();
+        });
+    }
 
-        if (ticketIds == null) return;
+    /**
+     * Fetches and displays all ticket locations based on which arraylist of tickets is provided.
+     * @param tickets The arraylist of tickets.
+     */
+    private void fetchAndDisplayTicketLocations(ArrayList<Ticket> tickets) {
+        ArrayList<CustomLocation> entrantLocations = new ArrayList<>();
 
-        // Loop through the IDs and fetch each ticket one by one.
-        for (String ticketId : ticketIds) {
-            dbhandler.singleListen(dbhandler.getTicketsPath().document(ticketId),
-                    Ticket.class,
-                    (SingleListenUpdate<Ticket>) ticket -> {
-                        if (ticket != null) {
-                            participantAdapter.add(ticket);
-                            participantAdapter.notifyDataSetChanged(); // Refresh after each add
-                        }
-                    });
+        for (Ticket entrantTicket : tickets) {
+            CustomLocation ticketLocation = entrantTicket.getLocation();
+            if (ticketLocation != null) {
+                entrantLocations.add(new CustomLocation(ticketLocation.getLatitude(), ticketLocation.getLongitude(), entrantTicket.getUserPersonalInfo().getName()));
+            }
         }
+
+        MapPopupDialogFragment lpf = MapPopupDialogFragment.newInstance("locationPicker", MapPopupType.VIEW, entrantLocations);
+        lpf.show(getChildFragmentManager(), "LocationPicker");
     }
 }
