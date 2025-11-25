@@ -100,7 +100,9 @@ public class EventAdapter extends ArrayAdapter<Event> {
 
             // Handle edit button click
             buttonEdit.setOnClickListener(v -> {
-                // TODO: Implement navigation to event edit screen
+                Bundle bundle = new Bundle();
+                bundle.putString("eventId", event.getId());
+                Navigation.findNavController(v).navigate(R.id.action_navigation_home_to_edit_event, bundle);
                 Toast.makeText(getContext(), "Editing " + event.getEventDetails().getName(), Toast.LENGTH_SHORT).show();
             });
         }

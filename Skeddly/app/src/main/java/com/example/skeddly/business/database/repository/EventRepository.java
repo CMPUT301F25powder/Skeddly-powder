@@ -42,6 +42,21 @@ public class EventRepository extends GenericRepository<Event> {
         });
     }
 
+    public Task<Void> updateEvent(Event event) {
+        return get(event.getId()).continueWithTask(new Continuation<Event, Task<Void>>() {
+            @Override
+            public Task<Void> then(@NonNull Task<Event> task) throws Exception {
+                Event oldEvent = task.getResult();
+
+                event.setWaitingList(oldEvent.getWaitingList());
+                event.setParticipantList(oldEvent.getParticipantList());
+                event.setOrganizer(oldEvent.getOrganizer());
+
+                return set(event);
+            }
+        });
+    }
+
     @Override
     protected CollectionReference getCollectionPath() {
         return firestore.collection(COLLECTION_PATH);
