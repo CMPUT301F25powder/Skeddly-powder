@@ -12,9 +12,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 
 import com.example.skeddly.MainActivity;
 import com.example.skeddly.R;
+import com.example.skeddly.business.TicketStatus;
+import com.example.skeddly.business.database.repository.TicketRepository;
 import com.example.skeddly.business.notification.Notification;
 import com.example.skeddly.business.notification.NotificationType;
 import com.example.skeddly.business.user.User;
@@ -22,6 +25,7 @@ import com.example.skeddly.databinding.FragmentInboxBinding;
 import com.example.skeddly.ui.adapter.InboxAdapter;
 import com.example.skeddly.business.database.repository.NotificationRepository;
 import com.example.skeddly.business.database.repository.RepositoryToArrayAdapter;
+import com.example.skeddly.ui.popup.StandardPopupDialogFragment;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -36,6 +40,7 @@ public class InboxFragment extends Fragment implements View.OnClickListener {
     private ArrayList<Notification> notifications;
     private InboxAdapter inboxAdapter;
     private NotificationRepository notificationRepository;
+    private TicketRepository ticketRepository;
     private RepositoryToArrayAdapter<Notification> repoToArrayAdapter;
 
     @Nullable
@@ -50,6 +55,7 @@ public class InboxFragment extends Fragment implements View.OnClickListener {
 
         // Notif list
         notificationRepository = new NotificationRepository(FirebaseFirestore.getInstance(), user.getId());
+        ticketRepository = new TicketRepository(FirebaseFirestore.getInstance(), null);
 
         // Inbox Adapter
         notifications = new ArrayList<>();
@@ -90,6 +96,19 @@ public class InboxFragment extends Fragment implements View.OnClickListener {
             }
         });
 
+        inboxList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Notification notification = (Notification) adapterView.getItemAtPosition(i);
+
+                if (notification.getType() == NotificationType.REGISTRATION) {
+                    StandardPopupDialogFragment spdf = StandardPopupDialogFragment.newInstance("Accept Invitation",
+                            "Would you like to join " + notification.getTitle(), notification.getTicketId());
+                    setupPopupListener(notification.getTicketId());
+                    spdf.show(getChildFragmentManager(), null);
+                }
+            }
+        });
         return root;
     }
 
@@ -131,6 +150,21 @@ public class InboxFragment extends Fragment implements View.OnClickListener {
                 button.setTextColor(ContextCompat.getColor(requireContext(), R.color.primary_light_blue));
             }
         }
+    }
+
+    private void setupPopupListener(String ticketId) {
+        getChildFragmentManager().setFragmentResultListener(ticketId, this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                boolean choice = result.getBoolean("buttonChoice");
+
+                if (choice) {
+                    ticketRepository.updateStatus(requestKey, TicketStatus.ACCEPTED);
+                } else {
+                    ticketRepository.updateStatus(requestKey, TicketStatus.CANCELLED);
+                }
+            }
+        });
     }
 
 

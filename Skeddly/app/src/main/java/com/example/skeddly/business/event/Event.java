@@ -227,19 +227,22 @@ public class Event extends DatabaseObject {
     public void draw(int numToDraw) {
         TicketRepository ticketRepository = new TicketRepository(FirebaseFirestore.getInstance(), getId());
         NotificationRepository notificationRepository = new NotificationRepository(FirebaseFirestore.getInstance(), getId());
+
         for (int i = 0; i < numToDraw; ++i) {
             String ticketId = getWaitingList().draw();
             getParticipantList().addTicket(ticketId);
+
             ticketRepository.get(ticketId).addOnSuccessListener(t -> {
                 String recipient = t.getUserId();
-                String title = "Update for event " + this.eventDetails.getName();
+                String title = this.eventDetails.getName();
                 String message = "You have been selected to participate in this event! Navigate to the event to learn more. (Not implemented yet lol)";
+
                 Notification notification = new Notification(title, message, recipient);
                 notification.setType(NotificationType.REGISTRATION);
-                notification.setEventId(getId());
+                notification.setTicketId(ticketId);
+
                 notificationRepository.set(notification);
             });
-
 
             // Change the status to INVITED
             ticketRepository.updateStatus(ticketId, TicketStatus.INVITED);
