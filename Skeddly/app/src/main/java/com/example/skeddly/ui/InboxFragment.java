@@ -1,12 +1,9 @@
 package com.example.skeddly.ui;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -19,58 +16,65 @@ import androidx.fragment.app.FragmentResultListener;
 import com.example.skeddly.MainActivity;
 import com.example.skeddly.R;
 import com.example.skeddly.business.TicketStatus;
+import com.example.skeddly.business.database.repository.GenericRepository;
+import com.example.skeddly.business.database.repository.adapter.RepositoryToArrayAdapter;
 import com.example.skeddly.business.database.repository.TicketRepository;
 import com.example.skeddly.business.notification.Notification;
 import com.example.skeddly.business.notification.NotificationType;
 import com.example.skeddly.business.user.User;
 import com.example.skeddly.databinding.FragmentInboxBinding;
-import com.example.skeddly.ui.adapter.Inbox2Adapter;
-import com.example.skeddly.ui.adapter.InboxAdapter;
 import com.example.skeddly.business.database.repository.NotificationRepository;
-import com.example.skeddly.business.database.repository.RepositoryToArrayAdapter;
+import com.example.skeddly.ui.adapter.Inbox2Adapter;
 import com.example.skeddly.ui.popup.StandardPopupDialogFragment;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Fragment for the inbox screen
  */
-public class InboxFragment extends Fragment {
+public class InboxFragment extends Fragment implements View.OnClickListener {
     private FragmentInboxBinding binding;
     private ArrayList<Button> filterButtons;
 
-    private ArrayList<Notification> notifications;
     private Inbox2Adapter inboxAdapter;
-    private NotificationRepository notificationRepository;
+    private NotificationRepository notificationRepositoryAll;
+    private NotificationRepository notificationRepositoryMessages;
+    private NotificationRepository notificationRepositoryRegistration;
+    private NotificationRepository notificationRepositorySystem;
+
+    private RepositoryToArrayAdapter<Notification> multiRepoArrayAdapter;
+
     private TicketRepository ticketRepository;
-    private RepositoryToArrayAdapter<Notification> repoToArrayAdapter;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentInboxBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+        ticketRepository = new TicketRepository(FirebaseFirestore.getInstance(), null);
 
         // Get the user
         MainActivity activity = (MainActivity) requireActivity();
         User user = activity.getUser();
 
-        // Notif list
-        notificationRepository = new NotificationRepository(FirebaseFirestore.getInstance(), user.getId());
-        ticketRepository = new TicketRepository(FirebaseFirestore.getInstance(), null);
+        // Setup notif list
+        notificationRepositoryAll = new NotificationRepository(FirebaseFirestore.getInstance(), user.getId());
+        notificationRepositoryMessages = new NotificationRepository(FirebaseFirestore.getInstance(), user.getId(), NotificationType.MESSAGES);
+        notificationRepositoryRegistration = new NotificationRepository(FirebaseFirestore.getInstance(), user.getId(), NotificationType.REGISTRATION);
+        notificationRepositorySystem = new NotificationRepository(FirebaseFirestore.getInstance(), user.getId(), NotificationType.SYSTEM);
 
-        // Inbox Adapter
-        notifications = new ArrayList<>();
-        inboxAdapter = new Inbox2Adapter(getContext(), notifications);
+        List<GenericRepository<Notification>> repositories = Arrays.asList(notificationRepositoryAll, notificationRepositoryMessages, notificationRepositoryRegistration, notificationRepositorySystem);
+        inboxAdapter = new Inbox2Adapter(getContext(), new ArrayList<>());
+        multiRepoArrayAdapter = new RepositoryToArrayAdapter<>(repositories, inboxAdapter, true);
 
-        // Adapter adapter
-        repoToArrayAdapter = new RepositoryToArrayAdapter<>(notificationRepository, inboxAdapter, true);
-
-        ListView inboxList = binding.listNotifications;
         // Set event adapter to list view
+        ListView inboxList = binding.listNotifications;
         inboxList.setAdapter(inboxAdapter);
 
+        // Setup filter buttons
         Button buttonAll = binding.headerInbox.btnAll;
         Button buttonMessages = binding.headerInbox.btnMessages;
         Button buttonRegistration = binding.headerInbox.btnRegistration;
@@ -82,59 +86,51 @@ public class InboxFragment extends Fragment {
         filterButtons.add(buttonRegistration);
         filterButtons.add(buttonSystem);
 
-        // 4. Set the OnClickListener for each button
-//        for (Button button : filterButtons) {
-//            button.setOnClickListener(this);
-//        }
+        // Set the OnClickListener for each button
+        for (Button button : filterButtons) {
+            button.setOnClickListener(this);
+        }
 
-        // 5. Set the initial state (select "All" by default)
+        // Set the initial state (select "All" by default)
         updateButtonSelection(buttonAll);
 
+        inboxList.setOnItemLongClickListener((parent, view, position, id) -> {
+            // TODO: Handle deleting notifs properly
 
+            inboxAdapter.notifyDataSetChanged();
+            return true;
+        });
 
-        inboxList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                inboxAdapter.removeNotification(inboxAdapter.getItem(position));
-                inboxAdapter.notifyDataSetChanged();
-                return true;
+        inboxList.setOnItemClickListener((adapterView, view, i, l) -> {
+            Notification notification = (Notification) adapterView.getItemAtPosition(i);
+            if (notification.getType() == NotificationType.REGISTRATION) {
+                StandardPopupDialogFragment spdf = StandardPopupDialogFragment.newInstance("Accept Invitation",
+                        "Would you like to join " + notification.getTitle(), notification.getTicketId());
+                setupPopupListener(notification.getTicketId());
+                spdf.show(getChildFragmentManager(), null);
             }
         });
 
-        inboxList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.v("Jonathan", "Jonathan");
-                Notification notification = (Notification) adapterView.getItemAtPosition(i);
-                if (notification.getType() == NotificationType.REGISTRATION) {
-                    StandardPopupDialogFragment spdf = StandardPopupDialogFragment.newInstance("Accept Invitation",
-                            "Would you like to join " + notification.getTitle(), notification.getTicketId());
-                    setupPopupListener(notification.getTicketId());
-                    spdf.show(getChildFragmentManager(), null);
-                }
-            }
-        });
         return root;
     }
 
-//    @Override
-//    public void onClick(View v) {
-//        // When any button is clicked, update the selection state
-//        updateButtonSelection(v);
-//
-//        // Trigger the filter based on which button was clicked
-//        int viewId = v.getId();
-//        if (viewId == R.id.btn_all) {
-//            inboxAdapter.getFilter().filter("3"); // "3" for all, as in your adapter
-//        } else if (viewId == R.id.btn_messages) {
-//            // Use the ordinal value of your Notification enum
-//            inboxAdapter.getFilter().filter(String.valueOf(NotificationType.MESSAGES.ordinal()));
-//        } else if (viewId == R.id.btn_registration) {
-//            inboxAdapter.getFilter().filter(String.valueOf(NotificationType.REGISTRATION.ordinal()));
-//        } else if (viewId == R.id.btn_system) {
-//            inboxAdapter.getFilter().filter(String.valueOf(NotificationType.SYSTEM.ordinal()));
-//        }
-//    }
+    @Override
+    public void onClick(View v) {
+        // When any button is clicked, update the selection state
+        updateButtonSelection(v);
+
+        // Filter based on which button was clicked
+        int viewId = v.getId();
+        if (viewId == R.id.btn_all) {
+            multiRepoArrayAdapter.switchDataset(notificationRepositoryAll);
+        } else if (viewId == R.id.btn_messages) {
+            multiRepoArrayAdapter.switchDataset(notificationRepositoryMessages);
+        } else if (viewId == R.id.btn_registration) {
+            multiRepoArrayAdapter.switchDataset(notificationRepositoryRegistration);
+        } else if (viewId == R.id.btn_system) {
+            multiRepoArrayAdapter.switchDataset(notificationRepositorySystem);
+        }
+    }
 
     /**
      * Updates the selected button appearance based on the one that was pressed.
@@ -172,14 +168,9 @@ public class InboxFragment extends Fragment {
         });
     }
 
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
-
-        if (repoToArrayAdapter != null) {
-            repoToArrayAdapter.removeListener();
-        }
     }
 }

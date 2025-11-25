@@ -26,23 +26,8 @@ public class Inbox2Adapter extends ArrayAdapter<Notification> {
      * @param context The context of the app.
      * @param notifs The notifications that the adapter should show.
      */
-    public Inbox2Adapter(Context context, ArrayList<Notification> notifs) {
+    public Inbox2Adapter(Context context, List<Notification> notifs) {
         super(context, 0, notifs);
-    }
-
-    /**
-     * Remove a single notification from the adapter.
-     * @param notification The notification to remove from the adapter.
-     */
-    public void removeNotification(Notification notification) {
-        if (notification == null) {
-            return;
-        }
-
-        remove(notification);
-
-        // Tell the ListView to refresh itself
-        notifyDataSetChanged();
     }
 
     @NonNull

@@ -226,7 +226,7 @@ public class Event extends DatabaseObject {
      */
     public void draw(int numToDraw) {
         TicketRepository ticketRepository = new TicketRepository(FirebaseFirestore.getInstance(), getId());
-        NotificationRepository notificationRepository = new NotificationRepository(FirebaseFirestore.getInstance(), getId());
+        NotificationRepository notificationRepository = new NotificationRepository(FirebaseFirestore.getInstance());
 
         for (int i = 0; i < numToDraw; ++i) {
             String ticketId = getWaitingList().draw();
