@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,13 +28,29 @@ public class ToolsFragment extends Fragment {
         binding = FragmentToolsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        ConstraintLayout testFragmentButton = binding.btnFragmentTest;
+        ToolButtonsFragment toolButtonsFragment = new ToolButtonsFragment();
+        getChildFragmentManager().beginTransaction().replace(binding.fragment.getId(), toolButtonsFragment).commit();
 
-        testFragmentButton.setOnClickListener(new View.OnClickListener() {
+        ImageButton toolsBack = binding.headerTools.toolsBack;
+
+        toolsBack.setVisibility(View.GONE);
+
+        toolButtonsFragment.setImageGalleryButtonOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                NavController navController = Navigation.findNavController(view);
-                navController.navigate(R.id.action_navigation_tools_to_test);
+            public void onClick(View v) {
+                AdminImageGalleryFragment fragment = new AdminImageGalleryFragment();
+                getChildFragmentManager().beginTransaction().replace(binding.fragment.getId(), fragment).commit();
+
+                toolsBack.setVisibility(View.VISIBLE);
+            }
+        });
+
+        toolsBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toolsBack.setVisibility(View.GONE);
+
+                getChildFragmentManager().beginTransaction().replace(binding.fragment.getId(), toolButtonsFragment).commit();
             }
         });
 

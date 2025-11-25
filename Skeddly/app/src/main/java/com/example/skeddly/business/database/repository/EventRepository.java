@@ -10,6 +10,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -33,7 +34,7 @@ public class EventRepository extends GenericRepository<Event> {
      * @param organizerId The ID of the organizer
      * @return A task that returns all the events associated with the organizer in a list.
      */
-    public Task<List<Event>> getAll(String organizerId) {
+    public Task<List<Event>> getAllByOrganizer(String organizerId) {
         return getQuery().whereEqualTo("organizer", organizerId).get().continueWith(new Continuation<QuerySnapshot, List<Event>>() {
             @Override
             public List<Event> then(@NonNull Task<QuerySnapshot> task) throws Exception {
