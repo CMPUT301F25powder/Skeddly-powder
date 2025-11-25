@@ -47,7 +47,6 @@ public class ImagePopupDialogFragment extends DialogFragment {
         }
 
         Button buttonClose = binding.btnClose;
-        Button buttonDelete = binding.btnDelete;
 
         // Default return is false
         result = false;
@@ -55,14 +54,6 @@ public class ImagePopupDialogFragment extends DialogFragment {
         buttonClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dismiss();
-            }
-        });
-
-        buttonDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                result = true;
                 dismiss();
             }
         });
