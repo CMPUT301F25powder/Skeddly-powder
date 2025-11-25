@@ -89,7 +89,7 @@ public abstract class GenericRepository<T extends DatabaseObject> {
     }
 
     /**
-     * Retrieves all documents mathcing a given query. The documents are converted to their
+     * Retrieves all documents matching a given query. The documents are converted to their
      * underlying POJOs and then returned as a list. The list shall be empty if the collection
      * does not exist or has nothing in it.
      * @return A task that returns all the objects in a list.

@@ -8,8 +8,11 @@ import com.example.skeddly.business.TicketStatus;
 import com.example.skeddly.business.WaitingList;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.database.DatabaseObject;
+import com.example.skeddly.business.database.repository.NotificationRepository;
 import com.example.skeddly.business.database.repository.TicketRepository;
 import com.example.skeddly.business.location.CustomLocation;
+import com.example.skeddly.business.notification.Notification;
+import com.example.skeddly.business.notification.NotificationType;
 import com.example.skeddly.business.user.PersonalInformation;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -223,9 +226,23 @@ public class Event extends DatabaseObject {
      */
     public void draw(int numToDraw) {
         TicketRepository ticketRepository = new TicketRepository(FirebaseFirestore.getInstance(), getId());
+        NotificationRepository notificationRepository = new NotificationRepository(FirebaseFirestore.getInstance());
+
         for (int i = 0; i < numToDraw; ++i) {
             String ticketId = getWaitingList().draw();
             getParticipantList().addTicket(ticketId);
+
+            ticketRepository.get(ticketId).addOnSuccessListener(t -> {
+                String recipient = t.getUserId();
+                String title = this.eventDetails.getName();
+                String message = "You have been selected to participate in this event!";
+
+                Notification notification = new Notification(title, message, recipient);
+                notification.setType(NotificationType.REGISTRATION);
+                notification.setTicketId(ticketId);
+
+                notificationRepository.set(notification);
+            });
 
             // Change the status to INVITED
             ticketRepository.updateStatus(ticketId, TicketStatus.INVITED);

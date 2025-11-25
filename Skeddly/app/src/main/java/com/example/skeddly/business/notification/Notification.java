@@ -14,7 +14,7 @@ public class Notification extends DatabaseObject {
     private String title;
     private String message;
     private String recipient;
-    private String eventId; // Used to link to a specific event
+    private String ticketId;
     private long timestamp;
     private NotificationType type;
     private NotificationInvitationStatus status; // Specific to invitation notifications
@@ -127,19 +127,19 @@ public class Notification extends DatabaseObject {
     }
 
     /**
-     * Gets the ID of the event associated with this notification, if any.
-     * @return A string representing the event ID.
+     * Gets the ID of the ticket associated with this notification, if any.
+     * @return A string representing the ticket ID.
      */
-    public String getEventId() {
-        return eventId;
+    public String getTicketId() {
+        return ticketId;
     }
 
     /**
-     * Sets the event ID associated with this notification.
-     * @param eventId The string event ID to set.
+     * Sets the ticket ID associated with this notification.
+     * @param ticketId The string ticket ID to set.
      */
-    public void setEventId(String eventId) {
-        this.eventId = eventId;
+    public void setTicketId(String ticketId) {
+        this.ticketId = ticketId;
     }
 
     /**
