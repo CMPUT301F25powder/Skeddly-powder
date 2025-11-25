@@ -110,7 +110,7 @@ public class AdminImageGalleryFragment extends Fragment {
                     images.add(newGalleryImage);
                 }
 
-                notifyDataSetChanged();
+                galleryImageAdapter.notifyDataSetChanged();
             }
         });
 
