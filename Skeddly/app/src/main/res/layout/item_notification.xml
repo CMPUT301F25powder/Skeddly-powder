@@ -9,7 +9,7 @@
     android:paddingEnd="33dp"
     android:background="@drawable/textview_border"
     android:paddingBottom="24dp"
-    android:longClickable="true">
+    >
 
     <!-- Circular Icon -->
     <ImageView

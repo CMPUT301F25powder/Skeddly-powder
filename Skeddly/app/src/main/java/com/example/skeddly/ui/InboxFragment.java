@@ -1,6 +1,8 @@
 package com.example.skeddly.ui;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,7 @@ import com.example.skeddly.business.notification.Notification;
 import com.example.skeddly.business.notification.NotificationType;
 import com.example.skeddly.business.user.User;
 import com.example.skeddly.databinding.FragmentInboxBinding;
+import com.example.skeddly.ui.adapter.Inbox2Adapter;
 import com.example.skeddly.ui.adapter.InboxAdapter;
 import com.example.skeddly.business.database.repository.NotificationRepository;
 import com.example.skeddly.business.database.repository.RepositoryToArrayAdapter;
@@ -33,12 +36,12 @@ import java.util.ArrayList;
 /**
  * Fragment for the inbox screen
  */
-public class InboxFragment extends Fragment implements View.OnClickListener {
+public class InboxFragment extends Fragment {
     private FragmentInboxBinding binding;
     private ArrayList<Button> filterButtons;
 
     private ArrayList<Notification> notifications;
-    private InboxAdapter inboxAdapter;
+    private Inbox2Adapter inboxAdapter;
     private NotificationRepository notificationRepository;
     private TicketRepository ticketRepository;
     private RepositoryToArrayAdapter<Notification> repoToArrayAdapter;
@@ -59,7 +62,7 @@ public class InboxFragment extends Fragment implements View.OnClickListener {
 
         // Inbox Adapter
         notifications = new ArrayList<>();
-        inboxAdapter = new InboxAdapter(getContext(), notifications);
+        inboxAdapter = new Inbox2Adapter(getContext(), notifications);
 
         // Adapter adapter
         repoToArrayAdapter = new RepositoryToArrayAdapter<>(notificationRepository, inboxAdapter, true);
@@ -80,12 +83,14 @@ public class InboxFragment extends Fragment implements View.OnClickListener {
         filterButtons.add(buttonSystem);
 
         // 4. Set the OnClickListener for each button
-        for (Button button : filterButtons) {
-            button.setOnClickListener(this);
-        }
+//        for (Button button : filterButtons) {
+//            button.setOnClickListener(this);
+//        }
 
         // 5. Set the initial state (select "All" by default)
         updateButtonSelection(buttonAll);
+
+
 
         inboxList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -99,8 +104,8 @@ public class InboxFragment extends Fragment implements View.OnClickListener {
         inboxList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.v("Jonathan", "Jonathan");
                 Notification notification = (Notification) adapterView.getItemAtPosition(i);
-
                 if (notification.getType() == NotificationType.REGISTRATION) {
                     StandardPopupDialogFragment spdf = StandardPopupDialogFragment.newInstance("Accept Invitation",
                             "Would you like to join " + notification.getTitle(), notification.getTicketId());
@@ -112,24 +117,24 @@ public class InboxFragment extends Fragment implements View.OnClickListener {
         return root;
     }
 
-    @Override
-    public void onClick(View v) {
-        // When any button is clicked, update the selection state
-        updateButtonSelection(v);
-
-        // Trigger the filter based on which button was clicked
-        int viewId = v.getId();
-        if (viewId == R.id.btn_all) {
-            inboxAdapter.getFilter().filter("3"); // "3" for all, as in your adapter
-        } else if (viewId == R.id.btn_messages) {
-            // Use the ordinal value of your Notification enum
-            inboxAdapter.getFilter().filter(String.valueOf(NotificationType.MESSAGES.ordinal()));
-        } else if (viewId == R.id.btn_registration) {
-            inboxAdapter.getFilter().filter(String.valueOf(NotificationType.REGISTRATION.ordinal()));
-        } else if (viewId == R.id.btn_system) {
-            inboxAdapter.getFilter().filter(String.valueOf(NotificationType.SYSTEM.ordinal()));
-        }
-    }
+//    @Override
+//    public void onClick(View v) {
+//        // When any button is clicked, update the selection state
+//        updateButtonSelection(v);
+//
+//        // Trigger the filter based on which button was clicked
+//        int viewId = v.getId();
+//        if (viewId == R.id.btn_all) {
+//            inboxAdapter.getFilter().filter("3"); // "3" for all, as in your adapter
+//        } else if (viewId == R.id.btn_messages) {
+//            // Use the ordinal value of your Notification enum
+//            inboxAdapter.getFilter().filter(String.valueOf(NotificationType.MESSAGES.ordinal()));
+//        } else if (viewId == R.id.btn_registration) {
+//            inboxAdapter.getFilter().filter(String.valueOf(NotificationType.REGISTRATION.ordinal()));
+//        } else if (viewId == R.id.btn_system) {
+//            inboxAdapter.getFilter().filter(String.valueOf(NotificationType.SYSTEM.ordinal()));
+//        }
+//    }
 
     /**
      * Updates the selected button appearance based on the one that was pressed.
