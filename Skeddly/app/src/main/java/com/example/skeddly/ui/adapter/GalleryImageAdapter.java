@@ -26,12 +26,11 @@ import java.util.ArrayList;
 import java.util.Base64;
 
 public class GalleryImageAdapter extends ArrayAdapter<GalleryImage> {
-    private Context context;
     private ArrayList<GalleryImage> images;
     private boolean selectionMode;
+
     public GalleryImageAdapter(Context context, ArrayList<GalleryImage> images) {
         super(context, 0, images);
-        this.context = context;
         this.images = images;
     }
 
@@ -50,9 +49,9 @@ public class GalleryImageAdapter extends ArrayAdapter<GalleryImage> {
 
         if (isSelectionMode()) {
             Drawable foregroundDrawable = ResourcesCompat.getDrawable(
-                    context.getResources(),
+                    getContext().getResources(),
                     R.drawable.gradient_image_select_overlay,
-                    context.getTheme()
+                    getContext().getTheme()
             );
             uploadedImageComponent.setForeground(foregroundDrawable);
 

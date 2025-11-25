@@ -43,14 +43,6 @@ public class EventRepository extends GenericRepository<Event> {
         });
     }
 
-    /**
-     * Gets all events
-     * @return A task that returns all events in the db.
-     */
-    public Task<List<Event>> getAll() {
-        return getQuery().get().continueWith(task -> task.getResult().toObjects(clazz));
-    }
-
     public Task<Void> updateEvent(Event event) {
         return get(event.getId()).continueWithTask(new Continuation<Event, Task<Void>>() {
             @Override
