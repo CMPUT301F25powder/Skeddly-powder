@@ -15,6 +15,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.example.skeddly.R;
+import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.database.repository.EventRepository;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.databinding.FragmentAdminImageGalleryBinding;
@@ -30,6 +31,7 @@ import java.util.List;
 public class AdminImageGalleryFragment extends Fragment {
     private FragmentAdminImageGalleryBinding binding;
     private EventRepository eventRepository;
+    private DatabaseHandler dbHandler;
     private ArrayList<GalleryImage> images;
     private GalleryImageAdapter galleryImageAdapter;
     private GridView uploadedImagesView;
@@ -44,6 +46,8 @@ public class AdminImageGalleryFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentAdminImageGalleryBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        dbHandler = new DatabaseHandler();
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         eventRepository = new EventRepository(db);
@@ -87,7 +91,9 @@ public class AdminImageGalleryFragment extends Fragment {
             GalleryImage image = images.get(i);
 
             if (image.isSelected()) {
-                image.getEvent().setImageb64("");
+                Event event = image.getEvent();
+                event.setImageb64("");
+                event.clearImage(dbHandler);
                 images.remove(image);
             }
         }

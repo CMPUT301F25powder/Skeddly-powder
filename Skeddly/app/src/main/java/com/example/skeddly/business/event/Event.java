@@ -279,6 +279,10 @@ public class Event extends DatabaseObject {
         }
     }
 
+    public void clearImage(DatabaseHandler dbHandler) {
+        dbHandler.getEventsPath().document(this.getId()).update("imageb64", "");
+    }
+
     /**
      * A public callback interface to return the result of an asynchronous search.
      */
