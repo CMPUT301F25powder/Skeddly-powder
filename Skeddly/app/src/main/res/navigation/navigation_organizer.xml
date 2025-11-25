@@ -47,6 +47,10 @@
             android:id="@+id/action_event_view_info_to_participant_list"
             app:destination="@id/navigation_participant_list" />
 
+        <action
+            android:id="@+id/action_navigation_event_view_info_to_edit_event"
+            app:destination="@id/navigation_create"/>
+
         <argument
             android:name="eventId"
             app:argType="string" />

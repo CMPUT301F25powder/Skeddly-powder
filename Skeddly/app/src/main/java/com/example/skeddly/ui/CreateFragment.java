@@ -31,6 +31,7 @@ import com.bumptech.glide.Glide;
 import com.example.skeddly.MainActivity;
 import com.example.skeddly.R;
 import com.example.skeddly.business.database.DatabaseHandler;
+import com.example.skeddly.business.database.repository.EventRepository;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.event.EventDetail;
 import com.example.skeddly.business.event.EventSchedule;
@@ -39,12 +40,16 @@ import com.example.skeddly.databinding.FragmentCreateEditBinding;
 import com.example.skeddly.ui.popup.CategorySelectorDialogFragment;
 import com.example.skeddly.ui.popup.MapPopupDialogFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointForward;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -68,7 +73,7 @@ import java.util.Objects;
  * original picker in the callback.
  */
 interface MaterialTimePickerCallback {
-    public void onPositiveButtonClick(MaterialTimePicker picker);
+    void onPositiveButtonClick(MaterialTimePicker picker);
 }
 
 /**
@@ -78,7 +83,8 @@ public class CreateFragment extends Fragment {
     private FragmentCreateEditBinding binding;
     private CalendarConstraints calendarConstraints;
     private UnderlineSpan underlineSpan;
-    private boolean isEdit = false;
+    private EventRepository eventRepository;
+    private boolean isEdit;
 
     // For launching the image picker built in activity
     private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
@@ -123,9 +129,10 @@ public class CreateFragment extends Fragment {
         // Initialize Variables
         underlineSpan = new UnderlineSpan();
         calendarConstraints = new CalendarConstraints.Builder().setValidator(DateValidatorPointForward.now()).build();
+        eventRepository = new EventRepository(FirebaseFirestore.getInstance());
 
         // Hide them because we don't want them here
-        //binding.btnBack.setVisibility(View.INVISIBLE);
+        binding.btnBack.setVisibility(View.INVISIBLE);
         binding.btnQrCode.setVisibility(View.INVISIBLE);
 
         binding.btnBack.setOnClickListener(new View.OnClickListener() {
@@ -138,8 +145,11 @@ public class CreateFragment extends Fragment {
         });
 
         // Get arguments
+        isEdit = false;
+        eventId = null;
         if (getArguments() != null) {
             this.eventId = getArguments().getString("eventId");
+            binding.btnBack.setVisibility(View.VISIBLE);
             isEdit = true;
             if (this.eventId != null && !this.eventId.isEmpty()) {
                 loadEventData(this.eventId);
@@ -287,15 +297,14 @@ public class CreateFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Event event = createEvent();
-                if (isEdit) Toast.makeText(requireContext(), "Edited Event!", Toast.LENGTH_SHORT).show();
-                else Toast.makeText(requireContext(), "Created Event!", Toast.LENGTH_SHORT).show();
 
                 // Put event in db
-                DatabaseHandler dbHandler = new DatabaseHandler();
-                if (getArguments() != null) {
+                if (isEdit) {
                     event.setId(eventId);
+                    eventRepository.updateEvent(event);
+                } else {
+                    eventRepository.set(event);
                 }
-                dbHandler.getEventsPath().document(event.getId()).set(event);
 
                 // User owns the event
                 MainActivity mainActivity = (MainActivity) requireActivity();
@@ -304,6 +313,9 @@ public class CreateFragment extends Fragment {
 
                 // Reset the create event screen
                 if (!isEdit) resetCreateScreen();
+
+                if (isEdit) Toast.makeText(requireContext(), "Edited Event!", Toast.LENGTH_SHORT).show();
+                else Toast.makeText(requireContext(), "Created Event!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -492,11 +504,6 @@ public class CreateFragment extends Fragment {
             return false;
         }
 
-        // Registration start and end date can't happen in the past
-        if (regStart.isBefore(LocalDateTime.now())) {
-            return false;
-        }
-
         // Attendee Limit
         if (binding.editAttendeeLimit.length() <= 0) {
             return false;
@@ -622,14 +629,9 @@ public class CreateFragment extends Fragment {
      * @param eventId The ID of the event to load.
      */
     private void loadEventData(String eventId) {
-        DatabaseHandler dbHandler = new DatabaseHandler();
-        dbHandler.getEventsPath().document(eventId).get().addOnSuccessListener(documentSnapshot -> {
-            if (documentSnapshot.exists()) {
-                Event event = documentSnapshot.toObject(Event.class);
-                if (event != null) {
-                    event.setId(documentSnapshot.getId());
-                    populateUI(event);
-                }
+        eventRepository.get(eventId).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                populateUI(task.getResult());
             } else {
                 Toast.makeText(getContext(), "Error: Event not found.", Toast.LENGTH_SHORT).show();
             }
@@ -650,7 +652,7 @@ public class CreateFragment extends Fragment {
         binding.editLotteryCriteria.setText(details.getEntryCriteria());
         this.categories.clear();
         this.categories.addAll(details.getCategories());
-        binding.textCategorySelect.setText(underlineString(String.join(", ", categories)));
+        binding.textCategorySelect.setText(String.join(", ", categories));
 
         // Schedule
         isRecurring = schedule.isRecurring();
@@ -698,8 +700,10 @@ public class CreateFragment extends Fragment {
         binding.textRegTimeFinish.setText(underlineString(this.regEndTime.format(timeFormatter)));
 
         // Limits
-        binding.editAttendeeLimit.setText(String.valueOf(event.getParticipantList().getMaxAttend()));
-        binding.editWaitlistLimit.setText(String.valueOf(event.getWaitingList().getLimit()));
+        binding.editAttendeeLimit.setText(String.valueOf(event.getParticipantList().getMax()));
+        if (event.getWaitingList().getMax() != Integer.MAX_VALUE) {
+            binding.editWaitlistLimit.setText(String.valueOf(event.getWaitingList().getMax()));
+        }
 
         // Location
         if (event.getLocation() != null) {
@@ -720,7 +724,4 @@ public class CreateFragment extends Fragment {
         // Update Button
         updateConfirmButton();
     }
-
-
-
 }

@@ -2,7 +2,6 @@ package com.example.skeddly.ui.adapter;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -101,7 +100,6 @@ public class EventAdapter extends ArrayAdapter<Event> {
 
             // Handle edit button click
             buttonEdit.setOnClickListener(v -> {
-                Log.e("DEBUG","Got here");
                 Bundle bundle = new Bundle();
                 bundle.putString("eventId", event.getId());
                 Navigation.findNavController(v).navigate(R.id.action_navigation_home_to_edit_event, bundle);

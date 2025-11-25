@@ -160,6 +160,13 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
             navController.navigateUp();
         });
 
+        // Set up the edit event button
+        binding.btnEdit.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putString("eventId", eventId);
+            Navigation.findNavController(v).navigate(R.id.action_navigation_event_view_info_to_edit_event, bundle);
+        });
+
         return root;
     }
 
