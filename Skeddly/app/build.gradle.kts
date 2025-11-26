@@ -1,3 +1,6 @@
+import java.io.IOException
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     id("com.google.gms.google-services")
@@ -45,6 +48,31 @@ android {
     testOptions {
         animationsDisabled = true
     }
+
+    flavorDimensions += listOf("mode")
+    productFlavors {
+        create("standard") {
+            isDefault = true
+            dimension = "mode"
+            buildConfigField("String", "EMULATOR_ADDRESS", "null")
+        }
+
+        create("emulateFirestore") {
+            dimension = "mode"
+
+            var emulatorAddress: String = "\"10.0.2.2\""
+
+            try {
+                val p = Properties()
+                p.load(project.rootProject.file("settings.properties").reader())
+                emulatorAddress = p.getProperty("EMULATOR_ADDRESS")
+            } catch (_: IOException) {
+
+            }
+
+            buildConfigField("String", "EMULATOR_ADDRESS", emulatorAddress)
+        }
+    }
 }
 
 dependencies {
@@ -69,6 +97,8 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-functions")
+    implementation("com.google.firebase:firebase-storage")
 
     // Maps SDK for Android
     implementation("com.google.android.gms:play-services-maps:19.2.0")

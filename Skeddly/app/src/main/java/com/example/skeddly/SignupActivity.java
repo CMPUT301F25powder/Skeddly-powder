@@ -23,11 +23,22 @@ import com.example.skeddly.business.user.PersonalInformation;
 import com.example.skeddly.business.user.User;
 import com.example.skeddly.business.user.UserLoaded;
 import com.example.skeddly.databinding.ActivitySignupBinding;
+import com.example.skeddly.ui.popup.StandardPopupDialogFragment;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.MemoryCacheSettings;
+import com.google.firebase.functions.FirebaseFunctions;
+import com.google.firebase.storage.FirebaseStorage;
 
 /**
  * Signup activity for the application.
  */
 public class SignupActivity extends AppCompatActivity {
+    @SuppressWarnings({"ConstantValue", "MismatchedStringCase"})
+    private final boolean useFirebaseEmulator = BuildConfig.FLAVOR.equals("emulateFirestore");
+    private String firebaseEmulatorAddress = BuildConfig.EMULATOR_ADDRESS;
+
     private ActivitySignupBinding binding;
     private EditText fullNameEditText;
     private EditText emailEditText;
@@ -35,6 +46,8 @@ public class SignupActivity extends AppCompatActivity {
     private boolean loaded = false;
 
     private Uri qrOpenUri;
+
+    private Authenticator authenticator;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,19 +80,6 @@ public class SignupActivity extends AppCompatActivity {
         // See if we were opened by a QR code or special link
         qrOpenUri = getLaunchLink();
 
-        DatabaseHandler database = new DatabaseHandler();
-        Authenticator authenticator = new Authenticator(this, database);
-        authenticator.addListenerForUserLoaded(new UserLoaded() {
-            @Override
-            public void onUserLoaded(User loadedUser, boolean shouldShowSignup) {
-                if (!shouldShowSignup) {
-                    switchToMain();
-                } else {
-                    mainLayout.setVisibility(View.VISIBLE);
-                }
-            }
-        });
-
         TextWatcher textWatcher = new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {}
@@ -111,6 +111,38 @@ public class SignupActivity extends AppCompatActivity {
                 switchToMain();
             }
         });
+
+        // See if emulator is in use
+        if (useFirebaseEmulator && firebaseEmulatorAddress == null) {
+            // Use firebase emulator is set but address wasn't provided
+            StandardPopupDialogFragment spdf = StandardPopupDialogFragment.newInstance(
+                    getString(R.string.dialog_firebase_emu_title),
+                    getString(R.string.dialog_firebase_emu_contents),
+                    "firebaseEmulator",true);
+            spdf.show(getSupportFragmentManager(), null);
+
+            getSupportFragmentManager().setFragmentResultListener("firebaseEmulator", this, (requestKey, result) -> {
+                if (!result.getBoolean("buttonChoice")) {
+                    finish();
+                } else {
+                    firebaseEmulatorAddress = result.getString("typedText");
+
+                    if (firebaseEmulatorAddress == null || firebaseEmulatorAddress.length() < 7) {
+                        firebaseEmulatorAddress = "10.0.2.2";
+                    }
+
+                    setupFirebaseEmulator();
+                    loadUser();
+                }
+            });
+        } else {
+            // Setup emulator with provided address if needed
+            if (useFirebaseEmulator) {
+                setupFirebaseEmulator();
+            }
+
+            loadUser();
+        }
     }
 
     /**
@@ -156,5 +188,43 @@ public class SignupActivity extends AppCompatActivity {
 
     public boolean getLoaded() {
         return this.loaded;
+    }
+
+    private void setupFirebaseEmulator() {
+        // Authentication Emulator
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        auth.useEmulator(firebaseEmulatorAddress, 9099);
+
+        // Firestore Emulator
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        firestore.useEmulator(firebaseEmulatorAddress, 8080);
+
+        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                .setLocalCacheSettings(MemoryCacheSettings.newBuilder().build())
+                .build();
+        firestore.setFirestoreSettings(settings);
+
+        // Functions Emulator
+        FirebaseFunctions functions = FirebaseFunctions.getInstance();
+        functions.useEmulator(firebaseEmulatorAddress, 5001);
+
+        // Storage Emulator
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        storage.useEmulator(firebaseEmulatorAddress, 9199);
+    }
+
+    private void loadUser() {
+        DatabaseHandler database = new DatabaseHandler();
+        authenticator = new Authenticator(this, database);
+        authenticator.addListenerForUserLoaded(new UserLoaded() {
+            @Override
+            public void onUserLoaded(User loadedUser, boolean shouldShowSignup) {
+                if (!shouldShowSignup) {
+                    switchToMain();
+                } else {
+                    binding.signUpPage.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 }
