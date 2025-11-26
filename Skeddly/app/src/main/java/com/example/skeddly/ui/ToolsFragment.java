@@ -8,12 +8,8 @@ import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 
-import com.example.skeddly.R;
 import com.example.skeddly.databinding.FragmentToolsBinding;
 
 /**
@@ -45,7 +41,7 @@ public class ToolsFragment extends Fragment {
             }
         });
 
-        toolButtonsFragment.setAdminInboxButtonOnClickListener(new View.OnClickListener() {
+        toolButtonsFragment.setNotificationLogsButtonOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AdminInboxFragment fragment = new AdminInboxFragment();
@@ -55,7 +51,7 @@ public class ToolsFragment extends Fragment {
             }
         });
 
-        toolButtonsFragment.setAdminUserViewButtonOnClickListener(new View.OnClickListener() {
+        toolButtonsFragment.setViewUserButtonOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AdminUserViewFragment fragment = new AdminUserViewFragment();
