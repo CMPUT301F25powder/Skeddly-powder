@@ -1,3 +1,6 @@
+import java.io.IOException
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     id("com.google.gms.google-services")
@@ -44,6 +47,31 @@ android {
 
     testOptions {
         animationsDisabled = true
+    }
+
+    flavorDimensions += listOf("mode")
+    productFlavors {
+        create("standard") {
+            isDefault = true
+            dimension = "mode"
+            buildConfigField("String", "EMULATOR_ADDRESS", "null")
+        }
+
+        create("emulateFirestore") {
+            dimension = "mode"
+
+            var emulatorAddress: String = "\"10.0.2.2\""
+
+            try {
+                val p = Properties()
+                p.load(project.rootProject.file("settings.properties").reader())
+                emulatorAddress = p.getProperty("EMULATOR_ADDRESS")
+            } catch (_: IOException) {
+
+            }
+
+            buildConfigField("String", "EMULATOR_ADDRESS", emulatorAddress)
+        }
     }
 }
 

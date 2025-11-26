@@ -35,8 +35,9 @@ import com.google.firebase.storage.FirebaseStorage;
  * Signup activity for the application.
  */
 public class SignupActivity extends AppCompatActivity {
-    private boolean useFirebaseEmulator = false;
-    private String firebaseEmulatorAddress = null;
+    @SuppressWarnings({"ConstantValue", "MismatchedStringCase"})
+    private final boolean useFirebaseEmulator = BuildConfig.FLAVOR.equals("emulateFirestore");
+    private String firebaseEmulatorAddress = BuildConfig.EMULATOR_ADDRESS;
 
     private ActivitySignupBinding binding;
     private EditText fullNameEditText;
@@ -112,10 +113,6 @@ public class SignupActivity extends AppCompatActivity {
         });
 
         // See if emulator is in use
-        Intent intent = getIntent();
-        useFirebaseEmulator = intent.getBooleanExtra("useFirebaseEmulator", false);
-        firebaseEmulatorAddress = intent.getStringExtra("firebaseEmulatorAddress");
-
         if (useFirebaseEmulator && firebaseEmulatorAddress == null) {
             // Use firebase emulator is set but address wasn't provided
             StandardPopupDialogFragment spdf = StandardPopupDialogFragment.newInstance(
