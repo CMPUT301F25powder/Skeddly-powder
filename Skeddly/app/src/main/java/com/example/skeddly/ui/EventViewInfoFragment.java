@@ -89,7 +89,14 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
         // Initialize eventAdapter
         MainActivity activity = (MainActivity) requireActivity();
         userId = activity.getUser().getId();
-        eventAdapter = new EventAdapter(getContext(), new ArrayList<>(), activity.getUser(), this);
+        eventAdapter = new EventAdapter(
+                getContext(),
+                new ArrayList<>(),
+                activity.getUser(),
+                this,
+                R.id.action_event_view_info_to_participant_list,
+                R.id.action_navigation_event_view_info_to_edit_event
+        );
 
         // For getting our current location
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext());

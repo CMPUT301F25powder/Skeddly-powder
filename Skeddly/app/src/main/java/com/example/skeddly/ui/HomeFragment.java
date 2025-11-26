@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.skeddly.MainActivity;
+import com.example.skeddly.R;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.database.SingleListenUpdate;
 import com.example.skeddly.business.location.CustomLocation;
@@ -53,10 +54,14 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
 
         // Initialize event adapter
         MainActivity activity = (MainActivity) requireActivity();
-        eventAdapter = new EventAdapter(getContext(),
+        eventAdapter = new EventAdapter(
+                getContext(),
                 eventList,
                 activity.getUser(),
-                this);
+                null,
+                R.id.action_navigation_home_to_event_view_info, // View Info Action for Home
+                R.id.action_navigation_home_to_edit_event      // Edit Action for Home
+        );
 
         // Set event adapter to list view
         binding.listEvents.setAdapter(eventAdapter);

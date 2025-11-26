@@ -19,6 +19,8 @@ public class ToolButtonsFragment extends Fragment {
     private FragmentToolsButtonsBinding binding;
     private View.OnClickListener imageGalleryOnClickListener = null;
     private View.OnClickListener AdminInboxOnClickListener = null;
+    private View.OnClickListener myEventsOnClickListener = null;
+
 
 
     @Nullable
@@ -30,6 +32,8 @@ public class ToolButtonsFragment extends Fragment {
         ConstraintLayout testFragmentButton = binding.btnFragmentTest;
         ConstraintLayout imageGalleryButton = binding.btnImgGallery;
         ConstraintLayout adminInboxButton = binding.btnLogNotification;
+        ConstraintLayout myEventsButton = binding.btnMyEvents;
+
 
 
         testFragmentButton.setOnClickListener(new View.OnClickListener() {
@@ -48,6 +52,11 @@ public class ToolButtonsFragment extends Fragment {
             adminInboxButton.setOnClickListener(this.AdminInboxOnClickListener);
         }
 
+        if (this.myEventsOnClickListener != null) {
+            myEventsButton.setOnClickListener(this.AdminInboxOnClickListener);
+        }
+
+
         return root;
     }
 
@@ -63,6 +72,13 @@ public class ToolButtonsFragment extends Fragment {
         this.AdminInboxOnClickListener = onClickListener;
         if (binding != null) {
             binding.btnLogNotification.setOnClickListener(AdminInboxOnClickListener);
+        }
+    }
+
+    public void setMyEventsButtonOnClickListener(View.OnClickListener onClickListener) {
+        this.myEventsOnClickListener = onClickListener;
+        if (binding != null) {
+            binding.btnMyEvents.setOnClickListener(myEventsOnClickListener);
         }
     }
 }

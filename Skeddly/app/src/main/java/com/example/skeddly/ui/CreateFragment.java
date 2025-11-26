@@ -139,8 +139,7 @@ public class CreateFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // Use the NavController to navigate back to the home screen.
-                NavHostFragment.findNavController(CreateFragment.this)
-                        .navigate(R.id.navigation_home);
+                NavHostFragment.findNavController(CreateFragment.this).navigateUp();
             }
         });
 
