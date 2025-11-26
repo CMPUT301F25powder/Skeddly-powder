@@ -88,6 +88,9 @@ public class EventAdapter extends ArrayAdapter<Event> {
             if (user.getId().equals(event.getOrganizer())) {
                 buttonEdit.setVisibility(View.VISIBLE);
                 buttonJoin.setVisibility(View.INVISIBLE);
+            } else if (user.getPrivilegeLevel().equals(UserLevel.ADMIN)) {
+                buttonEdit.setVisibility(View.VISIBLE);
+                buttonJoin.setVisibility(View.VISIBLE);
             } else {
                 buttonEdit.setVisibility(View.INVISIBLE);
 
