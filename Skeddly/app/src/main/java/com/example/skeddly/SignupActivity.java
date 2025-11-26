@@ -101,7 +101,8 @@ public class SignupActivity extends AppCompatActivity {
             public void onClick(View v) {
                 PersonalInformation newUserInformation = new PersonalInformation();
 
-                newUserInformation.setName(String.valueOf(fullNameEditText.getText()));
+                String upperString = String.valueOf(fullNameEditText.getText()).substring(0, 1).toUpperCase() + String.valueOf(fullNameEditText.getText()).substring(1);
+                newUserInformation.setName(upperString);
                 newUserInformation.setEmail(String.valueOf(emailEditText.getText()));
                 newUserInformation.setPhoneNumber(String.valueOf(phoneNumberEditText.getText()));
 

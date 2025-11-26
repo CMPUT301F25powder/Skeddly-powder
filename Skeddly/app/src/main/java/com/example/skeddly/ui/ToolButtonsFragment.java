@@ -19,6 +19,8 @@ public class ToolButtonsFragment extends Fragment {
     private FragmentToolsButtonsBinding binding;
     private View.OnClickListener imageGalleryOnClickListener = null;
     private View.OnClickListener AdminInboxOnClickListener = null;
+    private View.OnClickListener AdminUserViewOnClickListener = null;
+
 
 
     @Nullable
@@ -30,6 +32,8 @@ public class ToolButtonsFragment extends Fragment {
         ConstraintLayout testFragmentButton = binding.btnFragmentTest;
         ConstraintLayout imageGalleryButton = binding.btnImgGallery;
         ConstraintLayout adminInboxButton = binding.btnLogNotification;
+        ConstraintLayout adminUserViewButton = binding.btnSearchUser;
+
 
 
         testFragmentButton.setOnClickListener(new View.OnClickListener() {
@@ -48,6 +52,11 @@ public class ToolButtonsFragment extends Fragment {
             adminInboxButton.setOnClickListener(this.AdminInboxOnClickListener);
         }
 
+        if (this.AdminUserViewOnClickListener != null) {
+            adminUserViewButton.setOnClickListener(this.AdminInboxOnClickListener);
+        }
+
+
         return root;
     }
 
@@ -60,9 +69,16 @@ public class ToolButtonsFragment extends Fragment {
     }
 
     public void setAdminInboxButtonOnClickListener(View.OnClickListener onClickListener) {
+        this.AdminUserViewOnClickListener = onClickListener;
+        if (binding != null) {
+            binding.btnLogNotification.setOnClickListener(AdminUserViewOnClickListener);
+        }
+    }
+
+    public void setAdminUserViewButtonOnClickListener(View.OnClickListener onClickListener) {
         this.AdminInboxOnClickListener = onClickListener;
         if (binding != null) {
-            binding.btnLogNotification.setOnClickListener(AdminInboxOnClickListener);
+            binding.btnSearchUser.setOnClickListener(AdminInboxOnClickListener);
         }
     }
 }

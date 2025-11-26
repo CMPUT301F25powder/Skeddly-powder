@@ -55,6 +55,16 @@ public class ToolsFragment extends Fragment {
             }
         });
 
+        toolButtonsFragment.setAdminUserViewButtonOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AdminUserViewFragment fragment = new AdminUserViewFragment();
+                getChildFragmentManager().beginTransaction().replace(binding.fragment.getId(), fragment).commit();
+
+                toolsBack.setVisibility(View.VISIBLE);
+            }
+        });
+
         toolsBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
