@@ -58,7 +58,7 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
                 getContext(),
                 eventList,
                 activity.getUser(),
-                null,
+                this,
                 R.id.action_navigation_home_to_event_view_info, // View Info Action for Home
                 R.id.action_navigation_home_to_edit_event      // Edit Action for Home
         );
