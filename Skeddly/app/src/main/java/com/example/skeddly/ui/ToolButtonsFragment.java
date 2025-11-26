@@ -1,6 +1,7 @@
 package com.example.skeddly.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,10 +19,8 @@ import com.example.skeddly.databinding.FragmentToolsButtonsBinding;
 public class ToolButtonsFragment extends Fragment {
     private FragmentToolsButtonsBinding binding;
     private View.OnClickListener imageGalleryOnClickListener = null;
-    private View.OnClickListener AdminInboxOnClickListener = null;
-    private View.OnClickListener AdminUserViewOnClickListener = null;
-
-
+    private View.OnClickListener adminInboxOnClickListener = null;
+    private View.OnClickListener adminUserViewOnClickListener = null;
 
     @Nullable
     @Override
@@ -33,8 +32,6 @@ public class ToolButtonsFragment extends Fragment {
         ConstraintLayout imageGalleryButton = binding.btnImgGallery;
         ConstraintLayout adminInboxButton = binding.btnLogNotification;
         ConstraintLayout adminUserViewButton = binding.btnSearchUser;
-
-
 
         testFragmentButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,14 +45,13 @@ public class ToolButtonsFragment extends Fragment {
             imageGalleryButton.setOnClickListener(this.imageGalleryOnClickListener);
         }
 
-        if (this.AdminInboxOnClickListener != null) {
-            adminInboxButton.setOnClickListener(this.AdminInboxOnClickListener);
+        if (this.adminInboxOnClickListener != null) {
+            adminInboxButton.setOnClickListener(this.adminInboxOnClickListener);
         }
 
-        if (this.AdminUserViewOnClickListener != null) {
-            adminUserViewButton.setOnClickListener(this.AdminInboxOnClickListener);
+        if (this.adminUserViewOnClickListener != null) {
+            adminUserViewButton.setOnClickListener(this.adminUserViewOnClickListener);
         }
-
 
         return root;
     }
@@ -69,16 +65,16 @@ public class ToolButtonsFragment extends Fragment {
     }
 
     public void setAdminInboxButtonOnClickListener(View.OnClickListener onClickListener) {
-        this.AdminUserViewOnClickListener = onClickListener;
+        this.adminInboxOnClickListener = onClickListener;
         if (binding != null) {
-            binding.btnLogNotification.setOnClickListener(AdminUserViewOnClickListener);
+            binding.btnLogNotification.setOnClickListener(adminInboxOnClickListener);
         }
     }
 
     public void setAdminUserViewButtonOnClickListener(View.OnClickListener onClickListener) {
-        this.AdminInboxOnClickListener = onClickListener;
+        this.adminUserViewOnClickListener = onClickListener;
         if (binding != null) {
-            binding.btnSearchUser.setOnClickListener(AdminInboxOnClickListener);
+            binding.btnSearchUser.setOnClickListener(adminUserViewOnClickListener);
         }
     }
 }
