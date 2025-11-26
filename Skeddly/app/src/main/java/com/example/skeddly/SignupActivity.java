@@ -124,16 +124,16 @@ public class SignupActivity extends AppCompatActivity {
             getSupportFragmentManager().setFragmentResultListener("firebaseEmulator", this, (requestKey, result) -> {
                 if (!result.getBoolean("buttonChoice")) {
                     finish();
+                } else {
+                    firebaseEmulatorAddress = result.getString("typedText");
+
+                    if (firebaseEmulatorAddress == null || firebaseEmulatorAddress.length() < 7) {
+                        firebaseEmulatorAddress = "10.0.2.2";
+                    }
+
+                    setupFirebaseEmulator();
+                    loadUser();
                 }
-
-                firebaseEmulatorAddress = result.getString("typedText");
-
-                if (firebaseEmulatorAddress == null || firebaseEmulatorAddress.length() < 7) {
-                    firebaseEmulatorAddress = "10.0.2.2";
-                }
-
-                setupFirebaseEmulator();
-                loadUser();
             });
         } else {
             // Setup emulator with provided address if needed
