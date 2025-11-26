@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/neutral_off_white"
+    android:orientation="vertical">
+
+    <!-- List of user cards -->
+    <ListView
+        android:id="@+id/list_view_users"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="12dp"
+        android:padding="24dp"
+        android:longClickable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:listitem="@layout/item_admin_user" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
