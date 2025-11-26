@@ -58,7 +58,7 @@ public class ToolsFragment extends Fragment {
         toolButtonsFragment.setMyEventsButtonOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MyEventsFragment fragment = new MyEventsFragment();
+                MyEventsFragment fragment = MyEventsFragment.newInstance(true);
                 getChildFragmentManager().beginTransaction().replace(binding.fragment.getId(), fragment).commit();
                 toolsBack.setVisibility(View.VISIBLE);
             }
@@ -68,7 +68,6 @@ public class ToolsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 toolsBack.setVisibility(View.GONE);
-
                 getChildFragmentManager().beginTransaction().replace(binding.fragment.getId(), toolButtonsFragment).commit();
             }
         });

@@ -53,7 +53,7 @@ public class ToolButtonsFragment extends Fragment {
         }
 
         if (this.myEventsOnClickListener != null) {
-            myEventsButton.setOnClickListener(this.AdminInboxOnClickListener);
+            myEventsButton.setOnClickListener(this.myEventsOnClickListener);
         }
 
 
