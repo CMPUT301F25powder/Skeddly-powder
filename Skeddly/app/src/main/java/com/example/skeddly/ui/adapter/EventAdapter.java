@@ -183,19 +183,19 @@ public class EventAdapter extends ArrayAdapter<Event> {
                     Toast.makeText(getContext(), "Joining " + event.getEventDetails().getName(), Toast.LENGTH_SHORT).show();
 
                     if (event.getLogLocation()) {
-                            locationGetter.getLocation(new SingleListenUpdate<CustomLocation>() {
-                                @Override
-                                public void onUpdate(CustomLocation newValue) {
-                                    if (newValue == null) {
-                                        Toast.makeText(getContext(), "Location lookup failed.", Toast.LENGTH_SHORT).show();
-                                    }
-                                    event.join(dbHandler, user.getPersonalInformation(), user.getId(), newValue);
+                        locationGetter.getLocation(new SingleListenUpdate<CustomLocation>() {
+                            @Override
+                            public void onUpdate(CustomLocation newValue) {
+                                if (newValue == null) {
+                                    Toast.makeText(getContext(), "Location lookup failed.", Toast.LENGTH_SHORT).show();
                                 }
-                            });
-                        } else {
-                            event.join(dbHandler, user.getPersonalInformation(), user.getId(), null);
-                        }
+                                event.join(dbHandler, user.getPersonalInformation(), user.getId(), newValue);
+                            }
+                        });
+                    } else {
+                        event.join(dbHandler, user.getPersonalInformation(), user.getId(), null);
                     }
+                }
             });
 
             StandardPopupDialogFragment.newInstance("Entry Criteria", event.getEventDetails().getEntryCriteria(), requestKey).show(fm, "dialog_join_confirm");
@@ -251,5 +251,3 @@ public class EventAdapter extends ArrayAdapter<Event> {
                 });
     }
 }
-
-

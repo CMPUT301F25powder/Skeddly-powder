@@ -23,23 +23,21 @@ public class EventRepository extends GenericRepository<Event> {
     public String organizerId;
 
     /**
-     * Creates a new event repository.
-     * @param firestore The FirebaseFirestore instance to use.
-     */
-    public EventRepository(FirebaseFirestore firestore) {
-        super(Event.class);
-        this.firestore = firestore;
-        this.organizerId = null;
-    }
-
-    /**
-     * Creates a new event repository, setting getByOrganizer to true
+     * Creates a new event repository associated with a given organizer id.
      * @param firestore The FirebaseFirestore instance to use.
      */
     public EventRepository(FirebaseFirestore firestore, String organizerId) {
         super(Event.class);
         this.firestore = firestore;
         this.organizerId = organizerId;
+    }
+
+    /**
+     * Creates a new event repository that is not associated with any particular organizer.
+     * @param firestore The FirebaseFirestore instance to use.
+     */
+    public EventRepository(FirebaseFirestore firestore) {
+        this(firestore, null);
     }
 
     public Task<Void> updateEvent(Event event) {
@@ -67,10 +65,13 @@ public class EventRepository extends GenericRepository<Event> {
      */
     @Override
     protected Query getQuery() {
+        Query query = super.getQuery();
+
         if (organizerId != null) {
-            return getCollectionPath().whereEqualTo("organizer", organizerId);
+            query = query.whereEqualTo("organizer", organizerId);
         }
-        return super.getQuery();
+
+        return query;
     }
 
 }
