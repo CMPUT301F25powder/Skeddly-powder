@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.example.skeddly.R;
 import com.example.skeddly.business.user.User;
+import com.example.skeddly.databinding.ItemAdminUserBinding;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,21 +26,21 @@ public class UserAdapter extends ArrayAdapter<User> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_admin_user, parent, false);
         }
 
+        ItemAdminUserBinding itemAdminUserBinding = ItemAdminUserBinding.bind(convertView);
+
         User user = getItem(position);
         if (user != null) {
-            TextView textUserName = convertView.findViewById(R.id.text_user_full_name);
-            TextView textUserPhone = convertView.findViewById(R.id.text_user_phone);
-            TextView textUserEmail = convertView.findViewById(R.id.text_user_email);
-            TextView textUserPrivilege = convertView.findViewById(R.id.text_user_privilege);
+            TextView textUserName = itemAdminUserBinding.textUserFullName;
+            TextView textUserPhone = itemAdminUserBinding.textUserPhone;
+            TextView textUserEmail = itemAdminUserBinding.textUserEmail;
+            TextView textUserPrivilege = itemAdminUserBinding.textUserPrivilege;
 
             textUserName.setText(user.getPersonalInformation().getName());
             textUserPhone.setText(user.getPersonalInformation().getPhoneNumber());
             textUserEmail.setText(user.getPersonalInformation().getEmail());
             textUserPrivilege.setText(user.getPrivilegeLevel().toString());
-
-            return convertView;
-
         }
+
         return convertView;
     }
 

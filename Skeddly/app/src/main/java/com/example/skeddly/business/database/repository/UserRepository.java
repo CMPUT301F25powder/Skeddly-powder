@@ -31,13 +31,12 @@ public class UserRepository extends GenericRepository<User> {
     @Override
     protected Query getQuery() {
         // Get users of a level
+        Query query = super.getQuery();
+
         if (level != null) {
-            return getCollectionPath().whereEqualTo("privilegeLevel", level).orderBy("personalInformation.name", Query.Direction.ASCENDING);
+            query = query.whereEqualTo("privilegeLevel", level);
         }
-        else {
-            return getCollectionPath().orderBy("personalInformation.name", Query.Direction.ASCENDING);
-        }
+
+        return query.orderBy("personalInformation.name", Query.Direction.ASCENDING);
     }
-
-
 }

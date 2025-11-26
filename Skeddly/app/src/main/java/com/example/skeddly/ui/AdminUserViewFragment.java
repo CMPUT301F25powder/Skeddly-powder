@@ -41,7 +41,7 @@ public class AdminUserViewFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = com.example.skeddly.databinding.FragmentAdminUserViewBinding.inflate(inflater, container, false);
+        binding = FragmentAdminUserViewBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         userRepositoryAll = new UserRepository(FirebaseFirestore.getInstance());
