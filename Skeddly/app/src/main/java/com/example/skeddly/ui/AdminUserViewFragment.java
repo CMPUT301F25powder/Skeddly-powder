@@ -13,11 +13,13 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.LifecycleOwner;
 
+import com.example.skeddly.business.database.repository.GenericRepository;
 import com.example.skeddly.business.database.repository.NotificationRepository;
 import com.example.skeddly.business.database.repository.UserRepository;
 import com.example.skeddly.business.database.repository.adapter.RepositoryToArrayAdapter;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.user.User;
+import com.example.skeddly.business.user.UserLevel;
 import com.example.skeddly.databinding.FragmentAdminInboxBinding;
 import com.example.skeddly.databinding.FragmentAdminUserViewBinding;
 import com.example.skeddly.ui.adapter.UserAdapter;
@@ -29,8 +31,11 @@ import java.util.ArrayList;
 public class AdminUserViewFragment extends Fragment {
     private FragmentAdminUserViewBinding binding;
     private UserAdapter adapter;
-    private UserRepository userRepository;
+    private UserRepository userRepositoryAll;
+    private UserRepository userRepositoryOrg;
+    private ArrayList<GenericRepository<User>> repoList;
     private RepositoryToArrayAdapter<User> repositoryToArrayAdapter;
+
 
 
     @Nullable
@@ -39,10 +44,17 @@ public class AdminUserViewFragment extends Fragment {
         binding = com.example.skeddly.databinding.FragmentAdminUserViewBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        userRepository = new UserRepository(FirebaseFirestore.getInstance());
+        userRepositoryAll = new UserRepository(FirebaseFirestore.getInstance());
+        userRepositoryOrg = new UserRepository(FirebaseFirestore.getInstance(), UserLevel.ORGANIZER);
+
         adapter = new UserAdapter(getContext(), new ArrayList<>());
-        repositoryToArrayAdapter = new RepositoryToArrayAdapter<>(userRepository, adapter, true);
+        repoList = new ArrayList<>();
+        repoList.add(userRepositoryAll);
+        repoList.add(userRepositoryOrg);
+
+        repositoryToArrayAdapter = new RepositoryToArrayAdapter<>(repoList, adapter, true);
         binding.listViewUsers.setAdapter(adapter);
+
         binding.listViewUsers.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -51,6 +63,14 @@ public class AdminUserViewFragment extends Fragment {
                 return true;
             }
         });
+
+        // toggle between all users and only organizers
+        binding.switchOrganizersOnly.setOnCheckedChangeListener((buttonView, isChecked) -> {
+           repositoryToArrayAdapter.switchDataset(isChecked ? userRepositoryOrg : userRepositoryAll);
+        });
+
+        // remove orphan users
+        removeOrphanUsers();
         return root;
     }
 
@@ -70,7 +90,7 @@ public class AdminUserViewFragment extends Fragment {
             boolean result = bundle.getBoolean("buttonChoice");
             if (result) {
                 // User confirmed the deletion
-                userRepository.delete(user.getId());
+                userRepositoryAll.delete(user.getId());
             }
         });
 
@@ -83,10 +103,10 @@ public class AdminUserViewFragment extends Fragment {
     }
 
     private void removeOrphanUsers() {
-        userRepository.getAll().addOnSuccessListener(users -> {
+        userRepositoryAll.getAll().addOnSuccessListener(users -> {
             for (User user : users) {
                 if (user.getPersonalInformation().getName() == null || user.getPersonalInformation().getName().isEmpty()) {
-                    userRepository.delete(user.getId());
+                    userRepositoryAll.delete(user.getId());
                 }
             }
         });
