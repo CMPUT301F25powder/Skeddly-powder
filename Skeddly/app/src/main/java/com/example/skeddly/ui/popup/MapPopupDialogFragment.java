@@ -152,9 +152,9 @@ public class MapPopupDialogFragment extends DialogFragment implements OnMapReady
     public void onMapReady(@NonNull GoogleMap googleMap) {
         this.googleMap = googleMap;
 
-        if (mapPopupType == MapPopupType.SET || entrantLocations == null || entrantLocations.isEmpty()) {
-            zoomToUserLocation();
-        } else if (mapPopupType == MapPopupType.VIEW) {
+        enableUserLocation();
+
+        if (mapPopupType == MapPopupType.VIEW) {
             // Add markers for each entrant location and position the map view to enclose all markers
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
             int padding = 100;
@@ -173,9 +173,10 @@ public class MapPopupDialogFragment extends DialogFragment implements OnMapReady
 
     /**
      * Use the LocationFetcherFragment to get the current user's location and then zoom the map to
-     * there. If the LocationFetcherFragment isn't there, this method silently fails.
+     * there if needed. If the LocationFetcherFragment isn't granted permission,
+     * this method silently fails.
      */
-    private void zoomToUserLocation() {
+    private void enableUserLocation() {
         String generatedRequestKey = String.valueOf(UUID.randomUUID());
         LocationFetcherFragment locationFetcherFragment = LocationFetcherFragment.newInstance(generatedRequestKey);
         getChildFragmentManager().beginTransaction().add(locationFetcherFragment, null).commit();
@@ -184,7 +185,10 @@ public class MapPopupDialogFragment extends DialogFragment implements OnMapReady
             CustomLocation location = result.getParcelable("location");
 
             if (location != null) {
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 18));
+                if (mapPopupType != MapPopupType.VIEW) {
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 18));
+                }
+                googleMap.setMyLocationEnabled(true);
             }
         });
     }
