@@ -95,9 +95,8 @@ public class InboxFragment extends Fragment implements View.OnClickListener {
         updateButtonSelection(buttonAll);
 
         inboxList.setOnItemLongClickListener((parent, view, position, id) -> {
-            // TODO: Handle deleting notifs properly
-
-            inboxAdapter.notifyDataSetChanged();
+            Notification notification = (Notification) parent.getItemAtPosition(position);
+            notificationRepositoryAll.delete(notification.getId());
             return true;
         });
 
@@ -106,7 +105,7 @@ public class InboxFragment extends Fragment implements View.OnClickListener {
             if (notification.getType() == NotificationType.REGISTRATION) {
                 StandardPopupDialogFragment spdf = StandardPopupDialogFragment.newInstance("Accept Invitation",
                         "Would you like to join " + notification.getTitle(), notification.getTicketId());
-                setupPopupListener(notification.getTicketId());
+                setupPopupListener(notification);
                 spdf.show(getChildFragmentManager(), null);
             }
         });
@@ -153,18 +152,18 @@ public class InboxFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void setupPopupListener(String ticketId) {
-        getChildFragmentManager().setFragmentResultListener(ticketId, this, new FragmentResultListener() {
+    private void setupPopupListener(Notification notification) {
+        getChildFragmentManager().setFragmentResultListener(notification.getTicketId(), this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
                 boolean choice = result.getBoolean("buttonChoice");
 
-                // TODO: Remove the notification or archive it somehow
                 if (choice) {
                     ticketRepository.updateStatus(requestKey, TicketStatus.ACCEPTED);
                 } else {
                     ticketRepository.updateStatus(requestKey, TicketStatus.CANCELLED);
                 }
+                notificationRepositoryAll.delete(notification.getId());
             }
         });
     }
