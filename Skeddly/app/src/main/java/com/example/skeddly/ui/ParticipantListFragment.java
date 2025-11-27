@@ -231,7 +231,7 @@ public class ParticipantListFragment extends Fragment {
         List<String[]> data = new ArrayList<>();
 
         // Header
-        data.add(new String[]{"Name", "Email", "Phone", "UserID", "EventID", "TicketTime",
+        data.add(new String[]{"Name", "Email", "Phone", "UserID", "EventID", "Time",
                 "Latitude", "Longitude", "Status"});
 
         // The actual data (rows)
@@ -249,18 +249,16 @@ public class ParticipantListFragment extends Fragment {
             // Ticket time
             long rawTicketTime = ticket.getTicketTime();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
-            String ticketTime = Instant.ofEpochMilli(rawTicketTime)
+            String ticketTime = Instant.ofEpochSecond(rawTicketTime)
                     .atZone(ZoneId.systemDefault())
                     .format(formatter);
 
             // Location
-            String latitude, longitude;
+            String latitude = "";
+            String longitude = "";
             if (ticket.getLocation() != null) {
                 latitude = String.valueOf(ticket.getLocation().getLatitude());
                 longitude = String.valueOf(ticket.getLocation().getLongitude());
-            } else {
-                latitude = "";
-                longitude = "";
             }
 
             String status = ticket.getStatus().toString();
