@@ -68,6 +68,11 @@ public class ParticipantListFragment extends Fragment {
             }
         });
 
+        // Set up CSV export button
+        binding.btnExportCsv.setOnClickListener(v -> {
+
+        });
+
         // Set up map button
         binding.fabShowLocations.setOnClickListener(v -> {
             if (isWaitingList) {
