@@ -1,6 +1,7 @@
 package com.example.skeddly.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import com.example.skeddly.ui.popup.StandardPopupDialogFragment;
 public class ProfileButtonsFragment extends Fragment {
     private FragmentProfileButtonsBinding binding;
     private View.OnClickListener personalInfoOnClickListener = null;
+    private View.OnClickListener eventHistoryOnClickListener = null;
 
     @Nullable
     @Override
@@ -36,7 +38,9 @@ public class ProfileButtonsFragment extends Fragment {
         ConstraintLayout deleteAccountButton = binding.btnDeleteAccount;
 
         if (personalInfoOnClickListener != null) {
-            binding.btnPersonalInfo.setOnClickListener(personalInfoOnClickListener);
+            binding.btnPersonalInfo.setOnClickListener(personalInfoOnClickListener);        }
+        if (eventHistoryOnClickListener != null) {
+            binding.btnEventHistory.setOnClickListener(eventHistoryOnClickListener);
         }
 
         String deletePopupRequestKey = "deletePopup";
@@ -83,6 +87,18 @@ public class ProfileButtonsFragment extends Fragment {
 
         if (binding != null) {
             binding.btnPersonalInfo.setOnClickListener(personalInfoOnClickListener);
+        }
+    }
+
+
+    /**
+     * Defines the click listener for the Event History button.
+     * @param listener The action to perform when the button is clicked.
+     */
+    public void setEventHistoryButtonOnClickListener(View.OnClickListener listener) {
+        this.eventHistoryOnClickListener = listener;
+        if (binding != null) {
+            binding.btnEventHistory.setOnClickListener(eventHistoryOnClickListener);
         }
     }
 }
