@@ -1,5 +1,7 @@
 package com.example.skeddly.business.event;
 
+import com.google.firebase.firestore.Exclude;
+
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
@@ -125,6 +127,7 @@ public class EventSchedule {
      * Gets whether the event registration period has ended or not.
      * @return True if it has ended. False otherwise.
      */
+    @Exclude
     public boolean isRegistrationOver() {
         ZoneId zoneId = ZoneId.systemDefault();
         long curTime = LocalDateTime.now().atZone(zoneId).toEpochSecond();

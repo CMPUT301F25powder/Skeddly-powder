@@ -305,11 +305,6 @@ public class CreateFragment extends Fragment {
                     eventRepository.set(event);
                 }
 
-                // User owns the event
-                MainActivity mainActivity = (MainActivity) requireActivity();
-                mainActivity.getUser().addOwnedEvent(event);
-                mainActivity.notifyUserChanged();
-
                 // Reset the create event screen
                 if (!isEdit) resetCreateScreen();
 
