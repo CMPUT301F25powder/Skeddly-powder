@@ -25,6 +25,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.bumptech.glide.Glide;
@@ -43,6 +45,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointForward;
 import com.google.android.material.datepicker.MaterialDatePicker;
@@ -343,6 +346,13 @@ public class CreateFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        resetCreateScreen();
+        BottomNavigationView navView = requireActivity().findViewById(R.id.nav_view);
+        if (navView != null) {
+            navView.setOnItemSelectedListener(null);
+            NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main);
+            androidx.navigation.ui.NavigationUI.setupWithNavController(navView, navController);
+        }
         binding = null;
     }
 
@@ -602,6 +612,8 @@ public class CreateFragment extends Fragment {
      * Resets the create event screen after creating an event.
      */
     private void resetCreateScreen() {
+        isEdit = false;
+        eventId = null;
         binding.imgEvent.setImageDrawable(null);
         binding.textEventTitleOverlay.setText(R.string.event_title_location);
         binding.switchRecurrence.setChecked(false);
@@ -734,5 +746,26 @@ public class CreateFragment extends Fragment {
 
         // Update Button
         updateConfirmButton();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        BottomNavigationView navView = requireActivity().findViewById(R.id.nav_view);
+
+        if (navView != null) {
+            navView.setOnItemSelectedListener(item -> {
+                if (item.getItemId() == R.id.navigation_home) {
+                    // Mimic the back button's behavior
+                    System.out.println("Back button pressed");
+                    Navigation.findNavController(view).navigateUp();
+                    return true;
+                }
+                // For any other button, let the default behavior happen
+                NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main);
+                return androidx.navigation.ui.NavigationUI.onNavDestinationSelected(item, navController);
+            });
+        }
     }
 }
