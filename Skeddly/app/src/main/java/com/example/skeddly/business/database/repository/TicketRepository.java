@@ -17,11 +17,20 @@ import java.util.List;
 public class TicketRepository extends GenericRepository<Ticket> {
     private final FirebaseFirestore firestore;
     private final String eventId;
+    private final String userId;
     public static final String COLLECTION_PATH = "tickets";
 
     public TicketRepository(FirebaseFirestore firestore, String eventId) {
         super(Ticket.class);
         this.firestore = firestore;
+        this.eventId = eventId;
+        this.userId = null;
+    }
+
+    public TicketRepository(FirebaseFirestore firestore, String userId, String eventId) {
+        super(Ticket.class);
+        this.firestore = firestore;
+        this.userId = userId;
         this.eventId = eventId;
     }
 
@@ -58,8 +67,18 @@ public class TicketRepository extends GenericRepository<Ticket> {
         return firestore.collection(COLLECTION_PATH);
     }
 
+
     @Override
     protected Query getQuery() {
-        return getCollectionPath().whereEqualTo("eventId", eventId);
+        // If an eventId is provided, query by eventId.
+        if (eventId != null) {
+            return getCollectionPath().whereEqualTo("eventId", eventId);
+        }
+        // If only a userId is provided, query by userId.
+        if (userId != null) {
+            return getCollectionPath().whereEqualTo("userId", userId);
+        }
+        // If neither is provided, return the whole collection (default behavior).
+        return getCollectionPath();
     }
 }
