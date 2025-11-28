@@ -1,5 +1,6 @@
 package com.example.skeddly.ui;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -114,8 +115,7 @@ public class CreateFragment extends Fragment {
 
     // Popup Selector Constants
     private final String categoryTitle = "Select Category";
-    private final String[] catArray = {"Indoor", "Outdoor", "In-person", "Virtual", "Hybrid",
-            "Arts & Crafts", "Physical activity"};
+    private String[] catArray;
 
     private final String[] dayArray = Arrays.copyOfRange(new DateFormatSymbols().getWeekdays(), 1, 8);
     private final String dayTitle = "Select Day";
@@ -130,6 +130,10 @@ public class CreateFragment extends Fragment {
         underlineSpan = new UnderlineSpan();
         calendarConstraints = new CalendarConstraints.Builder().setValidator(DateValidatorPointForward.now()).build();
         eventRepository = new EventRepository(FirebaseFirestore.getInstance());
+
+        // Initialize categories
+        Resources resources = getResources();
+        catArray = resources.getStringArray(R.array.cat_array);
 
         // Hide them because we don't want them here
         binding.btnBack.setVisibility(View.INVISIBLE);

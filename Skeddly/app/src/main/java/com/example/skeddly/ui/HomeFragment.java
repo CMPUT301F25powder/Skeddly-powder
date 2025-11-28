@@ -4,12 +4,16 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.skeddly.MainActivity;
+import com.example.skeddly.R;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.database.SingleListenUpdate;
 import com.example.skeddly.business.location.CustomLocation;
@@ -20,6 +24,7 @@ import com.example.skeddly.ui.adapter.EventAdapter;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.database.DatabaseObjects;
 import com.example.skeddly.ui.adapter.RetrieveLocation;
+import com.example.skeddly.ui.filtering.EventFilterPopup;
 import com.example.skeddly.ui.utility.LocationFetcherFragment;
 import com.google.firebase.firestore.ListenerRegistration;
 
@@ -34,6 +39,7 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
     private ArrayList<Event> eventList = new ArrayList<>();
     private DatabaseHandler databaseHandler;
     private EventAdapter eventAdapter;
+    private EventFilterPopup eventFilterPopup;
 
     // Search
     private EventSearch eventSearch;
@@ -49,7 +55,9 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
         // Initialize DatabaseHandler and list of events
         databaseHandler = new DatabaseHandler();
 
-        eventSearch = new EventSearch(getContext(), binding.searchEvents, eventList);
+        SearchView searchEvents = binding.searchEvents;
+
+        eventSearch = new EventSearch(getContext(), searchEvents, eventList);
 
         // Initialize event adapter
         MainActivity activity = (MainActivity) requireActivity();
@@ -59,7 +67,8 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
                 this);
 
         // Set event adapter to list view
-        binding.listEvents.setAdapter(eventAdapter);
+        ListView listEvents = binding.listEvents;
+        listEvents.setAdapter(eventAdapter);
 
         // Fetch events from firebase
         fetchEvents();
@@ -75,6 +84,13 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
                 fetchEvents(query);
             }
         });
+
+        // Handle opening filter menu
+        ImageButton filterDropdownButton = binding.btnFilter;
+
+        View popupView = inflater.inflate(R.layout.fragment_event_filter_menu, null);
+
+        eventFilterPopup = new EventFilterPopup(getContext(), popupView, searchEvents, filterDropdownButton);
 
         return root;
     }

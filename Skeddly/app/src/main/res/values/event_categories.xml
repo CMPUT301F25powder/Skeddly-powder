@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="cat_array">
+        <item>Indoor</item>
+        <item>Outdoor</item>
+        <item>In-person</item>
+        <item>Virtual</item>
+        <item>Hybrid</item>
+        <item>Arts &amp; Crafts</item>
+        <item>Physical activity</item>
+    </string-array>
+</resources>
