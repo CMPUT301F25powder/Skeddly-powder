@@ -1,0 +1,523 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+' Keep massive spacing between boxes to separate lines
+skinparam nodesep 250
+skinparam ranksep 250
+
+package "Enums & Interfaces" {
+    enum TicketStatus {
+        WAITING
+        INVITED
+        ACCEPTED
+        CANCELLED
+    }
+    enum MapPopupType {
+        SET
+        VIEW
+    }
+    enum NotificationInvitationStatus {
+        ACCEPTED
+        PENDING
+        REJECTED
+    }
+    enum NotificationType {
+        MESSAGES
+        REGISTRATION
+        SYSTEM
+    }
+    enum UserLevel {
+        ENTRANT
+        ORGANIZER
+        ADMIN
+    }
+
+    interface UserLoaded {
+        onUserLoaded(user : User, shouldShowSignupPage : boolean) : void
+    }
+    interface IterableListenUpdate {
+        onUpdate(newValues : DatabaseObjects) : void
+    }
+    interface SearchFinishedListener {
+        onSearchFinished() : void
+        onSearchFinished(query : String) : void
+    }
+    interface SingleListenUpdate {
+        onUpdate(newValue : T) : void
+    }
+    interface RetrieveLocation {
+        + getLocation(callback : SingleListenUpdate<CustomLocation>) : void
+    }
+    interface FindTicketCallback {
+        onResult(ticketId : String) : void
+    }
+}
+
+package "Model" {
+    class DatabaseObject {
+        - id : String
+        + DatabaseObject()
+        + getId() : String
+        + setId(id : String) : void
+    }
+
+    class DatabaseObjects {
+        parameter : Class<T>
+        + DatabaseObjects()
+        + getIds() : ArrayList<String>
+    }
+
+    class CustomLocation {
+        - latitude : double
+        - longitude : double
+        - tag : String
+        + CustomLocation()
+        + getLatitude() : double
+        + getLongitude() : double
+    }
+
+    class PersonalInformation {
+        - name : String
+        - email : String
+        - phoneNumber : String
+        + PersonalInformation()
+        + getName() : String
+        + isFullyFilled() : boolean
+    }
+
+    class NotificationSettings {
+        - lotteryStatus : boolean
+        - eventUpdate : boolean
+        - administrative : boolean
+        + NotificationSettings()
+        + getLotteryStatus() : boolean
+    }
+
+    class User {
+        - notificationSettings : NotificationSettings
+        - personalInformation : PersonalInformation
+        - ownedEvents : ArrayList<String>
+        - joinedEvents : ArrayList<String>
+        - privilegeLevel : UserLevel
+        + User()
+        + getOwnedEvents() : ArrayList<String>
+    }
+
+    class EventDetail {
+        - name : String
+        - description : String
+        - entryCriteria : String
+        - categories : ArrayList<String>
+        + EventDetail()
+        + getName() : String
+    }
+
+    class EventSchedule {
+        - startTime : long
+        - endTime : long
+        - regStart : long
+        - regEnd : long
+        - daysOfWeek : List<Boolean>
+        - isRecurring : boolean
+        + EventSchedule()
+        + isRegistrationOver() : boolean
+    }
+
+    class TicketList {
+        - ticketIds : ArrayList<String>
+        - max : int
+        + TicketList(max : int)
+        + addTicket(ticketId : String) : void
+        + isFull() : boolean
+    }
+
+    class WaitingList {
+        - randomGen : Random
+        + WaitingList(max : int)
+        + draw() : String
+    }
+
+    class ParticipantList {
+        + ParticipantList(max : int)
+    }
+
+    class Event {
+        - eventDetails : EventDetail
+        - eventSchedule : EventSchedule
+        - location : CustomLocation
+        - organizer : String
+        - waitingList : WaitingList
+        - participantList : ParticipantList
+        - logLocation : boolean
+        - imageb64 : String
+        + Event()
+        + isJoinable() : boolean
+        + draw(numToDraw : int) : void
+        + join(dbHandler : DatabaseHandler, userPersonalInfo : PersonalInformation, userId : String, location : CustomLocation) : void
+    }
+
+    class Ticket {
+        - userPersonalInfo : PersonalInformation
+        - userId : String
+        - eventId : String
+        - ticketTime : long
+        - location : CustomLocation
+        - status : TicketStatus
+        + Ticket()
+    }
+
+    class Notification {
+        - title : String
+        - message : String
+        - recipient : String
+        - ticketId : String
+        - timestamp : long
+        - type : NotificationType
+        - status : NotificationInvitationStatus
+        - read : boolean
+        + Notification()
+    }
+
+    class GalleryImage {
+        - event : Event
+        - selected : boolean
+        + GalleryImage(event : Event)
+        + isSelected() : boolean
+    }
+}
+
+package "Database" {
+    class DatabaseHandler {
+        INTERNAL : String
+        - database : FirebaseFirestore
+        + DatabaseHandler()
+        + getUsersPath() : CollectionReference
+        + getEventsPath() : CollectionReference
+    }
+
+    abstract class GenericRepository {
+        # clazz : Class<T>
+        # GenericRepository(clazz : Class<T>)
+        # {abstract} getCollectionPath() : CollectionReference
+        + get(id : String) : Task<T>
+        + set(object : T) : Task<Void>
+        + listen(id : String, callback : SingleListenUpdate<T>) : ListenerRegistration
+        + delete(id : String) : Task<Void>
+    }
+
+    class EventRepository {
+        + {static} COLLECTION_PATH : String
+        + organizerId : String
+        + EventRepository(firestore : FirebaseFirestore)
+        + updateEvent(event : Event) : Task<Void>
+    }
+
+    class UserRepository {
+        + {static} COLLECTION_PATH : String
+        - level : UserLevel
+        + UserRepository(firestore : FirebaseFirestore)
+    }
+
+    class TicketRepository {
+        + {static} COLLECTION_PATH : String
+        - eventId : String
+        - userId : String
+        + TicketRepository(firestore : FirebaseFirestore, eventId : String)
+        + getAllByStatus(status : TicketStatus) : Task<List<Ticket>>
+    }
+
+    class NotificationRepository {
+        + {static} COLLECTION_PATH : String
+        - userId : String
+        - notificationType : NotificationType
+        + NotificationRepository(firestore : FirebaseFirestore, userId : String)
+    }
+}
+
+package "Adapters" {
+    class EventAdapter {
+        - user : User
+        - locationGetter : RetrieveLocation
+        + EventAdapter(context : Context, events : ArrayList<Event>, user : User)
+        + updateJoinButtonState(buttonJoin : Button, event : Event, userId : String, dbHandler : DatabaseHandler) : void
+    }
+
+    class EventHistoryAdapter {
+        - ticketMap : Map<String,Ticket>
+        + EventHistoryAdapter(context : Context, events : ArrayList<Event>, ticketMap : Map<String,Ticket>)
+    }
+
+    class InboxAdapter {
+        + InboxAdapter(context : Context, notifs : List<Notification>)
+    }
+
+    class ParticipantAdapter {
+        - dbHandler : DatabaseHandler
+        - event : Event
+        + ParticipantAdapter(context : Context, tickets : ArrayList<Ticket>, dbHandler : DatabaseHandler, event : Event)
+    }
+
+    class UserAdapter {
+        + UserAdapter(context : Context, users : List<User>)
+    }
+
+    class GalleryImageAdapter {
+        - images : ArrayList<GalleryImage>
+        - selectionMode : boolean
+        + GalleryImageAdapter(context : Context, images : ArrayList<GalleryImage>)
+        + getSelectedCount() : int
+    }
+
+    class RepositoryToArrayAdapter {
+        - repositories : ArrayList<GenericRepository<T>>
+        - data : ArrayList<List<T>>
+        - adapter : ArrayAdapter<T>
+        - listeners : ArrayList<ListenerRegistration>
+        + RepositoryToArrayAdapter(repository : GenericRepository<T>, adapter : ArrayAdapter<T>, realtimeUpdates : boolean)
+        + switchDataset(repository : GenericRepository<T>) : void
+    }
+}
+
+package "Utilities" {
+    class Authenticator {
+        - androidId : String
+        - user : User
+        - mAuth : FirebaseAuth
+        - databaseHandler : DatabaseHandler
+        + Authenticator(context : Context, databaseHandler : DatabaseHandler)
+        + getUser() : User
+    }
+
+    class EventSearch {
+        - eventList : ArrayList<Event>
+        - searchBar : SearchView
+        + EventSearch(context : Context, newSearchBar : SearchView, eventList : ArrayList<Event>)
+        + setOnSearchFinishedListener(callback : SearchFinishedListener) : void
+    }
+
+    class LocationFetcherFragment {
+        - fusedLocationClient : FusedLocationProviderClient
+        + {static} newInstance(requestKey : String) : LocationFetcherFragment
+        - getLocation() : void
+    }
+}
+
+package "UI" {
+    class MainActivity {
+        - authenticator : Authenticator
+        + getUser() : User
+        + getAuthenticator() : Authenticator
+        - navigateToEvent(event : Event) : void
+    }
+
+    class SignupActivity {
+        - authenticator : Authenticator
+        - loadUser() : void
+    }
+
+    class HomeFragment {
+        - eventList : ArrayList<Event>
+        - databaseHandler : DatabaseHandler
+        - eventAdapter : EventAdapter
+        - eventSearch : EventSearch
+        - fetchEvents(query : String) : void
+    }
+
+    class MyEventsFragment {
+        - eventAdapter : EventAdapter
+        - repositoryAdapter : RepositoryToArrayAdapter<Event>
+    }
+
+    class EventViewInfoFragment {
+        - dbHandler : DatabaseHandler
+        - eventAdapter : EventAdapter
+        - fusedLocationClient : FusedLocationProviderClient
+        - populateUI(event : Event) : void
+    }
+
+    class CreateFragment {
+        - eventRepository : EventRepository
+        - isEdit : boolean
+        - createEvent() : Event
+        - populateUI(event : Event) : void
+    }
+
+    class ParticipantListFragment {
+        - event : Event
+        - dbhandler : DatabaseHandler
+        - waitingParticipantAdapter : ParticipantAdapter
+        - finalParticipantAdapter : ParticipantAdapter
+        - ticketRepository : TicketRepository
+        - fetchAndDisplayTickets() : void
+    }
+
+    class InboxFragment {
+        - inboxAdapter : InboxAdapter
+        - notificationRepositoryAll : NotificationRepository
+        - ticketRepository : TicketRepository
+    }
+
+    class AdminInboxFragment {
+        - notifAdapter : InboxAdapter
+        - notificationRepository : NotificationRepository
+    }
+
+    class AdminUserViewFragment {
+        - adapter : UserAdapter
+        - userRepositoryAll : UserRepository
+        - repositoryToArrayAdapter : RepositoryToArrayAdapter<User>
+    }
+
+    class AdminImageGalleryFragment {
+        - eventRepository : EventRepository
+        - dbHandler : DatabaseHandler
+        - galleryImageAdapter : GalleryImageAdapter
+    }
+
+    class EventHistoryFragment {
+        - eventHistoryAdapter : EventHistoryAdapter
+        - fetchUserEventHistory(userId : String) : void
+    }
+
+    class ProfileFragment {
+        - updatePersonalInfo() : void
+    }
+
+    class PersonalInformationEditFragment {
+        - toggleConfirmButton() : void
+    }
+
+    class ProfileButtonsFragment {
+    }
+
+    class ToolButtonsFragment {
+    }
+
+    class ToolsFragment {
+    }
+    
+    class TestFragment {
+    }
+}
+
+package "Dialogs" {
+    class StandardPopupDialogFragment {
+        - resultText : String
+        + {static} newInstance(title : String, content : String, requestKey : String) : StandardPopupDialogFragment
+    }
+
+    class QRPopupDialogFragment {
+        - link : String
+        - createQR(link : String) : Bitmap
+    }
+
+    class MapPopupDialogFragment {
+        - mapPopupType : MapPopupType
+        - entrantLocations : ArrayList<CustomLocation>
+        + {static} newInstance(requestKey : String, mapPopupType : MapPopupType, entrantLocations : ArrayList<CustomLocation>) : MapPopupDialogFragment
+    }
+
+    class ImagePopupDialogFragment {
+        + {static} newInstance(imageB64 : String) : ImagePopupDialogFragment
+    }
+
+    class DrawParticipantsDialogFragment {
+        - curWait : int
+        - curAttend : int
+        + {static} newInstance(requestKey : String, curWait : int, curAttend : int, maxAttend : int) : DrawParticipantsDialogFragment
+    }
+
+    class CategorySelectorDialogFragment {
+        - selectedItems : ArrayList<String>
+    }
+}
+
+' Relationships
+
+' Model Inheritance & Composition
+User --|> DatabaseObject
+Event --|> DatabaseObject
+Ticket --|> DatabaseObject
+Notification --|> DatabaseObject
+
+' Force composition DOWN to clear horizontal space
+User *--down "1" NotificationSettings
+User *--down "1" PersonalInformation
+User *--down "1" UserLevel
+
+Event *--down "1" EventDetail
+Event *--down "1" EventSchedule
+Event *--down "0..1" CustomLocation
+Event *--down "1" WaitingList
+Event *--down "1" ParticipantList
+
+Ticket *--down "1" PersonalInformation
+Ticket *--down "0..1" CustomLocation
+Ticket *--down "1" TicketStatus
+
+Notification *--down "1" NotificationType
+Notification *--down "1" NotificationInvitationStatus
+
+WaitingList --|> TicketList
+ParticipantList --|> TicketList
+GalleryImage o-right- "1" Event
+
+' Database Relationships
+EventRepository --|> GenericRepository
+UserRepository --|> GenericRepository
+TicketRepository --|> GenericRepository
+NotificationRepository --|> GenericRepository
+
+' Adapter Relationships
+' Adapters hold references to Objects (Aggregation)
+EventAdapter o-down- "1" User
+EventAdapter o-down- "0..*" Event
+EventAdapter -right-> RetrieveLocation
+EventHistoryAdapter o-down- "0..*" Event
+EventHistoryAdapter o-down- "0..*" Ticket
+ParticipantAdapter o-down- "1" DatabaseHandler
+ParticipantAdapter o-down- "1" Event
+ParticipantAdapter o-down- "0..*" Ticket
+GalleryImageAdapter o-down- "0..*" GalleryImage
+UserAdapter o-down- "0..*" User
+InboxAdapter o-down- "0..*" Notification
+RepositoryToArrayAdapter o-down- "1..*" GenericRepository
+
+' Utility Relationships
+Authenticator o-down- "0..1" User
+Authenticator o-down- "1" DatabaseHandler
+Authenticator .right.> UserLoaded
+EventSearch o-down- "0..*" Event
+EventSearch .right.> SearchFinishedListener
+
+' UI Relationships (UI uses/holds Adapters and Repos)
+MainActivity o-down- "1" Authenticator
+SignupActivity o-down- "1" Authenticator
+EventViewInfoFragment .up.|> RetrieveLocation
+EventViewInfoFragment o-down- "1" DatabaseHandler
+EventViewInfoFragment o-down- "1" EventAdapter
+HomeFragment .up.|> RetrieveLocation
+HomeFragment o-down- "1" DatabaseHandler
+HomeFragment o-down- "1" EventAdapter
+HomeFragment o-down- "1" EventSearch
+MyEventsFragment o-down- "1" EventAdapter
+ParticipantListFragment o-down- "1" Event
+ParticipantListFragment o-down- "1" DatabaseHandler
+ParticipantListFragment o-down- "2" ParticipantAdapter
+ParticipantListFragment o-down- "1" TicketRepository
+CreateFragment o-down- "1" EventRepository
+InboxFragment o-down- "1" InboxAdapter
+InboxFragment o-down- "1" NotificationRepository
+InboxFragment o-down- "1" TicketRepository
+AdminInboxFragment o-down- "1" InboxAdapter
+AdminInboxFragment o-down- "1" NotificationRepository
+AdminUserViewFragment o-down- "1" UserAdapter
+AdminUserViewFragment o-down- "1" UserRepository
+AdminImageGalleryFragment o-down- "1" EventRepository
+AdminImageGalleryFragment o-down- "1" DatabaseHandler
+AdminImageGalleryFragment o-down- "1" GalleryImageAdapter
+EventHistoryFragment o-down- "1" EventHistoryAdapter
+MapPopupDialogFragment o-down- "1" MapPopupType
+
+@enduml
