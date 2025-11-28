@@ -23,6 +23,8 @@ import com.example.skeddly.ui.popup.StandardPopupDialogFragment;
 public class ProfileButtonsFragment extends Fragment {
     private FragmentProfileButtonsBinding binding;
     private View.OnClickListener personalInfoOnClickListener = null;
+    private View.OnClickListener notificationSettingsOnClickListener = null;
+
 
     @Nullable
     @Override
@@ -37,6 +39,10 @@ public class ProfileButtonsFragment extends Fragment {
 
         if (personalInfoOnClickListener != null) {
             binding.btnPersonalInfo.setOnClickListener(personalInfoOnClickListener);
+        }
+
+        if (notificationSettingsOnClickListener != null) {
+            binding.notificationSettingsButton.setOnClickListener(notificationSettingsOnClickListener);
         }
 
         String deletePopupRequestKey = "deletePopup";
@@ -83,6 +89,14 @@ public class ProfileButtonsFragment extends Fragment {
 
         if (binding != null) {
             binding.btnPersonalInfo.setOnClickListener(personalInfoOnClickListener);
+        }
+    }
+
+    public void setNotificationSettingsBtnOnClickListener(View.OnClickListener onClickListener) {
+        this.notificationSettingsOnClickListener = onClickListener;
+
+        if (binding != null) {
+            binding.notificationSettingsButton.setOnClickListener(notificationSettingsOnClickListener);
         }
     }
 }
