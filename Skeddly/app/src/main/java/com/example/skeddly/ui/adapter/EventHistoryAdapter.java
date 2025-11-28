@@ -15,11 +15,12 @@ import com.example.skeddly.R;
 import com.example.skeddly.business.Ticket;
 import com.example.skeddly.business.event.Event;
 
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Date;
-import java.util.Locale;
 import java.util.Map;
 
 public class EventHistoryAdapter extends ArrayAdapter<Event> {
@@ -56,9 +57,10 @@ public class EventHistoryAdapter extends ArrayAdapter<Event> {
             // Find the corresponding ticket to get the join date
             Ticket ticket = ticketMap.get(event.getId());
             if (ticket != null) {
-                Date joinedDate = new Date(ticket.getTicketTime() * 1000L);
-                SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
-                textDateJoined.setText("Joined: " + sdf.format(joinedDate));
+                ZonedDateTime time = Instant.ofEpochSecond(ticket.getTicketTime()).atZone(ZoneId.systemDefault());
+                textDateJoined.setText(getContext().getString(
+                        R.string.fragment_profile_event_history_joined_date,
+                        time.format(DateTimeFormatter.ofPattern("MMM dd, yyyy"))));
             } else {
                 textDateJoined.setText(""); // Hide if no ticket found
             }

@@ -20,18 +20,28 @@ public class TicketRepository extends GenericRepository<Ticket> {
     private final String userId;
     public static final String COLLECTION_PATH = "tickets";
 
-    public TicketRepository(FirebaseFirestore firestore, String eventId) {
-        super(Ticket.class);
-        this.firestore = firestore;
-        this.eventId = eventId;
-        this.userId = null;
-    }
-
-    public TicketRepository(FirebaseFirestore firestore, String userId, String eventId) {
+    /**
+     * Create a new TicketRepository. The repository is associated with a particular event,
+     * and user, unless either are null.
+     * @param firestore The FirebaseFirestore instance to use.
+     * @param eventId The event id that this repository is associated with.
+     * @param userId The user id that this repository is associated with.
+     */
+    public TicketRepository(FirebaseFirestore firestore, String eventId, String userId) {
         super(Ticket.class);
         this.firestore = firestore;
         this.userId = userId;
         this.eventId = eventId;
+    }
+
+    /**
+     * Create a new TicketRepository. The repository is associated with a particular event,
+     * unless the eventId is null. If it is, the repository shall retrieve tickets for all events.
+     * @param firestore The FirebaseFirestore instance to use.
+     * @param eventId The event id that this repository is associated with.
+     */
+    public TicketRepository(FirebaseFirestore firestore, String eventId) {
+        this(firestore, eventId, null);
     }
 
     /**
@@ -70,15 +80,18 @@ public class TicketRepository extends GenericRepository<Ticket> {
 
     @Override
     protected Query getQuery() {
+        Query query = super.getQuery();
+
         // If an eventId is provided, query by eventId.
         if (eventId != null) {
-            return getCollectionPath().whereEqualTo("eventId", eventId);
+            query = query.whereEqualTo("eventId", eventId);
         }
-        // If only a userId is provided, query by userId.
+
+        // If a userId is provided, query by userId.
         if (userId != null) {
-            return getCollectionPath().whereEqualTo("userId", userId);
+            query = query.whereEqualTo("userId", userId);
         }
-        // If neither is provided, return the whole collection (default behavior).
-        return getCollectionPath();
+
+        return query.orderBy("ticketTime", Query.Direction.DESCENDING);
     }
 }
