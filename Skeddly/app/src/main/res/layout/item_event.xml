@@ -22,7 +22,7 @@
             android:id="@+id/single_event_item"
             android:layout_width="346dp"
             android:layout_height="206dp"
-            android:background="@drawable/gradient_purple_orange_yellow">
+            android:background="@drawable/gradient_event_item">
 
             <ImageView
                 android:id="@+id/img_event"
@@ -85,8 +85,7 @@
                     android:layout_height="33dp"
                     android:layout_marginEnd="15dp"
                     android:layout_marginBottom="13dp"
-                    android:background="@drawable/btn_style_round"
-                    android:backgroundTint="@color/primary_purple"
+                    android:background="@drawable/gradient_btn_join"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
                     android:text="@string/event_btn_join"
@@ -101,8 +100,7 @@
                     android:layout_height="33dp"
                     android:layout_marginEnd="15dp"
                     android:layout_marginBottom="12dp"
-                    android:background="@drawable/btn_style_round"
-                    android:backgroundTint="@color/primary_orange"
+                    android:background="@drawable/gradient_btn_edit"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
                     android:text="@string/event_btn_edit"

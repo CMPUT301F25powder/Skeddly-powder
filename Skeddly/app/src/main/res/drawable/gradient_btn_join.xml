@@ -2,7 +2,7 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape>
-            <corners android:radius="8dp"/>
+            <corners android:radius="33dp"/>
             <gradient
                 android:startColor="@color/primary_purple"
                 android:endColor="@color/secondary_light_purple"
