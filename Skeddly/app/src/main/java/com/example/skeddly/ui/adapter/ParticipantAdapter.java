@@ -15,12 +15,7 @@ import com.example.skeddly.business.TicketStatus;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.Ticket;
 import com.example.skeddly.business.database.DatabaseHandler;
-import com.example.skeddly.business.database.SingleListenUpdate;
-import com.example.skeddly.business.user.User;
 import com.example.skeddly.databinding.ItemEntrantBinding;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.time.Instant;
 import java.time.LocalDateTime;

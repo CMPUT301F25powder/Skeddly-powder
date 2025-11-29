@@ -67,14 +67,12 @@ def send_fcm_notification(event: Event[DocumentSnapshot]) -> None:
         return
 
     message = messaging.Message(
-        data={
-            "title": data["title"],
-            "message": data["message"],
-        },
+        notification=messaging.Notification(title=data["title"], body=data["message"]),
         token=fcmToken
     )
 
     response = messaging.send(message)
+    print(f"[INFO] Sent a message to {uid_recipient}: {response}")
 
 
 @on_document_deleted(document="users/{userId}")
@@ -138,17 +136,17 @@ def http_cleanup_db(req: https_fn.CallableRequest) -> Any:
     return {"successful": True, "message": ""}
 
 
-@https_fn.on_call()
-def http_add_mock_events(req: https_fn.CallableRequest) -> Any:
-    firestore_client: google.cloud.firestore.Client = firestore.client()
-    delete_mock_events(firestore_client)
-    try:
-        organizer: str = req.data["organizer"]
-        add_mock_events(organizer, firestore_client)
-    except Exception as e:
-        return {"successful": False, "message": str(e)}
-
-    return {"successful": True, "message": ""}
+# @https_fn.on_call()
+# def http_add_mock_events(req: https_fn.CallableRequest) -> Any:
+#     firestore_client: google.cloud.firestore.Client = firestore.client()
+#     delete_mock_events(firestore_client)
+#     try:
+#         organizer: str = req.data["organizer"]
+#         add_mock_events(organizer, firestore_client)
+#     except Exception as e:
+#         return {"successful": False, "message": str(e)}
+#
+#     return {"successful": True, "message": ""}
 
 
 def cleanup_orphans():

@@ -76,6 +76,7 @@ public class Authenticator {
         Task<String> fcmTokenTask = FirebaseMessaging.getInstance().getToken();
         Task<DocumentSnapshot> userFetchTask = this.databaseHandler.getUsersPath().document(currentUser.getUid()).get();
 
+        // Wait for user fetch and fcm token retrieval to finsih before continuing
         Tasks.whenAll(fcmTokenTask, userFetchTask).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentSnapshot documentSnapshot = userFetchTask.getResult();
@@ -90,6 +91,7 @@ public class Authenticator {
                 } else {
                     user = documentSnapshot.toObject(User.class);
 
+                    // Update FCM Token if it changed
                     String curFcmToken = fcmTokenTask.getResult();
                     if (user.getFcmToken() == null || !user.getFcmToken().equals(curFcmToken)) {
                         user.setFcmToken(curFcmToken);

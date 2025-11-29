@@ -90,11 +90,6 @@ public class MainActivity extends AppCompatActivity {
             public void onUserLoaded(User loadedUser, boolean shouldShowSignupPage) {
                 // Update navbar if user object changes (allows for realtime updates)
                 setupNavBar();
-
-                Map<String, Object> data = new HashMap<>();
-                data.put("organizer", getUser().getId());
-
-                FirebaseFunctions.getInstance().getHttpsCallable("http_add_mock_events").call(data);
             }
         });
 

@@ -73,10 +73,18 @@ public class User extends DatabaseObject {
         this.personalInformation = personalInformation;
     }
 
+    /**
+     * Retrieves the FCM Token tied to this user. This token is used for sending push notifications.
+     * @return The FCM token tied to this user.
+     */
     public String getFcmToken() {
         return fcmToken;
     }
 
+    /**
+     * Sets the FCM token tied to this user. This token is used for sending push notifications.
+     * @param fcmToken The new FCM token for this user
+     */
     public void setFcmToken(String fcmToken) {
         this.fcmToken = fcmToken;
     }
