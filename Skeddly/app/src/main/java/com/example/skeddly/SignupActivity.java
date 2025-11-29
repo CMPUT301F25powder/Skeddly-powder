@@ -12,6 +12,7 @@ import android.widget.EditText;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -24,6 +25,9 @@ import com.example.skeddly.business.user.User;
 import com.example.skeddly.business.user.UserLoaded;
 import com.example.skeddly.databinding.ActivitySignupBinding;
 import com.example.skeddly.ui.popup.StandardPopupDialogFragment;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.appcheck.FirebaseAppCheck;
+import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
@@ -38,6 +42,7 @@ public class SignupActivity extends AppCompatActivity {
     @SuppressWarnings({"ConstantValue", "MismatchedStringCase"})
     private final boolean useFirebaseEmulator = BuildConfig.FLAVOR.equals("emulateFirestore");
     private String firebaseEmulatorAddress = BuildConfig.EMULATOR_ADDRESS;
+    private static boolean initialised = false;
 
     private ActivitySignupBinding binding;
     private EditText fullNameEditText;
@@ -51,6 +56,7 @@ public class SignupActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         super.onCreate(savedInstanceState);
 
         EdgeToEdge.enable(this);
@@ -113,8 +119,14 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
 
+        // Initialize app check (required for callable functions)
+        FirebaseApp.initializeApp(/*context=*/ getApplicationContext());
+        FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.getInstance();
+        firebaseAppCheck.installAppCheckProviderFactory(
+                DebugAppCheckProviderFactory.getInstance());
+
         // See if emulator is in use
-        if (useFirebaseEmulator && firebaseEmulatorAddress == null) {
+        if (useFirebaseEmulator && firebaseEmulatorAddress == null && !initialised) {
             // Use firebase emulator is set but address wasn't provided
             StandardPopupDialogFragment spdf = StandardPopupDialogFragment.newInstance(
                     getString(R.string.dialog_firebase_emu_title),
@@ -138,7 +150,7 @@ public class SignupActivity extends AppCompatActivity {
             });
         } else {
             // Setup emulator with provided address if needed
-            if (useFirebaseEmulator) {
+            if (useFirebaseEmulator && !initialised) {
                 setupFirebaseEmulator();
             }
 
@@ -212,6 +224,8 @@ public class SignupActivity extends AppCompatActivity {
         // Storage Emulator
         FirebaseStorage storage = FirebaseStorage.getInstance();
         storage.useEmulator(firebaseEmulatorAddress, 9199);
+
+        initialised = true;
     }
 
     private void loadUser() {

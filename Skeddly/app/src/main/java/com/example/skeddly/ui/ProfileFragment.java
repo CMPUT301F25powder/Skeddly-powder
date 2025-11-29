@@ -1,6 +1,7 @@
 package com.example.skeddly.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +56,7 @@ public class ProfileFragment extends Fragment {
             }
         };
 
+
         // What to do when they press to navigate to the personal info edit fragment
         pbf.setPersonalInfoBtnOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,6 +67,16 @@ public class ProfileFragment extends Fragment {
 
                 // If they submit, we return back to profile buttons
                 pief.setOnCompleteListener(returnToButtons);
+            }
+        });
+
+        // On click listener for EventHistoryFragment
+        pbf.setEventHistoryButtonOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                backButton.setVisibility(View.VISIBLE);
+                EventHistoryFragment ehf = new EventHistoryFragment();
+                getChildFragmentManager().beginTransaction().replace(binding.fragment.getId(), ehf).commit();
             }
         });
 

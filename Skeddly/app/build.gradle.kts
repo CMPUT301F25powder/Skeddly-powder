@@ -76,6 +76,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.firebase.appcheck.debug)
+    implementation(libs.cardview)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
