@@ -2,19 +2,19 @@ package com.example.skeddly.business.user;
 
 import android.content.Context;
 import android.provider.Settings;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import com.example.skeddly.business.database.DatabaseHandler;
-import com.example.skeddly.business.notification.Notification;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
@@ -73,9 +73,12 @@ public class Authenticator {
     private void createAndTieUser() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        this.databaseHandler.getUsersPath().document(currentUser.getUid()).get().addOnCompleteListener(task -> {
+        Task<String> fcmTokenTask = FirebaseMessaging.getInstance().getToken();
+        Task<DocumentSnapshot> userFetchTask = this.databaseHandler.getUsersPath().document(currentUser.getUid()).get();
+
+        Tasks.whenAll(fcmTokenTask, userFetchTask).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                DocumentSnapshot documentSnapshot = task.getResult();
+                DocumentSnapshot documentSnapshot = userFetchTask.getResult();
                 DocumentReference userPath = databaseHandler.getUsersPath().document(currentUser.getUid());
 
                 // Create a blank user if there is no user in DB
@@ -83,9 +86,15 @@ public class Authenticator {
                 if (!documentSnapshot.exists()) {
                     user = new User();
                     user.setId(currentUser.getUid());
-                    userPath.set(user);
+                    user.setFcmToken(fcmTokenTask.getResult());
                 } else {
                     user = documentSnapshot.toObject(User.class);
+
+                    String curFcmToken = fcmTokenTask.getResult();
+                    if (user.getFcmToken() == null || !user.getFcmToken().equals(curFcmToken)) {
+                        user.setFcmToken(curFcmToken);
+                        userPath.update("fcmToken", curFcmToken);
+                    }
 
                     try {
                         databaseHandler.customUnserializer(userPath, user);

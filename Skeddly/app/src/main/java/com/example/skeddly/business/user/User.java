@@ -13,6 +13,7 @@ public class User extends DatabaseObject {
     private NotificationSettings notificationSettings;
     private PersonalInformation personalInformation;
     private UserLevel privilegeLevel;
+    private String fcmToken;
 
     /**
      * Constructor for the User
@@ -21,6 +22,7 @@ public class User extends DatabaseObject {
         this.personalInformation = new PersonalInformation();
         this.notificationSettings = new NotificationSettings();
         this.privilegeLevel = UserLevel.ENTRANT;
+        this.fcmToken = null;
     }
 
     /**
@@ -69,5 +71,13 @@ public class User extends DatabaseObject {
      */
     public void setPersonalInformation(PersonalInformation personalInformation) {
         this.personalInformation = personalInformation;
+    }
+
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
     }
 }

@@ -1,11 +1,18 @@
 package com.example.skeddly;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -21,12 +28,15 @@ import com.example.skeddly.databinding.ActivityMainBinding;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import com.example.skeddly.business.user.Authenticator;
 import com.example.skeddly.business.user.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.functions.FirebaseFunctions;
 
 /**
  * Main activity for the application.
@@ -35,6 +45,17 @@ public class MainActivity extends AppCompatActivity {
     private Authenticator authenticator;
     private ActivityMainBinding binding;
     private NavController navController;
+
+    // FCM (Notifications)
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    // FCM SDK (and your app) can post notifications.
+                    Toast.makeText(this, "Notification permission granted!", Toast.LENGTH_SHORT);
+                } else {
+                    Toast.makeText(this, "Notification permission denied. You will not see notifications.", Toast.LENGTH_SHORT);
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +90,11 @@ public class MainActivity extends AppCompatActivity {
             public void onUserLoaded(User loadedUser, boolean shouldShowSignupPage) {
                 // Update navbar if user object changes (allows for realtime updates)
                 setupNavBar();
+
+                Map<String, Object> data = new HashMap<>();
+                data.put("organizer", getUser().getId());
+
+                FirebaseFunctions.getInstance().getHttpsCallable("http_add_mock_events").call(data);
             }
         });
 
@@ -94,6 +120,8 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         }
+
+        askNotificationPermission();
     }
 
     /**
@@ -176,5 +204,21 @@ public class MainActivity extends AppCompatActivity {
         bundle.putString("userId", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
         bundle.putString("organizerId", event.getOrganizer());
         navController.navigate(R.id.navigation_event_view_info, bundle);
+    }
+
+    /**
+     * Asks the user for notification permissions if needed
+     */
+    private void askNotificationPermission() {
+        // This is only necessary for API level >= 33 (TIRAMISU)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
+                    PackageManager.PERMISSION_GRANTED) {
+                // FCM SDK (and your app) can post notifications.
+            } else {
+                // Directly ask for the permission
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            }
+        }
     }
 }

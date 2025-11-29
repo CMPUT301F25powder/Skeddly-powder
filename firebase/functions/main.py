@@ -1,12 +1,14 @@
 # Welcome to Cloud Functions for Firebase for Python!
 # To get started, simply uncomment the below code or create your own.
 # Deploy with `firebase deploy`
+import random
+import time
 from datetime import timedelta
 from typing import Any
 
 from firebase_functions import https_fn, firestore_fn, scheduler_fn
 from firebase_functions.options import set_global_options
-from firebase_admin import firestore, initialize_app, auth
+from firebase_admin import firestore, initialize_app, auth, messaging
 
 from firebase_functions.firestore_fn import (
     on_document_created,
@@ -23,8 +25,16 @@ from google.cloud.firestore_v1 import FieldFilter, Or
 from google.cloud.firestore_v1.field_path import FieldPath
 
 import google.cloud.firestore
+
+import business
 import delete
 import utility
+import business.event
+from business.ParticipantList import ParticipantList
+from business.WaitingList import WaitingList
+from business.event.EventDetail import EventDetail
+from business.event.EventSchedule import EventSchedule
+from business.location.CustomLocation import CustomLocation
 
 # For cost control, you can set the maximum number of containers that can be
 # running at the same time. This helps mitigate the impact of unexpected
@@ -39,6 +49,32 @@ app = initialize_app()
 # @https_fn.on_request()
 # def on_request_example(req: https_fn.Request) -> https_fn.Response:
 #     return https_fn.Response("Hello world!")
+
+
+@on_document_created(document="notifications/{notifId}")
+def send_fcm_notification(event: Event[DocumentSnapshot]) -> None:
+    notif_id: str = event.params["notifId"]
+    data = event.data.to_dict()
+
+    uid_recipient: str = data["recipient"]
+    firestore_client: google.cloud.firestore.Client = firestore.client()
+
+    try:
+        fcmToken = firestore_client.collection("users").document(uid_recipient).get(["fcmToken"]).get("fcmToken")
+    except:
+        # No FCM Token so can't send a notification
+        print(f"[ERROR] Could not get fcmToken for {uid_recipient}")
+        return
+
+    message = messaging.Message(
+        data={
+            "title": data["title"],
+            "message": data["message"],
+        },
+        token=fcmToken
+    )
+
+    response = messaging.send(message)
 
 
 @on_document_deleted(document="users/{userId}")
@@ -102,6 +138,19 @@ def http_cleanup_db(req: https_fn.CallableRequest) -> Any:
     return {"successful": True, "message": ""}
 
 
+@https_fn.on_call()
+def http_add_mock_events(req: https_fn.CallableRequest) -> Any:
+    firestore_client: google.cloud.firestore.Client = firestore.client()
+    delete_mock_events(firestore_client)
+    try:
+        organizer: str = req.data["organizer"]
+        add_mock_events(organizer, firestore_client)
+    except Exception as e:
+        return {"successful": False, "message": str(e)}
+
+    return {"successful": True, "message": ""}
+
+
 def cleanup_orphans():
     firestore_client: google.cloud.firestore.Client = firestore.client()
 
@@ -133,3 +182,35 @@ def cleanup_orphans():
             print(f"Deleting {notification_id =}")
             firestore_client.collection("notifications").document(notification_id).delete()
             all_notification_ids.remove(notification_id)
+
+
+def delete_mock_events(firestore_client: google.cloud.firestore.Client) -> None:
+    docs = (
+        firestore_client.collection("events")
+        .where("mock", "==", True)
+        .stream()
+    )
+
+    for doc in docs:
+        firestore_client.collection("events").document(doc.id).delete()
+
+
+def add_mock_events(organizer: str, firestore_client: google.cloud.firestore.Client):
+    categories = ["Indoor", "Outdoor", "In-person", "Virtual", "Hybrid",
+     "Arts & Crafts", "Physical activity"]
+    one_year: int = 31536000
+    one_hour: int = 3600
+    for i in range(10):
+        eventDetail: EventDetail = EventDetail(f"mockEvent{i}", f"mockDescription{i}", f"mockEntryCriteria{i}", [random.choice(categories)])
+
+        curTime: int = round(time.time())
+        eventSchedule: EventSchedule = EventSchedule(curTime + one_year, curTime + one_year + one_hour, curTime, curTime + one_year - one_hour)
+
+        location: CustomLocation = CustomLocation(53.5249325023001, -113.52196070411124)
+
+        waitingList = WaitingList([], 100)
+        participantList = ParticipantList([], 50)
+
+        event: business.event.Event = business.event.Event(eventDetail, eventSchedule, location, organizer, waitingList, participantList, False, "")
+
+        firestore_client.collection("events").add(event.to_dict())
