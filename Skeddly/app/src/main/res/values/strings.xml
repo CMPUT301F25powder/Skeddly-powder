@@ -47,7 +47,7 @@
     <string name="event_label_wait_list_max">Max waiting list size:</string>
     <string name="event_name">Event 1</string>
     <string name="event_title">Community Meetup</string>
-    <string name="event_title_location">Event Title | Location</string>
+    <string name="event_location">Location</string>
     <string name="event_wait_list_limit">37/100</string>
 
     <string name="fragment_create_edit_checkbox_geo_location_req">Log Entrant Join Location</string>

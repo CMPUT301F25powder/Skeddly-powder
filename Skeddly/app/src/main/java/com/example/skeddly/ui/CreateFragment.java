@@ -30,9 +30,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.bumptech.glide.Glide;
-import com.example.skeddly.MainActivity;
 import com.example.skeddly.R;
-import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.database.repository.EventRepository;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.event.EventDetail;
@@ -42,9 +40,6 @@ import com.example.skeddly.databinding.FragmentCreateEditBinding;
 import com.example.skeddly.ui.popup.CategorySelectorDialogFragment;
 import com.example.skeddly.ui.popup.MapPopupDialogFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointForward;
@@ -192,7 +187,7 @@ public class CreateFragment extends Fragment {
         });
 
         // Setup location picker
-        binding.textEventTitleOverlay.setOnClickListener(new View.OnClickListener() {
+        binding.textEventLocationOverlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 MapPopupDialogFragment lpf = MapPopupDialogFragment.newInstance("locationPicker", MapPopupType.SET, null);
@@ -207,7 +202,7 @@ public class CreateFragment extends Fragment {
                 eventLocation = result.getParcelable("LatLng");
 
                 if (eventLocation != null) {
-                    binding.textEventTitleOverlay.setText(String.format(Locale.getDefault(), "%.2f, %.2f", eventLocation.latitude, eventLocation.longitude));
+                    binding.textEventLocationOverlay.setText(String.format(Locale.getDefault(), "(%.5f, %.5f)", eventLocation.latitude, eventLocation.longitude));
                     updateConfirmButton();
                 }
             }
@@ -610,7 +605,7 @@ public class CreateFragment extends Fragment {
         isEdit = false;
         eventId = null;
         binding.imgEvent.setImageDrawable(null);
-        binding.textEventTitleOverlay.setText(R.string.event_title_location);
+        binding.textEventLocationOverlay.setText(R.string.event_location);
         binding.switchRecurrence.setChecked(false);
         binding.textDateStart.setText(R.string.fragment_create_edit_date);
         binding.textDateFinish.setText(R.string.fragment_create_edit_date);
@@ -726,7 +721,7 @@ public class CreateFragment extends Fragment {
         // Location
         if (event.getLocation() != null) {
             this.eventLocation = new LatLng(event.getLocation().getLatitude(), event.getLocation().getLongitude());
-            binding.textEventTitleOverlay.setText(String.format(Locale.getDefault(), "%.2f, %.2f", this.eventLocation.latitude, this.eventLocation.longitude));
+            binding.textEventLocationOverlay.setText(String.format(Locale.getDefault(), "%.2f, %.2f", this.eventLocation.latitude, this.eventLocation.longitude));
         }
 
         // Image

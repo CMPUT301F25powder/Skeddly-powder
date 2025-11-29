@@ -208,12 +208,8 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
         EventDetail eventDetails = event.getEventDetails();
         EventSchedule eventSchedule = event.getEventSchedule();
 
-        // Set Title and Location
-        if (event.getLocation() != null) {
-            binding.textEventTitleOverlay.setText(String.format("%s - %s", eventDetails.getName(), event.getLocation().toString()));
-        } else {
-            binding.textEventTitleOverlay.setText(eventDetails.getName());
-        }
+        // Location
+        binding.textEventLocationOverlay.setText(String.format(event.getLocation().toString()));
 
         // Set Event Time
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, MMM d, HH:mm");

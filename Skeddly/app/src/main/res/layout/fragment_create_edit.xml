@@ -66,21 +66,22 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <!-- Event Title and Location Overlay -->
+                    <!-- Location Overlay -->
                     <TextView
-                        android:id="@+id/text_event_title_overlay"
+                        android:id="@+id/text_event_location_overlay"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginBottom="16dp"
                         android:background="@drawable/event_bg_title"
+                        android:drawableLeft="@drawable/ic_location"
                         android:drawablePadding="8dp"
                         android:elevation="5dp"
                         android:paddingStart="12dp"
                         android:paddingTop="8dp"
                         android:paddingEnd="12dp"
                         android:paddingBottom="8dp"
-                        android:text="@string/event_title_location"
+                        android:text="@string/event_location"
                         android:textColor="@color/neutral_lighter_off_white"
                         android:textSize="16sp"
                         app:layout_constraintBottom_toBottomOf="@id/img_event"

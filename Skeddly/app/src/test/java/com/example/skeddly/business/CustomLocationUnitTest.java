@@ -12,12 +12,12 @@ import org.junit.Test;
 public class CustomLocationUnitTest {
     /**
      * Tests of the location string (lat, lon) is properly generated
-     * - Should be generated to 2 decimal placesW
+     * - Should be generated to 5 decimal places
      */
     @Test
     public void testCustomLocationString() {
         CustomLocation customLocation = new CustomLocation(0.56f, 0.234f);
 
-        assertEquals("(0.56, 0.23)", customLocation.toString());
+        assertEquals("(0.56000, 0.23400)", customLocation.toString());
     }
 }
