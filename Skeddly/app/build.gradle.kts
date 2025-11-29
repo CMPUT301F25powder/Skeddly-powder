@@ -76,6 +76,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.cardview)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
