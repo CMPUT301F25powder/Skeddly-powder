@@ -17,12 +17,31 @@ import java.util.List;
 public class TicketRepository extends GenericRepository<Ticket> {
     private final FirebaseFirestore firestore;
     private final String eventId;
+    private final String userId;
     public static final String COLLECTION_PATH = "tickets";
 
-    public TicketRepository(FirebaseFirestore firestore, String eventId) {
+    /**
+     * Create a new TicketRepository. The repository is associated with a particular event,
+     * and user, unless either are null.
+     * @param firestore The FirebaseFirestore instance to use.
+     * @param eventId The event id that this repository is associated with.
+     * @param userId The user id that this repository is associated with.
+     */
+    public TicketRepository(FirebaseFirestore firestore, String eventId, String userId) {
         super(Ticket.class);
         this.firestore = firestore;
+        this.userId = userId;
         this.eventId = eventId;
+    }
+
+    /**
+     * Create a new TicketRepository. The repository is associated with a particular event,
+     * unless the eventId is null. If it is, the repository shall retrieve tickets for all events.
+     * @param firestore The FirebaseFirestore instance to use.
+     * @param eventId The event id that this repository is associated with.
+     */
+    public TicketRepository(FirebaseFirestore firestore, String eventId) {
+        this(firestore, eventId, null);
     }
 
     /**
@@ -58,8 +77,21 @@ public class TicketRepository extends GenericRepository<Ticket> {
         return firestore.collection(COLLECTION_PATH);
     }
 
+
     @Override
     protected Query getQuery() {
-        return getCollectionPath().whereEqualTo("eventId", eventId);
+        Query query = super.getQuery();
+
+        // If an eventId is provided, query by eventId.
+        if (eventId != null) {
+            query = query.whereEqualTo("eventId", eventId);
+        }
+
+        // If a userId is provided, query by userId.
+        if (userId != null) {
+            query = query.whereEqualTo("userId", userId);
+        }
+
+        return query.orderBy("ticketTime", Query.Direction.DESCENDING);
     }
 }
