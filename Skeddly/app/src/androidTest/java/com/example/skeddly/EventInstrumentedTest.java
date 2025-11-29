@@ -5,6 +5,7 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
@@ -15,6 +16,7 @@ import androidx.test.filters.LargeTest;
 
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.utilities.BaseTest;
+import com.example.skeddly.utilities.TestUtil;
 
 import org.junit.Test;
 
@@ -29,6 +31,10 @@ public class EventInstrumentedTest extends BaseTest {
     @Test
     public void testViewEvent() {
         onView(withId(R.id.main)).check(matches(isDisplayed()));
+
+        // Wait for first event to appear
+        onView(isRoot())
+                .perform(TestUtil.waitForView(R.id.single_event_item, 10000));
 
         onData(is(instanceOf(Event.class)))
                 .inAdapterView(withId(R.id.list_events))

@@ -1,5 +1,16 @@
 package com.example.skeddly.utilities;
 
+import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+
+import android.view.View;
+
+import androidx.test.espresso.PerformException;
+import androidx.test.espresso.UiController;
+import androidx.test.espresso.ViewAction;
+import androidx.test.espresso.util.HumanReadables;
+import androidx.test.espresso.util.TreeIterables;
+
 import com.example.skeddly.business.database.repository.UserRepository;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.event.EventDetail;
@@ -11,9 +22,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.hamcrest.Matcher;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Utility class for creating mock objects for instrumentation tests.
@@ -56,5 +70,52 @@ public class TestUtil {
         Tasks.await(userRepository.set(user));
 
         return user;
+    }
+
+    /**
+     * Pauses an espresso test until a view appears
+     * Particularly useful for ListViews with lots of items/images
+     * Credit to <a href="https://www.repeato.app/espresso-wait-for-element/">Stephan Petzl</a>
+     * @param viewId int
+     * @param timeout long
+     * @return ViewAction
+     */
+    public static ViewAction waitForView(int viewId, long timeout) {
+        return new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return isRoot();
+            }
+
+            @Override
+            public String getDescription() {
+                return "waits for view to load before executing the next steps";
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                uiController.loopMainThreadUntilIdle();
+
+                long start = System.currentTimeMillis();
+                long end = start + timeout;
+                Matcher<View> viewMatcher = withId(viewId);
+
+                while (System.currentTimeMillis() < end) {
+                    for (View child : TreeIterables.breadthFirstViewTraversal(view)) {
+                        if (viewMatcher.matches(child)) {
+                            return;
+                        }
+                    }
+
+                    uiController.loopMainThreadForAtLeast(100);
+                }
+
+                throw new PerformException.Builder()
+                        .withCause(new TimeoutException())
+                        .withActionDescription(this.getDescription())
+                        .withViewDescription(HumanReadables.describe(view))
+                        .build();
+            }
+        };
     }
 }
