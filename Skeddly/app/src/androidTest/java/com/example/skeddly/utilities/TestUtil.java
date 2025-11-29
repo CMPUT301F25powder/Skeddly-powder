@@ -1,5 +1,6 @@
 package com.example.skeddly.utilities;
 
+import com.example.skeddly.business.database.repository.UserRepository;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.event.EventDetail;
 import com.example.skeddly.business.event.EventSchedule;
@@ -7,9 +8,12 @@ import com.example.skeddly.business.user.PersonalInformation;
 import com.example.skeddly.business.user.User;
 import com.example.skeddly.business.user.UserLevel;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Utility class for creating mock objects for instrumentation tests.
@@ -41,10 +45,16 @@ public class TestUtil {
      * @param level The privilege level of the user (ENTRANT, ORGANIZER, ADMIN).
      * @return A new User object.
      */
-    public static User createMockUser(String name, UserLevel level) {
+    public static User createMockUser(String name, UserLevel level) throws ExecutionException, InterruptedException {
+        FirebaseFirestore mFirestore = FirebaseFirestore.getInstance();
+        UserRepository userRepository = new UserRepository(mFirestore);
+
         PersonalInformation info = new PersonalInformation(name, name.toLowerCase() + "@test.com", "555-123-4567");
         User user = new User(info, level);
-        user.setId(UUID.randomUUID().toString());
+
+
+        Tasks.await(userRepository.set(user));
+
         return user;
     }
 }

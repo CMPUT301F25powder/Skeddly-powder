@@ -10,6 +10,7 @@ import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 
+// Import BaseTest
 import com.example.skeddly.utilities.BaseTest;
 
 import org.junit.Test;
@@ -17,17 +18,12 @@ import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
-public class AdminToolsInstrumentedTest extends BaseTest { // Extend the new base test
+public class AdminToolsInstrumentedTest {
 
-    /**
-     * This test verifies that an admin user, who is logged in by AdminBaseTest,
-     * can successfully navigate to the main Tools screen.
-     */
     @Test
     public void testAdmin_CanNavigateToToolsFragment() throws InterruptedException {
         ActivityScenario.launch(MainActivity.class);
-
-        Thread.sleep(2000);
+        Thread.sleep(10000);
 
         onView(withId(R.id.navigation_tools)).perform(click());
         onView(withId(R.id.btn_my_events)).check(matches(isDisplayed()));
