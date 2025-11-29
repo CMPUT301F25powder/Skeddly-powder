@@ -25,7 +25,6 @@ public class ProfileButtonsFragment extends Fragment {
     private View.OnClickListener personalInfoOnClickListener = null;
     private View.OnClickListener notificationSettingsOnClickListener = null;
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
