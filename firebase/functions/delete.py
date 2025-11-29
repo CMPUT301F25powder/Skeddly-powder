@@ -30,9 +30,8 @@ def delete_collection(collection: CollectionReference, collection_filter: FieldF
     for doc in docs:
         collection.document(doc.id).delete()
 
-def delete_user(user_id: str):
+def delete_user(user_id: str, firestore_client: google.cloud.firestore.Client) -> None:
     # Delete all tickets that reference them
-    firestore_client: google.cloud.firestore.Client = firestore.client()
     delete_tickets_with_user_id(user_id, firestore_client)
 
     # Delete all their notifications
@@ -43,6 +42,25 @@ def delete_user(user_id: str):
 
     # Update all events with new waiting and participant lists
     utility.update_all_events(firestore_client)
+
+
+def delete_orphan_users(firestore_client: google.cloud.firestore.Client) -> None:
+    docs = (
+        firestore_client.collection("users")
+        .stream()
+    )
+
+    for doc in docs:
+        data = doc.get("personalInformation")
+
+        empty: bool = True
+        for val in data.values():
+            if len(val) != 0:
+                empty = False
+                break
+
+        if empty:
+            firestore_client.collection("users").document(doc.id).delete()
 
 
 def delete_tickets_with_user_id(user_id: str, firestore_client: google.cloud.firestore.Client) -> None:

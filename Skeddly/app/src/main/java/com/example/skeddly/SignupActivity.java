@@ -25,6 +25,9 @@ import com.example.skeddly.business.user.User;
 import com.example.skeddly.business.user.UserLoaded;
 import com.example.skeddly.databinding.ActivitySignupBinding;
 import com.example.skeddly.ui.popup.StandardPopupDialogFragment;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.appcheck.FirebaseAppCheck;
+import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
@@ -115,6 +118,12 @@ public class SignupActivity extends AppCompatActivity {
                 switchToMain();
             }
         });
+
+        // Initialize app check (required for callable functions)
+        FirebaseApp.initializeApp(/*context=*/ getApplicationContext());
+        FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.getInstance();
+        firebaseAppCheck.installAppCheckProviderFactory(
+                DebugAppCheckProviderFactory.getInstance());
 
         // See if emulator is in use
         if (useFirebaseEmulator && firebaseEmulatorAddress == null && !initialised) {
