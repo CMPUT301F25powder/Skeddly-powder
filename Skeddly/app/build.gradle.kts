@@ -87,11 +87,14 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 
-    // Temporary for image things
+    // Image Things
     implementation("com.github.bumptech.glide:glide:5.0.5")
 
-    // Temporary for qr things
+    // QR Things
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
+
+    // CSV Things
+    implementation("com.opencsv:opencsv:5.10")
 
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:34.6.0"))

@@ -38,15 +38,19 @@ public class LocationFetcherFragment extends Fragment {
     };
     private FusedLocationProviderClient fusedLocationClient;
     private String requestKey = "requestKey";
+    private boolean permissionsOnly = false;
 
     /**
-     * Create a new instance of the LocationFetcherFragment.
+     * Create a new instance of the LocationFetcherFragment. It can be set to only get the
+     * needed permissions and not bother returning the location.
      * @param requestKey The requestKey to use for the result
+     * @param permissionsOnly Whether to only retrieve the permissions and not get the location.
      * @return The newly constructed LocationFetcherFragment
      */
-    public static LocationFetcherFragment newInstance(String requestKey) {
+    public static LocationFetcherFragment newInstance(String requestKey, boolean permissionsOnly) {
         Bundle args = new Bundle();
         args.putString("requestKey", requestKey);
+        args.putBoolean("permissionsOnly", permissionsOnly);
 
         LocationFetcherFragment fragment = new LocationFetcherFragment();
         fragment.setArguments(args);
@@ -54,6 +58,14 @@ public class LocationFetcherFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * Create a new instance of the LocationFetcherFragment.
+     * @param requestKey The requestKey to use for the result
+     * @return The newly constructed LocationFetcherFragment
+     */
+    public static LocationFetcherFragment newInstance(String requestKey) {
+        return newInstance(requestKey, false);
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -72,10 +84,10 @@ public class LocationFetcherFragment extends Fragment {
                 boolean fine_granted = Boolean.TRUE.equals(result.getOrDefault(REQUIRED_PERMISSIONS[0], false));
                 boolean coarse_granted = Boolean.TRUE.equals(result.getOrDefault(REQUIRED_PERMISSIONS[1], false));
 
-                if (fine_granted && coarse_granted) {
+                if (fine_granted && coarse_granted && !permissionsOnly) {
                     getLocation();
                 } else {
-                    sendResult(null);
+                    sendResult(null, fine_granted && coarse_granted);
                 }
             }
         });
@@ -96,7 +108,11 @@ public class LocationFetcherFragment extends Fragment {
             requestPermissionLauncher.launch(needed_permissions.toArray(perms));
         } else {
             // We have all the permissions
-            getLocation();
+            if (permissionsOnly) {
+                sendResult(null, true);
+            } else {
+                getLocation();
+            }
         }
     }
 
@@ -111,9 +127,9 @@ public class LocationFetcherFragment extends Fragment {
             public void onComplete(@NonNull Task<Location> task) {
                 if (task.isSuccessful()) {
                     Location location = task.getResult();
-                    sendResult(new CustomLocation(location.getLongitude(), location.getLatitude()));
+                    sendResult(new CustomLocation(location.getLatitude(), location.getLongitude()), true);
                 } else {
-                    sendResult(null);
+                    sendResult(null, true);
                 }
             }
         });
@@ -127,6 +143,7 @@ public class LocationFetcherFragment extends Fragment {
 
         if (bundle != null) {
             requestKey = bundle.getString("requestKey");
+            permissionsOnly = bundle.getBoolean("permissionsOnly");
         }
     }
 
@@ -134,9 +151,15 @@ public class LocationFetcherFragment extends Fragment {
      * Sends the given location as a Fragment result back to the parent.
      * @param location The location to send as a result. Can be NULL.
      */
-    private void sendResult(CustomLocation location) {
+    private void sendResult(CustomLocation location, boolean gotPermissions) {
         Bundle args = new Bundle();
         args.putParcelable("location", location);
-        getParentFragmentManager().setFragmentResult(requestKey, args);
+        args.putBoolean("gotPermissions", gotPermissions);
+
+        try {
+            getParentFragmentManager().setFragmentResult(requestKey, args);
+        } catch (IllegalStateException ignored) {
+            // Sometimes the parent fragment ends before we even finish returning the result to them
+        }
     }
 }

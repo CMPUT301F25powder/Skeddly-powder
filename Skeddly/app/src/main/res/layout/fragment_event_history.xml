@@ -1,115 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout"
-        android:layout_width="match_parent"
-        android:layout_height="130dp"
-        android:background="@color/secondary_dark_purple"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/list_events"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <ImageButton
-            android:id="@+id/btn_back"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/img_style_round"
-            android:src="@drawable/ic_arrow_back"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/neutral_lighter_off_white"
-            tools:ignore="ContentDescription" />
-
-        <TextView
-            android:id="@+id/title_event_history"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/event_history"
-            android:textColor="@color/neutral_lighter_off_white"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/btn_back"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/btn_back" />
-
-        <LinearLayout
-            android:id="@+id/filter_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@id/btn_back"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <Button
-                android:id="@+id/btn_all"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="wrap_content"
-                android:layout_height="38dp"
-                android:background="@drawable/btn_select"
-                android:text="@string/fragment_event_history_btn_all"
-                android:textAllCaps="false"
-                android:textColor="@color/neutral_lighter_off_white"
-                android:textSize="14sp" />
-
-            <Button
-                android:id="@+id/btn_ongoing"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="wrap_content"
-                android:layout_height="38dp"
-                android:layout_marginStart="12dp"
-                android:background="@drawable/btn_unselect"
-                android:text="@string/fragment_event_history_btn_ongoing"
-                android:textAllCaps="false"
-                android:textColor="@color/primary_light_blue"
-                android:textSize="14sp" />
-
-            <Button
-                android:id="@+id/btn_closed"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="wrap_content"
-                android:layout_height="38dp"
-                android:layout_marginStart="12dp"
-                android:background="@drawable/btn_unselect"
-                android:text="@string/fragment_event_history_btn_closed"
-                android:textAllCaps="false"
-                android:textColor="@color/primary_light_blue"
-                android:textSize="14sp" />
-
-            <Button
-                android:id="@+id/btn_ended"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="wrap_content"
-                android:layout_height="38dp"
-                android:layout_marginStart="12dp"
-                android:background="@drawable/btn_unselect"
-                android:text="@string/fragment_event_history_btn_ended"
-                android:textAllCaps="false"
-                android:textColor="@color/primary_light_blue"
-                android:textSize="14sp" />
-
-        </LinearLayout>
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ListView
         android:id="@+id/list_events"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
+        android:longClickable="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

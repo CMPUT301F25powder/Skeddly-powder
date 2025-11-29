@@ -17,6 +17,7 @@ import com.example.skeddly.business.user.PersonalInformation;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -216,6 +217,7 @@ public class Event extends DatabaseObject {
      * is not full and the registration period has not ended yet.
      * @return True if the event can be joined. False otherwise.
      */
+    @Exclude
     public boolean isJoinable() {
         return !waitingList.isFull() && !eventSchedule.isRegistrationOver();
     }

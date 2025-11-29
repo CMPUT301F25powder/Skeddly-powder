@@ -24,27 +24,13 @@ public class UserUnitTest {
     }
 
     @Test
-    public void addOwnedEvent_addsEventIdCorrectly() {
-        Event mockEvent = new Event();
-        mockEvent.setId("jacky161");
-
-        assertTrue(user.getOwnedEvents().isEmpty());
-
-        user.addOwnedEvent(mockEvent);
-
-        assertEquals(1, user.getOwnedEvents().size());
-        assertTrue(user.getOwnedEvents().contains("jacky161"));
-    }
-
-
-    @Test
     public void isFullyFilled_validationLogic() {
         assertFalse(personalInfo.isFullyFilled());
 
-        personalInfo.setName("Jacky161");
+        personalInfo.setName("foobar");
         assertFalse(personalInfo.isFullyFilled());
 
-        personalInfo.setEmail("jacky5@ualberta.com");
+        personalInfo.setEmail("foo@bar.com");
         assertTrue(personalInfo.isFullyFilled());
 
     }

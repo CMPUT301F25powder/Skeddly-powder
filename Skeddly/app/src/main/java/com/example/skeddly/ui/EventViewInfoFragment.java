@@ -143,7 +143,7 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
             Log.e("EventViewInfoFragment", "Event ID is null or empty!");
         }
 
-        // === QR Code shenanigans ===
+        // Set up QR code button
         ImageButton buttonQrCode = binding.btnQrCode;
         buttonQrCode.setOnClickListener(new View.OnClickListener() {
             @Override

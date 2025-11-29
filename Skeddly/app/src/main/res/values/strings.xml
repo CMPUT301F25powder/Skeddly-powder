@@ -110,4 +110,6 @@
     <string name="selected_images_count">%d selected images</string>
     <string name="admin_notification_logs">Admin Notification Logs</string>
     <string name="my_events">My Events</string>
+    <string name="placeholder">Placeholder</string>
+    <string name="fragment_profile_event_history_joined_date">Joined: %s</string>
 </resources>
