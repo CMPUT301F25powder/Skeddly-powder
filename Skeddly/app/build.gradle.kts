@@ -87,6 +87,7 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     debugImplementation("androidx.fragment:fragment-testing:1.6.2")
+
     // Image Things
     implementation("com.github.bumptech.glide:glide:5.0.5")
 

@@ -22,7 +22,7 @@ public class TestUtil {
      * @param imageBytes The byte array for the event's image. Can be null.
      * @return A new Event object.
      */
-    public Event createMockEvent(String eventName, byte[] imageBytes) {
+    public static Event createMockEvent(String eventName, byte[] imageBytes) {
         LocalDateTime now = LocalDateTime.now();
 
         EventDetail detail = new EventDetail(eventName, "A mock description.", "Mock entry criteria.");
@@ -41,7 +41,7 @@ public class TestUtil {
      * @param level The privilege level of the user (ENTRANT, ORGANIZER, ADMIN).
      * @return A new User object.
      */
-    public User createMockUser(String name, UserLevel level) {
+    public static User createMockUser(String name, UserLevel level) {
         PersonalInformation info = new PersonalInformation(name, name.toLowerCase() + "@test.com", "555-123-4567");
         User user = new User(info, level);
         user.setId(UUID.randomUUID().toString());
