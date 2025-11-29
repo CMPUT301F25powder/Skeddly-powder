@@ -1,5 +1,6 @@
 package com.example.skeddly.utilities;
 
+import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
@@ -8,9 +9,11 @@ import android.view.View;
 import androidx.test.espresso.PerformException;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
+import androidx.test.espresso.ViewInteraction;
 import androidx.test.espresso.util.HumanReadables;
 import androidx.test.espresso.util.TreeIterables;
 
+import com.example.skeddly.R;
 import com.example.skeddly.business.database.repository.UserRepository;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.event.EventDetail;
@@ -117,5 +120,16 @@ public class TestUtil {
                         .build();
             }
         };
+    }
+
+    public static ViewInteraction onViewLoaded(int id) {
+        return onViewLoaded(id, 10000);
+    }
+
+    public static ViewInteraction onViewLoaded(int id, long timeout) {
+        onView(isRoot())
+                .perform(waitForView(id, timeout));
+
+        return onView(withId(id));
     }
 }

@@ -9,6 +9,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
+import static com.example.skeddly.utilities.TestUtil.onViewLoaded;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
@@ -33,8 +34,7 @@ public class EventInstrumentedTest extends BaseTest {
         onView(withId(R.id.main)).check(matches(isDisplayed()));
 
         // Wait for first event to appear
-        onView(isRoot())
-                .perform(TestUtil.waitForView(R.id.single_event_item, 10000));
+        onViewLoaded(R.id.single_event_item);
 
         onData(is(instanceOf(Event.class)))
                 .inAdapterView(withId(R.id.list_events))
