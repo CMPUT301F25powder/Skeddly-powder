@@ -24,14 +24,9 @@ public class EventFilterCategoryAdapter extends ArrayAdapter<String> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_event_filter_category, parent, false);
         }
 
-        CheckBox button = convertView.findViewById(R.id.btn_check);
+        CheckBox button = (CheckBox) convertView;
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                button.setChecked(!button.isChecked());
-            }
-        });
+        button.setText(getItem(position));
 
         return convertView;
     }

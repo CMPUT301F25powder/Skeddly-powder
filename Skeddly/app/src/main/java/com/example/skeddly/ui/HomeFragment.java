@@ -16,6 +16,7 @@ import com.example.skeddly.MainActivity;
 import com.example.skeddly.R;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.database.SingleListenUpdate;
+import com.example.skeddly.business.database.repository.EventRepository;
 import com.example.skeddly.business.location.CustomLocation;
 import com.example.skeddly.databinding.FragmentHomeBinding;
 import com.example.skeddly.business.search.EventSearch;
@@ -25,10 +26,15 @@ import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.database.DatabaseObjects;
 import com.example.skeddly.ui.adapter.RetrieveLocation;
 import com.example.skeddly.ui.filtering.EventFilterPopup;
+import com.example.skeddly.ui.filtering.FilterUpdatedListener;
 import com.example.skeddly.ui.utility.LocationFetcherFragment;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.core.Query;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -92,6 +98,17 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
 
         eventFilterPopup = new EventFilterPopup(getContext(), popupView, searchEvents, filterDropdownButton);
 
+        eventFilterPopup.setOnFilterUpdatedListener(new FilterUpdatedListener() {
+            @Override
+            public void onFilterUpdated() {
+                if (eventFilterPopup.getEventFilter() == null) {
+                    fetchEvents();
+                } else {
+                    fetchFilteredEvents();
+                }
+            }
+        });
+
         return root;
     }
 
@@ -132,6 +149,21 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
      */
     private void fetchEvents() {
         fetchEvents("");
+    }
+
+    private void fetchFilteredEvents() {
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        EventRepository eventRepository = new EventRepository(firestore);
+
+        eventRepository.getAllWithFilter(eventFilterPopup.getEventFilter()).addOnSuccessListener(new OnSuccessListener<List<Event>>() {
+            @Override
+            public void onSuccess(List<Event> events) {
+                eventList.clear();
+                eventList.addAll(events);
+            }
+        });
+
+
     }
 
     @Override

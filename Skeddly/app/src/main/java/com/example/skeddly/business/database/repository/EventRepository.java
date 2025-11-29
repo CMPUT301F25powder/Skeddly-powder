@@ -4,6 +4,7 @@ package com.example.skeddly.business.database.repository;
 import androidx.annotation.NonNull;
 
 import com.example.skeddly.business.event.Event;
+import com.example.skeddly.business.search.EventFilter;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
@@ -36,6 +37,15 @@ public class EventRepository extends GenericRepository<Event> {
      */
     public Task<List<Event>> getAllByOrganizer(String organizerId) {
         return getQuery().whereEqualTo("organizer", organizerId).get().continueWith(new Continuation<QuerySnapshot, List<Event>>() {
+            @Override
+            public List<Event> then(@NonNull Task<QuerySnapshot> task) throws Exception {
+                return task.getResult().toObjects(clazz);
+            }
+        });
+    }
+
+    public Task<List<Event>> getAllWithFilter(EventFilter eventFilter) {
+        return getQuery().whereArrayContainsAny("categories", eventFilter.getSelectedEventTypes()).get().continueWith(new Continuation<QuerySnapshot, List<Event>>() {
             @Override
             public List<Event> then(@NonNull Task<QuerySnapshot> task) throws Exception {
                 return task.getResult().toObjects(clazz);
