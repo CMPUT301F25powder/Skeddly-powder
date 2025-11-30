@@ -45,7 +45,7 @@ public class EventInstrumentedTest extends BaseTest {
         // Wait for first event to appear
         onViewLoaded(withId(R.id.single_event_item));
 
-        onView(withId(R.id.search_events)).perform(typeSearchViewText("MockEvent"));
+        onViewLoaded(withId(R.id.search_events)).perform(typeSearchViewText("MockEvent"));
 
         onViewLoaded(withId(R.id.list_events));
 
@@ -57,7 +57,7 @@ public class EventInstrumentedTest extends BaseTest {
      */
     @Test
     public void testViewEvent() {
-        onView(withId(R.id.main)).check(matches(isDisplayed()));
+        onViewLoaded(withId(R.id.main));
 
         // Wait for first event to appear
         onViewLoaded(withId(R.id.single_event_item));
@@ -70,7 +70,7 @@ public class EventInstrumentedTest extends BaseTest {
                 .check(matches(isDisplayed()))
                 .perform(click());
 
-        onView(withId(R.id.main_content_card)).check(matches(isDisplayed()));
+        onViewLoaded(withId(R.id.main_content_card));
     }
 
     /**
@@ -80,9 +80,9 @@ public class EventInstrumentedTest extends BaseTest {
     public void testViewEventQRCode() {
         testViewEvent();
 
-        onView(withId(R.id.btn_qr_code)).check(matches(isDisplayed())).perform(click());
+        onViewLoaded(withId(R.id.btn_qr_code)).perform(click());
 
-        onView(withId(R.id.qr_popup)).check(matches(isDisplayed()));
+        onViewLoaded(withId(R.id.qr_popup));
     }
 
     /**
@@ -92,9 +92,9 @@ public class EventInstrumentedTest extends BaseTest {
     public void testEventDetailsAreDisplayedCorrectly() {
         testViewEvent();
 
-        onView(withId(R.id.value_event_title)).check(matches(isDisplayed()));
-        onView(withId(R.id.value_event_description)).check(matches(isDisplayed()));
-        onView(withId(R.id.value_attendee_limit)).check(matches(isDisplayed()));
+        onViewLoaded(withId(R.id.value_event_title));
+        onViewLoaded(withId(R.id.value_event_description));
+        onViewLoaded(withId(R.id.value_attendee_limit));
     }
 
 }

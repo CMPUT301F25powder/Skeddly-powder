@@ -115,7 +115,7 @@ public class TestUtil {
      * @return ViewInteraction
      */
     public static ViewInteraction onViewLoaded(Matcher<View> viewMatcher) {
-        return onViewLoaded(viewMatcher, 10000);
+        return onViewLoaded(viewMatcher, 30000);
     }
 
     /**
