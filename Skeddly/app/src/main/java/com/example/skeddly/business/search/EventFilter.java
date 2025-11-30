@@ -74,6 +74,10 @@ public class EventFilter {
             return false;
         }
 
+        if (!event.isJoinable()) {
+            return false;
+        }
+
         return true;
     }
 }

@@ -135,7 +135,7 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
                         Event event = (Event) dbObjects.get(i);
                         String eventName = event.getEventDetails().getName();
 
-                        if (eventSearch.checkNameSuggestionMatch(eventName, query)) {
+                        if (eventSearch.checkNameSuggestionMatch(eventName, query) && event.isJoinable()) {
                             eventList.add(event);
                         }
                     }
