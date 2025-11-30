@@ -9,7 +9,9 @@ import android.widget.ImageButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
+import com.example.skeddly.R;
 import com.example.skeddly.databinding.FragmentToolsBinding;
 
 /**
@@ -64,8 +66,7 @@ public class ToolsFragment extends Fragment {
         toolButtonsFragment.setMyEventsButtonOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MyEventsFragment fragment = MyEventsFragment.newInstance(true);
-                getChildFragmentManager().beginTransaction().replace(binding.fragment.getId(), fragment).commit();
+                Navigation.findNavController(v).navigate(R.id.action_navigation_tools_to_my_events);
                 toolsBack.setVisibility(View.VISIBLE);
             }
         });
