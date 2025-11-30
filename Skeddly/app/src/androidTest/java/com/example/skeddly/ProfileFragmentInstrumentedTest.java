@@ -19,7 +19,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 
 import com.example.skeddly.business.Ticket;
+import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.database.repository.TicketRepository;
+import com.example.skeddly.business.location.CustomLocation;
 import com.example.skeddly.business.user.User;
 import com.example.skeddly.utilities.BaseTest;
 import com.google.android.gms.tasks.Tasks;
@@ -55,6 +57,10 @@ public class ProfileFragmentInstrumentedTest extends BaseTest {
         TicketRepository ticketRepository = new TicketRepository(FirebaseFirestore.getInstance(), null, currentUser.getId());
         List<Ticket> ticketsFromDb = Tasks.await(ticketRepository.getAll());
         int expectedCount = ticketsFromDb.size();
+
+        DatabaseHandler databaseHandler = new DatabaseHandler();
+        CustomLocation location = new CustomLocation(53.5, -113.5);
+        event1.join(databaseHandler, currentUser.getPersonalInformation(), currentUser.getId(), location);
 
         Thread.sleep(5000);
 

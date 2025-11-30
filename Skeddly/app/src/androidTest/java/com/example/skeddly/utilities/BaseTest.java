@@ -23,7 +23,7 @@ import java.util.concurrent.ExecutionException;
  */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
-public class BaseTest {
+public abstract class BaseTest {
     @Rule
     public ActivityScenarioRule<SignupActivity> signupActivityActivityScenarioRule = new ActivityScenarioRule<>(SignupActivity.class);
 

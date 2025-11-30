@@ -46,24 +46,25 @@ public class AdminToolsInstrumentedTest extends BaseTest {
     @Before
     public void navigateToAdminTools() {
         onViewLoaded(withId(R.id.navigation_tools)).perform(click());
-        onViewLoaded(withId(R.id.btn_my_events)).check(matches(isDisplayed()));
+        onViewLoaded(withId(R.id.btn_my_events));
     }
 
     @Test
     public void testNavigateToMyEventsAndBack() {
         onView(withId(R.id.btn_my_events)).perform(click());
 
-        onViewLoaded(withId(R.id.list_events)).check(matches(isDisplayed()));
+        onViewLoaded(withId(R.id.list_events));
 
         pressBack();
 
-        onViewLoaded(withId(R.id.btn_my_events)).check(matches(isDisplayed()));
+        onViewLoaded(withId(R.id.btn_my_events));
     }
 
     @Test
-    public void testImageGallery_AdminCanDeleteImage() {
-        onView(withId(R.id.btn_img_gallery)).perform(click());
-        onViewLoaded(withId(R.id.uploadedImages)).check(matches(isDisplayed()));
+    public void testImageGallery_AdminCanDeleteImage() throws InterruptedException {
+        onViewLoaded(withId(R.id.btn_img_gallery)).perform(click());
+        onViewLoaded(withId(R.id.uploadedImages));
+        onViewLoaded(withId(R.id.uploadedImage));
 
         onData(is(instanceOf(Object.class)))
                 .inAdapterView(withId(R.id.uploadedImages))
@@ -71,9 +72,9 @@ public class AdminToolsInstrumentedTest extends BaseTest {
                 .perform(longClick());
 
 
-        onView(withId(R.id.deleteSelectedBtn)).perform(click());
+        onViewLoaded(withId(R.id.deleteSelectedBtn)).perform(click());
 
-        onViewLoaded(withId(R.id.imageSelectHeader)).check(matches(isDisplayed()));
+        onViewLoaded(withId(R.id.imageSelectHeader));
     }
 
     @Test
