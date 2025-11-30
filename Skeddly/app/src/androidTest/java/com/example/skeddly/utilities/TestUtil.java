@@ -4,10 +4,12 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
 import static org.hamcrest.Matchers.allOf;
 
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.View;
 import android.widget.SearchView;
 
@@ -19,22 +21,15 @@ import androidx.test.espresso.util.HumanReadables;
 import androidx.test.espresso.util.TreeIterables;
 
 import com.example.skeddly.R;
-import com.example.skeddly.business.database.repository.UserRepository;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.event.EventDetail;
 import com.example.skeddly.business.event.EventSchedule;
-import com.example.skeddly.business.user.PersonalInformation;
-import com.example.skeddly.business.user.User;
-import com.example.skeddly.business.user.UserLevel;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.Tasks;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.hamcrest.Matcher;
 
+import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
-import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -56,7 +51,10 @@ public class TestUtil {
         LatLng location = new LatLng(53.5, -113.5);
 
         // The image can be null if not needed for a specific test
-        byte[] image = (imageBytes != null) ? imageBytes : "".getBytes();
+        Bitmap tempBitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        tempBitmap.compress(Bitmap.CompressFormat.JPEG, 1, stream);
+        byte[] image = (imageBytes != null) ? imageBytes : stream.toByteArray();
 
         return new Event(detail, schedule, location, "mockOrganizerId", 100, false, image);
     }
