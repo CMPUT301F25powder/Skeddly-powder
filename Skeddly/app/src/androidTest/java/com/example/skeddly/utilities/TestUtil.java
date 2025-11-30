@@ -84,7 +84,7 @@ public class TestUtil {
      * Pauses an espresso test until a view appears
      * Particularly useful for ListViews with lots of items/images
      * Credit to <a href="https://www.repeato.app/espresso-wait-for-element/">Stephan Petzl</a>
-     * @param viewId int
+     * @param viewMatcher Matcher<View>
      * @param timeout long
      * @return ViewAction
      */
