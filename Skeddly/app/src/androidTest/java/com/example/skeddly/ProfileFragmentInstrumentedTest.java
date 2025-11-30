@@ -64,7 +64,10 @@ public class ProfileFragmentInstrumentedTest extends BaseTest {
 
         Thread.sleep(5000);
 
-        onViewLoaded(withId(R.id.list_events)).check((view, noViewFoundException) -> {
+        onViewLoaded(withId(R.id.list_events));
+        onViewLoaded(withId(R.id.img_event_history));
+
+        onView(withId(R.id.list_events)).check((view, noViewFoundException) -> {
             if (noViewFoundException != null) {
                 throw noViewFoundException;
             }
