@@ -61,6 +61,7 @@
     <string name="fragment_create_edit_hint_lottery_selection_criteria">Enter Criteria</string>
     <string name="fragment_create_edit_hint_wait_list_limit">OPTIONAL</string>
     <string name="fragment_create_edit_label_lottery_selection_criteria">Lottery Selection Criteria:</string>
+    <string name="fragment_create_edit_label_event_period">Event Period:</string>
     <string name="fragment_create_edit_label_reg_period">Registration Period:</string>
     <string name="fragment_create_edit_switch_recurring">Recurring</string>
     <string name="fragment_create_edit_time"><u>hh:mm</u></string>
