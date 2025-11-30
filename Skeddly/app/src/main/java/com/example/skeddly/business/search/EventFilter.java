@@ -1,13 +1,18 @@
 package com.example.skeddly.business.search;
 
+import com.example.skeddly.business.event.Event;
+import com.example.skeddly.business.event.EventDetail;
+import com.example.skeddly.business.event.EventSchedule;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class EventFilter {
     private String startTime;
     private String endTime;
     private boolean weekend;
     private boolean weekday;
-    private ArrayList<String> selectedEventTypes;
+    private ArrayList<String> selectedEventTypes = new ArrayList<>();
 
     public String getStartTime() {
         return startTime;
@@ -47,5 +52,40 @@ public class EventFilter {
 
     public void setSelectedEventTypes(ArrayList<String> selectedEventTypes) {
         this.selectedEventTypes = selectedEventTypes;
+    }
+
+    public boolean checkFilterCriteria(Event event) {
+        EventDetail eventDetails = event.getEventDetails();
+//        EventSchedule eventSchedule = event.getEventSchedule();
+//        List<Boolean> daysOfWeek = eventSchedule.getDaysOfWeek();
+//        if (!(this.isWeekend() && (daysOfWeek.get(0) == true || daysOfWeek.get(1) == true))) {
+//            return false;
+//        }
+//
+//        if ((this.isWeekday() && (daysOfWeek.get(0) == false && daysOfWeek.get(1) == false))) {
+//            return false;
+//        }
+
+        if (!this.containsAnyCategory(eventDetails.getCategories())) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean containsAnyCategory(ArrayList<String> eventDetailCategories) {
+        int count = 0;
+
+        for (String category : eventDetailCategories) {
+            if (this.getSelectedEventTypes().contains(category)) {
+                count++;
+            }
+        }
+
+        System.out.println(eventDetailCategories);
+        System.out.println(count);
+        System.out.println(this.getSelectedEventTypes());
+
+        return count > 0;
     }
 }

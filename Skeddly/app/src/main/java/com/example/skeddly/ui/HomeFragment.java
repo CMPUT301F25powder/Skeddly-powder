@@ -17,7 +17,9 @@ import com.example.skeddly.R;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.database.SingleListenUpdate;
 import com.example.skeddly.business.database.repository.EventRepository;
+import com.example.skeddly.business.event.EventSchedule;
 import com.example.skeddly.business.location.CustomLocation;
+import com.example.skeddly.business.search.EventFilter;
 import com.example.skeddly.databinding.FragmentHomeBinding;
 import com.example.skeddly.business.search.EventSearch;
 import com.example.skeddly.business.search.SearchFinishedListener;
@@ -102,10 +104,14 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
             @Override
             public void onFilterUpdated() {
                 if (eventFilterPopup.getEventFilter() == null) {
+                    System.out.println("no filter");
                     fetchEvents();
                 } else {
+                    System.out.println("filter");
                     fetchFilteredEvents();
                 }
+
+                eventFilterPopup.dismiss();
             }
         });
 
@@ -154,16 +160,22 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
     private void fetchFilteredEvents() {
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
         EventRepository eventRepository = new EventRepository(firestore);
+        EventFilter eventFilter = eventFilterPopup.getEventFilter();
 
-        eventRepository.getAllWithFilter(eventFilterPopup.getEventFilter()).addOnSuccessListener(new OnSuccessListener<List<Event>>() {
+        eventRepository.getAll().addOnSuccessListener(new OnSuccessListener<List<Event>>() {
             @Override
             public void onSuccess(List<Event> events) {
                 eventList.clear();
-                eventList.addAll(events);
+
+                for (Event event : events) {
+                    if (eventFilter.checkFilterCriteria(event)) {
+                        eventList.add(event);
+                    }
+                }
+
+                eventAdapter.notifyDataSetChanged();
             }
         });
-
-
     }
 
     @Override
