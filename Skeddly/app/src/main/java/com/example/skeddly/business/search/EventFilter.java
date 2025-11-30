@@ -56,36 +56,23 @@ public class EventFilter {
 
     public boolean checkFilterCriteria(Event event) {
         EventDetail eventDetails = event.getEventDetails();
-//        EventSchedule eventSchedule = event.getEventSchedule();
-//        List<Boolean> daysOfWeek = eventSchedule.getDaysOfWeek();
-//        if (!(this.isWeekend() && (daysOfWeek.get(0) == true || daysOfWeek.get(1) == true))) {
-//            return false;
-//        }
-//
-//        if ((this.isWeekday() && (daysOfWeek.get(0) == false && daysOfWeek.get(1) == false))) {
-//            return false;
-//        }
+        EventSchedule eventSchedule = event.getEventSchedule();
+        List<Boolean> daysOfWeek = eventSchedule.getDaysOfWeek();
 
-        if (!this.containsAnyCategory(eventDetails.getCategories())) {
+        if (daysOfWeek != null) {
+            if (!(this.isWeekend() && (daysOfWeek.get(0) == true || daysOfWeek.get(1) == true))) {
+                return false;
+            }
+
+            if ((this.isWeekday() && (daysOfWeek.get(0) == false && daysOfWeek.get(1) == false))) {
+                return false;
+            }
+        }
+
+        if (!getSelectedEventTypes().contains(eventDetails.getCategories())) {
             return false;
         }
 
         return true;
-    }
-
-    private boolean containsAnyCategory(ArrayList<String> eventDetailCategories) {
-        int count = 0;
-
-        for (String category : eventDetailCategories) {
-            if (this.getSelectedEventTypes().contains(category)) {
-                count++;
-            }
-        }
-
-        System.out.println(eventDetailCategories);
-        System.out.println(count);
-        System.out.println(this.getSelectedEventTypes());
-
-        return count > 0;
     }
 }
