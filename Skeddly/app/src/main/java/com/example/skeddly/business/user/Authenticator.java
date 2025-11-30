@@ -94,6 +94,7 @@ public class Authenticator {
 
                     if (inTesting) {
                         user.setPrivilegeLevel(UserLevel.ADMIN);
+                        user.setPersonalInformation(new PersonalInformation("Test", "test@test.com", "111-222-3333"));
                     }
 
                     userPath.set(user);
