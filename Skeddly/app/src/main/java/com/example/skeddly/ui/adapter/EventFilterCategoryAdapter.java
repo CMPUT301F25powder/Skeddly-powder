@@ -33,7 +33,6 @@ public class EventFilterCategoryAdapter extends ArrayAdapter<String> {
         button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(@NonNull CompoundButton buttonView, boolean isChecked) {
-                System.out.println("CHECK BUTTON CHECKED!!!");
                 checkBoxCheckedListener.onCheckBoxChecked((String) button.getText(), isChecked);
             }
         });

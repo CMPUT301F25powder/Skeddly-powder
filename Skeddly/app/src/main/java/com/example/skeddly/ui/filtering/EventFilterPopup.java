@@ -91,9 +91,6 @@ public class EventFilterPopup extends PopupWindow {
                     newCategories = (ArrayList<String>) eventFilter.getSelectedEventTypes().clone();
                 }
 
-                System.out.printf("%s - %s\n", category, checked);
-                System.out.println(eventFilter.getSelectedEventTypes());
-
                 if (checked) {
                     if (!newCategories.contains(category)) {
                         newCategories.add(category);

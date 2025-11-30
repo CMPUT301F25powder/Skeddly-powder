@@ -131,12 +131,6 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
                 for (Event event : events) {
                     String eventName = event.getEventDetails().getName();
 
-                    System.out.println("fetch");
-                    System.out.println(eventSearch.checkNameSuggestionMatch(eventName, query));
-                    System.out.println(eventFilterPopup.getEventFilter() == null);
-                    System.out.println(eventFilterPopup.filterReady());
-                    System.out.println("/n");
-
                     boolean nameSuggestionMatch = eventSearch.checkNameSuggestionMatch(eventName, query);
 
                     if ((eventFilterPopup.filterReady() && eventFilter.checkFilterCriteria(event) && nameSuggestionMatch) || (!eventFilterPopup.filterReady() && nameSuggestionMatch)) {
