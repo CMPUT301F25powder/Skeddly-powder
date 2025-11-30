@@ -1,5 +1,7 @@
 package com.example.skeddly.ui.filtering;
 
+import static com.example.skeddly.ui.utils.InterfaceUtilities.timeFormatter;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.view.View;
@@ -12,21 +14,34 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.PopupWindow;
 import android.widget.SearchView;
+import android.widget.TextView;
+
+import androidx.fragment.app.FragmentManager;
 
 import com.example.skeddly.R;
 import com.example.skeddly.business.search.EventFilter;
 import com.example.skeddly.ui.adapter.CheckBoxCheckedListener;
 import com.example.skeddly.ui.adapter.EventFilterCategoryAdapter;
+import com.example.skeddly.ui.utils.InterfaceUtilities;
+import com.example.skeddly.ui.utils.MaterialTimePickerCallback;
+import com.google.android.material.timepicker.MaterialTimePicker;
 
+import org.w3c.dom.Text;
+
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 
 public class EventFilterPopup extends PopupWindow {
+    private InterfaceUtilities interfaceUtilities;
     private boolean filterMenuToggle;
     private EventFilterCategoryAdapter eventFilterCategoryAdapter;
     private ImageButton dropdownButton;
     private FilterUpdatedListener filterUpdatedListener;
     private EventFilter eventFilter;
-    public EventFilterPopup(Context context, View popupView, SearchView searchBar, ImageButton dropdownButton) {
+    public EventFilterPopup(Context context, FragmentManager fragmentManager, View popupView, SearchView searchBar, ImageButton dropdownButton) {
         super(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -34,6 +49,7 @@ public class EventFilterPopup extends PopupWindow {
 
         this.dropdownButton = dropdownButton;
         this.eventFilter = new EventFilter();
+        this.interfaceUtilities = new InterfaceUtilities(fragmentManager);
 
         dropdownButton.setOnClickListener(v -> {
             if (filterMenuToggle) {
@@ -96,8 +112,8 @@ public class EventFilterPopup extends PopupWindow {
         CheckBox weekdayCheckBox = popupView.findViewById(R.id.chk_weekday);
 
         // Availability range
-        EditText startTime = popupView.findViewById(R.id.edit_text_start);
-        EditText endTime = popupView.findViewById(R.id.edit_text_end);
+        TextView startTime = popupView.findViewById(R.id.edit_text_start);
+        TextView endTime = popupView.findViewById(R.id.edit_text_end);
 
         saveFiltersButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,26 +125,8 @@ public class EventFilterPopup extends PopupWindow {
                 eventFilter.setWeekend(weekendCheckBox.isChecked());
                 eventFilter.setWeekday(weekdayCheckBox.isChecked());
 
-                eventFilter.setStartTime(String.valueOf(startTime.getText()));
-                eventFilter.setEndTime(String.valueOf(endTime.getText()));
-
-//                ArrayList<String> selectedEvents = new ArrayList<>();
-//
-//                for (int i = 0; i < eventFilterCategoryAdapter.getCount(); i++) {
-//                    String category = eventFilterCategoryAdapter.getItem(i);
-//                    ArrayList<String> selectedEventTypes = eventFilter.getSelectedEventTypes();
-//
-//                    if (selectedEventTypes.contains(category)) {
-//                        selectedEvents.add(category);
-//                    }
-//                }
-//
-//                eventFilter.setSelectedEventTypes(selectedEvents);
-
-                System.out.println(eventFilter.getSelectedEventTypes());
-
                 if (filterUpdatedListener != null) {
-                    filterUpdatedListener.onFilterUpdated();
+                    filterUpdatedListener.onFilterUpdated(false);
                 }
             }
         });
@@ -139,8 +137,26 @@ public class EventFilterPopup extends PopupWindow {
                 eventFilter = null;
 
                 if (filterUpdatedListener != null) {
-                    filterUpdatedListener.onFilterUpdated();
+                    filterUpdatedListener.onFilterUpdated(true);
                 }
+            }
+        });
+
+        interfaceUtilities.setupTimePicker(popupView.findViewById(R.id.edit_text_start), new MaterialTimePickerCallback() {
+            @Override
+            public void onPositiveButtonClick(MaterialTimePicker picker) {
+                LocalTime eventStartTime = LocalTime.of(picker.getHour(), picker.getMinute());
+                startTime.setText(InterfaceUtilities.underlineString(eventStartTime.format(timeFormatter)));
+                eventFilter.setStartTime(eventStartTime);
+            }
+        });
+
+        interfaceUtilities.setupTimePicker(popupView.findViewById(R.id.edit_text_end), new MaterialTimePickerCallback() {
+            @Override
+            public void onPositiveButtonClick(MaterialTimePicker picker) {
+                LocalTime eventEndTime = LocalTime.of(picker.getHour(), picker.getMinute());
+                endTime.setText(InterfaceUtilities.underlineString(eventEndTime.format(timeFormatter)));
+                eventFilter.setEndTime(eventEndTime);
             }
         });
     }

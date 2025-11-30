@@ -5,10 +5,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
-import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.TextWatcher;
-import android.text.style.UnderlineSpan;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,13 +37,9 @@ import com.example.skeddly.business.location.MapPopupType;
 import com.example.skeddly.databinding.FragmentCreateEditBinding;
 import com.example.skeddly.ui.popup.CategorySelectorDialogFragment;
 import com.example.skeddly.ui.popup.MapPopupDialogFragment;
+import com.example.skeddly.ui.utils.InterfaceUtilities;
+import com.example.skeddly.ui.utils.MaterialTimePickerCallback;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.datepicker.CalendarConstraints;
-import com.google.android.material.datepicker.DateValidatorPointForward;
-import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.firebase.auth.FirebaseAuth;
@@ -61,36 +54,23 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-
-/**
- * Callback function for the MaterialTimePicker used to pick the time. Includes a reference to the
- * original picker in the callback.
- */
-interface MaterialTimePickerCallback {
-    void onPositiveButtonClick(MaterialTimePicker picker);
-}
-
 /**
  * Fragment for creating an event
  */
 public class CreateFragment extends Fragment {
     private FragmentCreateEditBinding binding;
-    private CalendarConstraints calendarConstraints;
-    private UnderlineSpan underlineSpan;
     private EventRepository eventRepository;
+    private InterfaceUtilities interfaceUtilities;
     private boolean isEdit;
 
     // For launching the image picker built in activity
     private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
-    private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a");
-    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MMM. d, yyyy");
 
     // Form info for creating the event
     private boolean isRecurring;
@@ -126,9 +106,9 @@ public class CreateFragment extends Fragment {
         binding = FragmentCreateEditBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        interfaceUtilities = new InterfaceUtilities(getChildFragmentManager());
+
         // Initialize Variables
-        underlineSpan = new UnderlineSpan();
-        calendarConstraints = new CalendarConstraints.Builder().setValidator(DateValidatorPointForward.now()).build();
         eventRepository = new EventRepository(FirebaseFirestore.getInstance());
 
         // Initialize categories
@@ -231,68 +211,68 @@ public class CreateFragment extends Fragment {
         setupSelector(binding.textDaySelect, dayTitle, dayArray, daysOfWeek);
         setupSelector(binding.textCategorySelect, categoryTitle, catArray, categories);
 
-        setupDatePicker(binding.textDateStart, new MaterialPickerOnPositiveButtonClickListener<Long>() {
+        interfaceUtilities.setupDatePicker(binding.textDateStart, new MaterialPickerOnPositiveButtonClickListener<Long>() {
             @Override
             public void onPositiveButtonClick(Long selection) {
                 eventStartDate = LocalDate.ofInstant(Instant.ofEpochMilli(selection), ZoneOffset.UTC);
-                binding.textDateStart.setText(underlineString(eventStartDate.format(dateFormatter)));
+                binding.textDateStart.setText(InterfaceUtilities.underlineString(eventStartDate.format(InterfaceUtilities.dateFormatter)));
                 updateConfirmButton();
             }
         });
-        setupDatePicker(binding.textDateFinish, new MaterialPickerOnPositiveButtonClickListener<Long>() {
+        interfaceUtilities.setupDatePicker(binding.textDateFinish, new MaterialPickerOnPositiveButtonClickListener<Long>() {
             @Override
             public void onPositiveButtonClick(Long selection) {
                 eventEndDate = LocalDate.ofInstant(Instant.ofEpochMilli(selection), ZoneOffset.UTC);
-                binding.textDateFinish.setText(underlineString(eventEndDate.format(dateFormatter)));
+                binding.textDateFinish.setText(InterfaceUtilities.underlineString(eventEndDate.format(InterfaceUtilities.dateFormatter)));
                 updateConfirmButton();
             }
         });
-        setupDatePicker(binding.textRegDateStart, new MaterialPickerOnPositiveButtonClickListener<Long>() {
+        interfaceUtilities.setupDatePicker(binding.textRegDateStart, new MaterialPickerOnPositiveButtonClickListener<Long>() {
             @Override
             public void onPositiveButtonClick(Long selection) {
                 regStartDate = LocalDate.ofInstant(Instant.ofEpochMilli(selection), ZoneOffset.UTC);
-                binding.textRegDateStart.setText(underlineString(regStartDate.format(dateFormatter)));
+                binding.textRegDateStart.setText(InterfaceUtilities.underlineString(regStartDate.format(InterfaceUtilities.dateFormatter)));
                 updateConfirmButton();
             }
         });
-        setupDatePicker(binding.textRegDateFinish, new MaterialPickerOnPositiveButtonClickListener<Long>() {
+        interfaceUtilities.setupDatePicker(binding.textRegDateFinish, new MaterialPickerOnPositiveButtonClickListener<Long>() {
             @Override
             public void onPositiveButtonClick(Long selection) {
                 regEndDate = LocalDate.ofInstant(Instant.ofEpochMilli(selection), ZoneOffset.UTC);
-                binding.textRegDateFinish.setText(underlineString(regEndDate.format(dateFormatter)));
+                binding.textRegDateFinish.setText(InterfaceUtilities.underlineString(regEndDate.format(InterfaceUtilities.dateFormatter)));
                 updateConfirmButton();
             }
         });
 
-        setupTimePicker(binding.textTimeStart, new MaterialTimePickerCallback() {
+        interfaceUtilities.setupTimePicker(binding.textTimeStart, new MaterialTimePickerCallback() {
             @Override
             public void onPositiveButtonClick(MaterialTimePicker picker) {
                 eventStartTime = LocalTime.of(picker.getHour(), picker.getMinute());
-                binding.textTimeStart.setText(underlineString(eventStartTime.format(timeFormatter)));
+                binding.textTimeStart.setText(InterfaceUtilities.underlineString(eventStartTime.format(InterfaceUtilities.timeFormatter)));
                 updateConfirmButton();
             }
         });
-        setupTimePicker(binding.textTimeFinish, new MaterialTimePickerCallback() {
+        interfaceUtilities.setupTimePicker(binding.textTimeFinish, new MaterialTimePickerCallback() {
             @Override
             public void onPositiveButtonClick(MaterialTimePicker picker) {
                 eventEndTime = LocalTime.of(picker.getHour(), picker.getMinute());
-                binding.textTimeFinish.setText(underlineString(eventEndTime.format(timeFormatter)));
+                binding.textTimeFinish.setText(InterfaceUtilities.underlineString(eventEndTime.format(InterfaceUtilities.timeFormatter)));
                 updateConfirmButton();
             }
         });
-        setupTimePicker(binding.textRegTimeStart, new MaterialTimePickerCallback() {
+        interfaceUtilities.setupTimePicker(binding.textRegTimeStart, new MaterialTimePickerCallback() {
             @Override
             public void onPositiveButtonClick(MaterialTimePicker picker) {
                 regStartTime = LocalTime.of(picker.getHour(), picker.getMinute());
-                binding.textRegTimeStart.setText(underlineString(regStartTime.format(timeFormatter)));
+                binding.textRegTimeStart.setText(InterfaceUtilities.underlineString(regStartTime.format(InterfaceUtilities.timeFormatter)));
                 updateConfirmButton();
             }
         });
-        setupTimePicker(binding.textRegTimeFinish, new MaterialTimePickerCallback() {
+        interfaceUtilities.setupTimePicker(binding.textRegTimeFinish, new MaterialTimePickerCallback() {
             @Override
             public void onPositiveButtonClick(MaterialTimePicker picker) {
                 regEndTime = LocalTime.of(picker.getHour(), picker.getMinute());
-                binding.textRegTimeFinish.setText(underlineString(regEndTime.format(timeFormatter)));
+                binding.textRegTimeFinish.setText(InterfaceUtilities.underlineString(regEndTime.format(InterfaceUtilities.timeFormatter)));
                 updateConfirmButton();
             }
         });
@@ -384,47 +364,6 @@ public class CreateFragment extends Fragment {
                     textView.setText(selectedString);
                     updateConfirmButton();
                 }
-            }
-        });
-    }
-
-    /**
-     * Setup a time picker and call you back when the user has finished picking the time
-     * @param view The view that should have the click associated with
-     * @param callback The callback function that should be ran
-     */
-    private void setupTimePicker(View view, MaterialTimePickerCallback callback) {
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MaterialTimePicker mtp = new MaterialTimePicker.Builder().build();
-                mtp.addOnPositiveButtonClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        callback.onPositiveButtonClick(mtp);
-                    }
-                });
-                mtp.show(getChildFragmentManager(), null);
-            }
-        });
-    }
-
-    /**
-     * Setup a date picker and call you back when the user has finished picking the date
-     * @param view The view that should have the click associated with
-     * @param callback The callback function that should be ran
-     */
-    private void setupDatePicker(View view, MaterialPickerOnPositiveButtonClickListener<Long> callback) {
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MaterialDatePicker<Long> mdp = MaterialDatePicker.Builder.datePicker()
-                        .setCalendarConstraints(calendarConstraints)
-                        .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
-                        .build();
-
-                mdp.addOnPositiveButtonClickListener(callback);
-                mdp.show(getChildFragmentManager(), null);
             }
         });
     }
@@ -629,18 +568,6 @@ public class CreateFragment extends Fragment {
     }
 
     /**
-     * Underline the given string and return it as a SpannableString
-     * @param string The string to underline
-     * @return The given string, but underlined as a SpannableString
-     */
-    private SpannableString underlineString(String string) {
-        SpannableString spannedString = new SpannableString(string);
-        spannedString.setSpan(underlineSpan, 0, spannedString.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-
-        return spannedString;
-    }
-
-    /**
      * Loads event data from Firestore and populates the UI.
      * @param eventId The ID of the event to load.
      */
@@ -685,7 +612,7 @@ public class CreateFragment extends Fragment {
                 }
             }
             if (!daysOfWeek.isEmpty()) {
-                binding.textDaySelect.setText(underlineString(String.join(", ", daysOfWeek)));
+                binding.textDaySelect.setText(InterfaceUtilities.underlineString(String.join(", ", daysOfWeek)));
             }
         }
 
@@ -705,15 +632,15 @@ public class CreateFragment extends Fragment {
         this.regStartTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(regStartEpoch), ZoneId.systemDefault()).toLocalTime();
         this.regEndTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(regEndEpoch), ZoneId.systemDefault()).toLocalTime();
 
-        binding.textDateStart.setText(underlineString(this.eventStartDate.format(dateFormatter)));
-        binding.textDateFinish.setText(underlineString(this.eventEndDate.format(dateFormatter)));
-        binding.textTimeStart.setText(underlineString(this.eventStartTime.format(timeFormatter)));
-        binding.textTimeFinish.setText(underlineString(this.eventEndTime.format(timeFormatter)));
+        binding.textDateStart.setText(InterfaceUtilities.underlineString(this.eventStartDate.format(InterfaceUtilities.dateFormatter)));
+        binding.textDateFinish.setText(InterfaceUtilities.underlineString(this.eventEndDate.format(InterfaceUtilities.dateFormatter)));
+        binding.textTimeStart.setText(InterfaceUtilities.underlineString(this.eventStartTime.format(InterfaceUtilities.timeFormatter)));
+        binding.textTimeFinish.setText(InterfaceUtilities.underlineString(this.eventEndTime.format(InterfaceUtilities.timeFormatter)));
 
-        binding.textRegDateStart.setText(underlineString(this.regStartDate.format(dateFormatter)));
-        binding.textRegDateFinish.setText(underlineString(this.regEndDate.format(dateFormatter)));
-        binding.textRegTimeStart.setText(underlineString(this.regStartTime.format(timeFormatter)));
-        binding.textRegTimeFinish.setText(underlineString(this.regEndTime.format(timeFormatter)));
+        binding.textRegDateStart.setText(InterfaceUtilities.underlineString(this.regStartDate.format(InterfaceUtilities.dateFormatter)));
+        binding.textRegDateFinish.setText(InterfaceUtilities.underlineString(this.regEndDate.format(InterfaceUtilities.dateFormatter)));
+        binding.textRegTimeStart.setText(InterfaceUtilities.underlineString(this.regStartTime.format(InterfaceUtilities.timeFormatter)));
+        binding.textRegTimeFinish.setText(InterfaceUtilities.underlineString(this.regEndTime.format(InterfaceUtilities.timeFormatter)));
 
         // Limits
         binding.editAttendeeLimit.setText(String.valueOf(event.getParticipantList().getMax()));

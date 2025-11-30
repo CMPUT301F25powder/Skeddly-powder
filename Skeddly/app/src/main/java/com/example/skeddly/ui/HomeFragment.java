@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -47,10 +48,16 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
     private ArrayList<Event> eventList = new ArrayList<>();
     private DatabaseHandler databaseHandler;
     private EventAdapter eventAdapter;
+    private ListView listEvents;
     private EventFilterPopup eventFilterPopup;
+    private View popupView;
+    private SearchView searchEvents;
+    private ImageButton filterDropdownButton;
+    private View circleBadge;
 
     // Search
     private EventSearch eventSearch;
+    TextView noResultsText;
 
     private ListenerRegistration fetchEventsRegistration = null;
 
@@ -63,7 +70,7 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
         // Initialize DatabaseHandler and list of events
         databaseHandler = new DatabaseHandler();
 
-        SearchView searchEvents = binding.searchEvents;
+        searchEvents = binding.searchEvents;
 
         eventSearch = new EventSearch(getContext(), searchEvents, eventList);
 
@@ -75,7 +82,7 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
                 this);
 
         // Set event adapter to list view
-        ListView listEvents = binding.listEvents;
+        listEvents = binding.listEvents;
         listEvents.setAdapter(eventAdapter);
 
         // Fetch events from firebase
@@ -94,26 +101,16 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
         });
 
         // Handle opening filter menu
-        ImageButton filterDropdownButton = binding.btnFilter;
+        filterDropdownButton = binding.btnFilter;
 
-        View popupView = inflater.inflate(R.layout.fragment_event_filter_menu, null);
+        popupView = inflater.inflate(R.layout.fragment_event_filter_menu, null);
 
-        eventFilterPopup = new EventFilterPopup(getContext(), popupView, searchEvents, filterDropdownButton);
+        resetFilterPopup();
 
-        eventFilterPopup.setOnFilterUpdatedListener(new FilterUpdatedListener() {
-            @Override
-            public void onFilterUpdated() {
-                if (eventFilterPopup.getEventFilter() == null) {
-                    System.out.println("no filter");
-                    fetchEvents();
-                } else {
-                    System.out.println("filter");
-                    fetchFilteredEvents();
-                }
+        noResultsText = binding.noResultsAlert;
+        circleBadge = binding.circleBadge;
 
-                eventFilterPopup.dismiss();
-            }
-        });
+        circleBadge.setVisibility(View.GONE);
 
         return root;
     }
@@ -142,6 +139,8 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
                             eventList.add(event);
                         }
                     }
+
+                    toggleNoResultsTextVisibility();
 
                     // Notify adapter of changes
                     eventAdapter.notifyDataSetChanged();
@@ -173,7 +172,47 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
                     }
                 }
 
+                toggleNoResultsTextVisibility();
+
                 eventAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    /**
+     * Toggles whether or not the "no results" text appears in the home screen.
+     * Based on if eventList is empty or not.
+     */
+    private void toggleNoResultsTextVisibility() {
+        if (eventList.isEmpty()) {
+            noResultsText.setVisibility(View.VISIBLE);
+            listEvents.setVisibility(View.GONE);
+        } else {
+            noResultsText.setVisibility(View.GONE);
+            listEvents.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void resetFilterPopup() {
+        this.eventFilterPopup = new EventFilterPopup(getContext(), getChildFragmentManager(), popupView, searchEvents, filterDropdownButton);
+
+        eventFilterPopup.setOnFilterUpdatedListener(new FilterUpdatedListener() {
+            @Override
+            public void onFilterUpdated(boolean cleared) {
+                eventFilterPopup.dismiss();
+
+                if (cleared) {
+                    resetFilterPopup();
+                    fetchEvents();
+                    circleBadge.setVisibility(View.GONE);
+                } else {
+                    if (eventFilterPopup.getEventFilter() == null) {
+                        fetchEvents();
+                    } else {
+                        fetchFilteredEvents();
+                    }
+                    circleBadge.setVisibility(View.VISIBLE);
+                }
             }
         });
     }
