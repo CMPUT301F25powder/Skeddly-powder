@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
@@ -128,10 +129,10 @@ public class CreateFragment extends Fragment {
         underlineSpan = new UnderlineSpan();
         calendarConstraints = new CalendarConstraints.Builder().setValidator(DateValidatorPointForward.now()).build();
         eventRepository = new EventRepository(FirebaseFirestore.getInstance());
+        ViewFlipper viewFlipper = binding.viewFlipper;
 
         // Hide them because we don't want them here
         binding.btnBack.setVisibility(View.INVISIBLE);
-        binding.btnQrCode.setVisibility(View.INVISIBLE);
 
         binding.btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,6 +148,9 @@ public class CreateFragment extends Fragment {
         if (getArguments() != null) {
             this.eventId = getArguments().getString("eventId");
             binding.btnBack.setVisibility(View.VISIBLE);
+            binding.labelEventMode1.setText(R.string.fragment_create_edit_mode_e);
+            binding.labelEventMode2.setText(R.string.fragment_create_edit_mode_e);
+            binding.labelEventMode3.setText(R.string.fragment_create_edit_mode_e);
             isEdit = true;
             if (this.eventId != null && !this.eventId.isEmpty()) {
                 loadEventData(this.eventId);
@@ -308,6 +312,31 @@ public class CreateFragment extends Fragment {
 
                 if (isEdit) Toast.makeText(requireContext(), "Edited Event!", Toast.LENGTH_SHORT).show();
                 else Toast.makeText(requireContext(), "Created Event!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        binding.btnInfoNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewFlipper.showNext();
+            }
+        });
+        binding.btnSchedulePrev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewFlipper.showPrevious();
+            }
+        });
+        binding.btnScheduleNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewFlipper.showNext();
+            }
+        });
+        binding.btnLotteryLocationPrev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewFlipper.showPrevious();
             }
         });
 

@@ -65,6 +65,10 @@
     <string name="fragment_create_edit_label_reg_period">Registration Period:</string>
     <string name="fragment_create_edit_switch_recurring">Recurring</string>
     <string name="fragment_create_edit_time"><u>hh:mm</u></string>
+    <string name="fragment_create_edit_next">Next</string>
+    <string name="fragment_create_edit_previous">Previous</string>
+    <string name="fragment_create_edit_mode_c">Create Event</string>
+    <string name="fragment_create_edit_mode_e">Edit Event</string>
 
     <string name="fragment_event_history_btn_all">All</string>
     <string name="fragment_event_history_btn_closed">Closed</string>
