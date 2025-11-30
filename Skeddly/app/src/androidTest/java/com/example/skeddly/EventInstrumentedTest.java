@@ -23,6 +23,7 @@ import com.example.skeddly.business.event.Event;
 import com.example.skeddly.utilities.BaseTest;
 import com.example.skeddly.utilities.TestUtil;
 
+import org.junit.After;
 import org.junit.Test;
 
 /**
@@ -44,11 +45,11 @@ public class EventInstrumentedTest extends BaseTest {
         // Wait for first event to appear
         onViewLoaded(withId(R.id.single_event_item));
 
-        onView(withId(R.id.search_events)).perform(typeSearchViewText("one more"));
+        onView(withId(R.id.search_events)).perform(typeSearchViewText("MockEvent"));
 
         onViewLoaded(withId(R.id.list_events));
 
-        onViewLoaded(withText("One more event"));
+        onViewLoaded(withText("MockEvent1"));
     }
 
     /**
@@ -95,4 +96,5 @@ public class EventInstrumentedTest extends BaseTest {
         onView(withId(R.id.value_event_description)).check(matches(isDisplayed()));
         onView(withId(R.id.value_attendee_limit)).check(matches(isDisplayed()));
     }
+
 }

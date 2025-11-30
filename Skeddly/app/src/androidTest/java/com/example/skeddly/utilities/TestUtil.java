@@ -56,28 +56,9 @@ public class TestUtil {
         LatLng location = new LatLng(53.5, -113.5);
 
         // The image can be null if not needed for a specific test
-        byte[] image = (imageBytes != null) ? imageBytes : "default_mock_image".getBytes();
+        byte[] image = (imageBytes != null) ? imageBytes : "".getBytes();
 
         return new Event(detail, schedule, location, "mockOrganizerId", 100, false, image);
-    }
-
-    /**
-     * Creates a generic mock User.
-     * @param name The name of the user.
-     * @param level The privilege level of the user (ENTRANT, ORGANIZER, ADMIN).
-     * @return A new User object.
-     */
-    public static User createMockUser(String name, UserLevel level) throws ExecutionException, InterruptedException {
-        FirebaseFirestore mFirestore = FirebaseFirestore.getInstance();
-        UserRepository userRepository = new UserRepository(mFirestore);
-
-        PersonalInformation info = new PersonalInformation(name, name.toLowerCase() + "@test.com", "555-123-4567");
-        User user = new User(info, level);
-
-
-        Tasks.await(userRepository.set(user));
-
-        return user;
     }
 
     /**
