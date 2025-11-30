@@ -1,6 +1,8 @@
 package com.example.skeddly;
 
 import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -23,6 +25,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.skeddly.business.database.DatabaseHandler;
+import com.example.skeddly.business.database.repository.EventRepository;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.user.UserLoaded;
 import com.example.skeddly.databinding.ActivityMainBinding;
@@ -41,6 +44,7 @@ import com.example.skeddly.business.user.Authenticator;
 import com.example.skeddly.business.user.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.functions.FirebaseFunctions;
 
 /**
@@ -50,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private Authenticator authenticator;
     private ActivityMainBinding binding;
     private NavController navController;
+    private Uri qr;
 
     // FCM (Notifications)
     private final ActivityResultLauncher<String> requestPermissionLauncher =
@@ -82,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         Bundle extras = getIntent().getExtras();
-        Uri qr = null;
+        qr = null;
 
         if (extras != null) {
             qr = Objects.requireNonNull(extras).getParcelable("QR");
@@ -95,33 +100,28 @@ public class MainActivity extends AppCompatActivity {
             public void onUserLoaded(User loadedUser, boolean shouldShowSignupPage) {
                 // Update navbar if user object changes (allows for realtime updates)
                 setupNavBar();
+
+                if (qr != null) {
+                    String eventId = qr.getEncodedPath();
+
+                    if (eventId != null && eventId.length() > 1) {
+                        String choppedEventId = eventId.substring(1);
+                        EventRepository eventRepository = new EventRepository(FirebaseFirestore.getInstance());
+
+                        eventRepository.get(choppedEventId).addOnCompleteListener(task -> {
+                            if (!task.isSuccessful()) {
+                                Toast.makeText(MainActivity.this, "Event does not exist!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                navigateToEvent(task.getResult());
+                            }
+                        });
+                    }
+                }
             }
         });
 
-        if (qr != null) {
-            String eventId = qr.getEncodedPath();
-
-            if (eventId != null && eventId.length() > 1) {
-                String choppedEventId = eventId.substring(1);
-
-                database.getEventsPath().document(eventId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (documentSnapshot.exists()) {
-                            Event theEvent = documentSnapshot.toObject(Event.class);
-
-                            if (theEvent == null) {
-                                return;
-                            }
-
-                            navigateToEvent(theEvent);
-                        }
-                    }
-                });
-            }
-        }
-
         setupGooglePlayServices();
+        createNotificationChannel();
     }
 
     /**
@@ -201,8 +201,8 @@ public class MainActivity extends AppCompatActivity {
     private void navigateToEvent(Event event) {
         Bundle bundle = new Bundle();
         bundle.putString("eventId", event.getId());
-        bundle.putString("userId", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
         bundle.putString("organizerId", event.getOrganizer());
+
         navController.navigate(R.id.navigation_event_view_info, bundle);
     }
 
@@ -225,7 +225,6 @@ public class MainActivity extends AppCompatActivity {
      * Asks the user for notification permissions if needed
      */
     private void askNotificationPermission() {
-
         // This is only necessary for API level >= 33 (TIRAMISU)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
@@ -237,4 +236,21 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is not in the Support Library.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = SkeddlyFirebaseMessagingService.CHANNEL_NAME;
+            String description = SkeddlyFirebaseMessagingService.CHANNEL_DESCRIPTION;
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(SkeddlyFirebaseMessagingService.CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this.
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
 }
