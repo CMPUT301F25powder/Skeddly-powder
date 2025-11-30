@@ -65,7 +65,7 @@ public class AdminToolsInstrumentedTest extends BaseTest {
         onViewLoaded(withId(R.id.btn_img_gallery)).perform(click());
         onViewLoaded(withId(R.id.uploadedImages));
         onViewLoaded(withId(R.id.uploadedImage));
-
+        Thread.sleep(5000);
         onData(is(instanceOf(Object.class)))
                 .inAdapterView(withId(R.id.uploadedImages))
                 .atPosition(0)
