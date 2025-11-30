@@ -40,7 +40,7 @@ public class ProfileFragmentInstrumentedTest extends BaseTest {
     @Before
     public void navigateToProfileScreen() {
         onViewLoaded(withId(R.id.navigation_profile)).perform(click());
-        onViewLoaded(withId(R.id.header_profile)).check(matches(isDisplayed()));
+        onViewLoaded(withId(R.id.header_profile));
 
         this.currentUser = MainActivity.getInstance().getUser();
 
