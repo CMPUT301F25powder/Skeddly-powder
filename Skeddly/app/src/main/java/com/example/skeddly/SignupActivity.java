@@ -175,43 +175,12 @@ public class SignupActivity extends AppCompatActivity {
     private void switchToMain() {
         Intent mainActivity = new Intent(getBaseContext(), MainActivity.class);
 
-        // See if we were opened by a QR code or special link
-        Uri qrOpenUri = getLaunchLink();
-        boolean inbox = shouldNavToInbox();
-
         mainActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        mainActivity.putExtra("QR", qrOpenUri);
-        mainActivity.putExtra("notification", inbox);
+        mainActivity.putExtra("launchIntent", getIntent());
         startActivity(mainActivity);
         finish();
 
         loaded = true;
-    }
-
-    /**
-     * Gets the launch link if there is one. The launch link is usually provided from scanning
-     * a QR code to open the app straight to an event.
-     * @return The launch link, or null if there isn't one.
-     */
-    @Nullable
-    private Uri getLaunchLink() {
-        Intent intent = getIntent();
-        return intent.getData();
-    }
-
-    /**
-     * See whether we should navigate to the inbox. This is when a notification is clicked.
-     * @return True if we should, false otherwise.
-     */
-    private boolean shouldNavToInbox() {
-        Intent intent = getIntent();
-        String extra = intent.getStringExtra("notification");
-
-        if (extra != null && extra.equals("inbox")) {
-            return true;
-        }
-
-        return false;
     }
 
     public boolean getLoaded() {

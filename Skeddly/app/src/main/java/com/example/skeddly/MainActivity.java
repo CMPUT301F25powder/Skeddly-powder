@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -54,8 +55,6 @@ public class MainActivity extends AppCompatActivity {
     private Authenticator authenticator;
     private ActivityMainBinding binding;
     private NavController navController;
-    private Uri qr;
-    private boolean navToInbox;
 
     // FCM (Notifications)
     private final ActivityResultLauncher<String> requestPermissionLauncher =
@@ -87,14 +86,6 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        Bundle extras = getIntent().getExtras();
-        qr = null;
-
-        if (extras != null) {
-            qr = Objects.requireNonNull(extras).getParcelable("QR");
-            navToInbox = extras.getBoolean("notification");
-        }
-
         DatabaseHandler database = new DatabaseHandler();
         authenticator = new Authenticator(this, database);
         authenticator.addListenerForUserLoaded(new UserLoaded() {
@@ -103,29 +94,60 @@ public class MainActivity extends AppCompatActivity {
                 // Update navbar if user object changes (allows for realtime updates)
                 setupNavBar();
 
-                if (qr != null) {
-                    String eventId = qr.getEncodedPath();
-
-                    if (eventId != null && eventId.length() > 1) {
-                        String choppedEventId = eventId.substring(1);
-                        EventRepository eventRepository = new EventRepository(FirebaseFirestore.getInstance());
-
-                        eventRepository.get(choppedEventId).addOnCompleteListener(task -> {
-                            if (!task.isSuccessful()) {
-                                Toast.makeText(MainActivity.this, "Event does not exist!", Toast.LENGTH_SHORT).show();
-                            } else {
-                                navigateToEvent(task.getResult());
-                            }
-                        });
-                    }
-                } else if (navToInbox) {
-                    navController.navigate(R.id.navigation_inbox);
-                }
+                checkLaunchIntent();
             }
         });
 
         setupGooglePlayServices();
         createNotificationChannel();
+    }
+
+    private void checkLaunchIntent() {
+        // Fetch the intent the app was launched with
+        Bundle mainExtras = getIntent().getExtras();
+        if (mainExtras == null) return;
+        Intent launchIntent = mainExtras.getParcelable("launchIntent");
+        if (launchIntent == null) return;
+
+        // Check if we need to do some special action
+        if (checkLaunchIntentNotification(launchIntent)) return;
+        if (checkLaunchIntentQr(launchIntent)) return;
+    }
+
+    private boolean checkLaunchIntentQr(Intent launchIntent) {
+        Uri qr = launchIntent.getData();
+
+        if (qr != null) {
+            String eventId = qr.getEncodedPath();
+
+            if (eventId != null && eventId.length() > 1) {
+                String choppedEventId = eventId.substring(1);
+                EventRepository eventRepository = new EventRepository(FirebaseFirestore.getInstance());
+
+                eventRepository.get(choppedEventId).addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        Toast.makeText(MainActivity.this, "Event does not exist!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        navigateToEvent(task.getResult());
+                    }
+                });
+            }
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean checkLaunchIntentNotification(Intent launchIntent) {
+        Bundle launchExtras = launchIntent.getExtras();
+        if (launchExtras == null) return false;
+
+        String notification = launchExtras.getString("google.message_id");
+        if (notification == null) return false;
+
+        NavigationUI.onNavDestinationSelected(binding.navView.getMenu().findItem(R.id.navigation_inbox), navController);
+        return true;
     }
 
     /**
