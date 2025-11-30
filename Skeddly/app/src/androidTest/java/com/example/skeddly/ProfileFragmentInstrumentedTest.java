@@ -50,6 +50,12 @@ public class ProfileFragmentInstrumentedTest extends BaseTest {
 
     @Test
     public void testNavigateToEventHistoryAndVerifyContent() throws ExecutionException, InterruptedException {
+        DatabaseHandler databaseHandler = new DatabaseHandler();
+        CustomLocation location = new CustomLocation(53.5, -113.5);
+        event1.join(databaseHandler, currentUser.getPersonalInformation(), currentUser.getId(), location);
+
+        Thread.sleep(5000);
+
         onViewLoaded(withId(R.id.btn_event_history)).perform(click());
 
         onViewLoaded(withId(R.id.list_events));
@@ -57,12 +63,6 @@ public class ProfileFragmentInstrumentedTest extends BaseTest {
         TicketRepository ticketRepository = new TicketRepository(FirebaseFirestore.getInstance(), null, currentUser.getId());
         List<Ticket> ticketsFromDb = Tasks.await(ticketRepository.getAll());
         int expectedCount = ticketsFromDb.size();
-
-        DatabaseHandler databaseHandler = new DatabaseHandler();
-        CustomLocation location = new CustomLocation(53.5, -113.5);
-        event1.join(databaseHandler, currentUser.getPersonalInformation(), currentUser.getId(), location);
-
-        Thread.sleep(5000);
 
         onViewLoaded(withId(R.id.list_events));
         onViewLoaded(withId(R.id.item_event_history_layout));
