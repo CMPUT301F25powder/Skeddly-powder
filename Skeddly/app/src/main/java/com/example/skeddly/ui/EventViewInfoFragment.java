@@ -210,9 +210,10 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
 
         // Set Title and Location
         if (event.getLocation() != null) {
-            binding.textEventTitleOverlay.setText(String.format("%s - %s", eventDetails.getName(), event.getLocation().toString()));
+            binding.textEventTitleOverlay.setText(String.format("%s", event.getLocation().toString()));
+            binding.textEventTitleOverlay.setVisibility(View.VISIBLE);
         } else {
-            binding.textEventTitleOverlay.setText(eventDetails.getName());
+            binding.textEventTitleOverlay.setVisibility(View.GONE);
         }
 
         // Set Event Time
