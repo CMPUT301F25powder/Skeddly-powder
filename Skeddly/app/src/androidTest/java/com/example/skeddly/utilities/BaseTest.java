@@ -8,6 +8,7 @@ import androidx.test.filters.LargeTest;
 import com.example.skeddly.SignupActivity;
 import com.example.skeddly.business.database.repository.EventRepository;
 import com.example.skeddly.business.event.Event;
+import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -63,9 +64,11 @@ public abstract class BaseTest {
     }
 
     @After
-    public void tearDown() {
-        eventRepository.delete(event1.getId());
-        eventRepository.delete(event2.getId());
+    public void tearDown() throws ExecutionException, InterruptedException {
+        Task<Void> delete1 = eventRepository.delete(event1.getId());
+        Task<Void> delete2 = eventRepository.delete(event2.getId());
+        Tasks.await(Tasks.whenAll(delete1, delete2));
+
         unregisterIdlingResource();
     }
 }
