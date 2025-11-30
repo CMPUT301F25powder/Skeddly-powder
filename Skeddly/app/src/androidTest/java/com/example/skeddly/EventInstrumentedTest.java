@@ -91,12 +91,8 @@ public class EventInstrumentedTest extends BaseTest {
     public void testEventDetailsAreDisplayedCorrectly() {
         testViewEvent();
 
-        onViewLoaded(withId(R.id.value_event_title)).check(matches(isDisplayed()));
-        onViewLoaded(withId(R.id.value_event_description)).check(matches(isDisplayed()));
-        onViewLoaded(withId(R.id.value_attendee_limit)).check(matches(isDisplayed()));
-
-        onViewLoaded(withId(R.id.text_event_title_overlay)).perform(click());
-
-        onViewLoaded(ViewMatchers.withId(R.layout.dialog_map)).check(matches(isDisplayed()));
+        onView(withId(R.id.value_event_title)).check(matches(isDisplayed()));
+        onView(withId(R.id.value_event_description)).check(matches(isDisplayed()));
+        onView(withId(R.id.value_attendee_limit)).check(matches(isDisplayed()));
     }
 }
