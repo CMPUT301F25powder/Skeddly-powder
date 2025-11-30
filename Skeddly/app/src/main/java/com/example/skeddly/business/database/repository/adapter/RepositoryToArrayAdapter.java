@@ -1,5 +1,6 @@
 package com.example.skeddly.business.database.repository.adapter;
 
+import android.util.Log;
 import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
@@ -83,21 +84,21 @@ public class RepositoryToArrayAdapter<T extends DatabaseObject> {
         repositories.add(repository);
 
         if (realtimeUpdates) {
-            listeners.add(repository.listenAll(new SingleListenUpdate<List<T>>() {
-                @Override
-                public void onUpdate(List<T> newValue) {
-                    data.set(dataArrIdx, newValue);
-                    loadDataToAdapter(dataArrIdx);
-                }
+            Log.v("RepositoryToArrayAdapter", String.format("Trying to listen to repository %s associated with index %d", repository, dataArrIdx));
+            listeners.add(repository.listenAll(newValue -> {
+                Log.v("RepositoryToArrayAdapter", String.format("Received %d users on repository %s associated with index %d", newValue.size(), repository, dataArrIdx));
+                data.set(dataArrIdx, newValue);
+                loadDataToAdapter(dataArrIdx);
             }));
         } else {
-            repository.getAll().addOnCompleteListener(new OnCompleteListener<List<T>>() {
-                @Override
-                public void onComplete(@NonNull Task<List<T>> task) {
-                    if (task.isSuccessful()) {
-                        data.set(dataArrIdx, task.getResult());
-                        loadDataToAdapter(dataArrIdx);
-                    }
+            Log.v("RepositoryToArrayAdapter", String.format("Trying to retrieve from repository %s associated with index %d", repository, dataArrIdx));
+            repository.getAll().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Log.v("RepositoryToArrayAdapter", String.format("Received %d users on repository %s associated with index %d", task.getResult().size(), repository, dataArrIdx));
+                    data.set(dataArrIdx, task.getResult());
+                    loadDataToAdapter(dataArrIdx);
+                } else {
+                    Log.v("RepositoryToArrayAdapter", String.format("Failed to retrieve from repository %s associated with index %d", repository, dataArrIdx));
                 }
             });
         }

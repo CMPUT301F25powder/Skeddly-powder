@@ -163,6 +163,10 @@ public abstract class GenericRepository<T extends DatabaseObject> {
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 if (value != null) {
                     callback.onUpdate(value.toObjects(clazz));
+                } else if (error != null) {
+                    Log.e("GenericRepository", error.toString());
+                } else {
+                    Log.e("GenericRepository", String.format("Unknown error occurred with repository %s", this));
                 }
             }
         });
