@@ -126,10 +126,25 @@ public class TestUtil {
         };
     }
 
+    /**
+     * Waits for a view to load before continuing.
+     * DO NOT use {@code .check(matches(isDisplayed()))} with this method as this is already assumed when view is loaded.
+     * Timeout is 10000 ms by default.
+     * @param viewMatcher Matcher<View>
+     * @return ViewInteraction
+     */
     public static ViewInteraction onViewLoaded(Matcher<View> viewMatcher) {
         return onViewLoaded(viewMatcher, 10000);
     }
 
+    /**
+     * Waits for a view to load before continuing.
+     * DO NOT use {@code .check(matches(isDisplayed()))} with this method as this is already assumed when view is loaded.
+     * If the time it takes to load exceeds the timeout, it will fail.
+     * @param viewMatcher Matcher<View>
+     * @param timeout int
+     * @return ViewInteraction
+     */
     public static ViewInteraction onViewLoaded(Matcher<View> viewMatcher, long timeout) {
         onView(isRoot())
                 .perform(waitForView(viewMatcher, timeout));

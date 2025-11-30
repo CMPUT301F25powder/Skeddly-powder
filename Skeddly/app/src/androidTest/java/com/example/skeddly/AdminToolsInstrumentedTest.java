@@ -112,7 +112,7 @@ public class AdminToolsInstrumentedTest extends BaseTest {
     @Test
     public void testNotificationLogs_CanViewNotifs() throws ExecutionException, InterruptedException {
         onViewLoaded(withId(R.id.btn_log_notification)).perform(click());
-        onViewLoaded(withId(R.id.list_notifications)).check(matches(isDisplayed()));
+        onViewLoaded(withId(R.id.list_notifications));
 
         NotificationRepository notificationRepository = new NotificationRepository(FirebaseFirestore.getInstance());
         List<Notification> notificationsFromDb = Tasks.await(notificationRepository.getAll());
