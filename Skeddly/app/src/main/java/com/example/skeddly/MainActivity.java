@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
@@ -25,7 +26,11 @@ import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.user.UserLoaded;
 import com.example.skeddly.databinding.ActivityMainBinding;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.HashMap;
@@ -116,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        askNotificationPermission();
+        setupGooglePlayServices();
     }
 
     /**
@@ -201,10 +206,26 @@ public class MainActivity extends AppCompatActivity {
         navController.navigate(R.id.navigation_event_view_info, bundle);
     }
 
+    private void setupGooglePlayServices() {
+        if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this) != ConnectionResult.SUCCESS) {
+            GoogleApiAvailability.getInstance().makeGooglePlayServicesAvailable(this).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        askNotificationPermission();
+                    }
+                }
+            });
+        } else {
+            askNotificationPermission();
+        }
+    }
+
     /**
      * Asks the user for notification permissions if needed
      */
     private void askNotificationPermission() {
+
         // This is only necessary for API level >= 33 (TIRAMISU)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
