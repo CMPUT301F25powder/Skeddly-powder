@@ -83,7 +83,7 @@ public class ProfileFragmentInstrumentedTest extends BaseTest {
         onView(withId(R.id.edit_email)).perform(ViewActions.replaceText(newEmail));
         onView(withId(R.id.edit_phone_number)).perform(ViewActions.replaceText(newPhone));
 
-        onViewLoaded(withId(R.id.btn_confirm)).perform(click());
+        onViewLoaded(withId(R.id.include)).perform(click());
 
         onViewLoaded(withId(R.id.header_profile));
 
