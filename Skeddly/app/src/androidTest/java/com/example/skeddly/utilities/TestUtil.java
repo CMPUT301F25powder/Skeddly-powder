@@ -109,7 +109,7 @@ public class TestUtil {
 
                 while (System.currentTimeMillis() < end) {
                     for (View child : TreeIterables.breadthFirstViewTraversal(view)) {
-                        if (viewMatcher.matches(child)) {
+                        if (viewMatcher.matches(child) && child.getVisibility() == View.VISIBLE) {
                             return;
                         }
                     }
