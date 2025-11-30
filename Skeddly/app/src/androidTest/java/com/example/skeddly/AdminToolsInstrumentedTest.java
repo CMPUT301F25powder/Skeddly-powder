@@ -93,7 +93,7 @@ public class AdminToolsInstrumentedTest extends BaseTest {
         });
 
         onViewLoaded(withId(R.id.switch_organizers_only)).perform(click());
-
+        Thread.sleep(5000);
         List<User> organizersFromDb = allUsersFromDb.stream()
                 .filter(user -> user.getPrivilegeLevel() == UserLevel.ORGANIZER)
                 .collect(Collectors.toList());
