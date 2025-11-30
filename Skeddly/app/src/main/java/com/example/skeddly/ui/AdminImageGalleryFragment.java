@@ -107,7 +107,11 @@ public class AdminImageGalleryFragment extends Fragment {
             public void onSuccess(List<Event> events) {
                 for (Event event : events) {
                     GalleryImage newGalleryImage = new GalleryImage(event);
-                    images.add(newGalleryImage);
+                    String imageb64 = event.getImageb64();
+
+                    if (!imageb64.isBlank()) {
+                        images.add(newGalleryImage);
+                    }
                 }
 
                 galleryImageAdapter.notifyDataSetChanged();
