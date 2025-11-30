@@ -59,8 +59,6 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
     private EventSearch eventSearch;
     TextView noResultsText;
 
-    private ListenerRegistration fetchEventsRegistration = null;
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -73,6 +71,13 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
         searchEvents = binding.searchEvents;
 
         eventSearch = new EventSearch(getContext(), searchEvents, eventList);
+
+        // Handle opening filter menu
+        filterDropdownButton = binding.btnFilter;
+
+        popupView = inflater.inflate(R.layout.fragment_event_filter_menu, null);
+
+        resetFilterPopup();
 
         // Initialize event adapter
         MainActivity activity = (MainActivity) requireActivity();
@@ -100,13 +105,6 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
             }
         });
 
-        // Handle opening filter menu
-        filterDropdownButton = binding.btnFilter;
-
-        popupView = inflater.inflate(R.layout.fragment_event_filter_menu, null);
-
-        resetFilterPopup();
-
         noResultsText = binding.noResultsAlert;
         circleBadge = binding.circleBadge;
 
@@ -119,44 +117,6 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
      * Fetches events from Firebase and updates the event adapter.
      */
     private void fetchEvents(String query) {
-        if (fetchEventsRegistration != null) {
-            fetchEventsRegistration.remove();
-        }
-
-        // Fetch events from firebase
-        fetchEventsRegistration = databaseHandler.iterableListen(databaseHandler.getEventsPath(),
-                Event.class,
-                (DatabaseObjects dbObjects) -> {
-                    // Clear existing list
-                    eventList.clear();
-
-                    // Add new events to list
-                    for (int i = 0; i < dbObjects.size(); i++) {
-                        Event event = (Event) dbObjects.get(i);
-                        String eventName = event.getEventDetails().getName();
-
-                        if (eventSearch.checkNameSuggestionMatch(eventName, query) && event.isJoinable()) {
-                            eventList.add(event);
-                        }
-                    }
-
-                    toggleNoResultsTextVisibility();
-
-                    // Notify adapter of changes
-                    eventAdapter.notifyDataSetChanged();
-
-                }
-        );
-    }
-
-    /**
-     * Fetches events from Firebase and updates the event adapter.
-     */
-    private void fetchEvents() {
-        fetchEvents("");
-    }
-
-    private void fetchFilteredEvents() {
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
         EventRepository eventRepository = new EventRepository(firestore);
         EventFilter eventFilter = eventFilterPopup.getEventFilter();
@@ -164,19 +124,39 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
         eventRepository.getAll().addOnSuccessListener(new OnSuccessListener<List<Event>>() {
             @Override
             public void onSuccess(List<Event> events) {
+                // Clear existing list
                 eventList.clear();
 
+                // Add new events to list
                 for (Event event : events) {
-                    if (eventFilter.checkFilterCriteria(event)) {
+                    String eventName = event.getEventDetails().getName();
+
+                    System.out.println("fetch");
+                    System.out.println(eventSearch.checkNameSuggestionMatch(eventName, query));
+                    System.out.println(eventFilterPopup.getEventFilter() == null);
+                    System.out.println(eventFilterPopup.filterReady());
+                    System.out.println("/n");
+
+                    boolean nameSuggestionMatch = eventSearch.checkNameSuggestionMatch(eventName, query);
+
+                    if ((eventFilterPopup.filterReady() && eventFilter.checkFilterCriteria(event) && nameSuggestionMatch) || (!eventFilterPopup.filterReady() && nameSuggestionMatch)) {
                         eventList.add(event);
                     }
                 }
 
                 toggleNoResultsTextVisibility();
 
+                // Notify adapter of changes
                 eventAdapter.notifyDataSetChanged();
             }
         });
+    }
+
+    /**
+     * Fetches events from Firebase and updates the event adapter.
+     */
+    private void fetchEvents() {
+        fetchEvents("");
     }
 
     /**
@@ -206,11 +186,7 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
                     fetchEvents();
                     circleBadge.setVisibility(View.GONE);
                 } else {
-                    if (eventFilterPopup.getEventFilter() == null) {
-                        fetchEvents();
-                    } else {
-                        fetchFilteredEvents();
-                    }
+                    fetchEvents();
                     circleBadge.setVisibility(View.VISIBLE);
                 }
             }
@@ -221,11 +197,6 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
-
-        if (fetchEventsRegistration != null) {
-            fetchEventsRegistration.remove();
-            fetchEventsRegistration = null;
-        }
     }
 
     /**

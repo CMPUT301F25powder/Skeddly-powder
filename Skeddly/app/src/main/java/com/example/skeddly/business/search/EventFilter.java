@@ -1,5 +1,7 @@
 package com.example.skeddly.business.search;
 
+import androidx.annotation.NonNull;
+
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.event.EventDetail;
 import com.example.skeddly.business.event.EventSchedule;
@@ -14,7 +16,15 @@ public class EventFilter {
     private boolean weekend;
     private boolean weekday;
     private ArrayList<String> selectedEventTypes = new ArrayList<>();
+    private boolean isFinalized;
 
+    public boolean isFinalized() {
+        return isFinalized;
+    }
+
+    public void setFinalized(boolean finalized) {
+        isFinalized = finalized;
+    }
     public LocalTime getStartTime() {
         return startTime;
     }

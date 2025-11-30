@@ -48,7 +48,6 @@ public class EventFilterPopup extends PopupWindow {
                 true);
 
         this.dropdownButton = dropdownButton;
-        this.eventFilter = new EventFilter();
         this.interfaceUtilities = new InterfaceUtilities(fragmentManager);
 
         dropdownButton.setOnClickListener(v -> {
@@ -81,6 +80,10 @@ public class EventFilterPopup extends PopupWindow {
             @Override
             public void onCheckBoxChecked(String category, boolean checked) {
                 ArrayList<String> newCategories;
+
+                if (eventFilter == null) {
+                    eventFilter = new EventFilter();
+                }
 
                 if (eventFilter.getSelectedEventTypes() == null) {
                     newCategories = new ArrayList<>();
@@ -128,6 +131,8 @@ public class EventFilterPopup extends PopupWindow {
                 if (filterUpdatedListener != null) {
                     filterUpdatedListener.onFilterUpdated(false);
                 }
+
+                eventFilter.setFinalized(true);
             }
         });
 
@@ -167,6 +172,10 @@ public class EventFilterPopup extends PopupWindow {
 
     public EventFilter getEventFilter() {
         return this.eventFilter;
+    }
+
+    public boolean filterReady() {
+        return (this.eventFilter != null && this.eventFilter.isFinalized());
     }
 
     private void rotateDropdownButton() {

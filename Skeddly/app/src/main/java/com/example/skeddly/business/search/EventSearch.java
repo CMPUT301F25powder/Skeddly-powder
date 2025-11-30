@@ -38,24 +38,24 @@ public class EventSearch {
         searchBar.setSuggestionsAdapter(filterCursorAdapter);
         filterCursorAdapter.changeCursor(matrixCursor);
 
-//        // Set up adapter for suggestions
-//        simpleCursorAdapter = new SimpleCursorAdapter(context, android.R.layout.simple_list_item_1, null, from, to, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
-//        searchBar.setSuggestionsAdapter(simpleCursorAdapter);
-//        searchBar.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
-//            @Override
-//            public boolean onSuggestionClick(int position) {
-//                // Query a suggestion when clicked in the dropdown
-//                Cursor cursor = (Cursor) simpleCursorAdapter.getItem(position);
-//                String txt = cursor.getString(cursor.getColumnIndexOrThrow(EVENT_NAME_SUGGESTION_ID));
-//                searchBar.setQuery(txt, true);
-//                return true;
-//            }
-//
-//            @Override
-//            public boolean onSuggestionSelect(int position) {
-//                return true;
-//            }
-//        });
+        // Set up adapter for suggestions
+        simpleCursorAdapter = new SimpleCursorAdapter(context, android.R.layout.simple_list_item_1, null, from, to, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+        searchBar.setSuggestionsAdapter(simpleCursorAdapter);
+        searchBar.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+            @Override
+            public boolean onSuggestionClick(int position) {
+                // Query a suggestion when clicked in the dropdown
+                Cursor cursor = (Cursor) simpleCursorAdapter.getItem(position);
+                String txt = cursor.getString(cursor.getColumnIndexOrThrow(EVENT_NAME_SUGGESTION_ID));
+                searchBar.setQuery(txt, true);
+                return true;
+            }
+
+            @Override
+            public boolean onSuggestionSelect(int position) {
+                return true;
+            }
+        });
     }
 
     /**
