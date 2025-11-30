@@ -44,15 +44,6 @@ public class EventRepository extends GenericRepository<Event> {
         });
     }
 
-    public Task<List<Event>> getAllWithFilter(EventFilter eventFilter) {
-        return getQuery().whereArrayContainsAny("eventDetails.categories", eventFilter.getSelectedEventTypes()).get().continueWith(new Continuation<QuerySnapshot, List<Event>>() {
-            @Override
-            public List<Event> then(@NonNull Task<QuerySnapshot> task) throws Exception {
-                return task.getResult().toObjects(clazz);
-            }
-        });
-    }
-
     public Task<Void> updateEvent(Event event) {
         return get(event.getId()).continueWithTask(new Continuation<Event, Task<Void>>() {
             @Override
