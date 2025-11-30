@@ -16,6 +16,7 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
 import androidx.test.espresso.matcher.RootMatchers;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.filters.LargeTest;
 
 import com.example.skeddly.business.event.Event;
@@ -81,5 +82,21 @@ public class EventInstrumentedTest extends BaseTest {
         onView(withId(R.id.btn_qr_code)).check(matches(isDisplayed())).perform(click());
 
         onView(withId(R.id.qr_popup)).check(matches(isDisplayed()));
+    }
+
+    /**
+     * Tests that event details are displayed correctly and that the map popup can be opened.
+     */
+    @Test
+    public void testEventDetailsAreDisplayedCorrectly() {
+        testViewEvent();
+
+        onView(withId(R.id.value_event_title)).check(matches(isDisplayed()));
+        onView(withId(R.id.value_event_description)).check(matches(isDisplayed()));
+        onView(withId(R.id.value_attendee_limit)).check(matches(isDisplayed()));
+
+        onView(withId(R.id.text_event_title_overlay)).check(matches(isDisplayed())).perform(click());
+
+        onView(ViewMatchers.withId(R.layout.dialog_map)).check(matches(isDisplayed()));
     }
 }
