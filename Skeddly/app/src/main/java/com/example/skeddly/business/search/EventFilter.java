@@ -70,7 +70,7 @@ public class EventFilter {
             }
         }
 
-        if (!getSelectedEventTypes().contains(eventDetails.getCategories())) {
+        if (!getSelectedEventTypes().containsAll(eventDetails.getCategories())) {
             return false;
         }
 
