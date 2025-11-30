@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private NavController navController;
     private Uri qr;
+    private boolean navToInbox;
 
     // FCM (Notifications)
     private final ActivityResultLauncher<String> requestPermissionLauncher =
@@ -91,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (extras != null) {
             qr = Objects.requireNonNull(extras).getParcelable("QR");
+            navToInbox = extras.getBoolean("notification");
         }
 
         DatabaseHandler database = new DatabaseHandler();
@@ -116,6 +118,8 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
                     }
+                } else if (navToInbox) {
+                    navController.navigate(R.id.navigation_inbox);
                 }
             }
         });

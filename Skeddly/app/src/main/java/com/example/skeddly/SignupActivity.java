@@ -50,8 +50,6 @@ public class SignupActivity extends AppCompatActivity {
     private Button submitButton;
     private boolean loaded = false;
 
-    private Uri qrOpenUri;
-
     private Authenticator authenticator;
 
     @Override
@@ -82,9 +80,6 @@ public class SignupActivity extends AppCompatActivity {
 
         submitButton = binding.btnAccountCreate;
         toggleSubmitButton();
-
-        // See if we were opened by a QR code or special link
-        qrOpenUri = getLaunchLink();
 
         TextWatcher textWatcher = new TextWatcher() {
             @Override
@@ -179,13 +174,18 @@ public class SignupActivity extends AppCompatActivity {
      */
     private void switchToMain() {
         Intent mainActivity = new Intent(getBaseContext(), MainActivity.class);
+
+        // See if we were opened by a QR code or special link
+        Uri qrOpenUri = getLaunchLink();
+        boolean inbox = shouldNavToInbox();
+
         mainActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         mainActivity.putExtra("QR", qrOpenUri);
+        mainActivity.putExtra("notification", inbox);
         startActivity(mainActivity);
         finish();
 
         loaded = true;
-
     }
 
     /**
@@ -197,6 +197,21 @@ public class SignupActivity extends AppCompatActivity {
     private Uri getLaunchLink() {
         Intent intent = getIntent();
         return intent.getData();
+    }
+
+    /**
+     * See whether we should navigate to the inbox. This is when a notification is clicked.
+     * @return True if we should, false otherwise.
+     */
+    private boolean shouldNavToInbox() {
+        Intent intent = getIntent();
+        String extra = intent.getStringExtra("notification");
+
+        if (extra != null && extra.equals("inbox")) {
+            return true;
+        }
+
+        return false;
     }
 
     public boolean getLoaded() {

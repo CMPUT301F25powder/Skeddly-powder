@@ -60,7 +60,7 @@ def send_fcm_notification(event: Event[DocumentSnapshot]) -> None:
     firestore_client: google.cloud.firestore.Client = firestore.client()
 
     try:
-        fcmToken = firestore_client.collection("users").document(uid_recipient).get(["fcmToken"]).get("fcmToken")
+        fcm_token = firestore_client.collection("users").document(uid_recipient).get(["fcmToken"]).get("fcmToken")
     except:
         # No FCM Token so can't send a notification
         print(f"[ERROR] Could not get fcmToken for {uid_recipient}")
@@ -68,7 +68,7 @@ def send_fcm_notification(event: Event[DocumentSnapshot]) -> None:
 
     message = messaging.Message(
         notification=messaging.Notification(title=data["title"], body=data["message"]),
-        token=fcmToken
+        token=fcm_token,
     )
 
     response = messaging.send(message)
