@@ -81,4 +81,4 @@ jobs:
           target: google_apis_playstore
           arch: x86_64
           profile: medium_phone
-          script: cd Skeddly && ./gradlew connectedAndroidTest
+          script: cd Skeddly && ./gradlew connectedEmulateFirestoreAndroidTest

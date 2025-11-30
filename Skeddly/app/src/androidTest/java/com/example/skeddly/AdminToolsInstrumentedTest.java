@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
-@RunWith(AndroidJUnit4.class)
 @LargeTest
 public class AdminToolsInstrumentedTest extends BaseTest {
 
