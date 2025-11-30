@@ -82,6 +82,7 @@ public class AdminToolsInstrumentedTest extends BaseTest {
         onView(withId(R.id.btn_view_user)).perform(click());
 
         onViewLoaded(withId(R.id.list_view_users)).check(matches(isDisplayed()));
+        Thread.sleep(2000);
 
         UserRepository allUsersRepo = new UserRepository(FirebaseFirestore.getInstance());
         List<User> allUsersFromDb = Tasks.await(allUsersRepo.getAll());
@@ -106,7 +107,6 @@ public class AdminToolsInstrumentedTest extends BaseTest {
             Assert.assertEquals("ListView should only show organizers after filtering.", organizerCount, listView.getAdapter().getCount());
         });
 
-        onView(withId(R.id.switch_organizers_only)).perform(click());
     }
 
     @Test
