@@ -35,25 +35,25 @@ public class AdminToolsInstrumentedTest extends BaseTest {
      */
     @Before
     public void navigateToAdminTools() {
-        onViewLoaded((R.id.navigation_tools)).perform(click());
-        onViewLoaded((R.id.btn_my_events)).check(matches(isDisplayed()));
+        onViewLoaded(withId(R.id.navigation_tools)).perform(click());
+        onViewLoaded(withId(R.id.btn_my_events)).check(matches(isDisplayed()));
     }
 
     @Test
     public void testNavigateToMyEventsAndBack() {
         onView(withId(R.id.btn_my_events)).perform(click());
 
-        onViewLoaded(R.id.list_events).check(matches(isDisplayed()));
+        onViewLoaded(withId(R.id.list_events)).check(matches(isDisplayed()));
 
         pressBack();
 
-        onViewLoaded(R.id.btn_my_events).check(matches(isDisplayed()));
+        onViewLoaded(withId(R.id.btn_my_events)).check(matches(isDisplayed()));
     }
 
     @Test
     public void testImageGallery_AdminCanDeleteImage() {
         onView(withId(R.id.btn_img_gallery)).perform(click());
-        onViewLoaded((R.id.uploadedImages)).check(matches(isDisplayed()));
+        onViewLoaded(withId(R.id.uploadedImages)).check(matches(isDisplayed()));
 
         onData(is(instanceOf(Object.class)))
                 .inAdapterView(withId(R.id.uploadedImages))
@@ -63,16 +63,16 @@ public class AdminToolsInstrumentedTest extends BaseTest {
 
         onView(withId(R.id.deleteSelectedBtn)).perform(click());
 
-        onViewLoaded((R.id.imageSelectHeader)).check(matches(isDisplayed()));
+        onViewLoaded(withId(R.id.imageSelectHeader)).check(matches(isDisplayed()));
     }
 
     @Test
     public void testViewUsers_CanFilterByOrganizer()  {
         onView(withId(R.id.btn_view_user)).perform(click());
 
-        onViewLoaded(R.id.list_view_users).check(matches(isDisplayed()));
+        onViewLoaded(withId(R.id.list_view_users)).check(matches(isDisplayed()));
 
-        onViewLoaded(R.id.switch_organizers_only).perform(click());
+        onViewLoaded(withId(R.id.switch_organizers_only)).perform(click());
 
         onView(withId(R.id.switch_organizers_only)).check(matches(isDisplayed()));
 
@@ -82,7 +82,7 @@ public class AdminToolsInstrumentedTest extends BaseTest {
     @Test
     public void testNotificationLogs_CanViewNotifs() {
         onView(withId(R.id.btn_log_notification)).perform(click());
-        onViewLoaded((R.id.list_notifications)).check(matches(isDisplayed()));
+        onViewLoaded(withId(R.id.list_notifications)).check(matches(isDisplayed()));
 
     }
 }

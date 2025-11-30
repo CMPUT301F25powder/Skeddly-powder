@@ -1,10 +1,15 @@
 package com.example.skeddly.utilities;
 
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
+import static org.hamcrest.Matchers.allOf;
+
 import android.view.View;
+import android.widget.SearchView;
 
 import androidx.test.espresso.PerformException;
 import androidx.test.espresso.UiController;
@@ -83,7 +88,7 @@ public class TestUtil {
      * @param timeout long
      * @return ViewAction
      */
-    public static ViewAction waitForView(int viewId, long timeout) {
+    public static ViewAction waitForView(Matcher<View> viewMatcher, long timeout) {
         return new ViewAction() {
             @Override
             public Matcher<View> getConstraints() {
@@ -101,7 +106,6 @@ public class TestUtil {
 
                 long start = System.currentTimeMillis();
                 long end = start + timeout;
-                Matcher<View> viewMatcher = withId(viewId);
 
                 while (System.currentTimeMillis() < end) {
                     for (View child : TreeIterables.breadthFirstViewTraversal(view)) {
@@ -122,14 +126,39 @@ public class TestUtil {
         };
     }
 
-    public static ViewInteraction onViewLoaded(int id) {
-        return onViewLoaded(id, 10000);
+    public static ViewInteraction onViewLoaded(Matcher<View> viewMatcher) {
+        return onViewLoaded(viewMatcher, 10000);
     }
 
-    public static ViewInteraction onViewLoaded(int id, long timeout) {
+    public static ViewInteraction onViewLoaded(Matcher<View> viewMatcher, long timeout) {
         onView(isRoot())
-                .perform(waitForView(id, timeout));
+                .perform(waitForView(viewMatcher, timeout));
 
-        return onView(withId(id));
+        return onView(viewMatcher);
+    }
+
+    /**
+     * Types text into a SearchView
+     * https://stackoverflow.com/a/48037073
+     * @param text String
+     * @return ViewAction
+     */
+    public static ViewAction typeSearchViewText(final String text){
+        return new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return allOf(isDisplayed(), isAssignableFrom(SearchView.class));
+            }
+
+            @Override
+            public String getDescription() {
+                return "Change view text";
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                ((SearchView) view).setQuery(text, true);
+            }
+        };
     }
 }
