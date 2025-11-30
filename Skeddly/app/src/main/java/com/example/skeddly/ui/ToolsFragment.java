@@ -9,10 +9,9 @@ import android.widget.ImageButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 
-import com.example.skeddly.R;
 import com.example.skeddly.databinding.FragmentToolsBinding;
+import com.example.skeddly.ui.utility.FragmentAnim;
 
 /**
  * Fragment for the tools screen
@@ -30,56 +29,28 @@ public class ToolsFragment extends Fragment {
         getChildFragmentManager().beginTransaction().replace(binding.fragment.getId(), toolButtonsFragment).commit();
 
         ImageButton toolsBack = binding.headerTools.toolsBack;
-
         toolsBack.setVisibility(View.GONE);
 
-        toolButtonsFragment.setImageGalleryButtonOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AdminImageGalleryFragment fragment = new AdminImageGalleryFragment();
-                getChildFragmentManager().beginTransaction().replace(binding.fragment.getId(), fragment).commit();
-
-                toolsBack.setVisibility(View.VISIBLE);
-            }
-        });
-
-        toolButtonsFragment.setNotificationLogsButtonOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AdminInboxFragment fragment = new AdminInboxFragment();
-                getChildFragmentManager().beginTransaction().replace(binding.fragment.getId(), fragment).commit();
-
-                toolsBack.setVisibility(View.VISIBLE);
-            }
-        });
-
-        toolButtonsFragment.setViewUserButtonOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AdminUserViewFragment fragment = new AdminUserViewFragment();
-                getChildFragmentManager().beginTransaction().replace(binding.fragment.getId(), fragment).commit();
-
-                toolsBack.setVisibility(View.VISIBLE);
-            }
-        });
-
-        toolButtonsFragment.setMyEventsButtonOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Navigation.findNavController(v).navigate(R.id.action_navigation_tools_to_my_events);
-                toolsBack.setVisibility(View.VISIBLE);
-            }
-        });
-
-        toolsBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toolsBack.setVisibility(View.GONE);
-                getChildFragmentManager().beginTransaction().replace(binding.fragment.getId(), toolButtonsFragment).commit();
-            }
-        });
+        toolButtonsFragment.setImageGalleryButtonOnClickListener(v -> changeNewFragment(new AdminImageGalleryFragment(), View.VISIBLE));
+        toolButtonsFragment.setNotificationLogsButtonOnClickListener(v -> changeNewFragment(new AdminInboxFragment(), View.VISIBLE));
+        toolButtonsFragment.setViewUserButtonOnClickListener(v -> changeNewFragment(new AdminUserViewFragment(), View.VISIBLE));
+        toolButtonsFragment.setMyEventsButtonOnClickListener(v -> changeNewFragment(MyEventsFragment.newInstance(true), View.VISIBLE));
+        toolsBack.setOnClickListener(v -> changeNewFragment(toolButtonsFragment, View.GONE));
 
         return root;
+    }
+
+    /**
+     * Changes to show a new fragment.
+     * @param fragment The fragment to change to.
+     * @param backVisibility Whether we should show a back button or not.
+     */
+    private void changeNewFragment(Fragment fragment, int backVisibility) {
+        FragmentAnim.setDefaultAnimations(getChildFragmentManager().beginTransaction())
+                .replace(binding.fragment.getId(), fragment).commit();
+
+        ImageButton toolsBack = binding.headerTools.toolsBack;
+        toolsBack.setVisibility(backVisibility);
     }
 
     @Override

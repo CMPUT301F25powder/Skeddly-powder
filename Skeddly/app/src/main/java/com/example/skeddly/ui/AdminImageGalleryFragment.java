@@ -21,7 +21,7 @@ import com.example.skeddly.business.event.Event;
 import com.example.skeddly.databinding.FragmentAdminImageGalleryBinding;
 import com.example.skeddly.ui.adapter.GalleryImageAdapter;
 import com.example.skeddly.ui.popup.ImagePopupDialogFragment;
-import com.example.skeddly.ui.utils.GalleryImage;
+import com.example.skeddly.ui.utility.GalleryImage;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -107,7 +107,11 @@ public class AdminImageGalleryFragment extends Fragment {
             public void onSuccess(List<Event> events) {
                 for (Event event : events) {
                     GalleryImage newGalleryImage = new GalleryImage(event);
-                    images.add(newGalleryImage);
+                    String imageb64 = event.getImageb64();
+
+                    if (!imageb64.isBlank()) {
+                        images.add(newGalleryImage);
+                    }
                 }
 
                 galleryImageAdapter.notifyDataSetChanged();
