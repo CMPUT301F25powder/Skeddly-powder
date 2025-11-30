@@ -42,7 +42,7 @@
             android:id="@+id/text_view_join_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android.layout_marginTop="4dp"
             android:textColor="@color/neutral_brown_light"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -62,6 +62,19 @@
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btn_message_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_message"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/text_view_full_name"
+            app:layout_constraintStart_toEndOf="@+id/text_view_full_name"
+            app.layout_constraintTop_toTopOf="@+id/text_view_full_name"
+            tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

@@ -18,18 +18,23 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.skeddly.MainActivity;
 import com.example.skeddly.R;
 import com.example.skeddly.business.Ticket;
 import com.example.skeddly.business.TicketStatus;
+import com.example.skeddly.business.database.repository.NotificationRepository;
 import com.example.skeddly.business.database.repository.TicketRepository;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.database.SingleListenUpdate;
 import com.example.skeddly.business.location.CustomLocation;
 import com.example.skeddly.business.location.MapPopupType;
+import com.example.skeddly.business.notification.Notification;
+import com.example.skeddly.business.user.User;
 import com.example.skeddly.databinding.FragmentParticipantListBinding;
 import com.example.skeddly.ui.adapter.ParticipantAdapter;
 import com.example.skeddly.ui.popup.MapPopupDialogFragment;
+import com.example.skeddly.ui.popup.SendMessageDialogFragment;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.opencsv.CSVWriter;
@@ -49,7 +54,7 @@ import java.util.stream.Stream;
 /**
  * Fragment for the participant list screen
  */
-public class ParticipantListFragment extends Fragment {
+public class ParticipantListFragment extends Fragment implements ParticipantAdapter.OnMessageButtonClickListener {
 
     private FragmentParticipantListBinding binding;
     private Event event;
@@ -64,6 +69,7 @@ public class ParticipantListFragment extends Fragment {
     private ListenerRegistration listener;
     private ActivityResultLauncher<Intent> filePickerActivityResultLauncher;
     private TicketRepository ticketRepository;
+    private NotificationRepository notificationRepository;
 
     @Nullable
     @Override
@@ -78,6 +84,7 @@ public class ParticipantListFragment extends Fragment {
         if (getArguments() != null) {
             String eventId = getArguments().getString("eventId");
             ticketRepository = new TicketRepository(FirebaseFirestore.getInstance(), eventId);
+            notificationRepository = new NotificationRepository(FirebaseFirestore.getInstance());
             loadEventAndSetupUI(eventId);
         }
 
@@ -119,6 +126,13 @@ public class ParticipantListFragment extends Fragment {
                     }
                 });
 
+        getChildFragmentManager().setFragmentResultListener("sendMessage", this, (requestKey, bundle) -> {
+            String message = bundle.getString("message");
+            String recipientId = bundle.getString("recipientId");
+            Notification notification = new Notification(event.getEventDetails().getName(), message, recipientId);
+            notificationRepository.set(notification);
+        });
+
         return root;
     }
 
@@ -147,10 +161,11 @@ public class ParticipantListFragment extends Fragment {
                     }
                     // Set event
                     this.event = receivedEvent;
+                    User currentUser = ((MainActivity) requireActivity()).getUser();
 
                     // Create the adapter with an empty list
-                    waitingParticipantAdapter = new ParticipantAdapter(getContext(), waitingListTickets, dbhandler, event);
-                    finalParticipantAdapter = new ParticipantAdapter(getContext(), finalListTickets, dbhandler, event);
+                    waitingParticipantAdapter = new ParticipantAdapter(getContext(), waitingListTickets, dbhandler, event, currentUser, this);
+                    finalParticipantAdapter = new ParticipantAdapter(getContext(), finalListTickets, dbhandler, event, currentUser, this);
                     binding.listViewEntrants.setAdapter(waitingParticipantAdapter);
 
                     // Set the button listeners to clear the adapter and fetch the correct data.
@@ -290,5 +305,10 @@ public class ParticipantListFragment extends Fragment {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onMessageButtonClick(String recipientId) {
+        SendMessageDialogFragment.newInstance(recipientId).show(getChildFragmentManager(), "SendMessage");
     }
 }
