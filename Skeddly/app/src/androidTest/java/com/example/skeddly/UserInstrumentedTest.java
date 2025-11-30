@@ -49,28 +49,6 @@ public class UserInstrumentedTest extends BaseTest {
     }
 
     /**
-     * Tests if a user can access the events that it owns
-     */
-    // FOR NOW: create an event beforehand in the DB.
-    // This will need to be fixed later once more logic is added for adding/removing events.
-    // I used a user that is the owner of a test event for this test.
-    @Test
-    public void testEventOwnership() {
-        // TODO: Create an event via the UI and then query the EventRepository to make sure it is incremented
-
-//        Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-//
-//        DatabaseHandler database = new DatabaseHandler();
-//        Authenticator authenticator = new Authenticator(appContext, database);
-//        authenticator.addListenerForUserLoaded(new UserLoaded() {
-//            @Override
-//            public void onUserLoaded(User loadedUser, boolean shouldShowSignup) {
-//                assertEquals(1, loadedUser.getOwnedEvents().size());
-//            }
-//        });
-    }
-
-    /**
      * Tests if the user can edit/create a different account in the database that isn't related to them.
      * Used for testing the rules in the Firebase DB.
      */
