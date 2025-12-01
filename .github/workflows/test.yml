@@ -33,6 +33,29 @@ jobs:
       - name: checkout
         uses: actions/checkout@v5
 
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+          cache: 'pip' # caching pip dependencies
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 25
+
+      - name: Install Firebase CLI
+        run: |
+          npm install -g firebase-tools
+
+      - name: Run Firebase Emulator
+        run: |
+          cd firebase/functions
+          python3.13 -m venv venv
+          ./venv/bin/pip install -r requirements.txt
+          cd ..
+          firebase emulators:start --token "$FIREBASE_TOKEN" &
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+
       - name: Enable KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -70,6 +93,8 @@ jobs:
         run: echo $GOOGLE_SERVICES_JSON | base64 -di > ./Skeddly/app/google-services.json
 
       - name: run tests
+        env:
+          ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL: 400
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
@@ -79,4 +104,4 @@ jobs:
           target: google_apis_playstore
           arch: x86_64
           profile: medium_phone
-          script: cd Skeddly && ./gradlew connectedAndroidTest
+          script: cd Skeddly && ./gradlew connectedEmulateFirestoreAndroidTest

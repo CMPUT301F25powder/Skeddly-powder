@@ -23,12 +23,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.bumptech.glide.Glide;
-import com.example.skeddly.MainActivity;
 import com.example.skeddly.R;
-import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.database.repository.EventRepository;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.event.EventDetail;
@@ -38,8 +38,8 @@ import com.example.skeddly.databinding.FragmentCreateEditBinding;
 import com.example.skeddly.ui.popup.CategorySelectorDialogFragment;
 import com.example.skeddly.ui.popup.MapPopupDialogFragment;
 import com.example.skeddly.ui.utils.InterfaceUtilities;
-import com.example.skeddly.ui.utils.MaterialTimePickerCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.firebase.auth.FirebaseAuth;
@@ -122,9 +122,8 @@ public class CreateFragment extends Fragment {
         binding.btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Use the NavController to navigate back to the home screen.
-                NavHostFragment.findNavController(CreateFragment.this)
-                        .navigate(R.id.navigation_home);
+                // Use the NavController to navigate back
+                NavHostFragment.findNavController(CreateFragment.this).navigateUp();
             }
         });
 
@@ -290,11 +289,6 @@ public class CreateFragment extends Fragment {
                     eventRepository.set(event);
                 }
 
-                // User owns the event
-                MainActivity mainActivity = (MainActivity) requireActivity();
-                mainActivity.getUser().addOwnedEvent(event);
-                mainActivity.notifyUserChanged();
-
                 // Reset the create event screen
                 if (!isEdit) resetCreateScreen();
 
@@ -328,6 +322,13 @@ public class CreateFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        resetCreateScreen();
+        BottomNavigationView navView = requireActivity().findViewById(R.id.nav_view);
+        if (navView != null) {
+            navView.setOnItemSelectedListener(null);
+            NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main);
+            androidx.navigation.ui.NavigationUI.setupWithNavController(navView, navController);
+        }
         binding = null;
     }
 
@@ -546,6 +547,8 @@ public class CreateFragment extends Fragment {
      * Resets the create event screen after creating an event.
      */
     private void resetCreateScreen() {
+        isEdit = false;
+        eventId = null;
         binding.imgEvent.setImageDrawable(null);
         binding.textEventTitleOverlay.setText(R.string.event_title_location);
         binding.switchRecurrence.setChecked(false);
@@ -666,5 +669,26 @@ public class CreateFragment extends Fragment {
 
         // Update Button
         updateConfirmButton();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        BottomNavigationView navView = requireActivity().findViewById(R.id.nav_view);
+
+        if (navView != null) {
+            navView.setOnItemSelectedListener(item -> {
+                if (item.getItemId() == R.id.navigation_home) {
+                    // Mimic the back button's behavior
+                    System.out.println("Back button pressed");
+                    Navigation.findNavController(view).navigateUp();
+                    return true;
+                }
+                // For any other button, let the default behavior happen
+                NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main);
+                return androidx.navigation.ui.NavigationUI.onNavDestinationSelected(item, navController);
+            });
+        }
     }
 }

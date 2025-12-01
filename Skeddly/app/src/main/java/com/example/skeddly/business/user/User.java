@@ -12,34 +12,21 @@ import java.util.ArrayList;
 public class User extends DatabaseObject {
     private NotificationSettings notificationSettings;
     private PersonalInformation personalInformation;
-    private ArrayList<String> ownedEvents;
-    private ArrayList<String> joinedEvents;
     private UserLevel privilegeLevel;
 
     /**
      * Constructor for the User
      */
     public User() {
-        this.ownedEvents = new ArrayList<>();
         this.personalInformation = new PersonalInformation();
         this.notificationSettings = new NotificationSettings();
         this.privilegeLevel = UserLevel.ENTRANT;
     }
 
-    /**
-     * Gets the events the user owns
-     * @return The events the user owns
-     */
-    public ArrayList<String> getOwnedEvents() {
-        return ownedEvents;
-    }
-
-    /**
-     * Sets the events the user owns
-     * @param ownedEvents The events the user owns
-     */
-    public void setOwnedEvents(ArrayList<String> ownedEvents) {
-        this.ownedEvents = ownedEvents;
+    public User(PersonalInformation personalInformation, UserLevel privilegeLevel) {
+        this.personalInformation = personalInformation;
+        this.notificationSettings = new NotificationSettings();
+        this.privilegeLevel = privilegeLevel;
     }
 
     /**
@@ -88,31 +75,5 @@ public class User extends DatabaseObject {
      */
     public void setPersonalInformation(PersonalInformation personalInformation) {
         this.personalInformation = personalInformation;
-    }
-
-    /**
-     * Add to user's owned events array (add events id)
-     * @param event The event to add
-     */
-    public void addOwnedEvent(Event event) {
-        ownedEvents.add(event.getId());
-    }
-
-    /**
-     * Gets the list of events the user has joined.
-     * @return An array list of event ids.
-     */
-    @Exclude // Exclude so we can handle ourselves
-    public ArrayList<String> getJoinedEvents() {
-        return joinedEvents;
-    }
-
-    /**
-     * Sets which events the user has joined.
-     * @param joinedEvents An array list of event ids
-     */
-    @Exclude // Exclude so we can handle ourselves
-    public void setJoinedEvents(ArrayList<String> joinedEvents) {
-        this.joinedEvents = joinedEvents;
     }
 }

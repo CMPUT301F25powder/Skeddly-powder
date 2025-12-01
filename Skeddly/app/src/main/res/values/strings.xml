@@ -16,6 +16,22 @@
     <string name="dialog_qr_title">QR Code</string>
     <string name="dialog_title">Title</string>
 
+    <string name="dialog_firebase_emu_title">Setup Firebase Emulator</string>
+    <string name="dialog_firebase_emu_contents">
+        Enter the IP Address of the Firebase Emulator to use.
+        The default is 10.0.2.2. If the box is left blank, the default will be used.
+        Your emulator must use the ports:\n\n
+        Authentication: 9099\n
+        Functions: 5001\n
+        Firestore: 8080\n
+        Storage: 9199
+    </string>
+
+    <string name="dialog_user_demotion_title">Confirm Demotion</string>
+    <string name="dialog_user_demotion_contents">
+        Demoting this user to ENTRANT will delete all their associated events. This action cannot be undone. Are you sure?
+    </string>
+
     <string name="event_attendee_limit">0/25</string>
     <string name="event_btn_draw">Draw</string>
     <string name="event_btn_edit">Edit</string>
@@ -85,6 +101,10 @@
     <string name="fragment_profile_phone_number">123-456-7890</string>
     <string name="fragment_profile_popup_delete_content">Are you sure you want to delete your account?</string>
 
+    <string name="fragment_settings_notifications_lottery_status">Lottery Status Notifications</string>
+    <string name="fragment_settings_notifications_event_update">Event Update Notifications</string>
+    <string name="fragment_settings_notification_administrative">Administrative Notifications</string>
+
     <string name="nav_create">Create</string>
     <string name="nav_event_info">Event Info</string>
     <string name="nav_home">Home</string>
@@ -92,10 +112,14 @@
     <string name="nav_my_events">My Events</string>
     <string name="nav_profile">Profile</string>
     <string name="nav_tools">Tools</string>
+    <string name="nav_notif_settings">Notification Settings</string>
 
     <string name="notification_content">Notification information, here is information about the notification yuppers</string>
     <string name="notification_title">Notification</string>
     <string name="dialog_draw_content">Participants on waiting list: %d\nCurrent # of Participants: %d/%d\n\nHow many participants do you want to draw?</string>
     <string name="selected_images_count">%d selected images</string>
     <string name="admin_notification_logs">Admin Notification Logs</string>
+    <string name="my_events">My Events</string>
+    <string name="placeholder">Placeholder</string>
+    <string name="fragment_profile_event_history_joined_date">Joined: %s</string>
 </resources>

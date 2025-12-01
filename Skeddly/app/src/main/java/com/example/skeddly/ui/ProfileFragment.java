@@ -1,6 +1,7 @@
 package com.example.skeddly.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import com.example.skeddly.business.user.PersonalInformation;
 import com.example.skeddly.business.user.User;
 import com.example.skeddly.databinding.FragmentProfileBinding;
 import com.example.skeddly.ui.popup.StandardPopupDialogFragment;
+import com.example.skeddly.ui.utility.FragmentAnim;
 
 /**
  * Fragment for the profile screen
@@ -46,31 +48,43 @@ public class ProfileFragment extends Fragment {
         ProfileButtonsFragment pbf = new ProfileButtonsFragment();
         getChildFragmentManager().beginTransaction().replace(binding.fragment.getId(), pbf).commit();
 
-        View.OnClickListener returnToButtons = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getChildFragmentManager().beginTransaction().replace(binding.fragment.getId(), pbf).commit();
-                backButton.setVisibility(View.INVISIBLE);
-                updatePersonalInfo();
-            }
+        View.OnClickListener returnToButtons = v -> {
+            changeNewFragment(pbf, View.INVISIBLE);
+            updatePersonalInfo();
         };
 
         // What to do when they press to navigate to the personal info edit fragment
-        pbf.setPersonalInfoBtnOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                backButton.setVisibility(View.VISIBLE);
-                PersonalInformationEditFragment pief = new PersonalInformationEditFragment();
-                getChildFragmentManager().beginTransaction().replace(binding.fragment.getId(), pief).commit();
+        pbf.setPersonalInfoBtnOnClickListener(v -> {
+            PersonalInformationEditFragment pief = new PersonalInformationEditFragment();
+            pief.setOnCompleteListener(returnToButtons);
+            changeNewFragment(pief, View.VISIBLE);
+        });
 
-                // If they submit, we return back to profile buttons
-                pief.setOnCompleteListener(returnToButtons);
-            }
+        // On click listener for EventHistoryFragment
+        pbf.setEventHistoryButtonOnClickListener(v -> changeNewFragment(new EventHistoryFragment(), View.VISIBLE));
+
+        // What to do when they press to navigate to the notification settings fragment
+        pbf.setNotificationSettingsBtnOnClickListener(v -> {
+            NotificationSettingsFragment nsf = new NotificationSettingsFragment();
+            changeNewFragment(nsf, View.VISIBLE);
         });
 
         backButton.setOnClickListener(returnToButtons);
 
         return root;
+    }
+
+    /**
+     * Changes to show a new fragment.
+     * @param fragment The fragment to change to.
+     * @param backVisibility Whether we should show a back button or not.
+     */
+    private void changeNewFragment(Fragment fragment, int backVisibility) {
+        FragmentAnim.setDefaultAnimations(getChildFragmentManager().beginTransaction())
+                .replace(binding.fragment.getId(), fragment).commit();
+
+        ImageButton backButton = binding.headerProfile.btnBack;
+        backButton.setVisibility(backVisibility);
     }
 
     @Override

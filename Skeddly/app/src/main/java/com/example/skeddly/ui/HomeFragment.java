@@ -18,7 +18,6 @@ import com.example.skeddly.R;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.database.SingleListenUpdate;
 import com.example.skeddly.business.database.repository.EventRepository;
-import com.example.skeddly.business.event.EventSchedule;
 import com.example.skeddly.business.location.CustomLocation;
 import com.example.skeddly.business.search.EventFilter;
 import com.example.skeddly.business.user.User;
@@ -27,15 +26,12 @@ import com.example.skeddly.business.search.EventSearch;
 import com.example.skeddly.business.search.SearchFinishedListener;
 import com.example.skeddly.ui.adapter.EventAdapter;
 import com.example.skeddly.business.event.Event;
-import com.example.skeddly.business.database.DatabaseObjects;
 import com.example.skeddly.ui.adapter.RetrieveLocation;
 import com.example.skeddly.ui.filtering.EventFilterPopup;
 import com.example.skeddly.ui.filtering.FilterUpdatedListener;
 import com.example.skeddly.ui.utility.LocationFetcherFragment;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.ListenerRegistration;
-import com.google.firebase.firestore.core.Query;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,10 +79,14 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
         resetFilterPopup();
 
         // Initialize event adapter
-        eventAdapter = new EventAdapter(getContext(),
+        eventAdapter = new EventAdapter(
+                getContext(),
                 eventList,
                 activity.getUser(),
-                this);
+                this,
+                R.id.action_navigation_home_to_event_view_info, // View Info Action for Home
+                R.id.action_navigation_home_to_edit_event      // Edit Action for Home
+        );
 
         // Set event adapter to list view
         listEvents = binding.listEvents;

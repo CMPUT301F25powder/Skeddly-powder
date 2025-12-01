@@ -9,6 +9,7 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Collections;
@@ -20,28 +21,24 @@ import java.util.List;
 public class EventRepository extends GenericRepository<Event> {
     private final FirebaseFirestore firestore;
     public static final String COLLECTION_PATH = "events";
+    public String organizerId;
 
     /**
-     * Creates a new event repository.
+     * Creates a new event repository associated with a given organizer id.
      * @param firestore The FirebaseFirestore instance to use.
      */
-    public EventRepository(FirebaseFirestore firestore) {
+    public EventRepository(FirebaseFirestore firestore, String organizerId) {
         super(Event.class);
         this.firestore = firestore;
+        this.organizerId = organizerId;
     }
 
     /**
-     * Gets all events that are owned by the specified organizer.
-     * @param organizerId The ID of the organizer
-     * @return A task that returns all the events associated with the organizer in a list.
+     * Creates a new event repository that is not associated with any particular organizer.
+     * @param firestore The FirebaseFirestore instance to use.
      */
-    public Task<List<Event>> getAllByOrganizer(String organizerId) {
-        return getQuery().whereEqualTo("organizer", organizerId).get().continueWith(new Continuation<QuerySnapshot, List<Event>>() {
-            @Override
-            public List<Event> then(@NonNull Task<QuerySnapshot> task) throws Exception {
-                return task.getResult().toObjects(clazz);
-            }
-        });
+    public EventRepository(FirebaseFirestore firestore) {
+        this(firestore, null);
     }
 
     public Task<Void> updateEvent(Event event) {
@@ -63,4 +60,19 @@ public class EventRepository extends GenericRepository<Event> {
     protected CollectionReference getCollectionPath() {
         return firestore.collection(COLLECTION_PATH);
     }
+
+    /**
+     * Override getQuery to filter by organizer if specified.
+     */
+    @Override
+    protected Query getQuery() {
+        Query query = super.getQuery();
+
+        if (organizerId != null) {
+            query = query.whereEqualTo("organizer", organizerId);
+        }
+
+        return query;
+    }
+
 }

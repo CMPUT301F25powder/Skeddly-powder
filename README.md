@@ -1,3 +1,7 @@
+[![test](https://github.com/CMPUT301F25powder/Skeddly-powder/actions/workflows/test.yml/badge.svg)](https://github.com/CMPUT301F25powder/Skeddly-powder/actions/workflows/test.yml)
+[![build](https://github.com/CMPUT301F25powder/Skeddly-powder/actions/workflows/build.yml/badge.svg)](https://github.com/CMPUT301F25powder/Skeddly-powder/actions/workflows/build.yml)
+[![pages-build-deployment](https://github.com/CMPUT301F25powder/Skeddly-powder/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/CMPUT301F25powder/Skeddly-powder/actions/workflows/pages/pages-build-deployment)
+
 # Skeddly
 
 ## Description

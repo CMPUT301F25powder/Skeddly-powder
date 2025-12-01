@@ -50,12 +50,14 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 
+import java.text.Format;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -89,7 +91,14 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
         // Initialize eventAdapter
         MainActivity activity = (MainActivity) requireActivity();
         userId = activity.getUser().getId();
-        eventAdapter = new EventAdapter(getContext(), new ArrayList<>(), activity.getUser(), this);
+        eventAdapter = new EventAdapter(
+                getContext(),
+                new ArrayList<>(),
+                activity.getUser(),
+                this,
+                R.id.action_event_view_info_to_participant_list,
+                R.id.action_navigation_event_view_info_to_edit_event
+        );
 
         // For getting our current location
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext());
@@ -136,7 +145,7 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
             Log.e("EventViewInfoFragment", "Event ID is null or empty!");
         }
 
-        // === QR Code shenanigans ===
+        // Set up QR code button
         ImageButton buttonQrCode = binding.btnQrCode;
         buttonQrCode.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -203,16 +212,44 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
 
         // Set Title and Location
         if (event.getLocation() != null) {
-            binding.textEventTitleOverlay.setText(String.format("%s - %s", eventDetails.getName(), event.getLocation().toString()));
+            binding.textEventTitleOverlay.setText(String.format("%s", event.getLocation().toString()));
+            binding.textEventTitleOverlay.setVisibility(View.VISIBLE);
         } else {
-            binding.textEventTitleOverlay.setText(eventDetails.getName());
+            binding.textEventTitleOverlay.setVisibility(View.GONE);
         }
 
         // Set Event Time
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, MMM d, HH:mm");
         LocalDateTime startTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(eventSchedule.getStartTime()), ZoneId.systemDefault());
         LocalDateTime endTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(eventSchedule.getEndTime()), ZoneId.systemDefault());
-        binding.textDaySelect.setText(String.format("%s - %s", startTime.format(formatter), endTime.toLocalTime().toString()));
+
+        String formattedTime;
+        if (eventSchedule.isRecurring()) {
+            // For recurring events
+            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+            String timePart = String.format("%s - %s", startTime.format(timeFormatter), endTime.format(timeFormatter));
+
+            // Build the days of the week string
+            StringBuilder daysPart = getDaysPart(eventSchedule);
+
+            // Format the date range part
+            DateTimeFormatter dateFormatterRange = DateTimeFormatter.ofPattern("MMM d");
+            String datePart = String.format("from %s to %s",
+                    startTime.format(dateFormatterRange),
+                    endTime.format(dateFormatterRange));
+
+            // Combine all parts into the final string
+            formattedTime = String.format("Recurring every %s at %s, %s", daysPart, timePart, datePart);
+
+        } else {
+            // For single events
+            DateTimeFormatter dayFormatter = DateTimeFormatter.ofPattern("EEEE, MMM d");
+            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+            formattedTime = String.format("%s, %s - %s",
+                    startTime.format(dayFormatter),
+                    startTime.format(timeFormatter),
+                    endTime.format(timeFormatter));
+        }
+        binding.textDaySelect.setText(formattedTime);
 
         // Set Information Fields
         binding.valueEventTitle.setText(eventDetails.getName());
@@ -266,6 +303,24 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
                 event.draw(drawAmount);
             }
         });
+    }
+
+    @NonNull
+    private static StringBuilder getDaysPart(EventSchedule eventSchedule) {
+        List<Boolean> days = eventSchedule.getDaysOfWeek();
+        StringBuilder daysPart = new StringBuilder();
+        if (days != null && days.contains(true)) {
+            String[] dayNames = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+            for (int i = 0; i < days.size(); i++) {
+                if (days.get(i)) {
+                    if (daysPart.length() > 0) {
+                        daysPart.append(", ");
+                    }
+                    daysPart.append(dayNames[i]);
+                }
+            }
+        }
+        return daysPart;
     }
 
     @SuppressLint("MissingPermission")

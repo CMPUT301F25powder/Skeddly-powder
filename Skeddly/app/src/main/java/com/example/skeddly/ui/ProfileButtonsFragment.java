@@ -1,6 +1,7 @@
 package com.example.skeddly.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,8 @@ import com.example.skeddly.ui.popup.StandardPopupDialogFragment;
 public class ProfileButtonsFragment extends Fragment {
     private FragmentProfileButtonsBinding binding;
     private View.OnClickListener personalInfoOnClickListener = null;
+    private View.OnClickListener eventHistoryOnClickListener = null;
+    private View.OnClickListener notificationSettingsOnClickListener = null;
 
     @Nullable
     @Override
@@ -36,7 +39,12 @@ public class ProfileButtonsFragment extends Fragment {
         ConstraintLayout deleteAccountButton = binding.btnDeleteAccount;
 
         if (personalInfoOnClickListener != null) {
-            binding.btnPersonalInfo.setOnClickListener(personalInfoOnClickListener);
+            binding.btnPersonalInfo.setOnClickListener(personalInfoOnClickListener);        }
+        if (eventHistoryOnClickListener != null) {
+            binding.btnEventHistory.setOnClickListener(eventHistoryOnClickListener);
+        }
+        if (notificationSettingsOnClickListener != null) {
+            binding.notificationSettingsButton.setOnClickListener(notificationSettingsOnClickListener);
         }
 
         String deletePopupRequestKey = "deletePopup";
@@ -83,6 +91,26 @@ public class ProfileButtonsFragment extends Fragment {
 
         if (binding != null) {
             binding.btnPersonalInfo.setOnClickListener(personalInfoOnClickListener);
+        }
+    }
+
+
+    /**
+     * Defines the click listener for the Event History button.
+     * @param listener The action to perform when the button is clicked.
+     */
+    public void setEventHistoryButtonOnClickListener(View.OnClickListener listener) {
+        this.eventHistoryOnClickListener = listener;
+        if (binding != null) {
+            binding.btnEventHistory.setOnClickListener(eventHistoryOnClickListener);
+        }
+    }
+
+    public void setNotificationSettingsBtnOnClickListener(View.OnClickListener onClickListener) {
+        this.notificationSettingsOnClickListener = onClickListener;
+
+        if (binding != null) {
+            binding.notificationSettingsButton.setOnClickListener(notificationSettingsOnClickListener);
         }
     }
 }

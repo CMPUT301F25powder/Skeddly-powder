@@ -17,9 +17,10 @@ import com.example.skeddly.databinding.FragmentToolsButtonsBinding;
 
 public class ToolButtonsFragment extends Fragment {
     private FragmentToolsButtonsBinding binding;
+    private View.OnClickListener myEventsOnClickListener = null;
     private View.OnClickListener imageGalleryOnClickListener = null;
-    private View.OnClickListener AdminInboxOnClickListener = null;
-
+    private View.OnClickListener viewUsersOnClickListener = null;
+    private View.OnClickListener notificationLogsOnClickListener = null;
 
     @Nullable
     @Override
@@ -27,10 +28,27 @@ public class ToolButtonsFragment extends Fragment {
         binding = FragmentToolsButtonsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        ConstraintLayout testFragmentButton = binding.btnFragmentTest;
+        ConstraintLayout myEventsButton = binding.btnMyEvents;
         ConstraintLayout imageGalleryButton = binding.btnImgGallery;
+        ConstraintLayout viewUserButton = binding.btnViewUser;
         ConstraintLayout adminInboxButton = binding.btnLogNotification;
+        ConstraintLayout testFragmentButton = binding.btnFragmentTest;
 
+        if (this.myEventsOnClickListener != null) {
+            myEventsButton.setOnClickListener(this.myEventsOnClickListener);
+        }
+
+        if (this.imageGalleryOnClickListener != null ) {
+            imageGalleryButton.setOnClickListener(this.imageGalleryOnClickListener);
+        }
+
+        if (this.viewUsersOnClickListener != null) {
+            viewUserButton.setOnClickListener(this.viewUsersOnClickListener);
+        }
+
+        if (this.notificationLogsOnClickListener != null) {
+            adminInboxButton.setOnClickListener(this.notificationLogsOnClickListener);
+        }
 
         testFragmentButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -40,15 +58,14 @@ public class ToolButtonsFragment extends Fragment {
             }
         });
 
-        if (this.imageGalleryOnClickListener != null ) {
-            imageGalleryButton.setOnClickListener(this.imageGalleryOnClickListener);
-        }
-
-        if (this.AdminInboxOnClickListener != null) {
-            adminInboxButton.setOnClickListener(this.AdminInboxOnClickListener);
-        }
-
         return root;
+    }
+
+    public void setMyEventsButtonOnClickListener(View.OnClickListener onClickListener) {
+        this.myEventsOnClickListener = onClickListener;
+        if (binding != null) {
+            binding.btnMyEvents.setOnClickListener(myEventsOnClickListener);
+        }
     }
 
     public void setImageGalleryButtonOnClickListener(View.OnClickListener onClickListener) {
@@ -59,10 +76,17 @@ public class ToolButtonsFragment extends Fragment {
         }
     }
 
-    public void setAdminInboxButtonOnClickListener(View.OnClickListener onClickListener) {
-        this.AdminInboxOnClickListener = onClickListener;
+    public void setViewUserButtonOnClickListener(View.OnClickListener onClickListener) {
+        this.viewUsersOnClickListener = onClickListener;
         if (binding != null) {
-            binding.btnLogNotification.setOnClickListener(AdminInboxOnClickListener);
+            binding.btnViewUser.setOnClickListener(viewUsersOnClickListener);
+        }
+    }
+
+    public void setNotificationLogsButtonOnClickListener(View.OnClickListener onClickListener) {
+        this.notificationLogsOnClickListener = onClickListener;
+        if (binding != null) {
+            binding.btnLogNotification.setOnClickListener(notificationLogsOnClickListener);
         }
     }
 }

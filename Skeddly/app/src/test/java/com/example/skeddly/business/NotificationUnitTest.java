@@ -84,14 +84,14 @@ public class NotificationUnitTest {
     }
 
     /**
-     * Verifies that the getter and setter for the Event ID field work as expected.
+     * Verifies that the getter and setter for the Ticket ID field work as expected.
      */
     @Test
-    public void notification_GetAndSetEventId() {
-        String testEventId = "event_12345";
-        notification.setEventId(testEventId);
+    public void notification_GetAndSetTicketId() {
+        String testTicketId = "event_12345";
+        notification.setTicketId(testTicketId);
         assertEquals("Getter for Event ID should return the same value set by the setter",
-                testEventId, notification.getEventId());
+                testTicketId, notification.getTicketId());
     }
 
     /**

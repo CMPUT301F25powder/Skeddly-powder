@@ -39,18 +39,27 @@ import java.util.Base64;
 public class EventAdapter extends ArrayAdapter<Event> {
     private User user;
     private final RetrieveLocation locationGetter;
+    private final int viewInfoActionId;
+    private final int editActionId;
 
     /**
      * Constructor for the EventAdapter
      * @param context The context of the app
      * @param events The events to display
      * @param user The current user
+     * @param locationGetter A callback for retrieving the user's location
+     * @param viewInfoActionId The navigation action ID for viewing event info
+     * @param editActionId The navigation action ID for editing an event
      */
-    public EventAdapter(Context context, ArrayList<Event> events, User user, RetrieveLocation locationGetter) {
+    public EventAdapter(Context context, ArrayList<Event> events, User user, RetrieveLocation locationGetter, int viewInfoActionId, int editActionId) {
         super(context, 0, events);
         this.user = user;
         this.locationGetter = locationGetter;
+        this.viewInfoActionId = viewInfoActionId;
+        this.editActionId = editActionId;
     }
+
+
 
     @NonNull
     @Override
@@ -79,6 +88,9 @@ public class EventAdapter extends ArrayAdapter<Event> {
             if (user.getId().equals(event.getOrganizer())) {
                 buttonEdit.setVisibility(View.VISIBLE);
                 buttonJoin.setVisibility(View.INVISIBLE);
+            } else if (user.getPrivilegeLevel().equals(UserLevel.ADMIN)) {
+                buttonEdit.setVisibility(View.VISIBLE);
+                buttonJoin.setVisibility(View.VISIBLE);
             } else {
                 buttonEdit.setVisibility(View.INVISIBLE);
 
@@ -97,7 +109,7 @@ public class EventAdapter extends ArrayAdapter<Event> {
                 Bundle bundle = new Bundle();
                 bundle.putString("eventId", event.getId());
                 bundle.putString("organizerId", event.getOrganizer());
-                Navigation.findNavController(v).navigate(R.id.action_navigation_home_to_event_view_info, bundle);
+                Navigation.findNavController(v).navigate(viewInfoActionId, bundle);
                 Toast.makeText(getContext(), "View info for " + event.getEventDetails().getName(), Toast.LENGTH_SHORT).show();
             });
 
@@ -105,7 +117,7 @@ public class EventAdapter extends ArrayAdapter<Event> {
             buttonEdit.setOnClickListener(v -> {
                 Bundle bundle = new Bundle();
                 bundle.putString("eventId", event.getId());
-                Navigation.findNavController(v).navigate(R.id.action_navigation_home_to_edit_event, bundle);
+                Navigation.findNavController(v).navigate(editActionId, bundle);
                 Toast.makeText(getContext(), "Editing " + event.getEventDetails().getName(), Toast.LENGTH_SHORT).show();
             });
 
@@ -239,5 +251,3 @@ public class EventAdapter extends ArrayAdapter<Event> {
                 });
     }
 }
-
-

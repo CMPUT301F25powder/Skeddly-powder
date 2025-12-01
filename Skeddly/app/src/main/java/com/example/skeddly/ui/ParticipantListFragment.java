@@ -1,10 +1,19 @@
 package com.example.skeddly.ui;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -23,9 +32,19 @@ import com.example.skeddly.ui.adapter.ParticipantAdapter;
 import com.example.skeddly.ui.popup.MapPopupDialogFragment;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.opencsv.CSVWriter;
 
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Fragment for the participant list screen
@@ -43,6 +62,7 @@ public class ParticipantListFragment extends Fragment {
     private Boolean isWaitingList = true;
 
     private ListenerRegistration listener;
+    private ActivityResultLauncher<Intent> filePickerActivityResultLauncher;
     private TicketRepository ticketRepository;
 
     @Nullable
@@ -68,6 +88,11 @@ public class ParticipantListFragment extends Fragment {
             }
         });
 
+        // Set up CSV export button
+        binding.btnExportCsv.setOnClickListener(v -> {
+            createFile();
+        });
+
         // Set up map button
         binding.fabShowLocations.setOnClickListener(v -> {
             if (isWaitingList) {
@@ -76,6 +101,23 @@ public class ParticipantListFragment extends Fragment {
                 fetchAndDisplayTicketLocations(finalListTickets);
             }
         });
+
+        // You can do the assignment inside onAttach or onCreate, i.e, before the activity is displayed
+        filePickerActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            if (result.getData() != null) {
+                                Uri uri = result.getData().getData();
+                                List<String[]> entrantData = getEntrantData();
+                                alterDocument(uri, entrantData);
+                                Toast.makeText(requireContext(), "CSV file has been exported!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                });
 
         return root;
     }
@@ -167,5 +209,86 @@ public class ParticipantListFragment extends Fragment {
 
         MapPopupDialogFragment lpf = MapPopupDialogFragment.newInstance("locationPicker", MapPopupType.VIEW, entrantLocations);
         lpf.show(getChildFragmentManager(), "LocationPicker");
+    }
+
+    /**
+     * Let the user pick a location to create the new csv file at
+     */
+    private void createFile() {
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("text/csv");
+        intent.putExtra(Intent.EXTRA_TITLE, "entrant_data.csv");
+
+        filePickerActivityResultLauncher.launch(intent);
+    }
+
+    /**
+     * Retrieves and prepares the entrant (ticket) data for CSV export. Combines both waitingListTickets and finalListTickets into one CSV.
+     * @return A List<String[]> containing the header row and ticket data rows.
+     */
+    private List<String[]> getEntrantData() {
+        List<String[]> data = new ArrayList<>();
+
+        // Header
+        data.add(new String[]{"Name", "Email", "Phone", "UserID", "EventID", "Time",
+                "Latitude", "Longitude", "Status"});
+
+        // The actual data (rows)
+        List<Ticket> combinedTicketList = Stream
+                .concat(waitingListTickets.stream(), finalListTickets.stream())
+                .collect(Collectors.toList());
+
+        for (Ticket ticket : combinedTicketList) {
+            String name = ticket.getUserPersonalInfo().getName();
+            String email = ticket.getUserPersonalInfo().getEmail();
+            String phone = ticket.getUserPersonalInfo().getPhoneNumber();
+            String userID = ticket.getUserId();
+            String eventID = ticket.getEventId();
+
+            // Ticket time
+            long rawTicketTime = ticket.getTicketTime();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
+            String ticketTime = Instant.ofEpochSecond(rawTicketTime)
+                    .atZone(ZoneId.systemDefault())
+                    .format(formatter);
+
+            // Location
+            String latitude = "";
+            String longitude = "";
+            if (ticket.getLocation() != null) {
+                latitude = String.valueOf(ticket.getLocation().getLatitude());
+                longitude = String.valueOf(ticket.getLocation().getLongitude());
+            }
+
+            String status = ticket.getStatus().toString();
+
+            data.add(new String[]{name, email, phone, userID, eventID, ticketTime, latitude,
+                    longitude, status});
+        }
+
+        return data;
+    }
+
+    /**
+     * Export a list of rows containing data to the given URI as a csv file.
+     * @param uri The uri of the document to alter
+     * @param data The list of string arrays to write to it
+     */
+    private void alterDocument(Uri uri, List<String[]> data) {
+        try {
+            ParcelFileDescriptor pfd = requireActivity().getContentResolver().openFileDescriptor(uri, "w");
+            FileWriter fileWriter = new FileWriter(pfd.getFileDescriptor());
+            CSVWriter csvWriter = new CSVWriter(fileWriter);
+            csvWriter.writeAll(data);
+
+            // Let the document provider know you're done by closing the stream.
+            csvWriter.close();
+            pfd.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
