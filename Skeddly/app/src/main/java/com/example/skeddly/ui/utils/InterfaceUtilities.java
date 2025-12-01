@@ -1,5 +1,6 @@
 package com.example.skeddly.ui.utils;
 
+import android.content.Context;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.UnderlineSpan;
@@ -77,5 +78,15 @@ public class InterfaceUtilities {
         spannedString.setSpan(underlineSpan, 0, spannedString.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
         return spannedString;
+    }
+
+    /**
+     * Converts dp to px
+     * @param context Context
+     * @param dp Density pixels
+     * @return float pixels
+     */
+    public static float convertDpToPx(Context context, float dp) {
+        return dp * context.getResources().getDisplayMetrics().density;
     }
 }

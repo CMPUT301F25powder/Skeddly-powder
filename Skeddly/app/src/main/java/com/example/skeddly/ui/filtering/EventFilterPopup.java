@@ -1,9 +1,12 @@
 package com.example.skeddly.ui.filtering;
 
+import static com.example.skeddly.ui.utils.InterfaceUtilities.convertDpToPx;
 import static com.example.skeddly.ui.utils.InterfaceUtilities.timeFormatter;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -45,10 +48,12 @@ public class EventFilterPopup extends PopupWindow {
     private User user;
     public EventFilterPopup(Context context, FragmentManager fragmentManager, View popupView, User user, SearchView searchBar, ImageButton dropdownButton) {
         super(popupView,
-                ViewGroup.LayoutParams.MATCH_PARENT,
+                (int) convertDpToPx(context, 345),
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 true);
 
+        this.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        this.setElevation(20);
         this.dropdownButton = dropdownButton;
         this.interfaceUtilities = new InterfaceUtilities(fragmentManager);
         this.user = user;

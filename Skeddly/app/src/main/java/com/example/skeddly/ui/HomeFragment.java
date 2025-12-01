@@ -39,6 +39,7 @@ import com.google.firebase.firestore.core.Query;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -182,7 +183,7 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
             public void onFilterUpdated(boolean cleared) {
                 eventFilterPopup.dismiss();
 
-                if (cleared) {
+                if (cleared || eventFilterPopup.getEventFilter().isBlank()) {
                     resetFilterPopup();
                     fetchEvents();
                     circleBadge.setVisibility(View.GONE);

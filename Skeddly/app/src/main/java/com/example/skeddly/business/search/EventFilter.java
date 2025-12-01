@@ -192,4 +192,12 @@ public class EventFilter {
 
         return !changed;
     }
+
+    /**
+     * Returns true if there are not filters actually in place.
+     * @return boolean
+     */
+    public boolean isBlank() {
+        return (startTime == null && endTime == null && !weekend && !weekday && selectedEventTypes.isEmpty());
+    }
 }
