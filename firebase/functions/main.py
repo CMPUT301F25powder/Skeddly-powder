@@ -103,27 +103,32 @@ def cleanup_deleted_ticket(event: Event[DocumentSnapshot|None]) -> None:
 
 
 @on_document_updated(document="users/{userId}")
-def update_personal_info(event: Event[Change[DocumentSnapshot]]) -> None:
+def handle_user_updates(event: Event[Change[DocumentSnapshot]]) -> None:
    user_id: str = event.params["userId"]
    old_data = event.data.before.to_dict()
    new_data = event.data.after.to_dict()
 
-   if old_data["personalInformation"] == new_data["personalInformation"]:
-       # Nothing to do
-       return
-
-   # Write new personal information to all tickets
    firestore_client: google.cloud.firestore.Client = firestore.client()
 
-   docs = (
-       firestore_client.collection("tickets")
-       .where(filter=FieldFilter("userId", "==", user_id))
-       .stream()
-   )
+   if old_data["personalInformation"] != new_data["personalInformation"]:
+       # Need to update all the tickets
+       update_ticket_personal_info(user_id, new_data["personalInformation"], firestore_client)
 
-   for doc in docs:
-       data = {"userPersonalInfo": new_data["personalInformation"]}
-       firestore_client.collection("tickets").document(doc.id).update(data)
+   if old_data["privilegeLevel"] != new_data["privilegeLevel"] and new_data["privilegeLevel"] == "ENTRANT":
+       # Delete all their events
+       delete.delete_events_with_user_id(user_id, firestore_client)
+
+
+def update_ticket_personal_info(user_id: str, personal_information, firestore_client: google.cloud.firestore.Client):
+    docs = (
+        firestore_client.collection("tickets")
+        .where(filter=FieldFilter("userId", "==", user_id))
+        .stream()
+    )
+
+    for doc in docs:
+        data = {"userPersonalInfo": personal_information}
+        firestore_client.collection("tickets").document(doc.id).update(data)
 
 
 @https_fn.on_call()
