@@ -17,6 +17,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 
 import com.example.skeddly.MainActivity;
 import com.example.skeddly.R;
@@ -30,11 +31,13 @@ import com.example.skeddly.business.database.SingleListenUpdate;
 import com.example.skeddly.business.location.CustomLocation;
 import com.example.skeddly.business.location.MapPopupType;
 import com.example.skeddly.business.notification.Notification;
+import com.example.skeddly.business.notification.NotificationType;
 import com.example.skeddly.business.user.User;
 import com.example.skeddly.databinding.FragmentParticipantListBinding;
 import com.example.skeddly.ui.adapter.ParticipantAdapter;
 import com.example.skeddly.ui.popup.MapPopupDialogFragment;
 import com.example.skeddly.ui.popup.SendMessageDialogFragment;
+import com.example.skeddly.ui.popup.StandardPopupDialogFragment;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.opencsv.CSVWriter;
@@ -88,6 +91,10 @@ public class ParticipantListFragment extends Fragment implements ParticipantAdap
             loadEventAndSetupUI(eventId);
         }
 
+        // Hide map and messaging for now
+        binding.fabMessage.setVisibility(View.GONE);
+        binding.fabShowLocations.setVisibility(View.GONE);
+
         // Set up back button
         binding.btnBack.setOnClickListener(v -> {
             if (getActivity() != null) {
@@ -107,6 +114,12 @@ public class ParticipantListFragment extends Fragment implements ParticipantAdap
             } else {
                 fetchAndDisplayTicketLocations(finalListTickets);
             }
+        });
+
+        // Set up message all button
+        binding.fabMessage.setOnClickListener(v -> {
+            StandardPopupDialogFragment spdf = StandardPopupDialogFragment.newInstance("Send Message", String.format("Enter the message to send to all participants on the %s", isWaitingList ? "waiting list." : "final list."), "messageAll", true);
+            spdf.show(getChildFragmentManager(), null);
         });
 
         // You can do the assignment inside onAttach or onCreate, i.e, before the activity is displayed
@@ -130,7 +143,22 @@ public class ParticipantListFragment extends Fragment implements ParticipantAdap
             String message = bundle.getString("message");
             String recipientId = bundle.getString("recipientId");
             Notification notification = new Notification(event.getEventDetails().getName(), message, recipientId);
+            notification.setType(NotificationType.MESSAGES);
             notificationRepository.set(notification);
+        });
+
+        getChildFragmentManager().setFragmentResultListener("messageAll", this, (requestKey, result) -> {
+            boolean buttonChoice = result.getBoolean("buttonChoice");
+            String typedText = result.getString("typedText");
+
+            if (buttonChoice) {
+                ArrayList<Ticket> tickets = isWaitingList ? waitingListTickets : finalListTickets;
+
+                for (Ticket ticket : tickets) {
+                    Notification notification = new Notification(event.getEventDetails().getName(), typedText, ticket.getUserId());
+                    notificationRepository.set(notification);
+                }
+            }
         });
 
         return root;
@@ -176,6 +204,7 @@ public class ParticipantListFragment extends Fragment implements ParticipantAdap
                         binding.listViewEntrants.setAdapter(finalParticipantAdapter);
 
                         isWaitingList = false;
+                        updateFabVisiblity();
                     });
                     binding.buttonWaitingList.setOnClickListener(v -> {
                         binding.buttonWaitingList.setBackgroundResource(R.drawable.btn_select);
@@ -184,6 +213,7 @@ public class ParticipantListFragment extends Fragment implements ParticipantAdap
                         binding.listViewEntrants.setAdapter(waitingParticipantAdapter);
 
                         isWaitingList = true;
+                        updateFabVisiblity();
                     });
 
                     // Load all the tickets
@@ -199,13 +229,39 @@ public class ParticipantListFragment extends Fragment implements ParticipantAdap
         ticketRepository.getAllByStatus(TicketStatus.WAITING).addOnSuccessListener(tickets -> {
             waitingParticipantAdapter.addAll(tickets);
             waitingParticipantAdapter.notifyDataSetChanged();
+            updateFabVisiblity();
         });
 
         TicketStatus[] nonWaiting = {TicketStatus.INVITED, TicketStatus.ACCEPTED, TicketStatus.CANCELLED};
         ticketRepository.getAllByStatuses(Arrays.asList(nonWaiting)).addOnSuccessListener(tickets -> {
             finalParticipantAdapter.addAll(tickets);
             finalParticipantAdapter.notifyDataSetChanged();
+            updateFabVisiblity();
         });
+    }
+
+    /**
+     * Updates whether the FABs are visible on screen.
+     */
+    private void updateFabVisiblity() {
+        List<Ticket> tickets = isWaitingList ? waitingListTickets : finalListTickets;
+
+        if (tickets.isEmpty()) {
+            binding.fabMessage.setVisibility(View.GONE);
+            binding.fabShowLocations.setVisibility(View.GONE);
+            return;
+        }
+
+        // Not empty
+        binding.fabMessage.setVisibility(View.VISIBLE);
+        binding.fabShowLocations.setVisibility(View.GONE);
+
+        for (Ticket ticket : tickets) {
+            if (ticket.getLocation() != null) {
+                binding.fabShowLocations.setVisibility(View.VISIBLE);
+                break;
+            }
+        }
     }
 
     /**
