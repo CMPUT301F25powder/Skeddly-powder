@@ -303,6 +303,14 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
                 event.draw(drawAmount);
             }
         });
+
+        LocalDateTime regEndTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(eventSchedule.getRegEnd()), ZoneId.systemDefault());
+        DateTimeFormatter regFormatter = DateTimeFormatter.ofPattern("MMM d, h:mm a", Locale.ENGLISH);
+        String formattedRegTime = regEndTime.format(regFormatter);
+
+        binding.valueRegistrationEnd.setText(String.format("%s",formattedRegTime));
+
+
     }
 
     @NonNull
