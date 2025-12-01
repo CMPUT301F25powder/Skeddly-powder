@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -18,9 +20,12 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.skeddly.R;
+import com.example.skeddly.business.TicketStatus;
+import com.example.skeddly.business.user.UserLevel;
 import com.example.skeddly.databinding.DialogGenericBinding;
 
 import java.util.Objects;
+import java.util.Set;
 
 
 /**
@@ -33,6 +38,8 @@ public class StandardPopupDialogFragment extends DialogFragment {
     private String resultText;
     private boolean result;
     private boolean showTextEntry;
+    private String[] spinnerCategories;
+    private String spinnerSelection;
 
     /**
      * Instantiate the popup with the provided title and content fields.
@@ -40,15 +47,17 @@ public class StandardPopupDialogFragment extends DialogFragment {
      * @param content The text content that the popup should show
      * @param requestKey The requestKey that should be used when returning the result
      * @param textInput Whether to take in text input from the user
+     * @param spinnerCategories If provided, show a spinner with the categories.
      * @return A new StandardPopupDialogFragment with the arguments passed to it to display.
      */
     public static StandardPopupDialogFragment newInstance(String title, String content,
-                                                          String requestKey, boolean textInput) {
+                                                          String requestKey, boolean textInput, String[] spinnerCategories) {
         Bundle args = new Bundle();
         args.putString("title", title);
         args.putString("content", content);
         args.putString("requestKey", requestKey);
         args.putBoolean("textInput", textInput);
+        args.putStringArray("spinnerCategories", spinnerCategories);
 
         StandardPopupDialogFragment popup = new StandardPopupDialogFragment();
         popup.setArguments(args);
@@ -61,11 +70,24 @@ public class StandardPopupDialogFragment extends DialogFragment {
      * @param title The title that the popup should have
      * @param content The text content that the popup should show
      * @param requestKey The requestKey that should be used when returning the result
+     * @param textInput Whether to take in text input from the user
+     * @return A new StandardPopupDialogFragment with the arguments passed to it to display.
+     */
+    public static StandardPopupDialogFragment newInstance(String title, String content,
+                                                          String requestKey, boolean textInput) {
+        return newInstance(title, content, requestKey, textInput, null);
+    }
+
+    /**
+     * Instantiate the popup with the provided title and content fields.
+     * @param title The title that the popup should have
+     * @param content The text content that the popup should show
+     * @param requestKey The requestKey that should be used when returning the result
      * @return A new StandardPopupDialogFragment with the arguments passed to it to display.
      */
     public static StandardPopupDialogFragment newInstance(String title, String content,
                                                           String requestKey) {
-        return newInstance(title, content, requestKey, false);
+        return newInstance(title, content, requestKey, false, null);
     }
 
     @Override
@@ -85,6 +107,7 @@ public class StandardPopupDialogFragment extends DialogFragment {
             textContent.setText(args.getString("content"));
             requestKey = args.getString("requestKey");
             showTextEntry = args.getBoolean("textInput");
+            spinnerCategories = args.getStringArray("spinnerCategories");
         }
 
         binding.editInput.setVisibility(showTextEntry ? View.VISIBLE : View.GONE);
@@ -95,6 +118,7 @@ public class StandardPopupDialogFragment extends DialogFragment {
         // Default return is false
         result = false;
         resultText = null;
+        spinnerSelection = null;
 
         buttonCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,6 +152,28 @@ public class StandardPopupDialogFragment extends DialogFragment {
             }
         });
 
+        // Set up the spinner adapter if needed
+        binding.spinnerCategories.setVisibility(View.GONE);
+        if (spinnerCategories != null) {
+            ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, spinnerCategories);
+            spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            binding.spinnerCategories.setAdapter(spinnerAdapter);
+            binding.spinnerCategories.setVisibility(View.VISIBLE);
+        }
+
+        // Update what they selected
+        binding.spinnerCategories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                spinnerSelection = (String) parent.getItemAtPosition(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         return view;
     }
 
@@ -155,6 +201,7 @@ public class StandardPopupDialogFragment extends DialogFragment {
         Bundle bundle = new Bundle();
         bundle.putBoolean("buttonChoice", result);
         bundle.putString("typedText", resultText);
+        bundle.putString("spinnerSelection", spinnerSelection);
         getParentFragmentManager().setFragmentResult(requestKey, bundle);
     }
 }

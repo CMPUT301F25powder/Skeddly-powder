@@ -37,6 +37,8 @@
 
     <string name="dialog_msg_send_all_title">Send Message</string>
     <string name="dialog_msg_send_all_contents">Enter the message to send to all participants on the %s</string>
+    <string name="dialog_msg_send_all_waiting_list">waiting list.</string>
+    <string name="dialog_msg_send_all_final_list">final list. You can select a specific status to send to as well.</string>
 
     <string name="dialog_event_join_confirm_contents">
         Users will be drawn randomly to attend the event. You will receive a notification if you are selected to confirm your attendance.

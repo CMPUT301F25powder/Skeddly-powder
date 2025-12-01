@@ -50,7 +50,9 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -118,10 +120,28 @@ public class ParticipantListFragment extends Fragment implements ParticipantAdap
 
         // Set up message all button
         binding.fabMessage.setOnClickListener(v -> {
+            String[] statusArr = null;
+
+            if (!isWaitingList) {
+                // Get the valid ticket statuses that we can message
+                ArrayList<String> statuses = new ArrayList<>();
+                ArrayList<Ticket> tickets = isWaitingList ? waitingListTickets : finalListTickets;
+
+                for (Ticket ticket : tickets) {
+                    if (!statuses.contains(ticket.getStatus().toString())) {
+                        statuses.add(ticket.getStatus().toString());
+                    }
+                }
+
+                statusArr = new String[statuses.size()];
+                statuses.toArray(statusArr);
+            }
+
+            String listString = isWaitingList ? getString(R.string.dialog_msg_send_all_waiting_list) : getString(R.string.dialog_msg_send_all_final_list);
             StandardPopupDialogFragment spdf = StandardPopupDialogFragment.newInstance(
                     getString(R.string.dialog_msg_send_all_title),
-                    getString(R.string.dialog_msg_send_all_contents, isWaitingList ? "waiting list." : "final list."),
-                    "messageAll", true);
+                    getString(R.string.dialog_msg_send_all_contents, listString),
+                    "messageAll", true, statusArr);
             spdf.show(getChildFragmentManager(), null);
         });
 
@@ -153,11 +173,17 @@ public class ParticipantListFragment extends Fragment implements ParticipantAdap
         getChildFragmentManager().setFragmentResultListener("messageAll", this, (requestKey, result) -> {
             boolean buttonChoice = result.getBoolean("buttonChoice");
             String typedText = result.getString("typedText");
+            String statusSelection = result.getString("spinnerSelection");
 
             if (buttonChoice) {
                 ArrayList<Ticket> tickets = isWaitingList ? waitingListTickets : finalListTickets;
 
                 for (Ticket ticket : tickets) {
+                    // If they selected a specific ticket type, don't send to other ones
+                    if (statusSelection != null && !ticket.getStatus().toString().equals(statusSelection)) {
+                        continue;
+                    }
+
                     Notification notification = new Notification(event.getEventDetails().getName(), typedText, ticket.getUserId());
                     notificationRepository.set(notification);
                 }
