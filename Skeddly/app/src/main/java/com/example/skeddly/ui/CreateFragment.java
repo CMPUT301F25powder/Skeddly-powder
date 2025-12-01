@@ -37,11 +37,9 @@ import com.example.skeddly.business.location.MapPopupType;
 import com.example.skeddly.databinding.FragmentCreateEditBinding;
 import com.example.skeddly.ui.popup.CategorySelectorDialogFragment;
 import com.example.skeddly.ui.popup.MapPopupDialogFragment;
-import com.example.skeddly.ui.utils.InterfaceUtilities;
+import com.example.skeddly.ui.utility.InterfaceUtilities;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
-import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 

@@ -1,7 +1,7 @@
 package com.example.skeddly.ui.filtering;
 
-import static com.example.skeddly.ui.utils.InterfaceUtilities.convertDpToPx;
-import static com.example.skeddly.ui.utils.InterfaceUtilities.timeFormatter;
+import static com.example.skeddly.ui.utility.InterfaceUtilities.convertDpToPx;
+import static com.example.skeddly.ui.utility.InterfaceUtilities.timeFormatter;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -26,8 +26,8 @@ import com.example.skeddly.business.search.EventFilter;
 import com.example.skeddly.business.user.User;
 import com.example.skeddly.ui.adapter.CheckBoxCheckedListener;
 import com.example.skeddly.ui.adapter.EventFilterCategoryAdapter;
-import com.example.skeddly.ui.utils.InterfaceUtilities;
-import com.example.skeddly.ui.utils.MaterialTimePickerCallback;
+import com.example.skeddly.ui.utility.InterfaceUtilities;
+import com.example.skeddly.ui.utility.MaterialTimePickerCallback;
 import com.google.android.material.timepicker.MaterialTimePicker;
 
 import org.w3c.dom.Text;
