@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:text="Organizers Only"
+            android:text="@string/fragment_admin_user_view_switch"
             android:textColor="@color/neutral_lighter_off_white"
             app:layout_constraintEnd_toEndOf="parent"
             tools:ignore="MissingConstraints" />
