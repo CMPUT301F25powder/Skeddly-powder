@@ -34,6 +34,9 @@ import org.junit.runner.RunWith;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * Tests for the profile fragment.
+ */
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class ProfileFragmentInstrumentedTest extends BaseTest {

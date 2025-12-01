@@ -42,7 +42,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-
+/**
+ * An adapter for showing users.
+ */
 public class UserAdapter extends ArrayAdapter<User> {
     public interface OnMessageButtonClickListener {
         void onMessageButtonClick(String recipientId, String recipientName);

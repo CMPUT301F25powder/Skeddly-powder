@@ -204,6 +204,11 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
         });
     }
 
+    /**
+     * Checks whether the privilege level of the user permits them to see the event.
+     * @param event The event in question.
+     * @return True if we can show it. False otherwise.
+     */
     private boolean checkPrivilegeMatch(Event event) {
         switch (user.getPrivilegeLevel()) {
             // if entrant, don't show events that are not joinable

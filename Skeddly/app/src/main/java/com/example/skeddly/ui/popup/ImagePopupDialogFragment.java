@@ -22,6 +22,9 @@ import com.example.skeddly.databinding.DialogImageBinding;
 
 import java.util.Base64;
 
+/**
+ * Dialog fragment for showing a single image.
+ */
 public class ImagePopupDialogFragment extends DialogFragment {
 
     /**

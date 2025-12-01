@@ -15,6 +15,9 @@ import androidx.navigation.Navigation;
 import com.example.skeddly.R;
 import com.example.skeddly.databinding.FragmentToolsButtonsBinding;
 
+/**
+ * Fragment for showing the buttons on the tools fragment screen
+ */
 public class ToolButtonsFragment extends Fragment {
     private FragmentToolsButtonsBinding binding;
     private View.OnClickListener myEventsOnClickListener = null;

@@ -38,6 +38,9 @@ import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 
+/**
+ * The popup for event filters.
+ */
 public class EventFilterPopup extends PopupWindow {
     private InterfaceUtilities interfaceUtilities;
     private boolean filterMenuToggle;

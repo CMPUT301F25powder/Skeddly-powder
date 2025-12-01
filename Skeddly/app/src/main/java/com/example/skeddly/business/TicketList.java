@@ -4,6 +4,9 @@ import com.google.firebase.firestore.Exclude;
 
 import java.util.ArrayList;
 
+/**
+ * A list of tickets. This class is extended to make up the participant and final lists.
+ */
 public abstract class TicketList {
     private ArrayList<String> ticketIds = new ArrayList<>();
     private int max;

@@ -16,6 +16,9 @@ import com.google.android.material.timepicker.MaterialTimePicker;
 
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Some useful UI functions for showing UI elements.
+ */
 public class InterfaceUtilities {
     public static final CalendarConstraints calendarConstraints = new CalendarConstraints.Builder().setValidator(DateValidatorPointForward.now()).build();
     public static final UnderlineSpan underlineSpan = new UnderlineSpan();

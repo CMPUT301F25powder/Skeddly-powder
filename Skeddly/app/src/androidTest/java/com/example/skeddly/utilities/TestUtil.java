@@ -63,7 +63,7 @@ public class TestUtil {
      * Pauses an espresso test until a view appears
      * Particularly useful for ListViews with lots of items/images
      * Credit to <a href="https://www.repeato.app/espresso-wait-for-element/">Stephan Petzl</a>
-     * @param viewMatcher Matcher<View>
+     * @param viewMatcher Matcher
      * @param timeout long
      * @return ViewAction
      */
@@ -109,7 +109,7 @@ public class TestUtil {
      * Waits for a view to load before continuing.
      * DO NOT use {@code .check(matches(isDisplayed()))} with this method as this is already assumed when view is loaded.
      * Timeout is 10000 ms by default.
-     * @param viewMatcher Matcher<View>
+     * @param viewMatcher Matcher
      * @return ViewInteraction
      */
     public static ViewInteraction onViewLoaded(Matcher<View> viewMatcher) {
@@ -120,7 +120,7 @@ public class TestUtil {
      * Waits for a view to load before continuing.
      * DO NOT use {@code .check(matches(isDisplayed()))} with this method as this is already assumed when view is loaded.
      * If the time it takes to load exceeds the timeout, it will fail.
-     * @param viewMatcher Matcher<View>
+     * @param viewMatcher Matcher
      * @param timeout int
      * @return ViewInteraction
      */

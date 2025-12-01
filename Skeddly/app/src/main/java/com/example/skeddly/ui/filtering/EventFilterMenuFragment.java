@@ -15,6 +15,9 @@ import com.example.skeddly.R;
 import com.example.skeddly.databinding.FragmentEventFilterMenuBinding;
 import com.example.skeddly.ui.adapter.EventFilterCategoryAdapter;
 
+/**
+ * This fragment shows the event filter menu.
+ */
 public class EventFilterMenuFragment extends Fragment {
     private FragmentEventFilterMenuBinding binding;
     private EventFilterCategoryAdapter eventFilterCategoryAdapter;

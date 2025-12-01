@@ -36,6 +36,9 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
+/**
+ * Test for the admin tools screen.
+ */
 @LargeTest
 public class AdminToolsInstrumentedTest extends BaseTest {
 

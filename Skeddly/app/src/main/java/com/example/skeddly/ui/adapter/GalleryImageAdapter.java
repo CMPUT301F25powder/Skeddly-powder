@@ -19,6 +19,9 @@ import com.example.skeddly.ui.utility.GalleryImage;
 import java.util.ArrayList;
 import java.util.Base64;
 
+/**
+ * An adapter for showing images in the gallery.
+ */
 public class GalleryImageAdapter extends ArrayAdapter<GalleryImage> {
     private ArrayList<GalleryImage> images;
     private boolean selectionMode;
