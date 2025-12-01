@@ -111,4 +111,7 @@
     <string name="selected_images_count">%d selected images</string>
     <string name="admin_notification_logs">Admin Notification Logs</string>
     <string name="my_events">My Events</string>
+    <string name="fragment_settings_notifications_lottery_status">Lottery Status Notifications</string>
+    <string name="fragment_settings_notifications_event_update">Event Update Notifications</string>
+    <string name="fragment_settings_notification_administrative">Administrative Notifications</string>
 </resources>

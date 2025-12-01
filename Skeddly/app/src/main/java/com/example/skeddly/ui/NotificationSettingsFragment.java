@@ -13,6 +13,7 @@ import com.example.skeddly.MainActivity;
 import com.example.skeddly.business.user.NotificationSettings;
 import com.example.skeddly.business.user.User;
 import com.example.skeddly.databinding.FragmentNotificationSettingsBinding;
+import com.google.android.material.materialswitch.MaterialSwitch;
 
 /**
  * Fragment for a users notification settings
@@ -23,9 +24,9 @@ public class NotificationSettingsFragment extends Fragment {
     private FragmentNotificationSettingsBinding binding;
     private MainActivity mainActivity;
 
-    private Switch lotteryStatusNotificationsSwitch;
-    private Switch eventUpdateNotificationsSwitch;
-    private Switch administrativeNotificationsSwitch;
+    private MaterialSwitch lotteryStatusNotificationsSwitch;
+    private MaterialSwitch eventUpdateNotificationsSwitch;
+    private MaterialSwitch administrativeNotificationsSwitch;
 
     @Nullable
     @Override
