@@ -189,7 +189,20 @@ def http_add_mock_events(req: https_fn.CallableRequest) -> Any:
     delete_mock_events(firestore_client)
     try:
         organizer: str = req.data["organizer"]
-        add_mock_events(organizer, firestore_client)
+        num_events: str = req.data["num_events"]
+        add_mock_events(organizer, int(num_events), firestore_client)
+    except Exception as e:
+        return {"successful": False, "message": str(e)}
+
+    return {"successful": True, "message": ""}
+
+
+@https_fn.on_call()
+def http_remove_mock_events(req: https_fn.CallableRequest) -> Any:
+    firestore_client: google.cloud.firestore.Client = firestore.client()
+
+    try:
+        delete_mock_events(firestore_client)
     except Exception as e:
         return {"successful": False, "message": str(e)}
 
@@ -247,10 +260,11 @@ def delete_mock_events(firestore_client: google.cloud.firestore.Client) -> None:
         firestore_client.collection("events").document(doc.id).delete()
 
 
-def add_mock_events(organizer: str, firestore_client: google.cloud.firestore.Client):
+def add_mock_events(organizer: str, num_events: int, firestore_client: google.cloud.firestore.Client):
     """
     Create some mock events that belong to a given organizer.
-    :param organizer:
+    :param organizer: The id of the user they should belong to.
+    :param num_events: The number of mock events to create.
     :param firestore_client:
     :return:
     """
