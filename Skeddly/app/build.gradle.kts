@@ -113,7 +113,6 @@ dependencies {
     // https://mvnrepository.com/artifact/org.apache.commons/commons-text
     implementation("org.apache.commons:commons-text:1.14.0")
 
-    androidTestImplementation("androidx.test:rules:1.7.0")
 }
 
 secrets {

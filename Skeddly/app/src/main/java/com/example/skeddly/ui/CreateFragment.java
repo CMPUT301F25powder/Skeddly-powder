@@ -137,7 +137,7 @@ public class CreateFragment extends Fragment {
         binding.btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Use the NavController to navigate back to the home screen.
+                // Use the NavController to navigate back
                 NavHostFragment.findNavController(CreateFragment.this).navigateUp();
             }
         });

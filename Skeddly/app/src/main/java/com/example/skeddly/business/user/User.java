@@ -23,6 +23,12 @@ public class User extends DatabaseObject {
         this.privilegeLevel = UserLevel.ENTRANT;
     }
 
+    public User(PersonalInformation personalInformation, UserLevel privilegeLevel) {
+        this.personalInformation = personalInformation;
+        this.notificationSettings = new NotificationSettings();
+        this.privilegeLevel = privilegeLevel;
+    }
+
     /**
      * Gets the notification settings
      * @return The notification settings

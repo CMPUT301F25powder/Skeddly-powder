@@ -8,13 +8,20 @@
         android:id="@+id/navigation_home"
         android:name="com.example.skeddly.ui.HomeFragment"
         android:label="@string/nav_home">
-    <action
-        android:id="@+id/action_navigation_home_to_event_view_info"
-        app:destination="@id/navigation_event_view_info"
-        />
-    <action
-        android:id="@+id/action_navigation_home_to_edit_event"
-        app:destination="@id/navigation_create"/>
+        <action
+            android:id="@+id/action_navigation_home_to_event_view_info"
+            app:destination="@id/navigation_event_view_info"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_navigation_home_to_edit_event"
+            app:destination="@id/navigation_create"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
 
     <fragment
@@ -29,7 +36,11 @@
         android:label="@string/nav_create">
         <action
             android:id="@+id/action_navigation_create_to_home"
-            app:destination="@id/navigation_home" />
+            app:destination="@id/navigation_home"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
 
 
@@ -40,11 +51,19 @@
 
         <action
             android:id="@+id/action_navigation_my_events_to_event_view_info"
-            app:destination="@id/navigation_event_view_info" />
+            app:destination="@id/navigation_event_view_info"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
 
         <action
             android:id="@+id/action_navigation_my_events_to_edit_event"
-            app:destination="@id/navigation_create" />
+            app:destination="@id/navigation_create"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         
     </fragment>
 
@@ -55,11 +74,19 @@
         android:label="@string/nav_event_info">
         <action
             android:id="@+id/action_event_view_info_to_participant_list"
-            app:destination="@id/navigation_participant_list" />
+            app:destination="@id/navigation_participant_list"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
 
         <action
             android:id="@+id/action_navigation_event_view_info_to_edit_event"
-            app:destination="@id/navigation_create"/>
+            app:destination="@id/navigation_create"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
 
         <argument
             android:name="eventId"
@@ -78,5 +105,7 @@
         android:label="Participation List"
         />
 
+    <action android:id="@+id/action_global_navigation_create" app:destination="@id/navigation_create"/>
+    <action android:id="@+id/action_global_navigation_event_view_info" app:destination="@id/navigation_event_view_info"/>
 
 </navigation>

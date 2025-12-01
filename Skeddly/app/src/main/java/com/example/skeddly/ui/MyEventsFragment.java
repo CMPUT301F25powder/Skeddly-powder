@@ -1,7 +1,6 @@
 package com.example.skeddly.ui;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,8 +8,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.skeddly.MainActivity;
 import com.example.skeddly.R;
@@ -85,8 +82,8 @@ public class MyEventsFragment extends Fragment {
                 new ArrayList<>(),
                 currentUser,
                 null,
-                R.id.action_navigation_my_events_to_event_view_info, // View Info Action
-                R.id.action_navigation_my_events_to_edit_event      // Edit Action
+                R.id.action_global_navigation_event_view_info, // View Info Action
+                R.id.action_global_navigation_create           // Edit Action
         );
 
         binding.listEvents.setAdapter(eventAdapter);

@@ -27,6 +27,11 @@
         Storage: 9199
     </string>
 
+    <string name="dialog_user_demotion_title">Confirm Demotion</string>
+    <string name="dialog_user_demotion_contents">
+        Demoting this user to ENTRANT will delete all their associated events. This action cannot be undone. Are you sure?
+    </string>
+
     <string name="event_attendee_limit">0/25</string>
     <string name="event_btn_draw">Draw</string>
     <string name="event_btn_edit">Edit</string>
@@ -101,6 +106,10 @@
     <string name="fragment_profile_phone_number">123-456-7890</string>
     <string name="fragment_profile_popup_delete_content">Are you sure you want to delete your account?</string>
 
+    <string name="fragment_settings_notifications_lottery_status">Lottery Status Notifications</string>
+    <string name="fragment_settings_notifications_event_update">Event Update Notifications</string>
+    <string name="fragment_settings_notification_administrative">Administrative Notifications</string>
+
     <string name="nav_create">Create</string>
     <string name="nav_event_info">Event Info</string>
     <string name="nav_home">Home</string>
@@ -108,6 +117,7 @@
     <string name="nav_my_events">My Events</string>
     <string name="nav_profile">Profile</string>
     <string name="nav_tools">Tools</string>
+    <string name="nav_notif_settings">Notification Settings</string>
 
     <string name="notification_content">Notification information, here is information about the notification yuppers</string>
     <string name="notification_title">Notification</string>

@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavGraph;
 import androidx.navigation.fragment.NavHostFragment;
@@ -35,12 +36,13 @@ public class MainActivity extends AppCompatActivity {
     private Authenticator authenticator;
     private ActivityMainBinding binding;
     private NavController navController;
+    private static MainActivity instance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Boiler Plate Stuff
         super.onCreate(savedInstanceState);
-
+        instance = this;
         EdgeToEdge.enable(this);
 
         // Inflate the layout
@@ -177,4 +179,9 @@ public class MainActivity extends AppCompatActivity {
         bundle.putString("organizerId", event.getOrganizer());
         navController.navigate(R.id.navigation_event_view_info, bundle);
     }
+
+    public static MainActivity getInstance() {
+        return instance;
+    }
+
 }
