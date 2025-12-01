@@ -102,4 +102,6 @@
         android:label="Participation List"
         />
 
+    <action android:id="@+id/action_global_navigation_event_view_info" app:destination="@id/navigation_event_view_info"/><action android:id="@+id/action_global_navigation_create" app:destination="@id/navigation_create"/>
+
 </navigation>
