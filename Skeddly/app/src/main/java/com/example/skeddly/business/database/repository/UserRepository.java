@@ -22,9 +22,9 @@ public class UserRepository extends GenericRepository<User> {
     }
 
     /**
-     * Create a new UserRepository.
+     * Create a new UserRepository that filters by a specific user privilege level.
      * @param firestore The FirebaseFirestore instance to use.
-     * @param level The level of users to retrieve.
+     * @param level The privilege level to filter by.
      */
     public UserRepository(FirebaseFirestore firestore, UserLevel level) {
         super(User.class);

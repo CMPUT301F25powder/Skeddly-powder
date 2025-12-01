@@ -34,7 +34,7 @@ public class DrawParticipantsDialogFragment extends DialogFragment {
      * @param curWait The current number of waiting participants
      * @param curAttend The current number of attending participants
      * @param maxAttend The maximum number of attending participants
-     * @return
+     * @return A DrawParticipantsDialogFragment with the given attributes set
      */
     public static DrawParticipantsDialogFragment newInstance(String requestKey, int curWait, int curAttend, int maxAttend) {
         Bundle args = new Bundle();

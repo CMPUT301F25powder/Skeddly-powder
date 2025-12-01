@@ -16,7 +16,7 @@ public class GalleryImage {
 
     /**
      * Get the event associated with this image.
-     * @return
+     * @return The event associated with this image.
      */
     public Event getEvent() {
         return event;
