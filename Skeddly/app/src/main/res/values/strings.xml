@@ -35,14 +35,27 @@
     <string name="dialog_msg_send_all_title">Send Message</string>
     <string name="dialog_msg_send_all_contents">Enter the message to send to all participants on the %s</string>
 
+    <string name="dialog_event_join_confirm_contents">
+        Users will be drawn randomly to attend the event. You will receive a notification if you are selected to confirm your attendance.
+        \n\nThe organizer has left the below criteria.
+        \n\n%s
+        \n\nYour location %s be logged when you join this event.
+    </string>
+
+    <string name="dialog_event_join_confirm_title">Entry Criteria</string>
+    <string name="dialog_event_join_location_not_required">will not</string>
+    <string name="dialog_event_join_location_required">will</string>
+
     <string name="event_attendee_limit">0/25</string>
     <string name="event_btn_draw">Draw</string>
     <string name="event_btn_edit">Edit</string>
     <string name="event_btn_join">Join</string>
+    <string name="event_btn_leave">Leave</string>
+    <string name="event_btn_joining">Joining…</string>
     <string name="event_btn_participants">Participants</string>
     <string name="event_btn_view_info">View Info</string>
     <string name="event_category">Social</string>
-    <string name="event_date_time">Monday, Wednesday 9:30-10:00</string>
+    <string name="event_date_time">Monday, Wednesday 9:30–10:00</string>
     <string name="event_description">A casual get-together for all members.</string>
     <string name="event_history">Event History</string>
     <string name="event_label_attendee_limit">Attendee Limit:</string>
