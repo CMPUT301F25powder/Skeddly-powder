@@ -42,6 +42,7 @@ import com.example.skeddly.ui.adapter.RetrieveLocation;
 import com.example.skeddly.ui.popup.DrawParticipantsDialogFragment;
 import com.example.skeddly.ui.popup.MapPopupDialogFragment;
 import com.example.skeddly.ui.popup.QRPopupDialogFragment;
+import com.example.skeddly.ui.utility.LocationFetcherFragment;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
@@ -64,6 +65,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Fragment for the event view info screen
@@ -77,11 +79,6 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
     private EventAdapter eventAdapter;
     private ListenerRegistration eventSnapshotListenerReg;
     private int currentAttendees;
-
-    // Location Stuff
-    private FusedLocationProviderClient fusedLocationClient;
-    private ActivityResultLauncher<String[]> requestPermissionLauncher;
-    private final String[] needed_permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
 
     @Nullable
     @Override
@@ -104,24 +101,6 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
                 R.id.action_event_view_info_to_participant_list,
                 R.id.action_navigation_event_view_info_to_edit_event
         );
-
-        // For getting our current location
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext());
-
-        // GET PERMISSION THING
-        requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), new ActivityResultCallback<Map<String, Boolean>>() {
-            @Override
-            public void onActivityResult(Map<String, Boolean> result) {
-                // its mad at me
-                boolean fine_granted = result.getOrDefault(needed_permissions[0], false);
-                boolean coarse_granted = result.getOrDefault(needed_permissions[1], false);
-
-                if (fine_granted && coarse_granted) {
-                    Toast.makeText(getContext(), "Location granted. Please try again.", Toast.LENGTH_SHORT);
-                }
-            }
-        });
-
 
         // Get the eventId passed from the HomeFragment
         if (getArguments() != null) {
@@ -333,50 +312,19 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
         return daysPart;
     }
 
-    @SuppressLint("MissingPermission")
+    /**
+     * Gets the location from the device and return it in the provided callback.
+     * @param callback Who to callback when we got the location.
+     */
     @Override
     public void getLocation(SingleListenUpdate<CustomLocation> callback) {
-        if (checkPermissions()) {
-            CancellationTokenSource cts = new CancellationTokenSource();
-            fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, cts.getToken()).addOnSuccessListener(new OnSuccessListener<Location>() {
-                @Override
-                public void onSuccess(Location location) {
-                    if (location != null) {
-                        callback.onUpdate(new CustomLocation(location.getLatitude(), location.getLongitude()));
-                    }
-                }
-            });
-        } else {
-            Toast.makeText(getContext(), "Please grant location permission.", Toast.LENGTH_SHORT);
-        }
-    }
-
-    /**
-     * Check whether we have the required permissions to get the device's location. Request
-     * permission if needed.
-     * @return True if we have permission. False otherwise.
-     */
-    public boolean checkPermissions() {
-        // We need to get the required permissions
-        ArrayList<String> needed_permissions = new ArrayList<>();
-        boolean granted = false;
-
-        for (String permission : this.needed_permissions) {
-            // If we don't have it, add it to the list
-            if (ContextCompat.checkSelfPermission(requireContext(), permission) != PackageManager.PERMISSION_GRANTED) {
-                needed_permissions.add(permission);
-            }
-        }
-
-        // Request perms if needed
-        if (!needed_permissions.isEmpty()) {
-            String[] perms = new String[2];
-            Toast.makeText(getContext(), "Please grant location permission.", Toast.LENGTH_SHORT);
-            requestPermissionLauncher.launch(needed_permissions.toArray(perms));
-            return false;
-        }
-
-        return true;
+        String generatedRequestKey = String.valueOf(UUID.randomUUID());
+        LocationFetcherFragment locationFetcherFragment = LocationFetcherFragment.newInstance(generatedRequestKey);
+        getChildFragmentManager().beginTransaction().add(locationFetcherFragment, null).commit();
+        getChildFragmentManager().setFragmentResultListener(generatedRequestKey, this, (requestKey, result) -> {
+            callback.onUpdate(result.getParcelable("location"));
+            getChildFragmentManager().beginTransaction().remove(locationFetcherFragment).commit();
+        });
     }
 
     @Override
