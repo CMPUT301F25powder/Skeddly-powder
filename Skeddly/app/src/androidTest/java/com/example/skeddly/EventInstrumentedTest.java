@@ -31,10 +31,6 @@ import org.junit.Test;
  */
 @LargeTest
 public class EventInstrumentedTest extends BaseTest {
-    public void createTestEvent() {
-
-    }
-
     /**
      * Tests creating events
      */

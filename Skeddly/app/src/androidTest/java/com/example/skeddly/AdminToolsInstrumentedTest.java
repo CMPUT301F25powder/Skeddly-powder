@@ -52,10 +52,11 @@ public class AdminToolsInstrumentedTest extends BaseTest {
     @Test
     public void testNavigateToMyEventsAndBack() {
         onView(withId(R.id.btn_my_events)).perform(click());
-
         onViewLoaded(withId(R.id.list_events));
 
-        pressBack();
+        // Press the back button
+        onView(withId(R.id.tools_back)).check(matches(isDisplayed()));
+        onView(withId(R.id.tools_back)).perform(click());
 
         onViewLoaded(withId(R.id.btn_my_events));
     }
