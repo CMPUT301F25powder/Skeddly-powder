@@ -180,6 +180,10 @@ public class MainActivity extends AppCompatActivity {
         navController.navigate(R.id.navigation_event_view_info, bundle);
     }
 
+    /**
+     * Getter for the main activity.
+     * @return The main activity.
+     */
     public static MainActivity getInstance() {
         return instance;
     }

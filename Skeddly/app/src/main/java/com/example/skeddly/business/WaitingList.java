@@ -11,10 +11,17 @@ import java.util.Random;
 public class WaitingList extends TicketList {
     private final Random randomGen = new Random();
 
+    /**
+     * Constructor for WaitingList.
+     * @param max The maximum number of tickets that can be in the list.
+     */
     public WaitingList(int max) {
         super(max);
     }
 
+    /**
+     * Constructor for WaitingList.
+     */
     public WaitingList() {
         super();
     }

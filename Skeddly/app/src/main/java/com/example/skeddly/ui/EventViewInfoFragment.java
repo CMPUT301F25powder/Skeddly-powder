@@ -26,7 +26,9 @@ import androidx.navigation.Navigation;
 import com.bumptech.glide.Glide;
 import com.example.skeddly.MainActivity;
 import com.example.skeddly.R;
+import com.example.skeddly.business.TicketStatus;
 import com.example.skeddly.business.database.SingleListenUpdate;
+import com.example.skeddly.business.database.repository.TicketRepository;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.event.EventDetail;
@@ -47,6 +49,7 @@ import com.google.android.gms.tasks.CancellationTokenSource;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 
@@ -56,6 +59,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.Locale;
@@ -257,11 +261,12 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
         }
 
         // Calculate and display Attendee Count
-        int currentAttendees = 0;
-        if (event.getParticipantList() != null && event.getParticipantList().getTicketIds() != null) {
-            currentAttendees = event.getParticipantList().getTicketIds().size();
-        }
-        binding.valueAttendeeLimit.setText(String.format(Locale.getDefault(), "%d / %d", currentAttendees, event.getParticipantList().getMax()));
+        TicketRepository ticketRepository = new TicketRepository(FirebaseFirestore.getInstance(), event.getId());
+        List<TicketStatus> statuses = Arrays.asList(TicketStatus.ACCEPTED, TicketStatus.INVITED);
+        ticketRepository.getAllByStatuses(statuses).addOnSuccessListener(tickets -> {
+            int currentAttendees = tickets.size();
+            binding.valueAttendeeLimit.setText(String.format(Locale.getDefault(), "%d / %d", currentAttendees, event.getParticipantList().getMax()));
+        });
 
         // Calculate and display Waitlist Count
         int currentWaitlist = 0;

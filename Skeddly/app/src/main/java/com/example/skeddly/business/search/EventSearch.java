@@ -25,6 +25,13 @@ public class EventSearch {
     private SimpleCursorAdapter simpleCursorAdapter;
     private ArrayList<Event> eventList;
     private SearchView searchBar;
+
+    /**
+     * Constructor for the EventSearch class.
+     * @param context The context of the application
+     * @param newSearchBar The search bar to use
+     * @param eventList The list of events to search
+     */
     public EventSearch(Context context, SearchView newSearchBar, ArrayList<Event> eventList) {
         this.eventList = eventList;
         this.searchBar = newSearchBar;

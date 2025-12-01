@@ -23,6 +23,11 @@ public class User extends DatabaseObject {
         this.privilegeLevel = UserLevel.ENTRANT;
     }
 
+    /**
+     * Constructor for the User
+     * @param personalInformation The personal information of the user
+     * @param privilegeLevel The privilege level of the user
+     */
     public User(PersonalInformation personalInformation, UserLevel privilegeLevel) {
         this.personalInformation = personalInformation;
         this.notificationSettings = new NotificationSettings();

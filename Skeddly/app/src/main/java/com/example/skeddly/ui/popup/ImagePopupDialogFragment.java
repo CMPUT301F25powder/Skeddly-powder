@@ -24,6 +24,11 @@ import java.util.Base64;
 
 public class ImagePopupDialogFragment extends DialogFragment {
 
+    /**
+     * Create a new instance of the ImagePopupDialogFragment.
+     * @param imageB64 The base64 encoded image to display
+     * @return The newly constructed ImagePopupDialogFragment
+     */
     public static ImagePopupDialogFragment newInstance(String imageB64) {
         Bundle args = new Bundle();
         args.putString("imageB64", imageB64);

@@ -106,6 +106,10 @@ public class ProfileButtonsFragment extends Fragment {
         }
     }
 
+    /**
+     * Defines the click listener for the Notification Settings button.
+     * @param onClickListener The action to perform when the button is clicked.
+     */
     public void setNotificationSettingsBtnOnClickListener(View.OnClickListener onClickListener) {
         this.notificationSettingsOnClickListener = onClickListener;
 
