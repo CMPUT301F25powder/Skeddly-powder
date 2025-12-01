@@ -12,9 +12,9 @@ public class NotificationSettings {
      * No arg Constructor for the NotificationSettings
      */
     public NotificationSettings() {
-        this.lotteryStatus = false;
-        this.eventUpdate = false;
-        this.administrative = false;
+        this.lotteryStatus = true;
+        this.eventUpdate = true;
+        this.administrative = true;
     }
 
     /**
