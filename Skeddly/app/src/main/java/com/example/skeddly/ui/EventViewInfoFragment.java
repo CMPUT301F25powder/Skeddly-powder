@@ -76,6 +76,7 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
     private String organizerId;
     private EventAdapter eventAdapter;
     private ListenerRegistration eventSnapshotListenerReg;
+    private int currentAttendees;
 
     // Location Stuff
     private FusedLocationProviderClient fusedLocationClient;
@@ -261,10 +262,11 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
         }
 
         // Calculate and display Attendee Count
+
         TicketRepository ticketRepository = new TicketRepository(FirebaseFirestore.getInstance(), event.getId());
         List<TicketStatus> statuses = Arrays.asList(TicketStatus.ACCEPTED, TicketStatus.INVITED);
         ticketRepository.getAllByStatuses(statuses).addOnSuccessListener(tickets -> {
-            int currentAttendees = tickets.size();
+            currentAttendees = tickets.size();
             binding.valueAttendeeLimit.setText(String.format(Locale.getDefault(), "%d / %d", currentAttendees, event.getParticipantList().getMax()));
         });
 
@@ -290,7 +292,7 @@ public class EventViewInfoFragment extends Fragment implements RetrieveLocation 
 
         // Setup draw button
         binding.btnDraw.setOnClickListener(v -> {
-            DrawParticipantsDialogFragment dpdf = DrawParticipantsDialogFragment.newInstance("drawParticipants", event.getWaitingList().size(), event.getParticipantList().size(), event.getParticipantList().getMax());
+            DrawParticipantsDialogFragment dpdf = DrawParticipantsDialogFragment.newInstance("drawParticipants", event.getWaitingList().size(), currentAttendees, event.getParticipantList().getMax());
             dpdf.show(getChildFragmentManager(), "drawParticipants");
         });
 

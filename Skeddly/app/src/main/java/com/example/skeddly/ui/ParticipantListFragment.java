@@ -168,7 +168,7 @@ public class ParticipantListFragment extends Fragment implements ParticipantAdap
         getChildFragmentManager().setFragmentResultListener("sendMessage", this, (requestKey, bundle) -> {
             String message = bundle.getString("message");
             String recipientId = bundle.getString("recipientId");
-            Notification notification = new Notification(event.getEventDetails().getName(), message, recipientId);
+            Notification notification = new Notification(event.getEventDetails().getName(), message, recipientId, NotificationType.MESSAGES);
             notification.setType(NotificationType.MESSAGES);
             notificationRepository.set(notification);
         });
@@ -187,7 +187,7 @@ public class ParticipantListFragment extends Fragment implements ParticipantAdap
                         continue;
                     }
 
-                    Notification notification = new Notification(event.getEventDetails().getName(), typedText, ticket.getUserId());
+                    Notification notification = new Notification(event.getEventDetails().getName(), typedText, ticket.getUserId(), NotificationType.MESSAGES);
                     notificationRepository.set(notification);
                 }
             }

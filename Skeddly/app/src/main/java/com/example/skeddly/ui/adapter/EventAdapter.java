@@ -90,15 +90,14 @@ public class EventAdapter extends ArrayAdapter<Event> {
                 buttonJoin.setVisibility(View.INVISIBLE);
             } else if (user.getPrivilegeLevel().equals(UserLevel.ADMIN)) {
                 buttonEdit.setVisibility(View.VISIBLE);
-                buttonJoin.setVisibility(View.VISIBLE);
             } else {
                 buttonEdit.setVisibility(View.INVISIBLE);
+            }
 
-                if (!event.isJoinable()) {
-                    buttonJoin.setVisibility(View.INVISIBLE);
-                } else {
-                    buttonJoin.setVisibility(View.VISIBLE);
-                }
+            if (!event.isJoinable() || user.getId().equals(event.getOrganizer())) {
+                buttonJoin.setVisibility(View.INVISIBLE);
+            } else {
+                buttonJoin.setVisibility(View.VISIBLE);
             }
 
             // Set button state, and button's on click listener

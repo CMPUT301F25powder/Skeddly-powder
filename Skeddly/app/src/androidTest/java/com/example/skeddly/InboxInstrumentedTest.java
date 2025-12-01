@@ -56,16 +56,13 @@ public class InboxInstrumentedTest extends BaseTest {
         List<Task<Void>> saveTasks = new ArrayList<>();
 
         // Create one notification of each type
-        Notification messageNotif = new Notification("Message Title", "This is a test message.", currentUser.getId());
-        messageNotif.setType(NotificationType.MESSAGES);
+        Notification messageNotif = new Notification("Message Title", "This is a test message.", currentUser.getId(), NotificationType.MESSAGES);
         saveTasks.add(notificationRepository.set(messageNotif));
 
-        Notification registrationNotif = new Notification("Registration Title", "This is a registration message.", currentUser.getId());
-        registrationNotif.setType(NotificationType.REGISTRATION);
+        Notification registrationNotif = new Notification("Registration Title", "This is a registration message.", currentUser.getId(), NotificationType.REGISTRATION);
         saveTasks.add(notificationRepository.set(registrationNotif));
 
-        Notification systemNotif = new Notification("System Title", "This is a system message.", currentUser.getId());
-        systemNotif.setType(NotificationType.SYSTEM);
+        Notification systemNotif = new Notification("System Title", "This is a system message.", currentUser.getId(), NotificationType.SYSTEM);
         saveTasks.add(notificationRepository.set(systemNotif));
 
         Tasks.await(Tasks.whenAll(saveTasks));
