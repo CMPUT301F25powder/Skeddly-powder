@@ -171,7 +171,6 @@ public class CreateFragment extends Fragment {
                     bitmap.recycle();
 
                     updateEventImage();
-                    updateConfirmButton();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -207,21 +206,18 @@ public class CreateFragment extends Fragment {
 
                 if (eventLocation != null) {
                     binding.textEventLocationOverlay.setText(String.format(Locale.getDefault(), "(%.5f, %.5f)", eventLocation.latitude, eventLocation.longitude));
-                    updateConfirmButton();
                 }
             }
         });
 
         isRecurring = false;
         updateRecurring();
-        updateConfirmButton();
 
         binding.switchRecurrence.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(@NonNull CompoundButton buttonView, boolean isChecked) {
                 isRecurring = isChecked;
                 updateRecurring();
-                updateConfirmButton();
             }
         });
 
@@ -233,7 +229,6 @@ public class CreateFragment extends Fragment {
             public void onPositiveButtonClick(Long selection) {
                 eventStartDate = LocalDate.ofInstant(Instant.ofEpochMilli(selection), ZoneOffset.UTC);
                 binding.textDateStart.setText(underlineString(eventStartDate.format(dateFormatter)));
-                updateConfirmButton();
             }
         });
         setupDatePicker(binding.textDateFinish, new MaterialPickerOnPositiveButtonClickListener<Long>() {
@@ -241,7 +236,6 @@ public class CreateFragment extends Fragment {
             public void onPositiveButtonClick(Long selection) {
                 eventEndDate = LocalDate.ofInstant(Instant.ofEpochMilli(selection), ZoneOffset.UTC);
                 binding.textDateFinish.setText(underlineString(eventEndDate.format(dateFormatter)));
-                updateConfirmButton();
             }
         });
         setupDatePicker(binding.textRegDateStart, new MaterialPickerOnPositiveButtonClickListener<Long>() {
@@ -249,7 +243,6 @@ public class CreateFragment extends Fragment {
             public void onPositiveButtonClick(Long selection) {
                 regStartDate = LocalDate.ofInstant(Instant.ofEpochMilli(selection), ZoneOffset.UTC);
                 binding.textRegDateStart.setText(underlineString(regStartDate.format(dateFormatter)));
-                updateConfirmButton();
             }
         });
         setupDatePicker(binding.textRegDateFinish, new MaterialPickerOnPositiveButtonClickListener<Long>() {
@@ -257,7 +250,6 @@ public class CreateFragment extends Fragment {
             public void onPositiveButtonClick(Long selection) {
                 regEndDate = LocalDate.ofInstant(Instant.ofEpochMilli(selection), ZoneOffset.UTC);
                 binding.textRegDateFinish.setText(underlineString(regEndDate.format(dateFormatter)));
-                updateConfirmButton();
             }
         });
 
@@ -266,7 +258,6 @@ public class CreateFragment extends Fragment {
             public void onPositiveButtonClick(MaterialTimePicker picker) {
                 eventStartTime = LocalTime.of(picker.getHour(), picker.getMinute());
                 binding.textTimeStart.setText(underlineString(eventStartTime.format(timeFormatter)));
-                updateConfirmButton();
             }
         });
         setupTimePicker(binding.textTimeFinish, new MaterialTimePickerCallback() {
@@ -274,7 +265,6 @@ public class CreateFragment extends Fragment {
             public void onPositiveButtonClick(MaterialTimePicker picker) {
                 eventEndTime = LocalTime.of(picker.getHour(), picker.getMinute());
                 binding.textTimeFinish.setText(underlineString(eventEndTime.format(timeFormatter)));
-                updateConfirmButton();
             }
         });
         setupTimePicker(binding.textRegTimeStart, new MaterialTimePickerCallback() {
@@ -282,7 +272,6 @@ public class CreateFragment extends Fragment {
             public void onPositiveButtonClick(MaterialTimePicker picker) {
                 regStartTime = LocalTime.of(picker.getHour(), picker.getMinute());
                 binding.textRegTimeStart.setText(underlineString(regStartTime.format(timeFormatter)));
-                updateConfirmButton();
             }
         });
         setupTimePicker(binding.textRegTimeFinish, new MaterialTimePickerCallback() {
@@ -290,13 +279,16 @@ public class CreateFragment extends Fragment {
             public void onPositiveButtonClick(MaterialTimePicker picker) {
                 regEndTime = LocalTime.of(picker.getHour(), picker.getMinute());
                 binding.textRegTimeFinish.setText(underlineString(regEndTime.format(timeFormatter)));
-                updateConfirmButton();
             }
         });
 
         binding.btnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!isFilledIn()) {
+                    return;
+                }
+
                 Event event = createEvent();
 
                 // Put event in db
@@ -339,25 +331,6 @@ public class CreateFragment extends Fragment {
                 viewFlipper.showPrevious();
             }
         });
-
-        TextWatcher textWatcher = new TextWatcher() {
-            @Override
-            public void afterTextChanged(Editable s) {}
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                updateConfirmButton();
-            }
-        };
-
-        binding.editEventTitle.addTextChangedListener(textWatcher);
-        binding.editEventDescription.addTextChangedListener(textWatcher);
-        binding.editLotteryCriteria.addTextChangedListener(textWatcher);
-        binding.editWaitlistLimit.addTextChangedListener(textWatcher);
-        binding.editAttendeeLimit.addTextChangedListener(textWatcher);
 
         return root;
     }
@@ -406,7 +379,6 @@ public class CreateFragment extends Fragment {
                     String selectedString = String.join(", ", selectedItems);
 
                     textView.setText(selectedString);
-                    updateConfirmButton();
                 }
             }
         });
@@ -469,59 +441,56 @@ public class CreateFragment extends Fragment {
     }
 
     /**
-     * Updates whether the confirm button is enabled or not based on if the form is fully filled.
-     */
-    private void updateConfirmButton() {
-        Button confirmButton = binding.btnConfirm;
-
-        if (!isFilledIn()) {
-            confirmButton.setAlpha(.5f);
-            confirmButton.setEnabled(false);
-        } else {
-            confirmButton.setAlpha(1);
-            confirmButton.setEnabled(true);
-        }
-    }
-
-    /**
      * Validation function that checks whether the entire creation form has been filled in
      * @return True if the form has been fully filled. False otherwise.
      */
     private boolean isFilledIn() {
-        if (binding.editEventTitle.length() <= 0 || binding.editEventDescription.length() <= 0 ||
-                binding.editLotteryCriteria.length() <= 0) {
-            System.out.println("Title or description missing.");
+        // Title
+        if (binding.editEventTitle.length() <= 0) {
+            Toast.makeText(requireContext(), "Title is missing.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        // Description
+        if (binding.editEventDescription.length() <= 0) {
+            Toast.makeText(requireContext(), "Description is missing", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        // Lottery Criteria
+        if (binding.editLotteryCriteria.length() <= 0) {
+            Toast.makeText(requireContext(), "Lottery Criteria is mising", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         // Schedule must be set
         if (eventStartTime == null || eventEndTime == null || eventStartDate == null || (isRecurring && eventEndDate == null)) {
-            System.out.println("Schedule is not set.");
+            Toast.makeText(requireContext(), "Schedule is not set.", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         // Start date can't happen after the end date
         if (isRecurring && eventStartDate.isAfter(eventEndDate)) {
-            System.out.println("The event of is negative length (End date < Start date).");
+            Toast.makeText(requireContext(), "The event of is negative length (End date < Start date).", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         // Event can't be scheduled in the past
         LocalDateTime eventStart = LocalDateTime.of(eventStartDate, eventStartTime);
         if (eventStart.isBefore(LocalDateTime.now())) {
-            System.out.println("The registration date is in the past.");
+            Toast.makeText(requireContext(), "The registration date is in the past.", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         // If it's recurring, we need at least one day of the week
         if (isRecurring && daysOfWeek.isEmpty()) {
-            System.out.println("The event is recurring, but no day of the week is set.");
+            Toast.makeText(requireContext(), "The event is recurring, but no day of the week is set.", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         // Registration period must be set
         if (regStartTime == null || regEndTime == null || regStartDate == null || regEndDate == null) {
-            System.out.println("The registration period is unset.");
+            Toast.makeText(requireContext(), "The registration period is unset.", Toast.LENGTH_SHORT).show();
             return false;
         }
 
@@ -530,19 +499,19 @@ public class CreateFragment extends Fragment {
 
         // Registration start can't happen after registration end
         if (regStart.isAfter(regEnd)) {
-            System.out.println("The registration period is of negative length (Start date > End date).");
+            Toast.makeText(requireContext(), "The registration period is of negative length (Start date > End date).", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         // Registration start and end date must happen before event start date
         if (regEnd.isAfter(eventStart)) {
-            System.out.println("The registration period overlaps with the event.");
+            Toast.makeText(requireContext(), "The registration period overlaps with the event.", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         // Attendee Limit
         if (binding.editAttendeeLimit.length() <= 0) {
-            System.out.println("The attendee limit is less than 0.");
+            Toast.makeText(requireContext(), "There is no attendee limit.", Toast.LENGTH_SHORT).show();
             return false;
         }
 
@@ -556,19 +525,19 @@ public class CreateFragment extends Fragment {
         }
 
         if (binding.editWaitlistLimit.length() >= 0 && waitlistLimitContent < attendeeLimitContent) {
-            System.out.println("The waitlist limit is less than the attendee limit.");
+            Toast.makeText(requireContext(), "The waitlist limit is less than the attendee limit.", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         // Location
         if (eventLocation == null) {
-            System.out.println("There is no location.");
+            Toast.makeText(requireContext(), "There is no location.", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         // Needs an image
         if (imageBytes == null) {
-            System.out.println("There is no image.");
+            Toast.makeText(requireContext(), "There is no image.", Toast.LENGTH_SHORT).show();
             return false;
         }
 
@@ -651,7 +620,6 @@ public class CreateFragment extends Fragment {
         binding.editLotteryCriteria.setText("");
         binding.editWaitlistLimit.setText("");
         binding.editAttendeeLimit.setText("");
-        updateConfirmButton();
     }
 
     /**
@@ -762,9 +730,6 @@ public class CreateFragment extends Fragment {
 
         // Log Location
         binding.checkboxGeoLocationReq.setChecked(event.getLogLocation());
-
-        // Update Button
-        updateConfirmButton();
     }
 
     @Override

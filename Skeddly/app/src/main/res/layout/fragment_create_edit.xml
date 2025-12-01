@@ -404,7 +404,7 @@
 
                 </androidx.cardview.widget.CardView>
 
-                <!-- Event Lottery/Location Card View -->
+                <!-- Event Lottery/Location/Image Card View -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/card_view_lottery_location"
                     android:layout_width="match_parent"
