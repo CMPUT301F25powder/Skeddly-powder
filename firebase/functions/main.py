@@ -1,6 +1,7 @@
 # Welcome to Cloud Functions for Firebase for Python!
 # To get started, simply uncomment the below code or create your own.
 # Deploy with `firebase deploy`
+import base64
 import random
 import time
 from datetime import timedelta
@@ -23,6 +24,8 @@ from firebase_functions.firestore_fn import (
 
 from google.cloud.firestore_v1 import FieldFilter, Or
 from google.cloud.firestore_v1.field_path import FieldPath
+from PIL import Image
+from io import BytesIO
 
 import google.cloud.firestore
 
@@ -53,6 +56,10 @@ app = initialize_app()
 
 @on_document_created(document="notifications/{notifId}")
 def send_fcm_notification(event: Event[DocumentSnapshot]) -> None:
+    """
+    When new notifications are created, send a push notification to the user.
+    :param event: The event that caused this function to be triggered.
+    """
     notif_id: str = event.params["notifId"]
     data = event.data.to_dict()
 
@@ -60,10 +67,18 @@ def send_fcm_notification(event: Event[DocumentSnapshot]) -> None:
     firestore_client: google.cloud.firestore.Client = firestore.client()
 
     try:
-        fcm_token = firestore_client.collection("users").document(uid_recipient).get(["fcmToken"]).get("fcmToken")
-    except:
+        user_data: DocumentSnapshot = firestore_client.collection("users").document(uid_recipient).get(["fcmToken", "notificationSettings"])
+        fcm_token: str = user_data.get("fcmToken")
+        notification_settings: dict[str, bool] = user_data.get("notificationSettings")
+    except KeyError:
         # No FCM Token so can't send a notification
         print(f"[ERROR] Could not get fcmToken for {uid_recipient}")
+        return
+
+    # Only send a push notification if they want it
+    if ((data["type"] == "SYSTEM" and not notification_settings["administrative"]) or
+            (data["type"] == "MESSAGES" and not notification_settings["eventUpdate"]) or
+            (data["type"] == "REGISTRATION" and not notification_settings["lotteryStatus"])):
         return
 
     message = messaging.Message(
@@ -77,6 +92,10 @@ def send_fcm_notification(event: Event[DocumentSnapshot]) -> None:
 
 @on_document_deleted(document="users/{userId}")
 def cleanup_deleted_user(event: Event[DocumentSnapshot|None]) -> None:
+    """
+    Cleanup for when a user is deleted from Firestore.
+    :param event: The event that caused this function to be triggered.
+    """
     user_id: str = event.params["userId"]
 
     firestore_client: google.cloud.firestore.Client = firestore.client()
@@ -86,6 +105,10 @@ def cleanup_deleted_user(event: Event[DocumentSnapshot|None]) -> None:
 
 @on_document_deleted(document="events/{eventId}")
 def cleanup_deleted_event(event: Event[DocumentSnapshot|None]) -> None:
+    """
+    Cleanup for when an event is deleted from Firestore.
+    :param event: The event that caused this function to be triggered.
+    """
     event_id: str = event.params["eventId"]
 
     # Delete all tickets that reference them
@@ -95,6 +118,10 @@ def cleanup_deleted_event(event: Event[DocumentSnapshot|None]) -> None:
 
 @on_document_deleted(document="tickets/{ticketId}")
 def cleanup_deleted_ticket(event: Event[DocumentSnapshot|None]) -> None:
+    """
+    Cleanup for when a ticket is deleted from Firestore.
+    :param event: The event that caused this function to be triggered.
+    """
     ticket_id: str = event.params["ticketId"]
 
     # Delete all notifications that reference them
@@ -104,22 +131,32 @@ def cleanup_deleted_ticket(event: Event[DocumentSnapshot|None]) -> None:
 
 @on_document_updated(document="users/{userId}")
 def handle_user_updates(event: Event[Change[DocumentSnapshot]]) -> None:
-   user_id: str = event.params["userId"]
-   old_data = event.data.before.to_dict()
-   new_data = event.data.after.to_dict()
+    """
+    Handle updates to the user object.
+    :param event: The event that caused this function to be triggered.
+    """
+    user_id: str = event.params["userId"]
+    old_data = event.data.before.to_dict()
+    new_data = event.data.after.to_dict()
 
-   firestore_client: google.cloud.firestore.Client = firestore.client()
+    firestore_client: google.cloud.firestore.Client = firestore.client()
 
-   if old_data["personalInformation"] != new_data["personalInformation"]:
+    if old_data["personalInformation"] != new_data["personalInformation"]:
        # Need to update all the tickets
        update_ticket_personal_info(user_id, new_data["personalInformation"], firestore_client)
 
-   if old_data["privilegeLevel"] != new_data["privilegeLevel"] and new_data["privilegeLevel"] == "ENTRANT":
+    if old_data["privilegeLevel"] != new_data["privilegeLevel"] and new_data["privilegeLevel"] == "ENTRANT":
        # Delete all their events
        delete.delete_events_with_user_id(user_id, firestore_client)
 
 
 def update_ticket_personal_info(user_id: str, personal_information, firestore_client: google.cloud.firestore.Client):
+    """
+    Update tickets when a user's personal info changes.
+    :param user_id: The id of the user.
+    :param personal_information: The new personal info of the user
+    :param firestore_client: Firestore client.
+    """
     docs = (
         firestore_client.collection("tickets")
         .where(filter=FieldFilter("userId", "==", user_id))
@@ -133,6 +170,11 @@ def update_ticket_personal_info(user_id: str, personal_information, firestore_cl
 
 @https_fn.on_call()
 def http_cleanup_db(req: https_fn.CallableRequest) -> Any:
+    """
+    Callable function to perform DB cleanup operations.
+    :param req: The request that caused this function to be triggered.
+    :return: Whether the cleanup was successful. If it wasn't successful, the exception is provided.
+    """
     try:
         cleanup_orphans()
     except Exception as e:
@@ -141,20 +183,23 @@ def http_cleanup_db(req: https_fn.CallableRequest) -> Any:
     return {"successful": True, "message": ""}
 
 
-# @https_fn.on_call()
-# def http_add_mock_events(req: https_fn.CallableRequest) -> Any:
-#     firestore_client: google.cloud.firestore.Client = firestore.client()
-#     delete_mock_events(firestore_client)
-#     try:
-#         organizer: str = req.data["organizer"]
-#         add_mock_events(organizer, firestore_client)
-#     except Exception as e:
-#         return {"successful": False, "message": str(e)}
-#
-#     return {"successful": True, "message": ""}
+@https_fn.on_call()
+def http_add_mock_events(req: https_fn.CallableRequest) -> Any:
+    firestore_client: google.cloud.firestore.Client = firestore.client()
+    delete_mock_events(firestore_client)
+    try:
+        organizer: str = req.data["organizer"]
+        add_mock_events(organizer, firestore_client)
+    except Exception as e:
+        return {"successful": False, "message": str(e)}
+
+    return {"successful": True, "message": ""}
 
 
 def cleanup_orphans():
+    """
+    Cleanup orphaned data in the DB.
+    """
     firestore_client: google.cloud.firestore.Client = firestore.client()
 
     all_user_ids: list[str] = utility.get_all_ids(firestore_client.collection("users"))
@@ -188,6 +233,10 @@ def cleanup_orphans():
 
 
 def delete_mock_events(firestore_client: google.cloud.firestore.Client) -> None:
+    """
+    Delete any mock events that we created from a function.
+    :param firestore_client: The firestore client to use.
+    """
     docs = (
         firestore_client.collection("events")
         .where("mock", "==", True)
@@ -199,6 +248,12 @@ def delete_mock_events(firestore_client: google.cloud.firestore.Client) -> None:
 
 
 def add_mock_events(organizer: str, firestore_client: google.cloud.firestore.Client):
+    """
+    Create some mock events that belong to a given organizer.
+    :param organizer:
+    :param firestore_client:
+    :return:
+    """
     categories = ["Indoor", "Outdoor", "In-person", "Virtual", "Hybrid",
      "Arts & Crafts", "Physical activity"]
     one_year: int = 31536000
@@ -214,6 +269,10 @@ def add_mock_events(organizer: str, firestore_client: google.cloud.firestore.Cli
         waitingList = WaitingList([], 100)
         participantList = ParticipantList([], 50)
 
-        event: business.event.Event = business.event.Event(eventDetail, eventSchedule, location, organizer, waitingList, participantList, False, "")
+        image = Image.new('RGB', (1, 1))
+        buffered = BytesIO()
+        image.save(buffered, format="JPEG")
+
+        event: business.event.Event = business.event.Event(eventDetail, eventSchedule, location, organizer, waitingList, participantList, False, base64.b64encode(buffered.getvalue()).decode("utf-8"))
 
         firestore_client.collection("events").add(event.to_dict())
