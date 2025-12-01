@@ -70,18 +70,6 @@ public class ProfileFragment extends Fragment {
         });
 
         // What to do when they press to navigate to the notification settings fragment
-        pbf.setNotificationSettingsBtnOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                binding.headerProfile.getRoot().setVisibility(View.GONE);
-                backButton.setVisibility(View.VISIBLE);
-                NotificationSettingsFragment nsf = new NotificationSettingsFragment();
-                getChildFragmentManager().beginTransaction()
-                        .replace(binding.fragment.getId(), nsf)
-                        .commit();
-            }
-        });
-
         pbf.setNotificationSettingsBtnOnClickListener(v -> {
             backButton.setVisibility(View.VISIBLE); // Make back button visible
             NotificationSettingsFragment nsf = new NotificationSettingsFragment();
