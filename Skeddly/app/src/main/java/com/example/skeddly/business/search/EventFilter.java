@@ -160,21 +160,6 @@ public class EventFilter {
             }
         }
 
-        switch (user.getPrivilegeLevel()) {
-            // if entrant, don't show events that are not joinable
-            case ENTRANT:
-                if (!event.isJoinable()) {
-                    return false;
-                }
-                break;
-            // if organizer, don't show events that are not joinable unless they are the organizer
-            case ORGANIZER:
-                if (!event.isJoinable() && !Objects.equals(event.getOrganizer(), user.getId())) {
-                    return false;
-                }
-                break;
-            // Admins are allowed to see everything
-        }
         return true;
     }
 

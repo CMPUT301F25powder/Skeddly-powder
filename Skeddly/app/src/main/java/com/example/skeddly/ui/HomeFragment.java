@@ -136,8 +136,9 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
                     String eventName = event.getEventDetails().getName();
 
                     boolean nameSuggestionMatch = eventSearch.checkNameSuggestionMatch(eventName, query);
+                    boolean privilegeMatch = checkPrivilegeMatch(event);
 
-                    if ((eventFilterPopup.filterReady() && eventFilter.checkFilterCriteria(event) && nameSuggestionMatch) || (!eventFilterPopup.filterReady() && nameSuggestionMatch)) {
+                    if (privilegeMatch && ((eventFilterPopup.filterReady() && eventFilter.checkFilterCriteria(event) && nameSuggestionMatch) || (!eventFilterPopup.filterReady() && nameSuggestionMatch))) {
                         eventList.add(event);
                     }
                 }
@@ -193,6 +194,26 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
                 }
             }
         });
+    }
+
+    private boolean checkPrivilegeMatch(Event event) {
+        switch (user.getPrivilegeLevel()) {
+            // if entrant, don't show events that are not joinable
+            case ENTRANT:
+                if (!event.isJoinable()) {
+                    return false;
+                }
+                break;
+            // if organizer, don't show events that are not joinable unless they are the organizer
+            case ORGANIZER:
+                if (!event.isJoinable() && !Objects.equals(event.getOrganizer(), user.getId())) {
+                    return false;
+                }
+                break;
+            // Admins are allowed to see everything
+        }
+
+        return true;
     }
 
     @Override
