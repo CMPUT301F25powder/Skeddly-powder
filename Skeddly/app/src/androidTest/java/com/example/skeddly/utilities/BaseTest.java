@@ -1,9 +1,12 @@
 package com.example.skeddly.utilities;
 
+import android.Manifest;
+
 import androidx.test.espresso.IdlingRegistry;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
+import androidx.test.rule.GrantPermissionRule;
 
 import com.example.skeddly.SignupActivity;
 import com.example.skeddly.business.database.repository.EventRepository;
@@ -27,6 +30,12 @@ import java.util.concurrent.ExecutionException;
 public abstract class BaseTest {
     @Rule
     public ActivityScenarioRule<SignupActivity> signupActivityActivityScenarioRule = new ActivityScenarioRule<>(SignupActivity.class);
+
+    @Rule
+    public GrantPermissionRule grantPermissionRule = GrantPermissionRule.grant(
+            Manifest.permission.POST_NOTIFICATIONS,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION);
 
     private LoginIdlingResource loginIdlingResource;
     protected EventRepository eventRepository;

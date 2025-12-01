@@ -50,8 +50,6 @@ public class SignupActivity extends AppCompatActivity {
     private Button submitButton;
     private boolean loaded = false;
 
-    private Uri qrOpenUri;
-
     private Authenticator authenticator;
 
     @Override
@@ -82,9 +80,6 @@ public class SignupActivity extends AppCompatActivity {
 
         submitButton = binding.btnAccountCreate;
         toggleSubmitButton();
-
-        // See if we were opened by a QR code or special link
-        qrOpenUri = getLaunchLink();
 
         TextWatcher textWatcher = new TextWatcher() {
             @Override
@@ -179,24 +174,13 @@ public class SignupActivity extends AppCompatActivity {
      */
     private void switchToMain() {
         Intent mainActivity = new Intent(getBaseContext(), MainActivity.class);
+
         mainActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        mainActivity.putExtra("QR", qrOpenUri);
+        mainActivity.putExtra("launchIntent", getIntent());
         startActivity(mainActivity);
         finish();
 
         loaded = true;
-
-    }
-
-    /**
-     * Gets the launch link if there is one. The launch link is usually provided from scanning
-     * a QR code to open the app straight to an event.
-     * @return The launch link, or null if there isn't one.
-     */
-    @Nullable
-    private Uri getLaunchLink() {
-        Intent intent = getIntent();
-        return intent.getData();
     }
 
     /**

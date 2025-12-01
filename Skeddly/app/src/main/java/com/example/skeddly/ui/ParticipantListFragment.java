@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,8 @@ import com.example.skeddly.business.user.User;
 import com.example.skeddly.databinding.FragmentParticipantListBinding;
 import com.example.skeddly.ui.adapter.ParticipantAdapter;
 import com.example.skeddly.ui.popup.MapPopupDialogFragment;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.example.skeddly.ui.popup.SendMessageDialogFragment;
 import com.example.skeddly.ui.popup.StandardPopupDialogFragment;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -255,17 +258,31 @@ public class ParticipantListFragment extends Fragment implements ParticipantAdap
      * Clears the adapter and then fetches and displays all tickets for the given list of IDs.
      */
     private void fetchAndDisplayTickets() {
-        ticketRepository.getAllByStatus(TicketStatus.WAITING).addOnSuccessListener(tickets -> {
-            waitingParticipantAdapter.addAll(tickets);
-            waitingParticipantAdapter.notifyDataSetChanged();
-            updateFabVisiblity();
+        ticketRepository.getAllByStatus(TicketStatus.WAITING).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                List<Ticket> tickets = task.getResult();
+                waitingParticipantAdapter.addAll(tickets);
+                waitingParticipantAdapter.notifyDataSetChanged();
+                updateFabVisiblity();
+            } else {
+                if (task.getException() != null) {
+                    Log.e("ParticipantListFragment", task.getException().toString());
+                }
+            }
         });
 
         TicketStatus[] nonWaiting = {TicketStatus.INVITED, TicketStatus.ACCEPTED, TicketStatus.CANCELLED};
-        ticketRepository.getAllByStatuses(Arrays.asList(nonWaiting)).addOnSuccessListener(tickets -> {
-            finalParticipantAdapter.addAll(tickets);
-            finalParticipantAdapter.notifyDataSetChanged();
-            updateFabVisiblity();
+        ticketRepository.getAllByStatuses(Arrays.asList(nonWaiting)).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                List<Ticket> tickets = task.getResult();
+                finalParticipantAdapter.addAll(tickets);
+                finalParticipantAdapter.notifyDataSetChanged();
+                updateFabVisiblity();
+            } else {
+                if (task.getException() != null) {
+                    Log.e("ParticipantListFragment", task.getException().toString());
+                }
+            }
         });
     }
 

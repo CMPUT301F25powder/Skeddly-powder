@@ -1,11 +1,22 @@
 package com.example.skeddly;
 
+import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -16,18 +27,27 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.skeddly.business.database.DatabaseHandler;
+import com.example.skeddly.business.database.repository.EventRepository;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.user.UserLoaded;
 import com.example.skeddly.databinding.ActivityMainBinding;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import com.example.skeddly.business.user.Authenticator;
 import com.example.skeddly.business.user.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.functions.FirebaseFunctions;
 
 /**
  * Main activity for the application.
@@ -37,6 +57,17 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private NavController navController;
     private static MainActivity instance;
+
+    // FCM (Notifications)
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    // FCM SDK (and your app) can post notifications.
+                    Toast.makeText(this, "Notification permission granted!", Toast.LENGTH_SHORT);
+                } else {
+                    Toast.makeText(this, "Notification permission denied. You will not see notifications.", Toast.LENGTH_SHORT);
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,13 +88,6 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        Bundle extras = getIntent().getExtras();
-        Uri qr = null;
-
-        if (extras != null) {
-            qr = Objects.requireNonNull(extras).getParcelable("QR");
-        }
-
         DatabaseHandler database = new DatabaseHandler();
         authenticator = new Authenticator(this, database);
         authenticator.addListenerForUserLoaded(new UserLoaded() {
@@ -71,31 +95,61 @@ public class MainActivity extends AppCompatActivity {
             public void onUserLoaded(User loadedUser, boolean shouldShowSignupPage) {
                 // Update navbar if user object changes (allows for realtime updates)
                 setupNavBar();
+
+                checkLaunchIntent();
             }
         });
+
+        setupGooglePlayServices();
+        createNotificationChannel();
+    }
+
+    private void checkLaunchIntent() {
+        // Fetch the intent the app was launched with
+        Bundle mainExtras = getIntent().getExtras();
+        if (mainExtras == null) return;
+        Intent launchIntent = mainExtras.getParcelable("launchIntent");
+        if (launchIntent == null) return;
+
+        // Check if we need to do some special action
+        if (checkLaunchIntentNotification(launchIntent)) return;
+        if (checkLaunchIntentQr(launchIntent)) return;
+    }
+
+    private boolean checkLaunchIntentQr(Intent launchIntent) {
+        Uri qr = launchIntent.getData();
 
         if (qr != null) {
             String eventId = qr.getEncodedPath();
 
             if (eventId != null && eventId.length() > 1) {
                 String choppedEventId = eventId.substring(1);
+                EventRepository eventRepository = new EventRepository(FirebaseFirestore.getInstance());
 
-                database.getEventsPath().document(eventId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (documentSnapshot.exists()) {
-                            Event theEvent = documentSnapshot.toObject(Event.class);
-
-                            if (theEvent == null) {
-                                return;
-                            }
-
-                            navigateToEvent(theEvent);
-                        }
+                eventRepository.get(choppedEventId).addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        Toast.makeText(MainActivity.this, "Event does not exist!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        navigateToEvent(task.getResult());
                     }
                 });
             }
+
+            return true;
+        } else {
+            return false;
         }
+    }
+
+    private boolean checkLaunchIntentNotification(Intent launchIntent) {
+        Bundle launchExtras = launchIntent.getExtras();
+        if (launchExtras == null) return false;
+
+        String notification = launchExtras.getString("google.message_id");
+        if (notification == null) return false;
+
+        NavigationUI.onNavDestinationSelected(binding.navView.getMenu().findItem(R.id.navigation_inbox), navController);
+        return true;
     }
 
     /**
@@ -175,9 +229,56 @@ public class MainActivity extends AppCompatActivity {
     private void navigateToEvent(Event event) {
         Bundle bundle = new Bundle();
         bundle.putString("eventId", event.getId());
-        bundle.putString("userId", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
         bundle.putString("organizerId", event.getOrganizer());
+
         navController.navigate(R.id.navigation_event_view_info, bundle);
+    }
+
+    private void setupGooglePlayServices() {
+        if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this) != ConnectionResult.SUCCESS) {
+            GoogleApiAvailability.getInstance().makeGooglePlayServicesAvailable(this).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        askNotificationPermission();
+                    }
+                }
+            });
+        } else {
+            askNotificationPermission();
+        }
+    }
+
+    /**
+     * Asks the user for notification permissions if needed
+     */
+    private void askNotificationPermission() {
+        // This is only necessary for API level >= 33 (TIRAMISU)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
+                    PackageManager.PERMISSION_GRANTED) {
+                // FCM SDK (and your app) can post notifications.
+            } else {
+                // Directly ask for the permission
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            }
+        }
+    }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is not in the Support Library.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = SkeddlyFirebaseMessagingService.CHANNEL_NAME;
+            String description = SkeddlyFirebaseMessagingService.CHANNEL_DESCRIPTION;
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(SkeddlyFirebaseMessagingService.CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this.
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
     /**
@@ -187,5 +288,4 @@ public class MainActivity extends AppCompatActivity {
     public static MainActivity getInstance() {
         return instance;
     }
-
 }
