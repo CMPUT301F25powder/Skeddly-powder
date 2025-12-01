@@ -110,7 +110,6 @@ public class EventAdapter extends ArrayAdapter<Event> {
                 bundle.putString("eventId", event.getId());
                 bundle.putString("organizerId", event.getOrganizer());
                 Navigation.findNavController(v).navigate(viewInfoActionId, bundle);
-                Toast.makeText(getContext(), "View info for " + event.getEventDetails().getName(), Toast.LENGTH_SHORT).show();
             });
 
             // Handle edit button click
@@ -118,7 +117,6 @@ public class EventAdapter extends ArrayAdapter<Event> {
                 Bundle bundle = new Bundle();
                 bundle.putString("eventId", event.getId());
                 Navigation.findNavController(v).navigate(editActionId, bundle);
-                Toast.makeText(getContext(), "Editing " + event.getEventDetails().getName(), Toast.LENGTH_SHORT).show();
             });
 
             // Handle long press
@@ -150,20 +148,25 @@ public class EventAdapter extends ArrayAdapter<Event> {
             // This code runs when the check is complete
             if (ticketId != null) {
                 // User is on the waitlist
-                buttonJoin.setText("Leave");
+                buttonJoin.setText(getContext().getString(R.string.event_btn_leave));
+                buttonJoin.setEnabled(true);
+                buttonJoin.setAlpha(1);
                 buttonJoin.setOnClickListener(v -> {
                     event.leave(dbHandler, ticketId);
                     Toast.makeText(getContext(), "Leaving " + event.getEventDetails().getName(), Toast.LENGTH_SHORT).show();
                 });
             } else {
                 // User is not on the waitlist
-                buttonJoin.setText("Join");
+                buttonJoin.setText(getContext().getString(R.string.event_btn_join));
                 buttonJoin.setOnClickListener(v -> {
                     // Show pop up to confirm join
-                    showJoinConfirmationPopup(event, dbHandler);
+                    showJoinConfirmationPopup(event, dbHandler, buttonJoin);
                 });
             }
-            buttonJoin.setEnabled(true); // Re-enable the button
+
+            // Enable the button
+            buttonJoin.setEnabled(true);
+            buttonJoin.setAlpha(1);
         });
     }
 
@@ -172,7 +175,7 @@ public class EventAdapter extends ArrayAdapter<Event> {
      * @param event The event to join.
      * @param dbHandler The database handler.
      */
-    private void showJoinConfirmationPopup(Event event, DatabaseHandler dbHandler) {
+    private void showJoinConfirmationPopup(Event event, DatabaseHandler dbHandler, Button buttonJoin) {
         if (getContext() instanceof FragmentActivity) {
             FragmentManager fm = ((FragmentActivity) getContext()).getSupportFragmentManager();
             String requestKey = "joinConfirm-" + event.getId();
@@ -183,11 +186,17 @@ public class EventAdapter extends ArrayAdapter<Event> {
                     Toast.makeText(getContext(), "Joining " + event.getEventDetails().getName(), Toast.LENGTH_SHORT).show();
 
                     if (event.getLogLocation()) {
+                        // Hand holdy so the user knows we do things
+                        buttonJoin.setEnabled(false);
+                        buttonJoin.setAlpha(0.5f);
+
+                        buttonJoin.setText(getContext().getString(R.string.event_btn_joining));
                         locationGetter.getLocation(new SingleListenUpdate<CustomLocation>() {
                             @Override
                             public void onUpdate(CustomLocation newValue) {
                                 if (newValue == null) {
                                     Toast.makeText(getContext(), "Location lookup failed.", Toast.LENGTH_SHORT).show();
+                                    return;
                                 }
                                 event.join(dbHandler, user.getPersonalInformation(), user.getId(), newValue);
                             }
@@ -198,7 +207,19 @@ public class EventAdapter extends ArrayAdapter<Event> {
                 }
             });
 
-            StandardPopupDialogFragment.newInstance("Entry Criteria", event.getEventDetails().getEntryCriteria(), requestKey).show(fm, "dialog_join_confirm");
+            String logLocationMessage = getContext().getString(
+                    event.getLogLocation() ?
+                            R.string.dialog_event_join_location_required :
+                            R.string.dialog_event_join_location_not_required);
+
+            String dialogContents = getContext().getString(
+                    R.string.dialog_event_join_confirm_contents,
+                    event.getEventDetails().getEntryCriteria(),
+                    logLocationMessage);
+
+            StandardPopupDialogFragment.newInstance(
+                    getContext().getString(R.string.dialog_event_join_confirm_title),
+                    dialogContents, requestKey).show(fm, "dialog_join_confirm");
         }
     }
 

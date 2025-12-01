@@ -183,10 +183,17 @@ public class SignupActivity extends AppCompatActivity {
         loaded = true;
     }
 
+    /**
+     * Getter for whether the activity has loaded.
+     * @return Whether the activity has loaded.
+     */
     public boolean getLoaded() {
         return this.loaded;
     }
 
+    /**
+     * Sets up the firebase emulator.
+     */
     private void setupFirebaseEmulator() {
         // Authentication Emulator
         FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -212,6 +219,9 @@ public class SignupActivity extends AppCompatActivity {
         initialised = true;
     }
 
+    /**
+     * Loads the user from the database.
+     */
     private void loadUser() {
         DatabaseHandler database = new DatabaseHandler();
         authenticator = new Authenticator(this, database, useFirebaseEmulator);

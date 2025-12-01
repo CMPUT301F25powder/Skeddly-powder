@@ -72,28 +72,12 @@
         android:id="@+id/navigation_tools"
         android:name="com.example.skeddly.ui.ToolsFragment"
         android:label="@string/nav_tools">
-
-        <action
-            android:id="@+id/action_navigation_tools_to_test"
-            app:destination="@id/navigation_test"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"
-            app:popUpTo="@id/navigation_tools"
-            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
         android:id="@+id/navigation_profile"
         android:name="com.example.skeddly.ui.ProfileFragment"
         android:label="@string/nav_profile"
-        />
-
-    <fragment
-        android:id="@+id/navigation_test"
-        android:name="com.example.skeddly.ui.TestFragment"
-        android:label="Test"
         />
 
     <fragment

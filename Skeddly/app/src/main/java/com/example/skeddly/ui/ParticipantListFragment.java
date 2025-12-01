@@ -18,21 +18,29 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 
+import com.example.skeddly.MainActivity;
 import com.example.skeddly.R;
 import com.example.skeddly.business.Ticket;
 import com.example.skeddly.business.TicketStatus;
+import com.example.skeddly.business.database.repository.NotificationRepository;
 import com.example.skeddly.business.database.repository.TicketRepository;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.database.SingleListenUpdate;
 import com.example.skeddly.business.location.CustomLocation;
 import com.example.skeddly.business.location.MapPopupType;
+import com.example.skeddly.business.notification.Notification;
+import com.example.skeddly.business.notification.NotificationType;
+import com.example.skeddly.business.user.User;
 import com.example.skeddly.databinding.FragmentParticipantListBinding;
 import com.example.skeddly.ui.adapter.ParticipantAdapter;
 import com.example.skeddly.ui.popup.MapPopupDialogFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.example.skeddly.ui.popup.SendMessageDialogFragment;
+import com.example.skeddly.ui.popup.StandardPopupDialogFragment;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.opencsv.CSVWriter;
@@ -52,7 +60,7 @@ import java.util.stream.Stream;
 /**
  * Fragment for the participant list screen
  */
-public class ParticipantListFragment extends Fragment {
+public class ParticipantListFragment extends Fragment implements ParticipantAdapter.OnMessageButtonClickListener {
 
     private FragmentParticipantListBinding binding;
     private Event event;
@@ -67,6 +75,7 @@ public class ParticipantListFragment extends Fragment {
     private ListenerRegistration listener;
     private ActivityResultLauncher<Intent> filePickerActivityResultLauncher;
     private TicketRepository ticketRepository;
+    private NotificationRepository notificationRepository;
 
     @Nullable
     @Override
@@ -81,8 +90,13 @@ public class ParticipantListFragment extends Fragment {
         if (getArguments() != null) {
             String eventId = getArguments().getString("eventId");
             ticketRepository = new TicketRepository(FirebaseFirestore.getInstance(), eventId);
+            notificationRepository = new NotificationRepository(FirebaseFirestore.getInstance());
             loadEventAndSetupUI(eventId);
         }
+
+        // Hide map and messaging for now
+        binding.fabMessage.setVisibility(View.GONE);
+        binding.fabShowLocations.setVisibility(View.GONE);
 
         // Set up back button
         binding.btnBack.setOnClickListener(v -> {
@@ -105,6 +119,15 @@ public class ParticipantListFragment extends Fragment {
             }
         });
 
+        // Set up message all button
+        binding.fabMessage.setOnClickListener(v -> {
+            StandardPopupDialogFragment spdf = StandardPopupDialogFragment.newInstance(
+                    getString(R.string.dialog_msg_send_all_title),
+                    getString(R.string.dialog_msg_send_all_contents, isWaitingList ? "waiting list." : "final list."),
+                    "messageAll", true);
+            spdf.show(getChildFragmentManager(), null);
+        });
+
         // You can do the assignment inside onAttach or onCreate, i.e, before the activity is displayed
         filePickerActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -116,11 +139,33 @@ public class ParticipantListFragment extends Fragment {
                                 Uri uri = result.getData().getData();
                                 List<String[]> entrantData = getEntrantData();
                                 alterDocument(uri, entrantData);
-                                Toast.makeText(requireContext(), "CSV file has been exported!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(requireContext(), getString(R.string.toast_file_csv_exported), Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
                 });
+
+        getChildFragmentManager().setFragmentResultListener("sendMessage", this, (requestKey, bundle) -> {
+            String message = bundle.getString("message");
+            String recipientId = bundle.getString("recipientId");
+            Notification notification = new Notification(event.getEventDetails().getName(), message, recipientId);
+            notification.setType(NotificationType.MESSAGES);
+            notificationRepository.set(notification);
+        });
+
+        getChildFragmentManager().setFragmentResultListener("messageAll", this, (requestKey, result) -> {
+            boolean buttonChoice = result.getBoolean("buttonChoice");
+            String typedText = result.getString("typedText");
+
+            if (buttonChoice) {
+                ArrayList<Ticket> tickets = isWaitingList ? waitingListTickets : finalListTickets;
+
+                for (Ticket ticket : tickets) {
+                    Notification notification = new Notification(event.getEventDetails().getName(), typedText, ticket.getUserId());
+                    notificationRepository.set(notification);
+                }
+            }
+        });
 
         return root;
     }
@@ -150,10 +195,11 @@ public class ParticipantListFragment extends Fragment {
                     }
                     // Set event
                     this.event = receivedEvent;
+                    User currentUser = ((MainActivity) requireActivity()).getUser();
 
                     // Create the adapter with an empty list
-                    waitingParticipantAdapter = new ParticipantAdapter(getContext(), waitingListTickets, dbhandler, event);
-                    finalParticipantAdapter = new ParticipantAdapter(getContext(), finalListTickets, dbhandler, event);
+                    waitingParticipantAdapter = new ParticipantAdapter(getContext(), waitingListTickets, dbhandler, event, currentUser, this);
+                    finalParticipantAdapter = new ParticipantAdapter(getContext(), finalListTickets, dbhandler, event, currentUser, this);
                     binding.listViewEntrants.setAdapter(waitingParticipantAdapter);
 
                     // Set the button listeners to clear the adapter and fetch the correct data.
@@ -164,6 +210,7 @@ public class ParticipantListFragment extends Fragment {
                         binding.listViewEntrants.setAdapter(finalParticipantAdapter);
 
                         isWaitingList = false;
+                        updateFabVisiblity();
                     });
                     binding.buttonWaitingList.setOnClickListener(v -> {
                         binding.buttonWaitingList.setBackgroundResource(R.drawable.btn_select);
@@ -172,6 +219,7 @@ public class ParticipantListFragment extends Fragment {
                         binding.listViewEntrants.setAdapter(waitingParticipantAdapter);
 
                         isWaitingList = true;
+                        updateFabVisiblity();
                     });
 
                     // Load all the tickets
@@ -189,6 +237,7 @@ public class ParticipantListFragment extends Fragment {
                 List<Ticket> tickets = task.getResult();
                 waitingParticipantAdapter.addAll(tickets);
                 waitingParticipantAdapter.notifyDataSetChanged();
+                updateFabVisiblity();
             } else {
                 if (task.getException() != null) {
                     Log.e("ParticipantListFragment", task.getException().toString());
@@ -202,12 +251,37 @@ public class ParticipantListFragment extends Fragment {
                 List<Ticket> tickets = task.getResult();
                 finalParticipantAdapter.addAll(tickets);
                 finalParticipantAdapter.notifyDataSetChanged();
+                updateFabVisiblity();
             } else {
                 if (task.getException() != null) {
                     Log.e("ParticipantListFragment", task.getException().toString());
                 }
             }
         });
+    }
+
+    /**
+     * Updates whether the FABs are visible on screen.
+     */
+    private void updateFabVisiblity() {
+        List<Ticket> tickets = isWaitingList ? waitingListTickets : finalListTickets;
+
+        if (tickets.isEmpty()) {
+            binding.fabMessage.setVisibility(View.GONE);
+            binding.fabShowLocations.setVisibility(View.GONE);
+            return;
+        }
+
+        // Not empty
+        binding.fabMessage.setVisibility(View.VISIBLE);
+        binding.fabShowLocations.setVisibility(View.GONE);
+
+        for (Ticket ticket : tickets) {
+            if (ticket.getLocation() != null) {
+                binding.fabShowLocations.setVisibility(View.VISIBLE);
+                break;
+            }
+        }
     }
 
     /**
@@ -307,5 +381,10 @@ public class ParticipantListFragment extends Fragment {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onMessageButtonClick(String recipientId) {
+        SendMessageDialogFragment.newInstance(recipientId).show(getChildFragmentManager(), "SendMessage");
     }
 }

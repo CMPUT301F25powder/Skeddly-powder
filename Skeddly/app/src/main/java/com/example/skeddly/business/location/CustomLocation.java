@@ -85,7 +85,7 @@ public class CustomLocation implements Parcelable {
     @NonNull
     @Override
     public String toString() {
-        return String.format(Locale.getDefault(), "(%.2f, %.2f)", latitude, longitude);
+        return String.format(Locale.getDefault(), "(%.5f, %.5f)", latitude, longitude);
     }
 
     @Override

@@ -281,6 +281,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Getter for the main activity.
+     * @return The main activity.
+     */
     public static MainActivity getInstance() {
         return instance;
     }
