@@ -19,264 +19,342 @@
         app:tint="@color/neutral_lighter_off_white"
         tools:ignore="ContentDescription" />
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/main_content_card"
+    <ScrollView
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_height="0dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="24dp"
-        app:cardBackgroundColor="@color/neutral_off_white"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btn_back">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.cardview.widget.CardView
+            android:id="@+id/main_content_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="24dp">
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="24dp"
+            app:cardBackgroundColor="@color/neutral_off_white"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="4dp">
 
-            <ImageView
-                android:id="@+id/img_event"
-                android:layout_width="0dp"
-                android:layout_height="180dp"
-                android:background="@drawable/bg_card"
-                android:scaleType="centerCrop"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="ContentDescription" />
-
-            <TextView
-                android:id="@+id/text_event_title_overlay"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginBottom="16dp"
-                android:background="@drawable/event_bg_title"
-                android:drawablePadding="8dp"
-                android:elevation="5dp"
-                android:paddingStart="12dp"
-                android:paddingTop="8dp"
-                android:paddingEnd="12dp"
-                android:paddingBottom="8dp"
-                android:text="@string/event_title_location"
-                android:textColor="@color/neutral_lighter_off_white"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@id/img_event"
-                app:layout_constraintStart_toStartOf="parent" />
+                android:paddingBottom="24dp">
 
-            <ImageButton
-                android:id="@+id/btn_qr_code"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:background="@drawable/bg_qr_code_circle"
-                android:elevation="5dp"
-                android:padding="12dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_qr_code_scanner"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/neutral_lighter_off_white"
-                tools:ignore="ContentDescription" />
+                <ImageView
+                    android:id="@+id/img_event"
+                    android:layout_width="0dp"
+                    android:layout_height="180dp"
+                    android:background="@drawable/bg_card"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="ContentDescription" />
 
-            <TextView
-                android:id="@+id/text_day_select"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:text="@string/event_date_time"
-                android:textColor="@color/primary_navy"
-                android:textSize="14sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/img_event" />
+                <TextView
+                    android:id="@+id/text_event_title_overlay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/event_bg_title"
+                    android:drawablePadding="8dp"
+                    android:ellipsize="end"
+                    android:elevation="5dp"
+                    android:maxLines="2"
+                    android:paddingStart="12dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="8dp"
+                    android:textColor="@color/neutral_lighter_off_white"
+                    android:textSize="16sp"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintBottom_toBottomOf="@id/img_event"
+                    app:layout_constraintEnd_toStartOf="@+id/btn_qr_code"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    tools:text="123 Main Street" />
 
-            <TextView
-                android:id="@+id/label_event_information"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/event_label_information"
-                android:textColor="@color/primary_navy"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@id/text_day_select"
-                app:layout_constraintTop_toBottomOf="@id/text_day_select" />
+                <ImageButton
+                    android:id="@+id/btn_qr_code"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/bg_qr_code_circle"
+                    android:elevation="5dp"
+                    android:padding="12dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_qr_code_scanner"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/neutral_lighter_off_white"
+                    tools:ignore="ContentDescription" />
 
-            <TextView
-                android:id="@+id/label_event_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/event_label_title"
-                android:textColor="@color/primary_navy"
-                app:layout_constraintStart_toStartOf="@id/label_event_information"
-                app:layout_constraintTop_toBottomOf="@id/label_event_information" />
+                <TextView
+                    android:id="@+id/text_day_select"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:textColor="@color/primary_navy"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/img_event"
+                    tools:text="Friday, Apr 26, 14:00 - 16:30" />
 
-            <TextView
-                android:id="@+id/value_event_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="16dp"
-                android:text="@string/event_title"
-                android:textColor="@color/neutral_brown_light"
-                app:layout_constraintBaseline_toBaselineOf="@+id/label_event_title"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/label_event_title" />
+                <TextView
+                    android:id="@+id/label_event_information"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/event_label_information"
+                    android:textColor="@color/primary_navy"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="@id/text_day_select"
+                    app:layout_constraintTop_toBottomOf="@id/text_day_select" />
 
-            <TextView
-                android:id="@+id/label_event_description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="@string/event_label_description"
-                android:textColor="@color/primary_navy"
-                app:layout_constraintStart_toStartOf="@id/label_event_title"
-                app:layout_constraintTop_toBottomOf="@id/label_event_title" />
+                <!-- Information Section -->
 
-            <TextView
-                android:id="@+id/value_event_description"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="16dp"
-                android:text="@string/event_description"
-                android:textColor="@color/neutral_brown_light"
-                app:layout_constraintBaseline_toBaselineOf="@+id/label_event_description"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/label_event_description" />
+                <TextView
+                    android:id="@+id/label_event_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/event_label_title"
+                    android:textColor="@color/primary_navy"
+                    app:layout_constraintStart_toStartOf="@id/label_event_information"
+                    app:layout_constraintTop_toBottomOf="@id/label_event_information" />
 
-            <TextView
-                android:id="@+id/label_category"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="@string/event_label_category"
-                android:textColor="@color/primary_navy"
-                app:layout_constraintStart_toStartOf="@id/label_event_description"
-                app:layout_constraintTop_toBottomOf="@id/label_event_description" />
+                <TextView
+                    android:id="@+id/label_event_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/event_label_description"
+                    android:textColor="@color/primary_navy"
+                    app:layout_constraintStart_toStartOf="@id/label_event_title"
+                    app:layout_constraintTop_toBottomOf="@id/divider_title" />
 
-            <TextView
-                android:id="@+id/value_category"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="@string/event_category"
-                android:textColor="@color/neutral_brown_light"
-                app:layout_constraintBaseline_toBaselineOf="@+id/label_category"
-                app:layout_constraintStart_toEndOf="@+id/label_category" />
+                <TextView
+                    android:id="@+id/label_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/event_label_category"
+                    android:textColor="@color/primary_navy"
+                    app:layout_constraintStart_toStartOf="@id/label_event_description"
+                    app:layout_constraintTop_toBottomOf="@id/divider_description" />
 
-            <TextView
-                android:id="@+id/label_waitlist_limit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:text="@string/event_label_wait_list_limit"
-                android:textColor="@color/primary_navy"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/label_category" />
+                <TextView
+                    android:id="@+id/label_attendee_limit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/event_label_attendee_limit"
+                    android:textColor="@color/primary_navy"
+                    app:layout_constraintStart_toStartOf="@id/label_category"
+                    app:layout_constraintTop_toBottomOf="@id/divider_category" />
 
-            <TextView
-                android:id="@+id/value_waitlist_limit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/event_wait_list_limit"
-                android:textColor="@color/neutral_brown_light"
-                app:layout_constraintEnd_toEndOf="@id/label_waitlist_limit"
-                app:layout_constraintTop_toBottomOf="@id/label_waitlist_limit" />
+                <TextView
+                    android:id="@+id/label_waitlist_limit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/event_label_wait_list_limit"
+                    android:textColor="@color/primary_navy"
+                    app:layout_constraintStart_toStartOf="@id/label_attendee_limit"
+                    app:layout_constraintTop_toBottomOf="@id/divider_attendee" />
 
-            <TextView
-                android:id="@+id/label_attendee_limit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/event_label_attendee_limit"
-                android:textColor="@color/primary_navy"
-                app:layout_constraintEnd_toEndOf="@id/value_waitlist_limit"
-                app:layout_constraintTop_toBottomOf="@id/value_waitlist_limit" />
 
-            <TextView
-                android:id="@+id/value_attendee_limit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/event_attendee_limit"
-                android:textColor="@color/neutral_brown_light"
-                app:layout_constraintEnd_toEndOf="@id/label_attendee_limit"
-                app:layout_constraintTop_toBottomOf="@id/label_attendee_limit" />
+                <androidx.constraintlayout.widget.Barrier
+                    android:id="@+id/label_barrier"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:barrierDirection="end"
+                    app:constraint_referenced_ids="label_event_title,label_event_description,label_category,label_attendee_limit,label_waitlist_limit" />
 
-            <!-- The 'Join' button, intended for regular users -->
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_join"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:background="@color/primary_purple"
-                android:text="@string/event_btn_join"
-                android:textAllCaps="false"
-                android:textColor="@color/neutral_lighter_off_white"
-                app:layout_constraintTop_toBottomOf="@id/value_attendee_limit"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                 />
+                <TextView
+                    android:id="@+id/value_event_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:textColor="@color/neutral_brown_light"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/label_event_title"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/label_barrier"
+                    tools:text="A Very Very Long Event Title That Should Now Wrap Correctly" />
 
-            <!-- A Group to easily control visibility of all admin buttons at once -->
-            <androidx.constraintlayout.widget.Group
-                android:id="@+id/btn_group_admin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:constraint_referenced_ids="btn_draw,btn_edit,btn_participants" />
+                <View
+                    android:id="@+id/divider_title"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@android:color/darker_gray"
+                    app:layout_constraintEnd_toEndOf="@id/value_event_title"
+                    app:layout_constraintStart_toStartOf="@id/label_event_title"
+                    app:layout_constraintTop_toBottomOf="@id/value_event_title" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_draw"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="8dp"
-                android:background="@color/primary_purple"
-                android:text="@string/event_btn_draw"
-                android:textAllCaps="false"
-                android:textColor="@color/neutral_lighter_off_white"
-                app:layout_constraintEnd_toStartOf="@+id/btn_edit"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/value_attendee_limit" />
+                <TextView
+                    android:id="@+id/value_event_description"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:textColor="@color/neutral_brown_light"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/label_event_description"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/label_barrier"
+                    tools:text="This description is also quite long and we need to make absolutely sure that it does not go off the screen, which is the entire point of this refactoring exercise." />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_edit"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="16dp"
-                android:background="@color/primary_purple"
-                android:text="@string/event_btn_edit"
-                android:textAllCaps="false"
-                android:textColor="@color/neutral_lighter_off_white"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/btn_draw"
-                app:layout_constraintTop_toTopOf="@id/btn_draw" />
+                <View
+                    android:id="@+id/divider_description"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@android:color/darker_gray"
+                    app:layout_constraintEnd_toEndOf="@id/value_event_description"
+                    app:layout_constraintStart_toStartOf="@id/label_event_description"
+                    app:layout_constraintTop_toBottomOf="@id/value_event_description" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_participants"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_marginTop="12dp"
-                android:background="@color/primary_purple"
-                android:text="@string/event_btn_participants"
-                android:textAllCaps="false"
-                android:textColor="@color/neutral_lighter_off_white"
-                app:layout_constraintEnd_toEndOf="@id/btn_edit"
-                app:layout_constraintStart_toStartOf="@id/btn_draw"
-                app:layout_constraintTop_toBottomOf="@id/btn_draw" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
+                <TextView
+                    android:id="@+id/value_category"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:textColor="@color/neutral_brown_light"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/label_category"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/label_barrier"
+                    tools:text="Indoor, Outdoor, Virtual" />
 
+                <View
+                    android:id="@+id/divider_category"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@android:color/darker_gray"
+                    app:layout_constraintEnd_toEndOf="@id/value_category"
+                    app:layout_constraintStart_toStartOf="@id/label_category"
+                    app:layout_constraintTop_toBottomOf="@id/value_category" />
+
+
+                <TextView
+                    android:id="@+id/value_attendee_limit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:textColor="@color/neutral_brown_light"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/label_attendee_limit"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/label_barrier"
+                    tools:text="50 / 100" />
+
+                <View
+                    android:id="@+id/divider_attendee"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@android:color/darker_gray"
+                    app:layout_constraintEnd_toEndOf="@id/value_attendee_limit"
+                    app:layout_constraintStart_toStartOf="@id/label_attendee_limit"
+                    app:layout_constraintTop_toBottomOf="@id/value_attendee_limit" />
+
+
+                <TextView
+                    android:id="@+id/value_waitlist_limit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:textColor="@color/neutral_brown_light"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/label_waitlist_limit"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/label_barrier"
+                    tools:text="15 / ∞" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_join"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@color/primary_purple"
+                    android:text="@string/event_btn_join"
+                    android:textAllCaps="false"
+                    android:textColor="@color/neutral_lighter_off_white"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/value_waitlist_limit"
+                    tools:visibility="visible" />
+
+                <LinearLayout
+                    android:id="@+id/btn_group_admin"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="16dp"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/value_waitlist_limit"
+                    tools:visibility="visible">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/btn_draw"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_marginEnd="4dp"
+                            android:layout_weight="1"
+                            android:background="@color/primary_purple"
+                            android:text="@string/event_btn_draw"
+                            android:textAllCaps="false"
+                            android:textColor="@color/neutral_lighter_off_white" />
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/btn_edit"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_marginStart="4dp"
+                            android:layout_weight="1"
+                            android:background="@color/primary_purple"
+                            android:text="@string/event_btn_edit"
+                            android:textAllCaps="false"
+                            android:textColor="@color/neutral_lighter_off_white" />
+                    </LinearLayout>
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_participants"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@color/primary_purple"
+                        android:text="@string/event_btn_participants"
+                        android:textAllCaps="false"
+                        android:textColor="@color/neutral_lighter_off_white" />
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
