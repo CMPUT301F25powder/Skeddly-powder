@@ -32,6 +32,9 @@
         Demoting this user to ENTRANT will delete all their associated events. This action cannot be undone. Are you sure?
     </string>
 
+    <string name="dialog_msg_send_all_title">Send Message</string>
+    <string name="dialog_msg_send_all_contents">Enter the message to send to all participants on the %s</string>
+
     <string name="event_attendee_limit">0/25</string>
     <string name="event_btn_draw">Draw</string>
     <string name="event_btn_edit">Edit</string>
@@ -122,4 +125,7 @@
     <string name="my_events">My Events</string>
     <string name="placeholder">Placeholder</string>
     <string name="fragment_profile_event_history_joined_date">Joined: %s</string>
+    <string name="message">Message</string>
+
+    <string name="toast_file_csv_exported">CSV file has been exported!</string>
 </resources>

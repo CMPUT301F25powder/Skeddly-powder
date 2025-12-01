@@ -154,7 +154,7 @@ public class MapPopupDialogFragment extends DialogFragment implements OnMapReady
 
         enableUserLocation();
 
-        if (mapPopupType == MapPopupType.VIEW) {
+        if (mapPopupType == MapPopupType.VIEW && !entrantLocations.isEmpty()) {
             // Add markers for each entrant location and position the map view to enclose all markers
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
             int padding = 100;

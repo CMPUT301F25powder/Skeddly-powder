@@ -5,22 +5,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.skeddly.R;
-import com.example.skeddly.business.TicketStatus;
-import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.Ticket;
+import com.example.skeddly.business.TicketStatus;
 import com.example.skeddly.business.database.DatabaseHandler;
-import com.example.skeddly.business.database.SingleListenUpdate;
+import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.user.User;
+import com.example.skeddly.business.user.UserLevel;
 import com.example.skeddly.databinding.ItemEntrantBinding;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -34,6 +33,12 @@ import java.util.ArrayList;
 public class ParticipantAdapter extends ArrayAdapter<Ticket> {
     private DatabaseHandler dbHandler;
     private Event event;
+    private User currentUser;
+    private OnMessageButtonClickListener messageButtonClickListener;
+
+    public interface OnMessageButtonClickListener {
+        void onMessageButtonClick(String recipientId);
+    }
 
     /**
      * Constructor for the ParticipantAdapter
@@ -42,10 +47,12 @@ public class ParticipantAdapter extends ArrayAdapter<Ticket> {
      * @param dbHandler The database handler
      * @param event The event to get the users from
      */
-    public ParticipantAdapter(Context context, ArrayList<Ticket> tickets, DatabaseHandler dbHandler, Event event) {
+    public ParticipantAdapter(Context context, ArrayList<Ticket> tickets, DatabaseHandler dbHandler, Event event, User currentUser, OnMessageButtonClickListener listener) {
         super(context, 0, tickets);
         this.dbHandler = dbHandler;
         this.event = event;
+        this.currentUser = currentUser;
+        this.messageButtonClickListener = listener;
     }
 
     @NonNull
@@ -60,6 +67,8 @@ public class ParticipantAdapter extends ArrayAdapter<Ticket> {
         TextView nameText = binding.textViewFullName;
         TextView dateText = binding.textViewJoinDate;
         TextView statusTextView = binding.textViewStatus;
+        Button messageButton = binding.buttonMessageUser;
+
         Ticket ticket = getItem(position);
         if (ticket != null) {
             // Set user name
@@ -82,6 +91,19 @@ public class ParticipantAdapter extends ArrayAdapter<Ticket> {
                 statusTextView.setBackgroundResource(R.drawable.chip_status_cancelled);
             } else {
                 statusTextView.setVisibility(View.INVISIBLE);
+            }
+
+            // Show message button for admin or organizer
+            boolean isOrganizer = event.getOrganizer().equals(currentUser.getId());
+            if (currentUser.getPrivilegeLevel() == UserLevel.ADMIN || isOrganizer) {
+                messageButton.setVisibility(View.VISIBLE);
+                messageButton.setOnClickListener(v -> {
+                    if (messageButtonClickListener != null) {
+                        messageButtonClickListener.onMessageButtonClick(ticket.getUserId());
+                    }
+                });
+            } else {
+                messageButton.setVisibility(View.GONE);
             }
 
             // Delete from either list when long pressed

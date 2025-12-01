@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,16 +17,24 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+
 import com.example.skeddly.R;
 import com.example.skeddly.business.database.repository.EventRepository;
 import com.example.skeddly.business.database.repository.UserRepository;
 import com.example.skeddly.business.event.Event;
+import com.example.skeddly.business.database.repository.NotificationRepository;
+import com.example.skeddly.business.notification.Notification;
+import com.example.skeddly.business.notification.NotificationType;
 import com.example.skeddly.business.user.User;
 import com.example.skeddly.business.user.UserLevel;
 import com.example.skeddly.databinding.ItemAdminUserBinding;
 import com.example.skeddly.ui.popup.StandardPopupDialogFragment;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.example.skeddly.ui.popup.StandardPopupDialogFragment;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -35,13 +44,20 @@ import java.util.concurrent.ExecutionException;
 
 
 public class UserAdapter extends ArrayAdapter<User> {
+    public interface OnMessageButtonClickListener {
+        void onMessageButtonClick(String recipientId, String recipientName);
+    }
+    private OnMessageButtonClickListener messageButtonClickListener;
+
     /**
      * Constructor for the UserAdapter
      * @param context The context of the app
      * @param users The users to display
+     * @param listener The callback for when the user clicks the message button.
      */
-    public UserAdapter(Context context, List<User> users) {
+    public UserAdapter(Context context, List<User> users, OnMessageButtonClickListener listener) {
         super(context, 0, users);
+        this.messageButtonClickListener = listener;
     }
 
     @Override
@@ -58,11 +74,19 @@ public class UserAdapter extends ArrayAdapter<User> {
             TextView textUserName = itemAdminUserBinding.textUserFullName;
             TextView textUserPhone = itemAdminUserBinding.textUserPhone;
             TextView textUserEmail = itemAdminUserBinding.textUserEmail;
+            Button messageButton = itemAdminUserBinding.buttonMessageUser;
 
+
+            String userName = user.getPersonalInformation().getName();
             textUserName.setText(user.getPersonalInformation().getName());
             textUserPhone.setText(user.getPersonalInformation().getPhoneNumber());
             textUserEmail.setText(user.getPersonalInformation().getEmail());
 
+            messageButton.setOnClickListener(v -> {
+                if (messageButtonClickListener != null) {
+                    messageButtonClickListener.onMessageButtonClick(user.getId(), userName);
+                }
+            });
 
             // Set up the spinner adapter
             ArrayAdapter<UserLevel> spinnerAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, UserLevel.values());

@@ -18,24 +18,27 @@ import com.example.skeddly.business.database.repository.NotificationRepository;
 import com.example.skeddly.business.database.repository.UserRepository;
 import com.example.skeddly.business.database.repository.adapter.RepositoryToArrayAdapter;
 import com.example.skeddly.business.event.Event;
+import com.example.skeddly.business.notification.Notification;
+import com.example.skeddly.business.notification.NotificationType;
 import com.example.skeddly.business.user.User;
 import com.example.skeddly.business.user.UserLevel;
 import com.example.skeddly.databinding.FragmentAdminInboxBinding;
 import com.example.skeddly.databinding.FragmentAdminUserViewBinding;
 import com.example.skeddly.ui.adapter.UserAdapter;
+import com.example.skeddly.ui.popup.SendMessageDialogFragment;
 import com.example.skeddly.ui.popup.StandardPopupDialogFragment;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
-public class AdminUserViewFragment extends Fragment {
+public class AdminUserViewFragment extends Fragment implements UserAdapter.OnMessageButtonClickListener {
     private FragmentAdminUserViewBinding binding;
     private UserAdapter adapter;
     private UserRepository userRepositoryAll;
     private UserRepository userRepositoryOrg;
     private ArrayList<GenericRepository<User>> repoList;
     private RepositoryToArrayAdapter<User> repositoryToArrayAdapter;
-
+    private NotificationRepository notificationRepository;
 
 
     @Nullable
@@ -46,8 +49,9 @@ public class AdminUserViewFragment extends Fragment {
 
         userRepositoryAll = new UserRepository(FirebaseFirestore.getInstance());
         userRepositoryOrg = new UserRepository(FirebaseFirestore.getInstance(), UserLevel.ORGANIZER);
+        notificationRepository = new NotificationRepository(FirebaseFirestore.getInstance());
 
-        adapter = new UserAdapter(getContext(), new ArrayList<>());
+        adapter = new UserAdapter(getContext(), new ArrayList<>(), this);
         repoList = new ArrayList<>();
         repoList.add(userRepositoryAll);
         repoList.add(userRepositoryOrg);
@@ -67,6 +71,16 @@ public class AdminUserViewFragment extends Fragment {
         // toggle between all users and only organizers
         binding.switchOrganizersOnly.setOnCheckedChangeListener((buttonView, isChecked) -> {
             repositoryToArrayAdapter.switchDataset(isChecked ? userRepositoryOrg : userRepositoryAll);
+        });
+
+        getChildFragmentManager().setFragmentResultListener("sendMessage", this, (requestKey, bundle) -> {
+            String messageText = bundle.getString("message");
+            String recipientId = bundle.getString("recipientId");
+            if (messageText != null && !messageText.isEmpty() && recipientId != null) {
+                Notification notification = new Notification("Message from Admin", messageText, recipientId);
+                notification.setType(NotificationType.MESSAGES);
+                notificationRepository.set(notification);
+            }
         });
 
         // remove orphan users
@@ -102,6 +116,11 @@ public class AdminUserViewFragment extends Fragment {
         ).show(fm, "dialog_delete_user_confirm");
     }
 
+    @Override
+    public void onMessageButtonClick(String recipientId, String recipientName) {
+        SendMessageDialogFragment.newInstance(recipientId).show(getChildFragmentManager(), "SendMessage");
+    }
+
     /**
      * Removes users with no name.
      */
@@ -114,7 +133,6 @@ public class AdminUserViewFragment extends Fragment {
             }
         });
     }
-
 
     @Override
     public void onDestroyView() {
