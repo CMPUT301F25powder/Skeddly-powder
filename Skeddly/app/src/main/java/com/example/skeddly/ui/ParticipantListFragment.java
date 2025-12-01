@@ -118,7 +118,10 @@ public class ParticipantListFragment extends Fragment implements ParticipantAdap
 
         // Set up message all button
         binding.fabMessage.setOnClickListener(v -> {
-            StandardPopupDialogFragment spdf = StandardPopupDialogFragment.newInstance("Send Message", String.format("Enter the message to send to all participants on the %s", isWaitingList ? "waiting list." : "final list."), "messageAll", true);
+            StandardPopupDialogFragment spdf = StandardPopupDialogFragment.newInstance(
+                    getString(R.string.dialog_msg_send_all_title),
+                    getString(R.string.dialog_msg_send_all_contents, isWaitingList ? "waiting list." : "final list."),
+                    "messageAll", true);
             spdf.show(getChildFragmentManager(), null);
         });
 
@@ -133,7 +136,7 @@ public class ParticipantListFragment extends Fragment implements ParticipantAdap
                                 Uri uri = result.getData().getData();
                                 List<String[]> entrantData = getEntrantData();
                                 alterDocument(uri, entrantData);
-                                Toast.makeText(requireContext(), "CSV file has been exported!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(requireContext(), getString(R.string.toast_file_csv_exported), Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
