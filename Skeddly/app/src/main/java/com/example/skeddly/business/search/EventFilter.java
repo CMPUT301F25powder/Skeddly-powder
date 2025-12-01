@@ -1,15 +1,13 @@
 package com.example.skeddly.business.search;
 
-import androidx.annotation.NonNull;
-
-import com.example.skeddly.R;
 import com.example.skeddly.business.event.Event;
 import com.example.skeddly.business.event.EventDetail;
 import com.example.skeddly.business.event.EventSchedule;
 import com.example.skeddly.business.user.User;
 
+import java.time.DayOfWeek;
 import java.time.Instant;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -138,11 +136,22 @@ public class EventFilter {
         List<Boolean> daysOfWeek = eventSchedule.getDaysOfWeek();
 
         if (daysOfWeek != null) {
+            // Recurring
             if (!(this.isWeekend() && (daysOfWeek.get(0) == true || daysOfWeek.get(1) == true))) {
                 return false;
             }
 
             if ((this.isWeekday() && (daysOfWeek.get(0) == false && daysOfWeek.get(1) == false))) {
+                return false;
+            }
+        } else {
+            // Single day event
+            LocalDate eventDate = LocalDate.ofInstant(Instant.ofEpochSecond(eventSchedule.getStartTime()), ZoneId.systemDefault());
+            DayOfWeek dayOfWeek = eventDate.getDayOfWeek();
+
+            if ((dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) && !this.isWeekend()) {
+                return false;
+            } else if (!(dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) && !this.isWeekday()) {
                 return false;
             }
         }
@@ -151,11 +160,11 @@ public class EventFilter {
             return false;
         }
 
-        if (this.startTime != null & this.endTime != null) {
+        if (this.startTime != null && this.endTime != null) {
             LocalTime eventStartTime = LocalTime.ofInstant(Instant.ofEpochSecond(eventSchedule.getStartTime()), ZoneId.systemDefault());
             LocalTime eventEndTime = LocalTime.ofInstant(Instant.ofEpochSecond(eventSchedule.getEndTime()), ZoneId.systemDefault());
 
-            if (this.startTime != eventStartTime || this.endTime != eventEndTime) {
+            if (startTime.isAfter(eventStartTime) || endTime.isBefore(eventEndTime)) {
                 return false;
             }
         }

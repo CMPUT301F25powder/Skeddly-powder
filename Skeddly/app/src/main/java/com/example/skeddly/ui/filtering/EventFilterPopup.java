@@ -46,6 +46,7 @@ public class EventFilterPopup extends PopupWindow {
     private FilterUpdatedListener filterUpdatedListener;
     private EventFilter eventFilter;
     private User user;
+
     public EventFilterPopup(Context context, FragmentManager fragmentManager, View popupView, User user, SearchView searchBar, ImageButton dropdownButton) {
         super(popupView,
                 (int) convertDpToPx(context, 345),
@@ -57,6 +58,7 @@ public class EventFilterPopup extends PopupWindow {
         this.dropdownButton = dropdownButton;
         this.interfaceUtilities = new InterfaceUtilities(fragmentManager);
         this.user = user;
+        this.eventFilter = new EventFilter(user);
 
         dropdownButton.setOnClickListener(v -> {
             if (filterMenuToggle) {
@@ -88,10 +90,6 @@ public class EventFilterPopup extends PopupWindow {
             @Override
             public void onCheckBoxChecked(String category, boolean checked) {
                 ArrayList<String> newCategories;
-
-                if (eventFilter == null) {
-                    eventFilter = new EventFilter(user);
-                }
 
                 if (eventFilter.getSelectedEventTypes() == null) {
                     newCategories = new ArrayList<>();
@@ -126,10 +124,6 @@ public class EventFilterPopup extends PopupWindow {
         saveFiltersButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (eventFilter == null) {
-                    eventFilter = new EventFilter(user);
-                }
-
                 eventFilter.setWeekend(weekendCheckBox.isChecked());
                 eventFilter.setWeekday(weekdayCheckBox.isChecked());
 
@@ -144,7 +138,7 @@ public class EventFilterPopup extends PopupWindow {
         clearFiltersButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                eventFilter = null;
+                eventFilter = new EventFilter(user);
 
                 if (filterUpdatedListener != null) {
                     filterUpdatedListener.onFilterUpdated(true);
