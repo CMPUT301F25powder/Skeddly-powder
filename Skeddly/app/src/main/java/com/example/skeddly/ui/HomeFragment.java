@@ -4,6 +4,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.SearchView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,18 +17,25 @@ import com.example.skeddly.MainActivity;
 import com.example.skeddly.R;
 import com.example.skeddly.business.database.DatabaseHandler;
 import com.example.skeddly.business.database.SingleListenUpdate;
+import com.example.skeddly.business.database.repository.EventRepository;
 import com.example.skeddly.business.location.CustomLocation;
+import com.example.skeddly.business.search.EventFilter;
+import com.example.skeddly.business.user.User;
 import com.example.skeddly.databinding.FragmentHomeBinding;
 import com.example.skeddly.business.search.EventSearch;
 import com.example.skeddly.business.search.SearchFinishedListener;
 import com.example.skeddly.ui.adapter.EventAdapter;
 import com.example.skeddly.business.event.Event;
-import com.example.skeddly.business.database.DatabaseObjects;
 import com.example.skeddly.ui.adapter.RetrieveLocation;
+import com.example.skeddly.ui.filtering.EventFilterPopup;
+import com.example.skeddly.ui.filtering.FilterUpdatedListener;
 import com.example.skeddly.ui.utility.LocationFetcherFragment;
-import com.google.firebase.firestore.ListenerRegistration;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -35,11 +46,17 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
     private ArrayList<Event> eventList = new ArrayList<>();
     private DatabaseHandler databaseHandler;
     private EventAdapter eventAdapter;
+    private ListView listEvents;
+    private EventFilterPopup eventFilterPopup;
+    private View popupView;
+    private SearchView searchEvents;
+    private ImageButton filterDropdownButton;
+    private View circleBadge;
+    private User user;
 
     // Search
     private EventSearch eventSearch;
-
-    private ListenerRegistration fetchEventsRegistration = null;
+    TextView noResultsText;
 
     @Nullable
     @Override
@@ -49,11 +66,19 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
 
         // Initialize DatabaseHandler and list of events
         databaseHandler = new DatabaseHandler();
+        searchEvents = binding.searchEvents;
+        eventSearch = new EventSearch(getContext(), searchEvents, eventList);
+        MainActivity activity = (MainActivity) requireActivity();
+        user = activity.getUser();
 
-        eventSearch = new EventSearch(getContext(), binding.searchEvents, eventList);
+        // Handle opening filter menu
+        filterDropdownButton = binding.btnFilter;
+
+        popupView = inflater.inflate(R.layout.fragment_event_filter_menu, null);
+
+        resetFilterPopup();
 
         // Initialize event adapter
-        MainActivity activity = (MainActivity) requireActivity();
         eventAdapter = new EventAdapter(
                 getContext(),
                 eventList,
@@ -64,7 +89,8 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
         );
 
         // Set event adapter to list view
-        binding.listEvents.setAdapter(eventAdapter);
+        listEvents = binding.listEvents;
+        listEvents.setAdapter(eventAdapter);
 
         // Fetch events from firebase
         fetchEvents();
@@ -81,6 +107,13 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
             }
         });
 
+        // Other UI elements
+        noResultsText = binding.noResultsAlert;
+        circleBadge = binding.circleBadge;
+
+        // Set the circle badge (on the filter dropdown button) to invisible by default.
+        circleBadge.setVisibility(View.GONE);
+
         return root;
     }
 
@@ -88,32 +121,34 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
      * Fetches events from Firebase and updates the event adapter.
      */
     private void fetchEvents(String query) {
-        if (fetchEventsRegistration != null) {
-            fetchEventsRegistration.remove();
-        }
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        EventRepository eventRepository = new EventRepository(firestore);
+        EventFilter eventFilter = eventFilterPopup.getEventFilter();
 
-        // Fetch events from firebase
-        fetchEventsRegistration = databaseHandler.iterableListen(databaseHandler.getEventsPath(),
-                Event.class,
-                (DatabaseObjects dbObjects) -> {
-                    // Clear existing list
-                    eventList.clear();
+        eventRepository.getAll().addOnSuccessListener(new OnSuccessListener<List<Event>>() {
+            @Override
+            public void onSuccess(List<Event> events) {
+                // Clear existing list
+                eventList.clear();
 
-                    // Add new events to list
-                    for (int i = 0; i < dbObjects.size(); i++) {
-                        Event event = (Event) dbObjects.get(i);
-                        String eventName = event.getEventDetails().getName();
+                // Add new events to list
+                for (Event event : events) {
+                    String eventName = event.getEventDetails().getName();
 
-                        if (eventSearch.checkNameSuggestionMatch(eventName, query)) {
-                            eventList.add(event);
-                        }
+                    boolean nameSuggestionMatch = eventSearch.checkNameSuggestionMatch(eventName, query);
+                    boolean privilegeMatch = checkPrivilegeMatch(event);
+
+                    if (privilegeMatch && ((eventFilterPopup.filterReady() && eventFilter.checkFilterCriteria(event) && nameSuggestionMatch) || (!eventFilterPopup.filterReady() && nameSuggestionMatch))) {
+                        eventList.add(event);
                     }
-
-                    // Notify adapter of changes
-                    eventAdapter.notifyDataSetChanged();
-
                 }
-        );
+
+                toggleNoResultsTextVisibility();
+
+                // Notify adapter of changes
+                eventAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     /**
@@ -123,15 +158,68 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
         fetchEvents("");
     }
 
+    /**
+     * Toggles whether or not the "no results" text appears in the home screen.
+     * Based on if eventList is empty or not.
+     */
+    private void toggleNoResultsTextVisibility() {
+        if (eventList.isEmpty()) {
+            noResultsText.setVisibility(View.VISIBLE);
+            listEvents.setVisibility(View.GONE);
+        } else {
+            noResultsText.setVisibility(View.GONE);
+            listEvents.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * Resets the filter popup UI menu.
+     * Used for when the filter is reset or when the UI first loads.
+     */
+    private void resetFilterPopup() {
+        this.eventFilterPopup = new EventFilterPopup(getContext(), getChildFragmentManager(), popupView, user, searchEvents, filterDropdownButton);
+
+        eventFilterPopup.setOnFilterUpdatedListener(new FilterUpdatedListener() {
+            @Override
+            public void onFilterUpdated(boolean cleared) {
+                eventFilterPopup.dismiss();
+
+                if (cleared || eventFilterPopup.getEventFilter().isBlank()) {
+                    resetFilterPopup();
+                    fetchEvents();
+                    circleBadge.setVisibility(View.GONE);
+                } else {
+                    fetchEvents();
+                    circleBadge.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+    }
+
+    private boolean checkPrivilegeMatch(Event event) {
+        switch (user.getPrivilegeLevel()) {
+            // if entrant, don't show events that are not joinable
+            case ENTRANT:
+                if (!event.isJoinable()) {
+                    return false;
+                }
+                break;
+            // if organizer, don't show events that are not joinable unless they are the organizer
+            case ORGANIZER:
+                if (!event.isJoinable() && !Objects.equals(event.getOrganizer(), user.getId())) {
+                    return false;
+                }
+                break;
+            // Admins are allowed to see everything
+        }
+
+        return true;
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
-
-        if (fetchEventsRegistration != null) {
-            fetchEventsRegistration.remove();
-            fetchEventsRegistration = null;
-        }
     }
 
     /**

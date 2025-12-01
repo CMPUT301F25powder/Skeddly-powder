@@ -8,6 +8,7 @@ import android.widget.CursorAdapter;
 import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
 
+import com.example.skeddly.R;
 import com.example.skeddly.business.event.Event;
 
 import org.apache.commons.text.similarity.LevenshteinDistance;
@@ -23,6 +24,7 @@ public class EventSearch {
     private final int[] to = new int[] {android.R.id.text1};
     // Internal
     private SimpleCursorAdapter simpleCursorAdapter;
+    private SimpleCursorAdapter filterCursorAdapter;
     private ArrayList<Event> eventList;
     private SearchView searchBar;
 
@@ -35,6 +37,13 @@ public class EventSearch {
     public EventSearch(Context context, SearchView newSearchBar, ArrayList<Event> eventList) {
         this.eventList = eventList;
         this.searchBar = newSearchBar;
+
+        final MatrixCursor matrixCursor = new MatrixCursor(new String[]{ BaseColumns._ID, "filter" });
+        matrixCursor.addRow(new Object[] {0, "filterr"});
+
+        filterCursorAdapter = new SimpleCursorAdapter(context, R.layout.fragment_event_filter_menu, null, new String [] {"filter"}, to, CursorAdapter.NO_SELECTION);
+        searchBar.setSuggestionsAdapter(filterCursorAdapter);
+        filterCursorAdapter.changeCursor(matrixCursor);
 
         // Set up adapter for suggestions
         simpleCursorAdapter = new SimpleCursorAdapter(context, android.R.layout.simple_list_item_1, null, from, to, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);

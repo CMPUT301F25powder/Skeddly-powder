@@ -4,6 +4,7 @@ package com.example.skeddly.business.database.repository;
 import androidx.annotation.NonNull;
 
 import com.example.skeddly.business.event.Event;
+import com.example.skeddly.business.search.EventFilter;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
