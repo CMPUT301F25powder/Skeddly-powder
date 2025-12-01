@@ -32,6 +32,7 @@ import com.example.skeddly.ui.filtering.FilterUpdatedListener;
 import com.example.skeddly.ui.utility.LocationFetcherFragment;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +54,8 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
     private ImageButton filterDropdownButton;
     private View circleBadge;
     private User user;
+
+    private ListenerRegistration eventsListener;
 
     // Search
     private EventSearch eventSearch;
@@ -125,14 +128,19 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
         EventRepository eventRepository = new EventRepository(firestore);
         EventFilter eventFilter = eventFilterPopup.getEventFilter();
 
-        eventRepository.getAll().addOnSuccessListener(new OnSuccessListener<List<Event>>() {
+        if (eventsListener != null) {
+            eventsListener.remove();
+            eventsListener = null;
+        }
+
+        eventsListener = eventRepository.listenAll(new SingleListenUpdate<List<Event>>() {
             @Override
-            public void onSuccess(List<Event> events) {
+            public void onUpdate(List<Event> newValue) {
                 // Clear existing list
                 eventList.clear();
 
                 // Add new events to list
-                for (Event event : events) {
+                for (Event event : newValue) {
                     String eventName = event.getEventDetails().getName();
 
                     boolean nameSuggestionMatch = eventSearch.checkNameSuggestionMatch(eventName, query);
@@ -220,6 +228,11 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+
+        if (eventsListener != null) {
+            eventsListener.remove();
+            eventsListener = null;
+        }
     }
 
     /**
