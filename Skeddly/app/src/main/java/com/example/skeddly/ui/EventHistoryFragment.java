@@ -83,8 +83,14 @@ public class EventHistoryFragment extends Fragment {
                     }
                 }
 
-                eventHistoryAdapter = new EventHistoryAdapter(getContext(), eventHistoryList, ticketMap);
-                binding.listEvents.setAdapter(eventHistoryAdapter);
+                try {
+                    eventHistoryAdapter = new EventHistoryAdapter(getContext(), eventHistoryList, ticketMap);
+                    binding.listEvents.setAdapter(eventHistoryAdapter);
+                } catch (NullPointerException ignored) {
+                    // Sometimes the view inflates itself for a split second and causes an exception
+                    // But it isn't actually displayed so it does not matter.
+                }
+
             });
         });
     }

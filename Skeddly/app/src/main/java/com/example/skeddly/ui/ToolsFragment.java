@@ -24,7 +24,7 @@ public class ToolsFragment extends Fragment {
         ADMIN_IMAGE_GALLERY_FRAGMENT,
         ADMIN_INBOX_FRAGMENT,
         ADMIN_USER_VIEW_FRAGMENT,
-        MY_EVENTS_FRAGMENT;
+        MY_EVENTS_FRAGMENT
     }
 
     private ToolsFragmentSubFragments curFragment;
