@@ -44,6 +44,7 @@ import java.util.Objects;
 
 import com.example.skeddly.business.user.Authenticator;
 import com.example.skeddly.business.user.User;
+import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;

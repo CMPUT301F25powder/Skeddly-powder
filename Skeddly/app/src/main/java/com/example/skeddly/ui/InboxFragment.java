@@ -20,6 +20,7 @@ import com.example.skeddly.business.database.repository.GenericRepository;
 import com.example.skeddly.business.database.repository.adapter.RepositoryToArrayAdapter;
 import com.example.skeddly.business.database.repository.TicketRepository;
 import com.example.skeddly.business.notification.Notification;
+import com.example.skeddly.business.notification.NotificationInvitationStatus;
 import com.example.skeddly.business.notification.NotificationType;
 import com.example.skeddly.business.user.User;
 import com.example.skeddly.databinding.FragmentInboxBinding;
@@ -102,7 +103,7 @@ public class InboxFragment extends Fragment implements View.OnClickListener {
 
         inboxList.setOnItemClickListener((adapterView, view, i, l) -> {
             Notification notification = (Notification) adapterView.getItemAtPosition(i);
-            if (notification.getType() == NotificationType.REGISTRATION) {
+            if (notification.getType() == NotificationType.REGISTRATION && notification.getStatus() == NotificationInvitationStatus.PENDING) {
                 StandardPopupDialogFragment spdf = StandardPopupDialogFragment.newInstance("Accept Invitation",
                         "Would you like to join " + notification.getTitle(), notification.getTicketId());
                 setupPopupListener(notification);

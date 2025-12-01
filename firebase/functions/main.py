@@ -22,7 +22,7 @@ from firebase_functions.firestore_fn import (
     DocumentReference,
 )
 
-from google.cloud.firestore_v1 import FieldFilter, Or
+from google.cloud.firestore_v1 import FieldFilter, Or, aggregation
 from google.cloud.firestore_v1.field_path import FieldPath
 from PIL import Image
 from io import BytesIO
@@ -33,11 +33,13 @@ import business
 import delete
 import utility
 import business.event
+import uuid
 from business.ParticipantList import ParticipantList
 from business.WaitingList import WaitingList
 from business.event.EventDetail import EventDetail
 from business.event.EventSchedule import EventSchedule
 from business.location.CustomLocation import CustomLocation
+from business.notification.Notification import Notification
 
 # For cost control, you can set the maximum number of containers that can be
 # running at the same time. This helps mitigate the impact of unexpected
@@ -150,22 +152,25 @@ def handle_user_updates(event: Event[Change[DocumentSnapshot]]) -> None:
        delete.delete_events_with_user_id(user_id, firestore_client)
 
 
-def update_ticket_personal_info(user_id: str, personal_information, firestore_client: google.cloud.firestore.Client):
+@on_document_updated(document="tickets/{ticketId}")
+def handle_ticket_updates(event: Event[Change[DocumentSnapshot]]) -> None:
     """
-    Update tickets when a user's personal info changes.
-    :param user_id: The id of the user.
-    :param personal_information: The new personal info of the user
-    :param firestore_client: Firestore client.
+    Handle updates to the ticket object.
+    :param event: The event that caused this function to be triggered.
     """
-    docs = (
-        firestore_client.collection("tickets")
-        .where(filter=FieldFilter("userId", "==", user_id))
-        .stream()
-    )
+    ticket_id: str = event.params["ticketId"]
+    old_data = event.data.before.to_dict()
+    new_data = event.data.after.to_dict()
 
-    for doc in docs:
-        data = {"userPersonalInfo": personal_information}
-        firestore_client.collection("tickets").document(doc.id).update(data)
+    firestore_client: google.cloud.firestore.Client = firestore.client()
+
+    # If they accepted the invitation
+    print("Checking if they moved from invited to accepted...")
+    if old_data["status"] == "INVITED" and new_data["status"] == "ACCEPTED":
+        print("They did!")
+        if check_event_full(new_data["eventId"], firestore_client):
+            print("Notifying!")
+            notify_participants_not_selected(new_data["eventId"], firestore_client)
 
 
 @https_fn.on_call()
@@ -207,6 +212,86 @@ def http_remove_mock_events(req: https_fn.CallableRequest) -> Any:
         return {"successful": False, "message": str(e)}
 
     return {"successful": True, "message": ""}
+
+
+def update_ticket_personal_info(user_id: str, personal_information, firestore_client: google.cloud.firestore.Client):
+    """
+    Update tickets when a user's personal info changes.
+    :param user_id: The id of the user.
+    :param personal_information: The new personal info of the user
+    :param firestore_client: The firestore client to use.
+    """
+    docs = (
+        firestore_client.collection("tickets")
+        .where(filter=FieldFilter("userId", "==", user_id))
+        .stream()
+    )
+
+    for doc in docs:
+        data = {"userPersonalInfo": personal_information}
+        firestore_client.collection("tickets").document(doc.id).update(data)
+
+
+def check_event_full(event_id: str, firestore_client: google.cloud.firestore.Client) -> bool:
+    """
+    Checks whether a given event is full.
+    :param event_id: The event id to check
+    :param firestore_client: The firestore client to use.
+    :return:
+    """
+    event_participants_limit_query = (
+        firestore_client.collection("events")
+        .document(event_id)
+        .get(["participantList.max"])
+    )
+
+    max_participants: int = event_participants_limit_query.get("participantList.max")
+
+    tickets_accepted_count_query = (
+        firestore_client.collection("tickets")
+        .where(filter=FieldFilter("eventId", "==", event_id))
+        .where(filter=FieldFilter("status", "==", "ACCEPTED"))
+    )
+
+    aggregate_query = aggregation.AggregationQuery(tickets_accepted_count_query)
+    aggregate_query.count(alias="all")
+
+    results = aggregate_query.get()
+
+    for result in results:
+        return result[0].value >= max_participants
+
+    return False
+
+def notify_participants_not_selected(event_id: str, firestore_client: google.cloud.firestore.Client) -> None:
+    """
+    Notifies participates that they were not selected for the event
+    :param event_id: The event id in question
+    :param firestore_client: The firestore client to use.
+    """
+    tickets_waiting = (
+        firestore_client.collection("tickets")
+        .where(filter=FieldFilter("eventId", "==", event_id))
+        .where(filter=FieldFilter("status", "==", "WAITING"))
+        .stream()
+    )
+
+    event = (
+        firestore_client.collection("events")
+        .document(event_id)
+        .get()
+    )
+
+    for ticket in tickets_waiting:
+        cur_time: int = int(time.time())
+
+        notification: Notification = Notification(event.get("eventDetails.name"),
+                                                  "You were not selected to participate in the event. Better luck next time!",
+                                                  ticket.get("userId"), ticket.id, cur_time, "REGISTRATION",
+                                            "REJECTED",False)
+
+        notif_id: str = str(uuid.uuid4())
+        firestore_client.collection("notifications").document(notif_id).set(notification.to_dict())
 
 
 def cleanup_orphans():

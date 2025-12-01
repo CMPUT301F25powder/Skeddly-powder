@@ -77,7 +77,7 @@ public class AdminUserViewFragment extends Fragment implements UserAdapter.OnMes
             String messageText = bundle.getString("message");
             String recipientId = bundle.getString("recipientId");
             if (messageText != null && !messageText.isEmpty() && recipientId != null) {
-                Notification notification = new Notification("Message from Admin", messageText, recipientId);
+                Notification notification = new Notification("Message from Admin", messageText, recipientId, NotificationType.SYSTEM);
                 notification.setType(NotificationType.MESSAGES);
                 notificationRepository.set(notification);
             }

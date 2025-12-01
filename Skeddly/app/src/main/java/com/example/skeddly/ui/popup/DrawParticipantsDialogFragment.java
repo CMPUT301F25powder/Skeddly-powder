@@ -59,7 +59,8 @@ public class DrawParticipantsDialogFragment extends DialogFragment {
         setupArgs();
 
         // Initialize text view with the info
-        binding.textPopupContents.setText(getString(R.string.dialog_draw_content, curWait, curAttend, maxAttend));
+        String maxAttendStr = maxAttend == Integer.MAX_VALUE ? "∞" : String.valueOf(maxAttend);
+        binding.textPopupContents.setText(getString(R.string.dialog_draw_content, curWait, curAttend, maxAttendStr));
 
         // They need to type smth in
         binding.btnConfirm.setEnabled(false);
@@ -143,6 +144,7 @@ public class DrawParticipantsDialogFragment extends DialogFragment {
      * @return True if the button should be enabled, false otherwise.
      */
     private boolean shouldButtonBeEnabled() {
-        return result > 0 && result <= curWait && curAttend + curWait <= maxAttend;
+        Log.v("DrawParticipantsDialogFragment", String.format("result = %d, curWait = %d, curAttend = %d, maxAttend = %d", result, curWait, curAttend, maxAttend));
+        return result > 0 && result <= curWait && curAttend + result <= maxAttend;
     }
 }

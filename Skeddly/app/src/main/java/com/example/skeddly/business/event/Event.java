@@ -239,7 +239,7 @@ public class Event extends DatabaseObject {
                 String title = this.eventDetails.getName();
                 String message = "You have been selected to participate in this event!";
 
-                Notification notification = new Notification(title, message, recipient);
+                Notification notification = new Notification(title, message, recipient, NotificationType.REGISTRATION);
                 notification.setType(NotificationType.REGISTRATION);
                 notification.setTicketId(ticketId);
 

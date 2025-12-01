@@ -72,6 +72,6 @@ public class NotificationRepository extends GenericRepository<Notification> {
             query = query.whereEqualTo("type", notificationType.toString());
         }
 
-        return query;
+        return query.orderBy("timestamp", Query.Direction.DESCENDING);
     }
 }

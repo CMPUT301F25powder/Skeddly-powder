@@ -38,12 +38,14 @@ public class Notification extends DatabaseObject {
      * @param title The title to set on the notification.
      * @param message The message that it should contain.
      * @param recipient The user id of the recipient of the message.
+     * @param type The type of notification it is
      */
-    public Notification(String title, String message, String recipient) {
+    public Notification(String title, String message, String recipient, NotificationType type) {
         this();
         this.setTitle(title);
         this.setMessage(message);
         this.setRecipient(recipient);
+        this.setType(type);
     }
 
     /**
