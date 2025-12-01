@@ -106,9 +106,11 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
             }
         });
 
+        // Other UI elements
         noResultsText = binding.noResultsAlert;
         circleBadge = binding.circleBadge;
 
+        // Set the circle badge (on the filter dropdown button) to invisible by default.
         circleBadge.setVisibility(View.GONE);
 
         return root;
@@ -168,6 +170,10 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
         }
     }
 
+    /**
+     * Resets the filter popup UI menu.
+     * Used for when the filter is reset or when the UI first loads.
+     */
     private void resetFilterPopup() {
         this.eventFilterPopup = new EventFilterPopup(getContext(), getChildFragmentManager(), popupView, user, searchEvents, filterDropdownButton);
 

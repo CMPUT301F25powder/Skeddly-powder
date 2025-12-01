@@ -31,53 +31,107 @@ public class EventFilter {
         this.user = user;
     }
 
+    /**
+     * If the filter is ready to be used.
+     * @return boolean
+     */
     public boolean isFinalized() {
         return isFinalized;
     }
 
+    /**
+     * Sets if the filter is ready to be used.
+     * @param finalized boolean
+     */
     public void setFinalized(boolean finalized) {
         isFinalized = finalized;
     }
+
+    /**
+     * The start time that has been set in the filter.
+     * @return LocalTime
+     */
     public LocalTime getStartTime() {
         return startTime;
     }
 
+    /**
+     * Set the start time for the filter.
+     * @param startTime StartTime
+     */
     public void setStartTime(LocalTime startTime) {
         this.startTime = startTime;
     }
 
+    /**
+     * The end t ime that has been set in the filter.
+     * @return LocalTime
+     */
     public LocalTime getEndTime() {
         return endTime;
     }
 
+    /**
+     * Set the end time for the filter.
+     * @param endTime LocalTime
+     */
     public void setEndTime(LocalTime endTime) {
         this.endTime = endTime;
     }
 
+    /**
+     * Get if the filter should look for events that fall on a weekend.
+     * @return boolean
+     */
     public boolean isWeekend() {
         return weekend;
     }
 
+    /**
+     * Set if the filter should look for events that fall on a weekend.
+     * @param weekend boolean
+     */
     public void setWeekend(boolean weekend) {
         this.weekend = weekend;
     }
 
+    /**
+     * Check if the filter looks for events that fall on weekdays.
+     * @return boolean
+     */
     public boolean isWeekday() {
         return weekday;
     }
 
+    /**
+     * Set if the filter should look for events that fall on weekdays.
+     * @param weekday boolean
+     */
     public void setWeekday(boolean weekday) {
         this.weekday = weekday;
     }
 
+    /**
+     * Get the event categories that have been checked in the checkboxes and set in the filter.
+     * @return ArrayList<String>
+     */
     public ArrayList<String> getSelectedEventTypes() {
         return selectedEventTypes;
     }
 
+    /**
+     * Set the event categories that have been checked in the checkboxes.
+     * @param selectedEventTypes ArrayList<String>
+     */
     public void setSelectedEventTypes(ArrayList<String> selectedEventTypes) {
         this.selectedEventTypes = selectedEventTypes;
     }
 
+    /**
+     * Checks if the event meets the filter criteria
+     * @param event Event
+     * @return boolean
+     */
     public boolean checkFilterCriteria(Event event) {
         EventDetail eventDetails = event.getEventDetails();
         EventSchedule eventSchedule = event.getEventSchedule();
@@ -124,6 +178,11 @@ public class EventFilter {
         return true;
     }
 
+    /**
+     * Returns whether or not the current selected event types/categories intersect with the respective event.
+     * @param eventDetailCategories ArrayList<String>
+     * @return boolean Whether or not the intersection holds.
+     */
     private boolean containsAnyCategory(ArrayList<String> eventDetailCategories) {
         Set<String> selectedEventTypesSet = new HashSet<>(this.getSelectedEventTypes());
         Set<String> eventDetailCategoriesSet = new HashSet<>(eventDetailCategories);

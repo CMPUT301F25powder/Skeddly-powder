@@ -147,6 +147,7 @@ public class EventFilterPopup extends PopupWindow {
             }
         });
 
+        // Set all listeners for time pickers
         interfaceUtilities.setupTimePicker(popupView.findViewById(R.id.edit_text_start), new MaterialTimePickerCallback() {
             @Override
             public void onPositiveButtonClick(MaterialTimePicker picker) {
@@ -166,18 +167,33 @@ public class EventFilterPopup extends PopupWindow {
         });
     }
 
+    /**
+     * Set a listener for when the user clicks "Save Filter" in the UI.
+     * @param listener FilterUpdatedListener
+     */
     public void setOnFilterUpdatedListener(FilterUpdatedListener listener) {
         this.filterUpdatedListener = listener;
     }
 
+    /**
+     * Get the filter object for the event - basically a data class of booleans / time values.
+     * @return EventFilter
+     */
     public EventFilter getEventFilter() {
         return this.eventFilter;
     }
 
+    /**
+     * If the filter is ready to be used.
+     * @return boolean
+     */
     public boolean filterReady() {
         return (this.eventFilter != null && this.eventFilter.isFinalized());
     }
 
+    /**
+     * Rotates the dropdown button UI element for UX.
+     */
     private void rotateDropdownButton() {
         dropdownButton.setRotation((dropdownButton.getRotation() + 180) % 360);
     }
