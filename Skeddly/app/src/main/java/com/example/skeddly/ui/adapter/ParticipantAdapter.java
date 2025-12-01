@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -66,7 +67,7 @@ public class ParticipantAdapter extends ArrayAdapter<Ticket> {
         TextView nameText = binding.textViewFullName;
         TextView dateText = binding.textViewJoinDate;
         TextView statusTextView = binding.textViewStatus;
-        ImageButton messageButton = binding.btnMessageUser;
+        Button messageButton = binding.buttonMessageUser;
 
         Ticket ticket = getItem(position);
         if (ticket != null) {

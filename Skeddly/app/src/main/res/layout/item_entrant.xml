@@ -19,22 +19,25 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@drawable/outline_android_24"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             tools:ignore="ContentDescription" />
 
         <!-- User's Full Name -->
         <TextView
             android:id="@+id/text_view_full_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
+            android:layout_marginEnd="8dp"
             android:textColor="@color/primary_navy"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@id/img_view_user"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/text_view_status"
+            app:layout_constraintHorizontal_bias="0.0"
             tools:text="Full name" />
 
         <!-- Joined On Text -->
@@ -42,15 +45,14 @@
             android:id="@+id/text_view_join_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android.layout_marginTop="4dp"
+            android:layout_marginTop="4dp"
             android:textColor="@color/neutral_brown_light"
             android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_view_status"
+            app:layout_constraintStart_toStartOf="@+id/text_view_full_name"
+            app:layout_constraintTop_toBottomOf="@id/text_view_full_name"
             tools:text="Joined on 2025-10-20 13:07" />
 
         <!-- Status (Active, Cancelled) -->
-        <!-- Toggle through adapter, using drawable -->
         <TextView
             android:id="@+id/text_view_status"
             android:layout_width="wrap_content"
@@ -61,20 +63,20 @@
             android:textColor="@color/neutral_lighter_off_white"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Invited" />
 
-        <ImageButton
-            android:id="@+id/btn_message_user"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_message"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/text_view_full_name"
-            app:layout_constraintStart_toEndOf="@+id/text_view_full_name"
-            app.layout_constraintTop_toTopOf="@+id/text_view_full_name"
-            tools:visibility="visible" />
+        <!-- Message Button -->
+        <Button
+            android:id="@+id/button_message_user"
+            android:layout_width="110dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="24dp"
+            android:background="@color/neutral_black"
+            android:text="Message"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_view_status" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
