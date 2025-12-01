@@ -25,6 +25,7 @@ public class ProfileButtonsFragment extends Fragment {
     private FragmentProfileButtonsBinding binding;
     private View.OnClickListener personalInfoOnClickListener = null;
     private View.OnClickListener eventHistoryOnClickListener = null;
+    private View.OnClickListener notificationSettingsOnClickListener = null;
 
     @Nullable
     @Override
@@ -41,6 +42,9 @@ public class ProfileButtonsFragment extends Fragment {
             binding.btnPersonalInfo.setOnClickListener(personalInfoOnClickListener);        }
         if (eventHistoryOnClickListener != null) {
             binding.btnEventHistory.setOnClickListener(eventHistoryOnClickListener);
+        }
+        if (notificationSettingsOnClickListener != null) {
+            binding.notificationSettingsButton.setOnClickListener(notificationSettingsOnClickListener);
         }
 
         String deletePopupRequestKey = "deletePopup";
@@ -99,6 +103,14 @@ public class ProfileButtonsFragment extends Fragment {
         this.eventHistoryOnClickListener = listener;
         if (binding != null) {
             binding.btnEventHistory.setOnClickListener(eventHistoryOnClickListener);
+        }
+    }
+
+    public void setNotificationSettingsBtnOnClickListener(View.OnClickListener onClickListener) {
+        this.notificationSettingsOnClickListener = onClickListener;
+
+        if (binding != null) {
+            binding.notificationSettingsButton.setOnClickListener(notificationSettingsOnClickListener);
         }
     }
 }

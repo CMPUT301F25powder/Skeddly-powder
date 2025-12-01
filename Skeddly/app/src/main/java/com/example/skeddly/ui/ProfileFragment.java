@@ -63,6 +63,12 @@ public class ProfileFragment extends Fragment {
         // On click listener for EventHistoryFragment
         pbf.setEventHistoryButtonOnClickListener(v -> changeNewFragment(new EventHistoryFragment(), View.VISIBLE));
 
+        // What to do when they press to navigate to the notification settings fragment
+        pbf.setNotificationSettingsBtnOnClickListener(v -> {
+            NotificationSettingsFragment nsf = new NotificationSettingsFragment();
+            changeNewFragment(nsf, View.VISIBLE);
+        });
+
         backButton.setOnClickListener(returnToButtons);
 
         return root;
