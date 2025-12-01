@@ -61,9 +61,6 @@ public class EventRepository extends GenericRepository<Event> {
         return firestore.collection(COLLECTION_PATH);
     }
 
-    /**
-     * Override getQuery to filter by organizer if specified.
-     */
     @Override
     protected Query getQuery() {
         Query query = super.getQuery();

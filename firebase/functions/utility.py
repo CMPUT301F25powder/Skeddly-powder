@@ -20,6 +20,10 @@ import google.cloud.firestore
 
 
 def update_all_events(firestore_client: google.cloud.firestore.Client) -> None:
+    """
+    Updates all events cached array of ticket ids by querying the ticket collection.
+    :param firestore_client: The firestore client to use
+    """
     docs = (
         firestore_client.collection("events")
         .stream()
@@ -32,6 +36,13 @@ def update_all_events(firestore_client: google.cloud.firestore.Client) -> None:
 
 
 def get_ticket_ids_for_event(eventId: str, firestore_client: google.cloud.firestore.Client) -> tuple[list[str], list[str]]:
+    """
+    Retrieves all the ticket ids that correspond to a given event.
+    :param eventId: The event id to fetch the tickets for
+    :param firestore_client: The firestore client to use
+    :return: A tuple of lists is returned with the first corresponding to the waiting list
+    and the second corresponding to the final list.
+    """
     tickets_waiting = (
         firestore_client.collection("tickets")
         .where(filter=FieldFilter("eventId", "==", eventId))
@@ -50,6 +61,11 @@ def get_ticket_ids_for_event(eventId: str, firestore_client: google.cloud.firest
 
 
 def get_all_ids(collection: CollectionReference) -> list[str]:
+    """
+    Gets all the ids that are inside a given collection.
+    :param collection: The reference to the collection to get the tickets for
+    :return: A list of ids inside the collection
+    """
     docs = (
         collection
         .stream()
@@ -59,6 +75,13 @@ def get_all_ids(collection: CollectionReference) -> list[str]:
 
 
 def check_user_orphaned(user_id: str, firestore_client: google.cloud.firestore.Client) -> bool:
+    """
+    Checks whether a given user is considered orphan. A user is orphaned when all values in their personal
+    information are blank.
+    :param user_id: The user id to check if they are orphaned.
+    :param firestore_client: The firestore client to use
+    :return: True if they are orphaned. False otherwise.
+    """
     document_reference: DocumentReference = firestore_client.collection("users").document(user_id)
     document_snapshot: DocumentSnapshot = document_reference.get(["personalInformation"])
 
@@ -79,6 +102,13 @@ def check_user_orphaned(user_id: str, firestore_client: google.cloud.firestore.C
 
 
 def check_event_orphaned(event_id: str, valid_uids: list[str], firestore_client: google.cloud.firestore.Client) -> bool:
+    """
+    Checks whether a given event is considered orphan. An event is orphaned when their organizer does not exist.
+    :param event_id: The event id to check if they are orphaned.
+    :param valid_uids: A list of valid user ids.
+    :param firestore_client: The firestore client to use
+    :return: True if it is orphaned. False otherwise.
+    """
     document_reference: DocumentReference = firestore_client.collection("events").document(event_id)
     document_snapshot: DocumentSnapshot = document_reference.get(["organizer"])
 
@@ -97,6 +127,14 @@ def check_event_orphaned(event_id: str, valid_uids: list[str], firestore_client:
 
 
 def check_ticket_orphaned(ticket_id: str, valid_uids: list[str], valid_event_ids: list[str], firestore_client: google.cloud.firestore.Client) -> bool:
+    """
+    Checks whether a given ticket is considered orphaned. A ticket is orphaned if their event or user does not exist.
+    :param ticket_id: The ticket id to check if it is orphaned
+    :param valid_uids: A list of valid user ids
+    :param valid_event_ids: A list of valid event ids
+    :param firestore_client: The firestore client to use
+    :return: True if it is orphaned. False otherwise.
+    """
     document_reference: DocumentReference = firestore_client.collection("tickets").document(ticket_id)
     document_snapshot: DocumentSnapshot = document_reference.get(["userId", "eventId"])
 
@@ -116,6 +154,15 @@ def check_ticket_orphaned(ticket_id: str, valid_uids: list[str], valid_event_ids
 
 
 def check_notification_orphaned(notification_id: str, valid_uids: list[str], valid_tids: list[str], firestore_client: google.cloud.firestore.Client) -> bool:
+    """
+    Checks whether a given notification is considered orphaned. A notification is orphaned when their ticket or user
+    does not exist.
+    :param notification_id: The notification id to check if it is orphaned
+    :param valid_uids: A list of valid user ids
+    :param valid_tids: A list of valid tickets ids
+    :param firestore_client: The firestore client to use
+    :return: True if it is orphaned. False otherwise.
+    """
     document_reference: DocumentReference = firestore_client.collection("notifications").document(notification_id)
     document_snapshot: DocumentSnapshot = document_reference.get(["recipient", "ticketId"])
 

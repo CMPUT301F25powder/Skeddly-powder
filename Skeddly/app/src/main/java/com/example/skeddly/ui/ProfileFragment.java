@@ -32,6 +32,17 @@ import com.example.skeddly.ui.utility.FragmentAnim;
 public class ProfileFragment extends Fragment {
     private FragmentProfileBinding binding;
 
+    private enum ProfileFragmentSubFragments {
+        PROFILE_BUTTONS_FRAGMENT,
+        EVENT_HISTORY_FRAGMENT,
+        PERSONAL_INFORMATION_FRAGMENT,
+        NOTIFICATION_SETTINGS_FRAGMENT,
+    }
+
+    private ProfileFragmentSubFragments curFragment;
+    private ProfileButtonsFragment profileButtonsFragment;
+    private View.OnClickListener returnToButtons;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -41,37 +52,70 @@ public class ProfileFragment extends Fragment {
         // Fill in their details
         updatePersonalInfo();
 
+        // Show all the buttons of things they can do
+        profileButtonsFragment = new ProfileButtonsFragment();
+
+        // Back button
         ImageButton backButton = binding.headerProfile.btnBack;
         backButton.setVisibility(View.INVISIBLE);
 
-        // Show all the buttons of things they can do
-        ProfileButtonsFragment pbf = new ProfileButtonsFragment();
-        getChildFragmentManager().beginTransaction().replace(binding.fragment.getId(), pbf).commit();
-
-        View.OnClickListener returnToButtons = v -> {
-            changeNewFragment(pbf, View.INVISIBLE);
+        returnToButtons = v -> {
+            curFragment = ProfileFragmentSubFragments.PROFILE_BUTTONS_FRAGMENT;
+            updateCurrentFragment();
             updatePersonalInfo();
         };
-
-        // What to do when they press to navigate to the personal info edit fragment
-        pbf.setPersonalInfoBtnOnClickListener(v -> {
-            PersonalInformationEditFragment pief = new PersonalInformationEditFragment();
-            pief.setOnCompleteListener(returnToButtons);
-            changeNewFragment(pief, View.VISIBLE);
-        });
-
-        // On click listener for EventHistoryFragment
-        pbf.setEventHistoryButtonOnClickListener(v -> changeNewFragment(new EventHistoryFragment(), View.VISIBLE));
-
-        // What to do when they press to navigate to the notification settings fragment
-        pbf.setNotificationSettingsBtnOnClickListener(v -> {
-            NotificationSettingsFragment nsf = new NotificationSettingsFragment();
-            changeNewFragment(nsf, View.VISIBLE);
-        });
-
         backButton.setOnClickListener(returnToButtons);
 
+        // On click listener for EventHistoryFragment
+        profileButtonsFragment.setEventHistoryButtonOnClickListener(v -> {
+            curFragment = ProfileFragmentSubFragments.EVENT_HISTORY_FRAGMENT;
+            updateCurrentFragment();
+        });
+
+        // What to do when they press to navigate to the personal info edit fragment
+        profileButtonsFragment.setPersonalInfoBtnOnClickListener(v -> {
+            curFragment = ProfileFragmentSubFragments.PERSONAL_INFORMATION_FRAGMENT;
+            updateCurrentFragment();
+        });
+
+        // What to do when they press to navigate to the notification settings fragment
+        profileButtonsFragment.setNotificationSettingsBtnOnClickListener(v -> {
+            curFragment = ProfileFragmentSubFragments.NOTIFICATION_SETTINGS_FRAGMENT;
+            updateCurrentFragment();
+        });
+
+        if (curFragment == null) {
+            curFragment = ProfileFragmentSubFragments.PROFILE_BUTTONS_FRAGMENT;
+        }
+
+        updateCurrentFragment();
+
         return root;
+    }
+
+    /**
+     * Updates the currently shown fragment to be the one that it should be
+     */
+    private void updateCurrentFragment() {
+        switch (curFragment) {
+            case EVENT_HISTORY_FRAGMENT:
+                changeNewFragment(new EventHistoryFragment(), View.VISIBLE);
+                break;
+
+            case PERSONAL_INFORMATION_FRAGMENT:
+                PersonalInformationEditFragment pief = new PersonalInformationEditFragment();
+                pief.setOnCompleteListener(returnToButtons);
+                changeNewFragment(pief, View.VISIBLE);
+                break;
+
+            case NOTIFICATION_SETTINGS_FRAGMENT:
+                changeNewFragment(new NotificationSettingsFragment(), View.VISIBLE);
+                break;
+
+            default:
+                changeNewFragment(profileButtonsFragment, View.GONE);
+                break;
+        }
     }
 
     /**

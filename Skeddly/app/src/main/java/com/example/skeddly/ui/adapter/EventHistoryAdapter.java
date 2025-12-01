@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.example.skeddly.R;
 import com.example.skeddly.business.Ticket;
 import com.example.skeddly.business.event.Event;
+import com.example.skeddly.databinding.ItemEventHistoryBinding;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -27,6 +28,12 @@ public class EventHistoryAdapter extends ArrayAdapter<Event> {
 
     private final Map<String, Ticket> ticketMap; // Map EventID -> Ticket
 
+    /**
+     * Constructor for the EventHistoryAdapter
+     * @param context Context of the app
+     * @param events List of events to display
+     * @param ticketMap Map of ticket IDs to tickets
+     */
     public EventHistoryAdapter(Context context, ArrayList<Event> events, Map<String, Ticket> ticketMap) {
         super(context, 0, events);
         this.ticketMap = ticketMap;
@@ -38,13 +45,14 @@ public class EventHistoryAdapter extends ArrayAdapter<Event> {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_event_history, parent, false);
         }
+        ItemEventHistoryBinding binding = ItemEventHistoryBinding.bind(convertView);
 
         Event event = getItem(position);
 
-        ImageView imageView = convertView.findViewById(R.id.img_event_history);
-        TextView textEventName = convertView.findViewById(R.id.text_event_name_history);
-        TextView textDateJoined = convertView.findViewById(R.id.text_date_joined_history);
-        TextView textEventDescription = convertView.findViewById(R.id.text_event_description_history);
+        ImageView imageView = binding.imgEventHistory;
+        TextView textEventName = binding.textEventNameHistory;
+        TextView textDateJoined = binding.textDateJoinedHistory;
+        TextView textEventDescription = binding.textEventDescriptionHistory;
 
         if (event != null) {
             // Set event name and image
@@ -61,6 +69,24 @@ public class EventHistoryAdapter extends ArrayAdapter<Event> {
                 textDateJoined.setText(getContext().getString(
                         R.string.fragment_profile_event_history_joined_date,
                         time.format(DateTimeFormatter.ofPattern("MMM dd, yyyy"))));
+
+                switch (ticket.getStatus()) {
+                    case WAITING:
+                        textEventName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.chip_status_waiting, 0);
+                        break;
+
+                    case INVITED:
+                        textEventName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.chip_status_invited, 0);
+                        break;
+
+                    case ACCEPTED:
+                        textEventName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.chip_status_accepted, 0);
+                        break;
+
+                    case CANCELLED:
+                        textEventName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.chip_status_cancelled, 0);
+                        break;
+                }
             } else {
                 textDateJoined.setText(""); // Hide if no ticket found
             }

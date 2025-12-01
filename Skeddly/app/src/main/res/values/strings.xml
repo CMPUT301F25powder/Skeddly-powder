@@ -15,6 +15,9 @@
     <string name="dialog_qr_btn_export">Export</string>
     <string name="dialog_qr_title">QR Code</string>
     <string name="dialog_title">Title</string>
+    <string name="dialog_draw">Draw Participants</string>
+    <string name="dialog_draw_hint"># Participants</string>
+    <string name="dialog_image_title">Uploaded Image</string>
 
     <string name="dialog_firebase_emu_title">Setup Firebase Emulator</string>
     <string name="dialog_firebase_emu_contents">
@@ -32,14 +35,32 @@
         Demoting this user to ENTRANT will delete all their associated events. This action cannot be undone. Are you sure?
     </string>
 
+    <string name="dialog_msg_send_all_title">Send Message</string>
+    <string name="dialog_msg_send_all_contents">Enter the message to send to all participants on the %s</string>
+    <string name="dialog_msg_send_all_waiting_list">waiting list.</string>
+    <string name="dialog_msg_send_all_final_list">final list. You can select a specific status to send to as well.</string>
+
+    <string name="dialog_event_join_confirm_contents">
+        Users will be drawn randomly to attend the event. You will receive a notification if you are selected to confirm your attendance.
+        \n\nThe organizer has left the below criteria.
+        \n\n%s
+        \n\nYour location %s be logged when you join this event.
+    </string>
+
+    <string name="dialog_event_join_confirm_title">Entry Criteria</string>
+    <string name="dialog_event_join_location_not_required">will not</string>
+    <string name="dialog_event_join_location_required">will</string>
+
     <string name="event_attendee_limit">0/25</string>
     <string name="event_btn_draw">Draw</string>
     <string name="event_btn_edit">Edit</string>
     <string name="event_btn_join">Join</string>
+    <string name="event_btn_leave">Leave</string>
+    <string name="event_btn_joining">Joining…</string>
     <string name="event_btn_participants">Participants</string>
     <string name="event_btn_view_info">View Info</string>
     <string name="event_category">Social</string>
-    <string name="event_date_time">Monday, Wednesday 9:30-10:00</string>
+    <string name="event_date_time">Monday, Wednesday 9:30–10:00</string>
     <string name="event_description">A casual get-together for all members.</string>
     <string name="event_history">Event History</string>
     <string name="event_label_attendee_limit">Attendee Limit:</string>
@@ -52,8 +73,10 @@
     <string name="event_label_wait_list_max">Max waiting list size:</string>
     <string name="event_name">Event 1</string>
     <string name="event_title">Community Meetup</string>
-    <string name="event_title_location">Event Title | Location</string>
+    <string name="event_location">Location</string>
     <string name="event_wait_list_limit">37/100</string>
+
+    <string name="fragment_admin_user_view_switch">Organizers Only</string>
 
     <string name="fragment_create_edit_checkbox_geo_location_req">Log Entrant Join Location</string>
     <string name="fragment_create_edit_date"><u>month. day, year</u></string>
@@ -66,9 +89,14 @@
     <string name="fragment_create_edit_hint_lottery_selection_criteria">Enter Criteria</string>
     <string name="fragment_create_edit_hint_wait_list_limit">OPTIONAL</string>
     <string name="fragment_create_edit_label_lottery_selection_criteria">Lottery Selection Criteria:</string>
+    <string name="fragment_create_edit_label_event_period">Event Period:</string>
     <string name="fragment_create_edit_label_reg_period">Registration Period:</string>
     <string name="fragment_create_edit_switch_recurring">Recurring</string>
     <string name="fragment_create_edit_time"><u>hh:mm</u></string>
+    <string name="fragment_create_edit_next">Next</string>
+    <string name="fragment_create_edit_previous">Previous</string>
+    <string name="fragment_create_edit_mode_c">Create Event</string>
+    <string name="fragment_create_edit_mode_e">Edit Event</string>
 
     <string name="fragment_event_history_btn_all">All</string>
     <string name="fragment_event_history_btn_closed">Closed</string>
@@ -122,4 +150,8 @@
     <string name="my_events">My Events</string>
     <string name="placeholder">Placeholder</string>
     <string name="fragment_profile_event_history_joined_date">Joined: %s</string>
+    <string name="message">Message</string>
+    <string name="send">Send</string>
+
+    <string name="toast_file_csv_exported">CSV file has been exported!</string>
 </resources>

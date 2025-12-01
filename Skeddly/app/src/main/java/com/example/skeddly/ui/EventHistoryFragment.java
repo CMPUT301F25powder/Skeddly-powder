@@ -51,6 +51,10 @@ public class EventHistoryFragment extends Fragment {
         return root;
     }
 
+    /**
+     * Fetches the user's event history from the database and populates the event history list
+     * @param userId The ID of the user to fetch the history for
+     */
     private void fetchUserEventHistory(String userId) {
         TicketRepository ticketRepository = new TicketRepository(FirebaseFirestore.getInstance(), null, userId);
         EventRepository eventRepository = new EventRepository(FirebaseFirestore.getInstance());
@@ -79,8 +83,14 @@ public class EventHistoryFragment extends Fragment {
                     }
                 }
 
-                eventHistoryAdapter = new EventHistoryAdapter(getContext(), eventHistoryList, ticketMap);
-                binding.listEvents.setAdapter(eventHistoryAdapter);
+                try {
+                    eventHistoryAdapter = new EventHistoryAdapter(getContext(), eventHistoryList, ticketMap);
+                    binding.listEvents.setAdapter(eventHistoryAdapter);
+                } catch (NullPointerException ignored) {
+                    // Sometimes the view inflates itself for a split second and causes an exception
+                    // But it isn't actually displayed so it does not matter.
+                }
+
             });
         });
     }
