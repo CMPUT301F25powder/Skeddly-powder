@@ -16,6 +16,14 @@
         android:theme="@style/Theme.Skeddly"
         android:usesCleartextTraffic="true">
 
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_launcher" />
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/primary_purple" />
+
         <service
             android:name=".SkeddlyFirebaseMessagingService"
             android:exported="false">
