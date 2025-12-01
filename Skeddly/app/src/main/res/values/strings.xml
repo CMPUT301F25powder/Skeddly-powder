@@ -15,6 +15,9 @@
     <string name="dialog_qr_btn_export">Export</string>
     <string name="dialog_qr_title">QR Code</string>
     <string name="dialog_title">Title</string>
+    <string name="dialog_draw">Draw Participants</string>
+    <string name="dialog_draw_hint"># Participants</string>
+    <string name="dialog_image_title">Uploaded Image</string>
 
     <string name="dialog_firebase_emu_title">Setup Firebase Emulator</string>
     <string name="dialog_firebase_emu_contents">
@@ -70,6 +73,8 @@
     <string name="event_title">Community Meetup</string>
     <string name="event_location">Location</string>
     <string name="event_wait_list_limit">37/100</string>
+
+    <string name="fragment_admin_user_view_switch">Organizers Only</string>
 
     <string name="fragment_create_edit_checkbox_geo_location_req">Log Entrant Join Location</string>
     <string name="fragment_create_edit_date"><u>month. day, year</u></string>
@@ -144,6 +149,7 @@
     <string name="placeholder">Placeholder</string>
     <string name="fragment_profile_event_history_joined_date">Joined: %s</string>
     <string name="message">Message</string>
+    <string name="send">Send</string>
 
     <string name="toast_file_csv_exported">CSV file has been exported!</string>
 </resources>
