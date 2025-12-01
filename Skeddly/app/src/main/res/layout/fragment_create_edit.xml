@@ -449,7 +449,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginBottom="16dp"
-                            android:background="@drawable/event_bg_title"
+                            android:background="@drawable/bg_event_title"
                             android:drawableLeft="@drawable/ic_location"
                             android:drawablePadding="8dp"
                             android:elevation="5dp"
