@@ -272,7 +272,7 @@ def add_mock_events(organizer: str, num_events: int, firestore_client: google.cl
      "Arts & Crafts", "Physical activity"]
     one_year: int = 31536000
     one_hour: int = 3600
-    for i in range(10):
+    for i in range(num_events):
         eventDetail: EventDetail = EventDetail(f"mockEvent{i}", f"mockDescription{i}", f"mockEntryCriteria{i}", [random.choice(categories)])
 
         curTime: int = round(time.time())
