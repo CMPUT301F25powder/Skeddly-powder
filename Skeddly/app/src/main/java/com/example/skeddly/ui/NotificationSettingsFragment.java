@@ -8,7 +8,10 @@ import android.widget.Switch;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.example.skeddly.MainActivity;
 import com.example.skeddly.business.user.NotificationSettings;
+import com.example.skeddly.business.user.User;
 import com.example.skeddly.databinding.FragmentNotificationSettingsBinding;
 
 /**
@@ -18,6 +21,7 @@ public class NotificationSettingsFragment extends Fragment {
 
     private NotificationSettings userNotifSettings;
     private FragmentNotificationSettingsBinding binding;
+    private MainActivity mainActivity;
 
     private Switch lotteryStatusNotificationsSwitch;
     private Switch eventUpdateNotificationsSwitch;
@@ -31,43 +35,48 @@ public class NotificationSettingsFragment extends Fragment {
         binding = FragmentNotificationSettingsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        // are user notification settings stored in firebase, if so im not sure how to retrieve that but like imagine i did that here
-        userNotifSettings = new NotificationSettings();
+        // Get the MainActivity to access the user object and save changes
+        mainActivity = (MainActivity) requireActivity();
+        User currentUser = mainActivity.getUser();
+
+        // Load the user's notification settings from the User object
+        userNotifSettings = currentUser.getNotificationSettings();
 
         // binding
         lotteryStatusNotificationsSwitch = binding.switchLotteryStatus;
         eventUpdateNotificationsSwitch = binding.switchEventUpdate;
         administrativeNotificationsSwitch = binding.switchAdministrative;
 
-        // based on booleans from notification settinsg
+        // Set the switches based on the user's real settings
         lotteryStatusNotificationsSwitch.setChecked(userNotifSettings.getLotteryStatus());
         eventUpdateNotificationsSwitch.setChecked(userNotifSettings.getEventUpdate());
         administrativeNotificationsSwitch.setChecked(userNotifSettings.getAdministrative());
 
+        // Add listeners that save changes to the database
         lotteryStatusNotificationsSwitch.setOnCheckedChangeListener(
-                new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        userNotifSettings.setLotteryStatus(isChecked);
-                    }
+                (buttonView, isChecked) -> {
+                    userNotifSettings.setLotteryStatus(isChecked);
+                    mainActivity.notifyUserChanged(); // Save changes to Firebase
                 });
 
         eventUpdateNotificationsSwitch.setOnCheckedChangeListener(
-                new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        userNotifSettings.setEventUpdate(isChecked);
-                    }
+                (buttonView, isChecked) -> {
+                    userNotifSettings.setEventUpdate(isChecked);
+                    mainActivity.notifyUserChanged(); // Save changes to Firebase
                 });
 
         administrativeNotificationsSwitch.setOnCheckedChangeListener(
-                new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        userNotifSettings.setAdministrative(isChecked);
-                    }
+                (buttonView, isChecked) -> {
+                    userNotifSettings.setAdministrative(isChecked);
+                    mainActivity.notifyUserChanged(); // Save changes to Firebase
                 });
 
         return root;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

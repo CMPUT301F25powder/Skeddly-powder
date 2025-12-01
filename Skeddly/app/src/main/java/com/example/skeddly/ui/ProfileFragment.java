@@ -82,6 +82,14 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        pbf.setNotificationSettingsBtnOnClickListener(v -> {
+            backButton.setVisibility(View.VISIBLE); // Make back button visible
+            NotificationSettingsFragment nsf = new NotificationSettingsFragment();
+            getChildFragmentManager().beginTransaction()
+                    .replace(binding.fragment.getId(), nsf)
+                    .commit();
+        });
+
         backButton.setOnClickListener(returnToButtons);
 
         return root;
