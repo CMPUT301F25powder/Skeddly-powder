@@ -31,6 +31,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
+/**
+ * Fragment for showing all the users in the app
+ */
 public class AdminUserViewFragment extends Fragment implements UserAdapter.OnMessageButtonClickListener {
     private FragmentAdminUserViewBinding binding;
     private UserAdapter adapter;

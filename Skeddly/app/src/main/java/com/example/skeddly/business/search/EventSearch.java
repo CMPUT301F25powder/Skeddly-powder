@@ -15,6 +15,9 @@ import org.apache.commons.text.similarity.LevenshteinDistance;
 
 import java.util.ArrayList;
 
+/**
+ * This class contains logic for searching events.
+ */
 public class EventSearch {
     // Constants
     private final String EVENT_NAME_SUGGESTION_ID = "eventName"; // The key for the event name metadata is used in suggestions (you probably won't need to change this)

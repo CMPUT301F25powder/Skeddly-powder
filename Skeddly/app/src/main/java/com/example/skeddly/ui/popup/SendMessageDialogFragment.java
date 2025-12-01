@@ -14,6 +14,9 @@ import androidx.fragment.app.DialogFragment;
 import com.example.skeddly.R;
 import com.google.android.material.textfield.TextInputEditText;
 
+/**
+ * A dialog fragment for sending messages to a participant
+ */
 public class SendMessageDialogFragment extends DialogFragment {
 
     private static final String ARG_RECIPIENT_ID = "recipientId";

@@ -117,6 +117,11 @@ public class MainActivity extends AppCompatActivity {
         if (checkLaunchIntentQr(launchIntent)) return;
     }
 
+    /**
+     * Checks the launch intent for a QR code and navigate to it if present
+     * @param launchIntent The launch intent of the app
+     * @return True if we navigated. False otherwise.
+     */
     private boolean checkLaunchIntentQr(Intent launchIntent) {
         Uri qr = launchIntent.getData();
 
@@ -142,6 +147,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Check the launch intent to see if we got opened via a notification.
+     * @param launchIntent The launch intent of the app
+     * @return True if we navigated. False otherwise.
+     */
     private boolean checkLaunchIntentNotification(Intent launchIntent) {
         Bundle launchExtras = launchIntent.getExtras();
         if (launchExtras == null) return false;
@@ -266,6 +276,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Creates the notification channel that is used to send FG notifications.
+     */
     private void createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is not in the Support Library.

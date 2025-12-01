@@ -28,6 +28,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Fragment for showing the image gallery of all the images in the app
+ */
 public class AdminImageGalleryFragment extends Fragment {
     private FragmentAdminImageGalleryBinding binding;
     private EventRepository eventRepository;

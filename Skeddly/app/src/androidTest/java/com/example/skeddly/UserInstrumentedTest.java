@@ -31,6 +31,9 @@ import com.example.skeddly.utilities.BaseTest;
 
 import java.util.UUID;
 
+/**
+ * Tests related to the user.
+ */
 @LargeTest
 public class UserInstrumentedTest extends BaseTest {
     /**

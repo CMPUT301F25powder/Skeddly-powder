@@ -2,6 +2,9 @@ package com.example.skeddly.ui.utility;
 
 import com.example.skeddly.business.event.Event;
 
+/**
+ * This class represents a single image in the gallery.
+ */
 public class GalleryImage {
     private final Event event;
     private boolean selected;

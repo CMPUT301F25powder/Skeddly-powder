@@ -21,6 +21,9 @@ import com.example.skeddly.databinding.DialogDrawBinding;
 
 import java.util.Objects;
 
+/**
+ * Dialog fragment for drawing participants.
+ */
 public class DrawParticipantsDialogFragment extends DialogFragment {
     private String requestKey = "requestKey";
     private int curWait;

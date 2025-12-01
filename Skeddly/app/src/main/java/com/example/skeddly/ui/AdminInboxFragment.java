@@ -24,6 +24,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Fragment for showing all the notification logs for the admin
+ */
 public class AdminInboxFragment extends Fragment {
     private FragmentAdminInboxBinding binding;
     private InboxAdapter notifAdapter;

@@ -12,6 +12,9 @@ import androidx.core.app.NotificationManagerCompat;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+/**
+ * Messaging service for managing foreground notifications.
+ */
 public class SkeddlyFirebaseMessagingService extends FirebaseMessagingService {
     public static final String CHANNEL_ID = "SKEDDLY_ALL";
     public static final String CHANNEL_NAME = "All";

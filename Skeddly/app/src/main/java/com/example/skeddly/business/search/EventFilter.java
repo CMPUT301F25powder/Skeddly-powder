@@ -16,6 +16,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * Class that represents all the filterable options for the event search filter.
+ */
 public class EventFilter {
     private LocalTime startTime;
     private LocalTime endTime;
@@ -111,7 +114,7 @@ public class EventFilter {
 
     /**
      * Get the event categories that have been checked in the checkboxes and set in the filter.
-     * @return ArrayList<String>
+     * @return ArrayList
      */
     public ArrayList<String> getSelectedEventTypes() {
         return selectedEventTypes;
@@ -119,7 +122,7 @@ public class EventFilter {
 
     /**
      * Set the event categories that have been checked in the checkboxes.
-     * @param selectedEventTypes ArrayList<String>
+     * @param selectedEventTypes ArrayList
      */
     public void setSelectedEventTypes(ArrayList<String> selectedEventTypes) {
         this.selectedEventTypes = selectedEventTypes;

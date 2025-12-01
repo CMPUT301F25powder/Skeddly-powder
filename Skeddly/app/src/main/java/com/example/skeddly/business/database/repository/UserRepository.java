@@ -6,6 +6,9 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
+/**
+ * A class to handle retrieving users from Firestore.
+ */
 public class UserRepository extends GenericRepository<User> {
     private final FirebaseFirestore firestore;
     private final UserLevel level;

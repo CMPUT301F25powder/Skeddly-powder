@@ -24,6 +24,9 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Map;
 
+/**
+ * An adapter for showing the user's history of joined events.
+ */
 public class EventHistoryAdapter extends ArrayAdapter<Event> {
 
     private final Map<String, Ticket> ticketMap; // Map EventID -> Ticket

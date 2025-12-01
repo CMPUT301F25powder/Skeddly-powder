@@ -13,6 +13,9 @@ import androidx.annotation.Nullable;
 
 import com.example.skeddly.R;
 
+/**
+ * An adapter that shows all the event filter categories.
+ */
 public class EventFilterCategoryAdapter extends ArrayAdapter<String> {
     private CheckBoxCheckedListener checkBoxCheckedListener;
     public EventFilterCategoryAdapter(Context context, String[] categories) {
