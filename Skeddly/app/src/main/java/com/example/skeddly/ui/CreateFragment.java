@@ -307,30 +307,14 @@ public class CreateFragment extends Fragment {
             }
         });
 
-        binding.btnInfoNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewFlipper.showNext();
-            }
-        });
-        binding.btnSchedulePrev.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewFlipper.showPrevious();
-            }
-        });
-        binding.btnScheduleNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewFlipper.showNext();
-            }
-        });
-        binding.btnLotteryLocationPrev.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewFlipper.showPrevious();
-            }
-        });
+        // Setup the flippers
+        View.OnClickListener flipNext = v -> viewFlipper.showNext();
+        View.OnClickListener flipPrevious = v -> viewFlipper.showPrevious();
+
+        binding.btnInfoNext.setOnClickListener(flipNext);
+        binding.btnSchedulePrev.setOnClickListener(flipPrevious);
+        binding.btnScheduleNext.setOnClickListener(flipNext);
+        binding.btnLotteryLocationPrev.setOnClickListener(flipPrevious);
 
         return root;
     }
@@ -718,7 +702,7 @@ public class CreateFragment extends Fragment {
         // Location
         if (event.getLocation() != null) {
             this.eventLocation = new LatLng(event.getLocation().getLatitude(), event.getLocation().getLongitude());
-            binding.textEventLocationOverlay.setText(String.format(Locale.getDefault(), "%.2f, %.2f", this.eventLocation.latitude, this.eventLocation.longitude));
+            binding.textEventLocationOverlay.setText(String.format(Locale.getDefault(), "%.5f, %.5f", this.eventLocation.latitude, this.eventLocation.longitude));
         }
 
         // Image
