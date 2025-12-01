@@ -33,11 +33,15 @@ import business
 import delete
 import utility
 import business.event
+import uuid
 from business.ParticipantList import ParticipantList
 from business.WaitingList import WaitingList
 from business.event.EventDetail import EventDetail
 from business.event.EventSchedule import EventSchedule
 from business.location.CustomLocation import CustomLocation
+from business.user.NotificationSettings import NotificationSettings
+from business.user.PersonalInformation import PersonalInformation
+from business.user.User import User
 
 # For cost control, you can set the maximum number of containers that can be
 # running at the same time. This helps mitigate the impact of unexpected
@@ -198,6 +202,18 @@ def http_add_mock_events(req: https_fn.CallableRequest) -> Any:
 
 
 @https_fn.on_call()
+def http_add_mock_data(req: https_fn.CallableRequest) -> Any:
+    firestore_client: google.cloud.firestore.Client = firestore.client()
+
+    try:
+        add_mock_data(firestore_client)
+    except Exception as e:
+        return {"successful": False, "message": str(e)}
+
+    return {"successful": True, "message": ""}
+
+
+@https_fn.on_call()
 def http_remove_mock_events(req: https_fn.CallableRequest) -> Any:
     firestore_client: google.cloud.firestore.Client = firestore.client()
 
@@ -265,7 +281,7 @@ def add_mock_events(organizer: str, num_events: int, firestore_client: google.cl
     Create some mock events that belong to a given organizer.
     :param organizer: The id of the user they should belong to.
     :param num_events: The number of mock events to create.
-    :param firestore_client:
+    :param firestore_client: The firestore client to use.
     :return:
     """
     categories = ["Indoor", "Outdoor", "In-person", "Virtual", "Hybrid",
@@ -290,3 +306,24 @@ def add_mock_events(organizer: str, num_events: int, firestore_client: google.cl
         event: business.event.Event = business.event.Event(eventDetail, eventSchedule, location, organizer, waitingList, participantList, False, base64.b64encode(buffered.getvalue()).decode("utf-8"))
 
         firestore_client.collection("events").add(event.to_dict())
+
+def add_mock_user(firestore_client: google.cloud.firestore.Client) -> str:
+    """
+    Create a mock user and return their id
+    :param firestore_client: The firestore client to use.
+    :return: The ID of the new mock user
+    """
+    id: str = str(uuid.uuid4())
+    notificationSettings: NotificationSettings = NotificationSettings(True, True, True)
+    personalInformation: PersonalInformation = PersonalInformation(f"{id}@test.com", id, "123-123-1234")
+
+    user = User(notificationSettings, personalInformation, "ENTRANT")
+    firestore_client.collection("users").document(id).set(user.to_dict())
+    return id
+
+def add_mock_data(firestore_client: google.cloud.firestore.Client):
+    num_users: int = 5
+    mock_uids: list[str] = []
+
+    for i in range(num_users):
+        mock_uids.append(add_mock_user(firestore_client))

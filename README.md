@@ -35,7 +35,9 @@ MAPS_API_KEY=<your key>
 
 If you do not perform this step, the app will still function. However, screens that show a map will not work correctly.
 
-4. Open the project in Android Studio, and deploy to an emulator or physical device of your choosing.
+4. This project relies on Firebase Functions. You need to run `firebase deploy --only functions` inside of the `firebase` directory. Note that this requires the Blaze (PAYG) plan of Firebase. If you don't want to do that, you may also use the Firebase emulator by running `firebase emulators:start` inside of the `firebase` directory. Then, change the build variant inside of Android Studio by going to `build` -> `Select Build Variant`. By default, it will use the address `10.0.2.2` which is the default address for an Android emulator running on the same computer as the Firebase emulator. You can change this by creating a file `Skeddly/settings.properties` and adding the contents `EMULATOR_ADDRESS="10.0.2.2"` where you replace `10.0.2.2` with the address of your emulator.
+
+5. Open the project in Android Studio, and deploy to an emulator or physical device of your choosing.
 
 ## Quick Links
 
