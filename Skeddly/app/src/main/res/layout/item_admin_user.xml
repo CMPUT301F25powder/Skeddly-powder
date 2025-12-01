@@ -51,22 +51,15 @@
             app:layout_constraintTop_toBottomOf="@id/text_user_email"
             tools:text="123-456-7890" />
 
-        <!-- Privilege Level -->
-        <TextView
-            android:id="@+id/text_user_privilege"
+        <Spinner
+            android:id="@+id/privilege_spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:paddingStart="8dp"
-            android:paddingTop="4dp"
-            android:paddingEnd="8dp"
-            android:paddingBottom="4dp"
-            android:textColor="@color/primary_purple"
-            android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
+            android:textColor="@color/primary_purple"
             app:layout_constraintTop_toBottomOf="@id/text_user_phone"
             android:textStyle="bold"
-            tools:text="ATTENDEE" />
+            />
 
         <!-- Message Button -->
         <Button
