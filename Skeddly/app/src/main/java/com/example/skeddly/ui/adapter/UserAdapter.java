@@ -125,8 +125,8 @@ public class UserAdapter extends ArrayAdapter<User> {
 
         // Create and show the confirmation dialog.
         StandardPopupDialogFragment.newInstance(
-                "Confirm Demotion",
-                "Demoting this user to ENTRANT will delete all their associated events. This action cannot be undone. Are you sure?",
+                getContext().getString(R.string.dialog_user_demotion_title),
+                getContext().getString(R.string.dialog_user_demotion_contents),
                 requestKey
         ).show(fm, "dialog_demote_confirm");
     }

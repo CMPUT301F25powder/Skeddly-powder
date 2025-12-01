@@ -27,6 +27,11 @@
         Storage: 9199
     </string>
 
+    <string name="dialog_user_demotion_title">Confirm Demotion</string>
+    <string name="dialog_user_demotion_contents">
+        Demoting this user to ENTRANT will delete all their associated events. This action cannot be undone. Are you sure?
+    </string>
+
     <string name="event_attendee_limit">0/25</string>
     <string name="event_btn_draw">Draw</string>
     <string name="event_btn_edit">Edit</string>
