@@ -210,70 +210,46 @@ public class CreateFragment extends Fragment {
         setupSelector(binding.textDaySelect, dayTitle, dayArray, daysOfWeek);
         setupSelector(binding.textCategorySelect, categoryTitle, catArray, categories);
 
-        interfaceUtilities.setupDatePicker(binding.textDateStart, new MaterialPickerOnPositiveButtonClickListener<Long>() {
-            @Override
-            public void onPositiveButtonClick(Long selection) {
-                eventStartDate = LocalDate.ofInstant(Instant.ofEpochMilli(selection), ZoneOffset.UTC);
-                binding.textDateStart.setText(InterfaceUtilities.underlineString(eventStartDate.format(InterfaceUtilities.dateFormatter)));
-                updateConfirmButton();
-            }
+        interfaceUtilities.setupDatePicker(binding.textDateStart, selection -> {
+            eventStartDate = LocalDate.ofInstant(Instant.ofEpochMilli(selection), ZoneOffset.UTC);
+            binding.textDateStart.setText(InterfaceUtilities.underlineString(eventStartDate.format(InterfaceUtilities.dateFormatter)));
+            updateConfirmButton();
         });
-        interfaceUtilities.setupDatePicker(binding.textDateFinish, new MaterialPickerOnPositiveButtonClickListener<Long>() {
-            @Override
-            public void onPositiveButtonClick(Long selection) {
-                eventEndDate = LocalDate.ofInstant(Instant.ofEpochMilli(selection), ZoneOffset.UTC);
-                binding.textDateFinish.setText(InterfaceUtilities.underlineString(eventEndDate.format(InterfaceUtilities.dateFormatter)));
-                updateConfirmButton();
-            }
+        interfaceUtilities.setupDatePicker(binding.textDateFinish, selection -> {
+            eventEndDate = LocalDate.ofInstant(Instant.ofEpochMilli(selection), ZoneOffset.UTC);
+            binding.textDateFinish.setText(InterfaceUtilities.underlineString(eventEndDate.format(InterfaceUtilities.dateFormatter)));
+            updateConfirmButton();
         });
-        interfaceUtilities.setupDatePicker(binding.textRegDateStart, new MaterialPickerOnPositiveButtonClickListener<Long>() {
-            @Override
-            public void onPositiveButtonClick(Long selection) {
-                regStartDate = LocalDate.ofInstant(Instant.ofEpochMilli(selection), ZoneOffset.UTC);
-                binding.textRegDateStart.setText(InterfaceUtilities.underlineString(regStartDate.format(InterfaceUtilities.dateFormatter)));
-                updateConfirmButton();
-            }
+        interfaceUtilities.setupDatePicker(binding.textRegDateStart, selection -> {
+            regStartDate = LocalDate.ofInstant(Instant.ofEpochMilli(selection), ZoneOffset.UTC);
+            binding.textRegDateStart.setText(InterfaceUtilities.underlineString(regStartDate.format(InterfaceUtilities.dateFormatter)));
+            updateConfirmButton();
         });
-        interfaceUtilities.setupDatePicker(binding.textRegDateFinish, new MaterialPickerOnPositiveButtonClickListener<Long>() {
-            @Override
-            public void onPositiveButtonClick(Long selection) {
-                regEndDate = LocalDate.ofInstant(Instant.ofEpochMilli(selection), ZoneOffset.UTC);
-                binding.textRegDateFinish.setText(InterfaceUtilities.underlineString(regEndDate.format(InterfaceUtilities.dateFormatter)));
-                updateConfirmButton();
-            }
+        interfaceUtilities.setupDatePicker(binding.textRegDateFinish, selection -> {
+            regEndDate = LocalDate.ofInstant(Instant.ofEpochMilli(selection), ZoneOffset.UTC);
+            binding.textRegDateFinish.setText(InterfaceUtilities.underlineString(regEndDate.format(InterfaceUtilities.dateFormatter)));
+            updateConfirmButton();
         });
 
-        interfaceUtilities.setupTimePicker(binding.textTimeStart, new MaterialTimePickerCallback() {
-            @Override
-            public void onPositiveButtonClick(MaterialTimePicker picker) {
-                eventStartTime = LocalTime.of(picker.getHour(), picker.getMinute());
-                binding.textTimeStart.setText(InterfaceUtilities.underlineString(eventStartTime.format(InterfaceUtilities.timeFormatter)));
-                updateConfirmButton();
-            }
+        interfaceUtilities.setupTimePicker(binding.textTimeStart, picker -> {
+            eventStartTime = LocalTime.of(picker.getHour(), picker.getMinute());
+            binding.textTimeStart.setText(InterfaceUtilities.underlineString(eventStartTime.format(InterfaceUtilities.timeFormatter)));
+            updateConfirmButton();
         });
-        interfaceUtilities.setupTimePicker(binding.textTimeFinish, new MaterialTimePickerCallback() {
-            @Override
-            public void onPositiveButtonClick(MaterialTimePicker picker) {
-                eventEndTime = LocalTime.of(picker.getHour(), picker.getMinute());
-                binding.textTimeFinish.setText(InterfaceUtilities.underlineString(eventEndTime.format(InterfaceUtilities.timeFormatter)));
-                updateConfirmButton();
-            }
+        interfaceUtilities.setupTimePicker(binding.textTimeFinish, picker -> {
+            eventEndTime = LocalTime.of(picker.getHour(), picker.getMinute());
+            binding.textTimeFinish.setText(InterfaceUtilities.underlineString(eventEndTime.format(InterfaceUtilities.timeFormatter)));
+            updateConfirmButton();
         });
-        interfaceUtilities.setupTimePicker(binding.textRegTimeStart, new MaterialTimePickerCallback() {
-            @Override
-            public void onPositiveButtonClick(MaterialTimePicker picker) {
-                regStartTime = LocalTime.of(picker.getHour(), picker.getMinute());
-                binding.textRegTimeStart.setText(InterfaceUtilities.underlineString(regStartTime.format(InterfaceUtilities.timeFormatter)));
-                updateConfirmButton();
-            }
+        interfaceUtilities.setupTimePicker(binding.textRegTimeStart, picker -> {
+            regStartTime = LocalTime.of(picker.getHour(), picker.getMinute());
+            binding.textRegTimeStart.setText(InterfaceUtilities.underlineString(regStartTime.format(InterfaceUtilities.timeFormatter)));
+            updateConfirmButton();
         });
-        interfaceUtilities.setupTimePicker(binding.textRegTimeFinish, new MaterialTimePickerCallback() {
-            @Override
-            public void onPositiveButtonClick(MaterialTimePicker picker) {
-                regEndTime = LocalTime.of(picker.getHour(), picker.getMinute());
-                binding.textRegTimeFinish.setText(InterfaceUtilities.underlineString(regEndTime.format(InterfaceUtilities.timeFormatter)));
-                updateConfirmButton();
-            }
+        interfaceUtilities.setupTimePicker(binding.textRegTimeFinish, picker -> {
+            regEndTime = LocalTime.of(picker.getHour(), picker.getMinute());
+            binding.textRegTimeFinish.setText(InterfaceUtilities.underlineString(regEndTime.format(InterfaceUtilities.timeFormatter)));
+            updateConfirmButton();
         });
 
         binding.btnConfirm.setOnClickListener(new View.OnClickListener() {
