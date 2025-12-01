@@ -46,6 +46,8 @@ public class EventRepository extends GenericRepository<Event> {
             @Override
             public Task<Void> then(@NonNull Task<Event> task) throws Exception {
                 Event oldEvent = task.getResult();
+                oldEvent.getWaitingList().setMax(event.getWaitingList().getMax());
+                oldEvent.getParticipantList().setMax(event.getParticipantList().getMax());
 
                 event.setWaitingList(oldEvent.getWaitingList());
                 event.setParticipantList(oldEvent.getParticipantList());
