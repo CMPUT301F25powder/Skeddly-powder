@@ -20,6 +20,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.example.skeddly.R;
 import com.example.skeddly.business.search.EventFilter;
+import com.example.skeddly.business.user.User;
 import com.example.skeddly.ui.adapter.CheckBoxCheckedListener;
 import com.example.skeddly.ui.adapter.EventFilterCategoryAdapter;
 import com.example.skeddly.ui.utils.InterfaceUtilities;
@@ -41,7 +42,8 @@ public class EventFilterPopup extends PopupWindow {
     private ImageButton dropdownButton;
     private FilterUpdatedListener filterUpdatedListener;
     private EventFilter eventFilter;
-    public EventFilterPopup(Context context, FragmentManager fragmentManager, View popupView, SearchView searchBar, ImageButton dropdownButton) {
+    private User user;
+    public EventFilterPopup(Context context, FragmentManager fragmentManager, View popupView, User user, SearchView searchBar, ImageButton dropdownButton) {
         super(popupView,
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -49,6 +51,7 @@ public class EventFilterPopup extends PopupWindow {
 
         this.dropdownButton = dropdownButton;
         this.interfaceUtilities = new InterfaceUtilities(fragmentManager);
+        this.user = user;
 
         dropdownButton.setOnClickListener(v -> {
             if (filterMenuToggle) {
@@ -82,7 +85,7 @@ public class EventFilterPopup extends PopupWindow {
                 ArrayList<String> newCategories;
 
                 if (eventFilter == null) {
-                    eventFilter = new EventFilter();
+                    eventFilter = new EventFilter(user);
                 }
 
                 if (eventFilter.getSelectedEventTypes() == null) {
@@ -119,7 +122,7 @@ public class EventFilterPopup extends PopupWindow {
             @Override
             public void onClick(View v) {
                 if (eventFilter == null) {
-                    eventFilter = new EventFilter();
+                    eventFilter = new EventFilter(user);
                 }
 
                 eventFilter.setWeekend(weekendCheckBox.isChecked());

@@ -21,6 +21,7 @@ import com.example.skeddly.business.database.repository.EventRepository;
 import com.example.skeddly.business.event.EventSchedule;
 import com.example.skeddly.business.location.CustomLocation;
 import com.example.skeddly.business.search.EventFilter;
+import com.example.skeddly.business.user.User;
 import com.example.skeddly.databinding.FragmentHomeBinding;
 import com.example.skeddly.business.search.EventSearch;
 import com.example.skeddly.business.search.SearchFinishedListener;
@@ -54,6 +55,7 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
     private SearchView searchEvents;
     private ImageButton filterDropdownButton;
     private View circleBadge;
+    private User user;
 
     // Search
     private EventSearch eventSearch;
@@ -67,10 +69,10 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
 
         // Initialize DatabaseHandler and list of events
         databaseHandler = new DatabaseHandler();
-
         searchEvents = binding.searchEvents;
-
         eventSearch = new EventSearch(getContext(), searchEvents, eventList);
+        MainActivity activity = (MainActivity) requireActivity();
+        user = activity.getUser();
 
         // Handle opening filter menu
         filterDropdownButton = binding.btnFilter;
@@ -80,7 +82,6 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
         resetFilterPopup();
 
         // Initialize event adapter
-        MainActivity activity = (MainActivity) requireActivity();
         eventAdapter = new EventAdapter(getContext(),
                 eventList,
                 activity.getUser(),
@@ -168,7 +169,7 @@ public class HomeFragment extends Fragment implements RetrieveLocation {
     }
 
     private void resetFilterPopup() {
-        this.eventFilterPopup = new EventFilterPopup(getContext(), getChildFragmentManager(), popupView, searchEvents, filterDropdownButton);
+        this.eventFilterPopup = new EventFilterPopup(getContext(), getChildFragmentManager(), popupView, user, searchEvents, filterDropdownButton);
 
         eventFilterPopup.setOnFilterUpdatedListener(new FilterUpdatedListener() {
             @Override
