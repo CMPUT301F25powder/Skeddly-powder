@@ -11,12 +11,21 @@ public class UserRepository extends GenericRepository<User> {
     private final UserLevel level;
     public static final String COLLECTION_PATH = "users";
 
+    /**
+     * Create a new UserRepository.
+     * @param firestore The FirebaseFirestore instance to use.
+     */
     public UserRepository(FirebaseFirestore firestore) {
         super(User.class);
         this.firestore = firestore;
         this.level = null;
     }
 
+    /**
+     * Create a new UserRepository.
+     * @param firestore The FirebaseFirestore instance to use.
+     * @param level The level of users to retrieve.
+     */
     public UserRepository(FirebaseFirestore firestore, UserLevel level) {
         super(User.class);
         this.firestore = firestore;

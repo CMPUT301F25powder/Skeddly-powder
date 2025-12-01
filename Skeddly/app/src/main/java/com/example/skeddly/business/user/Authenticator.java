@@ -31,6 +31,11 @@ public class Authenticator {
     private boolean inTesting;
     UserLoaded callback;
 
+    /**
+     * Constructor for the Authenticator
+     * @param context The app context
+     * @param databaseHandler The database handler
+     */
     public Authenticator(Context context, DatabaseHandler databaseHandler) {
         this(context, databaseHandler, false);
     }
@@ -39,6 +44,7 @@ public class Authenticator {
      * Constructor for the Authenticator
      * @param context The app context
      * @param databaseHandler The database handler
+     * @param inTesting True if the app is in testing mode. False otherwise.
      */
     public Authenticator(Context context, DatabaseHandler databaseHandler, boolean inTesting) {
         this.databaseHandler = databaseHandler;

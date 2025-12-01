@@ -70,6 +70,10 @@ public class AdminImageGalleryFragment extends Fragment {
         return root;
     }
 
+    /**
+     * Set the selection mode of the adapter.
+     * @param selectionMode True to enable, false to disable.
+     */
     private void setSelectionMode(boolean selectionMode) {
         galleryImageAdapter.setSelectionMode(selectionMode);
         galleryImageAdapter.notifyDataSetChanged();
@@ -81,11 +85,17 @@ public class AdminImageGalleryFragment extends Fragment {
         }
     }
 
+    /**
+     * Notify the adapter that the data has changed.
+     */
     private void notifyDataSetChanged() {
         galleryImageAdapter.notifyDataSetChanged();
         selectedImagesCount.setText(getString(R.string.selected_images_count, galleryImageAdapter.getSelectedCount()));
     }
 
+    /**
+     * Delete the selected images.
+     */
     private void deleteSelected() {
         for (int i = images.size() - 1; i >= 0; i--) {
             GalleryImage image = images.get(i);
@@ -101,6 +111,9 @@ public class AdminImageGalleryFragment extends Fragment {
         notifyDataSetChanged();
     }
 
+    /**
+     * Set the listeners for the buttons.
+     */
     private void setListeners() {
         eventRepository.getAll().addOnSuccessListener(new OnSuccessListener<List<Event>>() {
             @Override

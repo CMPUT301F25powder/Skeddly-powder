@@ -28,6 +28,14 @@ public class DrawParticipantsDialogFragment extends DialogFragment {
     private int maxAttend;
     private int result = 0;
 
+    /**
+     * Create a new instance of the DrawParticipantsDialogFragment.
+     * @param requestKey The requestKey to use for the result
+     * @param curWait The current number of waiting participants
+     * @param curAttend The current number of attending participants
+     * @param maxAttend The maximum number of attending participants
+     * @return
+     */
     public static DrawParticipantsDialogFragment newInstance(String requestKey, int curWait, int curAttend, int maxAttend) {
         Bundle args = new Bundle();
         args.putString("requestKey", requestKey);
@@ -116,6 +124,9 @@ public class DrawParticipantsDialogFragment extends DialogFragment {
         return dialog;
     }
 
+    /**
+     * Sets up the arguments for the dialog.
+     */
     private void setupArgs() {
         Bundle args = getArguments();
 
@@ -127,6 +138,10 @@ public class DrawParticipantsDialogFragment extends DialogFragment {
         }
     }
 
+    /**
+     * Checks if the button should be enabled.
+     * @return True if the button should be enabled, false otherwise.
+     */
     private boolean shouldButtonBeEnabled() {
         return result > 0 && result <= curWait && curAttend + curWait <= maxAttend;
     }

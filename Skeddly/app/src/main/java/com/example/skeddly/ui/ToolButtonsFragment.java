@@ -32,7 +32,6 @@ public class ToolButtonsFragment extends Fragment {
         ConstraintLayout imageGalleryButton = binding.btnImgGallery;
         ConstraintLayout viewUserButton = binding.btnViewUser;
         ConstraintLayout adminInboxButton = binding.btnLogNotification;
-        ConstraintLayout testFragmentButton = binding.btnFragmentTest;
 
         if (this.myEventsOnClickListener != null) {
             myEventsButton.setOnClickListener(this.myEventsOnClickListener);
@@ -50,17 +49,13 @@ public class ToolButtonsFragment extends Fragment {
             adminInboxButton.setOnClickListener(this.notificationLogsOnClickListener);
         }
 
-        testFragmentButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                NavController navController = Navigation.findNavController(view);
-                navController.navigate(R.id.action_navigation_tools_to_test);
-            }
-        });
-
         return root;
     }
 
+    /**
+     * Sets the callback for when one presses the personal info edit button.
+     * @param onClickListener The callback to add to the button.
+     */
     public void setMyEventsButtonOnClickListener(View.OnClickListener onClickListener) {
         this.myEventsOnClickListener = onClickListener;
         if (binding != null) {
@@ -68,6 +63,10 @@ public class ToolButtonsFragment extends Fragment {
         }
     }
 
+    /**
+     * Sets the callback for when one presses the personal info edit button.
+     * @param onClickListener The callback to add to the button.
+     */
     public void setImageGalleryButtonOnClickListener(View.OnClickListener onClickListener) {
         this.imageGalleryOnClickListener = onClickListener;
 
@@ -76,6 +75,10 @@ public class ToolButtonsFragment extends Fragment {
         }
     }
 
+    /**
+     * Sets the callback for when one presses the personal info edit button.
+     * @param onClickListener The callback to add to the button.
+     */
     public void setViewUserButtonOnClickListener(View.OnClickListener onClickListener) {
         this.viewUsersOnClickListener = onClickListener;
         if (binding != null) {
@@ -83,6 +86,10 @@ public class ToolButtonsFragment extends Fragment {
         }
     }
 
+    /**
+     * Sets the callback for when one presses the personal info edit button.
+     * @param onClickListener The callback to add to the button.
+     */
     public void setNotificationLogsButtonOnClickListener(View.OnClickListener onClickListener) {
         this.notificationLogsOnClickListener = onClickListener;
         if (binding != null) {

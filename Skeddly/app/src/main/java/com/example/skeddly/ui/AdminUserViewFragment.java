@@ -102,6 +102,9 @@ public class AdminUserViewFragment extends Fragment {
         ).show(fm, "dialog_delete_user_confirm");
     }
 
+    /**
+     * Removes users with no name.
+     */
     private void removeOrphanUsers() {
         userRepositoryAll.getAll().addOnSuccessListener(users -> {
             for (User user : users) {
@@ -111,6 +114,7 @@ public class AdminUserViewFragment extends Fragment {
             }
         });
     }
+
 
     @Override
     public void onDestroyView() {

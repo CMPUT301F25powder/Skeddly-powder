@@ -35,6 +35,11 @@ import java.util.concurrent.ExecutionException;
 
 
 public class UserAdapter extends ArrayAdapter<User> {
+    /**
+     * Constructor for the UserAdapter
+     * @param context The context of the app
+     * @param users The users to display
+     */
     public UserAdapter(Context context, List<User> users) {
         super(context, 0, users);
     }

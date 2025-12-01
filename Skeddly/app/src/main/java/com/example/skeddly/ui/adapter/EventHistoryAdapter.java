@@ -27,6 +27,12 @@ public class EventHistoryAdapter extends ArrayAdapter<Event> {
 
     private final Map<String, Ticket> ticketMap; // Map EventID -> Ticket
 
+    /**
+     * Constructor for the EventHistoryAdapter
+     * @param context Context of the app
+     * @param events List of events to display
+     * @param ticketMap Map of ticket IDs to tickets
+     */
     public EventHistoryAdapter(Context context, ArrayList<Event> events, Map<String, Ticket> ticketMap) {
         super(context, 0, events);
         this.ticketMap = ticketMap;

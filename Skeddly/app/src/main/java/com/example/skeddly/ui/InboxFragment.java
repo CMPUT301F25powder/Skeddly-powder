@@ -153,13 +153,16 @@ public class InboxFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    /**
+     * Sets up the listener for the popup fragment.
+     * @param ticketId The ID of the ticket that was clicked.
+     */
     private void setupPopupListener(String ticketId) {
         getChildFragmentManager().setFragmentResultListener(ticketId, this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
                 boolean choice = result.getBoolean("buttonChoice");
 
-                // TODO: Remove the notification or archive it somehow
                 if (choice) {
                     ticketRepository.updateStatus(requestKey, TicketStatus.ACCEPTED);
                 } else {
