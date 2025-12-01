@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -109,7 +110,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/img_event"
-                    tools:text="Friday, Apr 26, 14:00 - 16:30" />
+                    tools:text="Wednesday, Dec 17, 00:00 - 04:00" />
 
                 <TextView
                     android:id="@+id/label_event_information"
@@ -124,7 +125,6 @@
                     app:layout_constraintTop_toBottomOf="@id/text_day_select" />
 
                 <!-- Information Section -->
-
                 <TextView
                     android:id="@+id/label_event_title"
                     android:layout_width="wrap_content"
@@ -136,64 +136,17 @@
                     app:layout_constraintTop_toBottomOf="@id/label_event_information" />
 
                 <TextView
-                    android:id="@+id/label_event_description"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:text="@string/event_label_description"
-                    android:textColor="@color/primary_navy"
-                    app:layout_constraintStart_toStartOf="@id/label_event_title"
-                    app:layout_constraintTop_toBottomOf="@id/divider_title" />
-
-                <TextView
-                    android:id="@+id/label_category"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:text="@string/event_label_category"
-                    android:textColor="@color/primary_navy"
-                    app:layout_constraintStart_toStartOf="@id/label_event_description"
-                    app:layout_constraintTop_toBottomOf="@id/divider_description" />
-
-                <TextView
-                    android:id="@+id/label_attendee_limit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:text="@string/event_label_attendee_limit"
-                    android:textColor="@color/primary_navy"
-                    app:layout_constraintStart_toStartOf="@id/label_category"
-                    app:layout_constraintTop_toBottomOf="@id/divider_category" />
-
-                <TextView
-                    android:id="@+id/label_waitlist_limit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:text="@string/event_label_wait_list_limit"
-                    android:textColor="@color/primary_navy"
-                    app:layout_constraintStart_toStartOf="@id/label_attendee_limit"
-                    app:layout_constraintTop_toBottomOf="@id/divider_attendee" />
-
-
-                <androidx.constraintlayout.widget.Barrier
-                    android:id="@+id/label_barrier"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:barrierDirection="end"
-                    app:constraint_referenced_ids="label_event_title,label_event_description,label_category,label_attendee_limit,label_waitlist_limit" />
-
-                <TextView
                     android:id="@+id/value_event_title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="16dp"
+                    android:gravity="end"
                     android:textColor="@color/neutral_brown_light"
                     app:layout_constraintBaseline_toBaselineOf="@+id/label_event_title"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/label_barrier"
-                    tools:text="A Very Very Long Event Title That Should Now Wrap Correctly" />
+                    tools:text="LOLOL" />
 
                 <View
                     android:id="@+id/divider_title"
@@ -206,16 +159,27 @@
                     app:layout_constraintTop_toBottomOf="@id/value_event_title" />
 
                 <TextView
+                    android:id="@+id/label_event_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/event_label_description"
+                    android:textColor="@color/primary_navy"
+                    app:layout_constraintStart_toStartOf="@id/label_event_title"
+                    app:layout_constraintTop_toBottomOf="@id/divider_title" />
+
+                <TextView
                     android:id="@+id/value_event_description"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="16dp"
+                    android:gravity="end"
                     android:textColor="@color/neutral_brown_light"
                     app:layout_constraintBaseline_toBaselineOf="@+id/label_event_description"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/label_barrier"
-                    tools:text="This description is also quite long and we need to make absolutely sure that it does not go off the screen, which is the entire point of this refactoring exercise." />
+                    tools:text="JOIN ME" />
 
                 <View
                     android:id="@+id/divider_description"
@@ -227,6 +191,15 @@
                     app:layout_constraintStart_toStartOf="@id/label_event_description"
                     app:layout_constraintTop_toBottomOf="@id/value_event_description" />
 
+                <TextView
+                    android:id="@+id/label_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/event_label_category"
+                    android:textColor="@color/primary_navy"
+                    app:layout_constraintStart_toStartOf="@id/label_event_description"
+                    app:layout_constraintTop_toBottomOf="@id/divider_description" />
 
                 <TextView
                     android:id="@+id/value_category"
@@ -234,11 +207,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="16dp"
+                    android:gravity="end"
                     android:textColor="@color/neutral_brown_light"
                     app:layout_constraintBaseline_toBaselineOf="@+id/label_category"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/label_barrier"
-                    tools:text="Indoor, Outdoor, Virtual" />
+                    tools:text="Arts Crafts" />
 
                 <View
                     android:id="@+id/divider_category"
@@ -250,6 +224,15 @@
                     app:layout_constraintStart_toStartOf="@id/label_category"
                     app:layout_constraintTop_toBottomOf="@id/value_category" />
 
+                <TextView
+                    android:id="@+id/label_attendee_limit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/event_label_attendee_limit"
+                    android:textColor="@color/primary_navy"
+                    app:layout_constraintStart_toStartOf="@id/label_category"
+                    app:layout_constraintTop_toBottomOf="@id/divider_category" />
 
                 <TextView
                     android:id="@+id/value_attendee_limit"
@@ -257,11 +240,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="16dp"
+                    android:gravity="end"
                     android:textColor="@color/neutral_brown_light"
                     app:layout_constraintBaseline_toBaselineOf="@+id/label_attendee_limit"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/label_barrier"
-                    tools:text="50 / 100" />
+                    tools:text="0 / 1" />
 
                 <View
                     android:id="@+id/divider_attendee"
@@ -273,6 +257,15 @@
                     app:layout_constraintStart_toStartOf="@id/label_attendee_limit"
                     app:layout_constraintTop_toBottomOf="@id/value_attendee_limit" />
 
+                <TextView
+                    android:id="@+id/label_waitlist_limit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/event_label_wait_list_limit"
+                    android:textColor="@color/primary_navy"
+                    app:layout_constraintStart_toStartOf="@id/label_attendee_limit"
+                    app:layout_constraintTop_toBottomOf="@id/divider_attendee" />
 
                 <TextView
                     android:id="@+id/value_waitlist_limit"
@@ -280,26 +273,79 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="16dp"
+                    android:gravity="end"
                     android:textColor="@color/neutral_brown_light"
                     app:layout_constraintBaseline_toBaselineOf="@+id/label_waitlist_limit"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/label_barrier"
-                    tools:text="15 / ∞" />
+                    tools:text="1 / 1" />
+
+                <View
+                    android:id="@+id/divider_waitlist"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@android:color/darker_gray"
+                    app:layout_constraintEnd_toEndOf="@id/value_waitlist_limit"
+                    app:layout_constraintStart_toStartOf="@id/label_waitlist_limit"
+                    app:layout_constraintTop_toBottomOf="@id/value_waitlist_limit" />
+
+                <TextView
+                    android:id="@+id/label_registration_end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/event_reg_end"
+                    android:textColor="@color/primary_navy"
+                    app:layout_constraintStart_toStartOf="@id/label_waitlist_limit"
+                    app:layout_constraintTop_toBottomOf="@id/divider_waitlist" />
+
+                <TextView
+                    android:id="@+id/value_registration_end"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:gravity="end"
+                    android:textColor="@color/neutral_brown_light"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/label_registration_end"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/label_barrier"
+                    tools:text="Ends Dec 2, 5:00 PM" />
+
+                <View
+                    android:id="@+id/divider_registration"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@android:color/darker_gray"
+                    app:layout_constraintEnd_toEndOf="@id/value_registration_end"
+                    app:layout_constraintStart_toStartOf="@id/label_registration_end"
+                    app:layout_constraintTop_toBottomOf="@id/value_registration_end" />
+
+                <androidx.constraintlayout.widget.Barrier
+                    android:id="@+id/label_barrier"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:barrierDirection="end"
+                    app:constraint_referenced_ids="label_event_title,label_event_description,label_category,label_attendee_limit,label_waitlist_limit,label_registration_end" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_join"
+                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="32dp"
                     android:layout_marginEnd="16dp"
                     android:background="@drawable/gradient_btn_join"
                     android:text="@string/event_btn_join"
                     android:textAllCaps="false"
                     android:textColor="@color/neutral_lighter_off_white"
+                    android:textSize="18sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/value_waitlist_limit"
+                    app:layout_constraintTop_toBottomOf="@id/divider_registration"
                     tools:visibility="visible" />
 
                 <LinearLayout
@@ -307,13 +353,13 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="32dp"
                     android:layout_marginEnd="16dp"
                     android:orientation="vertical"
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/value_waitlist_limit"
+                    app:layout_constraintTop_toBottomOf="@id/divider_registration"
                     tools:visibility="visible">
 
                     <LinearLayout
