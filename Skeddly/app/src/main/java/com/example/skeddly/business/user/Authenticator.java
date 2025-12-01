@@ -28,18 +28,24 @@ public class Authenticator {
     private FirebaseAuth mAuth;
     private DatabaseHandler databaseHandler;
     private boolean showSignUp;
+    private boolean inTesting;
     UserLoaded callback;
+
+    public Authenticator(Context context, DatabaseHandler databaseHandler) {
+        this(context, databaseHandler, false);
+    }
 
     /**
      * Constructor for the Authenticator
      * @param context The app context
      * @param databaseHandler The database handler
      */
-    public Authenticator(Context context, DatabaseHandler databaseHandler) {
+    public Authenticator(Context context, DatabaseHandler databaseHandler, boolean inTesting) {
         this.databaseHandler = databaseHandler;
         this.mAuth = FirebaseAuth.getInstance();
         this.androidId = Settings.Secure.getString(context.getContentResolver(),Settings.Secure.ANDROID_ID);
         this.showSignUp = true;
+        this.inTesting = inTesting;
 
         String emailUUID = String.valueOf(UUID.nameUUIDFromBytes(androidId.getBytes()));
         String emailGen = emailUUID + "@skeddly.com";
@@ -48,7 +54,9 @@ public class Authenticator {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (!task.isSuccessful()) {
-                    showSignUp = true;
+                    // Show sign up if not in testing
+                    showSignUp = !inTesting;
+
                     // Try to sign up user - associated with device ID
                     mAuth.createUserWithEmailAndPassword(emailGen, androidId).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
@@ -76,7 +84,7 @@ public class Authenticator {
         Task<String> fcmTokenTask = FirebaseMessaging.getInstance().getToken();
         Task<DocumentSnapshot> userFetchTask = this.databaseHandler.getUsersPath().document(currentUser.getUid()).get();
 
-        // Wait for user fetch and fcm token retrieval to finsih before continuing
+        // Wait for user fetch and fcm token retrieval to finish before continuing
         Tasks.whenAll(fcmTokenTask, userFetchTask).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentSnapshot documentSnapshot = userFetchTask.getResult();
@@ -88,6 +96,12 @@ public class Authenticator {
                     user = new User();
                     user.setId(currentUser.getUid());
                     user.setFcmToken(fcmTokenTask.getResult());
+
+                    if (inTesting) {
+                        user.setPrivilegeLevel(UserLevel.ADMIN);
+                        user.setPersonalInformation(new PersonalInformation("Test", "test@test.com", "111-222-3333"));
+                        userPath.set(user);
+                    }
                 } else {
                     user = documentSnapshot.toObject(User.class);
 
@@ -106,7 +120,7 @@ public class Authenticator {
                 }
 
                 if (!user.getPersonalInformation().isFullyFilled()) {
-                    showSignUp = true;
+                    showSignUp = !this.inTesting;
                 }
 
                 if (callback != null) {

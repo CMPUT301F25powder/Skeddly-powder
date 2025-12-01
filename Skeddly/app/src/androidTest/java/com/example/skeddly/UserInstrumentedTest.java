@@ -7,6 +7,8 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
+import static com.example.skeddly.utilities.TestUtil.onViewLoaded;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -49,48 +51,6 @@ public class UserInstrumentedTest extends BaseTest {
     }
 
     /**
-     * Tests if a user can access the events that it owns
-     */
-    // FOR NOW: create an event beforehand in the DB.
-    // This will need to be fixed later once more logic is added for adding/removing events.
-    // I used a user that is the owner of a test event for this test.
-    @Test
-    public void testEventOwnership() {
-        // TODO: Create an event via the UI and then query the EventRepository to make sure it is incremented
-
-//        Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-//
-//        DatabaseHandler database = new DatabaseHandler();
-//        Authenticator authenticator = new Authenticator(appContext, database);
-//        authenticator.addListenerForUserLoaded(new UserLoaded() {
-//            @Override
-//            public void onUserLoaded(User loadedUser, boolean shouldShowSignup) {
-//                assertEquals(1, loadedUser.getOwnedEvents().size());
-//            }
-//        });
-    }
-
-    /**
-     * Tests if the user can edit/create a different account in the database that isn't related to them.
-     * Used for testing the rules in the Firebase DB.
-     */
-    @Test
-    public void testUserEditSecurity() {
-        Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-
-        DatabaseHandler database = new DatabaseHandler();
-        Authenticator authenticator = new Authenticator(appContext, database);
-        authenticator.addListenerForUserLoaded(new UserLoaded() {
-            @Override
-            public void onUserLoaded(User loadedUser, boolean shouldShowSignup) {
-                User fakeUser = new User();
-
-                assertFalse(database.getUsersPath().document(String.valueOf(UUID.randomUUID())).set(fakeUser).isSuccessful());
-            }
-        });
-    }
-
-    /**
      * Tests if the {@link User} is properly deleted.
      */
     @Test
@@ -112,8 +72,7 @@ public class UserInstrumentedTest extends BaseTest {
      */
     @Test
     public void testViewUserPage() {
-        onView(withId(R.id.main)).check(matches(isDisplayed()));
-
-        onView(withId(R.id.navigation_profile)).check(matches(isDisplayed())).perform(click());
+        onViewLoaded(withId(R.id.main));
+        onViewLoaded(withId(R.id.navigation_profile)).perform(click());
     }
 }

@@ -214,7 +214,7 @@ public class SignupActivity extends AppCompatActivity {
 
     private void loadUser() {
         DatabaseHandler database = new DatabaseHandler();
-        authenticator = new Authenticator(this, database);
+        authenticator = new Authenticator(this, database, useFirebaseEmulator);
         authenticator.addListenerForUserLoaded(new UserLoaded() {
             @Override
             public void onUserLoaded(User loadedUser, boolean shouldShowSignup) {

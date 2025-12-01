@@ -25,6 +25,12 @@ public class User extends DatabaseObject {
         this.fcmToken = null;
     }
 
+    public User(PersonalInformation personalInformation, UserLevel privilegeLevel) {
+        this.personalInformation = personalInformation;
+        this.notificationSettings = new NotificationSettings();
+        this.privilegeLevel = privilegeLevel;
+    }
+
     /**
      * Gets the notification settings
      * @return The notification settings

@@ -1,4 +1,4 @@
-package com.example.skeddly.ui.utils;
+package com.example.skeddly.ui.utility;
 
 import com.example.skeddly.business.event.Event;
 

@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavGraph;
 import androidx.navigation.fragment.NavHostFragment;
@@ -55,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private Authenticator authenticator;
     private ActivityMainBinding binding;
     private NavController navController;
+    private static MainActivity instance;
 
     // FCM (Notifications)
     private final ActivityResultLauncher<String> requestPermissionLauncher =
@@ -71,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         // Boiler Plate Stuff
         super.onCreate(savedInstanceState);
-
+        instance = this;
         EdgeToEdge.enable(this);
 
         // Inflate the layout
@@ -279,4 +281,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public static MainActivity getInstance() {
+        return instance;
+    }
 }

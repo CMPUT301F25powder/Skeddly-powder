@@ -66,7 +66,7 @@ public class AdminUserViewFragment extends Fragment {
 
         // toggle between all users and only organizers
         binding.switchOrganizersOnly.setOnCheckedChangeListener((buttonView, isChecked) -> {
-           repositoryToArrayAdapter.switchDataset(isChecked ? userRepositoryOrg : userRepositoryAll);
+            repositoryToArrayAdapter.switchDataset(isChecked ? userRepositoryOrg : userRepositoryAll);
         });
 
         // remove orphan users
